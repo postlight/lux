@@ -1,3 +1,5 @@
+import sanitizeParams from '../utils/sanitize-params';
+
 export default function action(target, key, desc) {
   const { value } = desc;
 
@@ -7,16 +9,24 @@ export default function action(target, key, desc) {
         const self = this;
 
         const handlers = [
-          ...this.middleware,
+          async (req, res) => {
+            if (self.sanitizeParams) {
+              req.params = sanitizeParams(req.params, self.params);
+            }
+          },
 
           async (req, res) => {
-            if (req.params.id) {
-              req.record = await self.model.findById(req.params.id, {
+            const { id } = req.params;
+
+            if (id) {
+              req.record = await self.model.findById(id, {
                 include: self.include,
                 attributes: self.serializedAttributes
               });
             }
           },
+
+          ...this.middleware,
 
           async (req, res) => {
             const data = await value.call(self, req, res);

@@ -84,7 +84,7 @@ class Framework extends Base {
       loader('routes'),
       loader('models'),
       loader('controllers'),
-      loader('serializers'),
+      loader('serializers')
     ]);
 
     for (let [key, model] of models) {
@@ -160,10 +160,8 @@ class Framework extends Base {
 }
 
 export Base from './src/packages/base';
-export Controller from './src/packages/controller';
+export Controller, { action } from './src/packages/controller';
 export Serializer from './src/packages/serializer';
 export Model, { DataTypes } from './src/packages/model';
-
-export action from './src/packages/controller/decorators/action';
 
 export default Framework;

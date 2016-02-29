@@ -73,4 +73,6 @@ class Controller extends Base {
   }
 }
 
+export action from './decorators/action';
+
 export default Controller;
