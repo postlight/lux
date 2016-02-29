@@ -10,6 +10,7 @@
   "author": "Zachary Golba",
   "license": "MIT",
   "dependencies": {
+    "bluebird": "^3.3.3",
     "inflection": "^1.8.0",
     "mysql": "^2.10.2",
     "sequelize": "^3.19.3"
