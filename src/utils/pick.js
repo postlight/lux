@@ -5,7 +5,7 @@ export default function pick(obj, ...keys) {
   for (let key of keys) {
     value = obj[key];
 
-    if (value !== undefined) {
+    if (typeof value !== 'undefined') {
       result[key] = value;
     }
   }
