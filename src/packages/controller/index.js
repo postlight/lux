@@ -47,27 +47,20 @@ class Controller extends Base {
 
   @action
   create(req, res) {
-    let params = req.params[`${this.modelName}`];
-
-    if (!params) {
-      params = {};
-    }
-    return this.model.create(params);
+    return this.model.createRecord(req.params);
   }
 
   @action
   update(req, res) {
     if (req.record) {
-      const params = req.params[`${this.modelName}`];
-
-      return req.record.update(params);
+      return req.record.updateRecord(req.params);
     }
   }
 
   @action
   async destroy(req, res) {
     if (req.record) {
-      await req.record.destroy();
+      await req.record.destroyRecord();
       return req.record;
     }
   }

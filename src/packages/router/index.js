@@ -107,7 +107,7 @@ class Router extends Base {
       }
 
       if (data) {
-        res.statusCode = 200;
+        res.statusCode = req.method === 'POST' ? 201 : 200;
         data.pipe(res);
       } else {
         this.notFound(req, res);
