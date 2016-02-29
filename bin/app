@@ -1,0 +1,8 @@
+#!/usr/bin/env node --use_strict
+require('babel-core/register');
+require('babel-polyfill');
+
+const Application = require('../app/app').default;
+const app = Application.create();
+
+app.boot();
