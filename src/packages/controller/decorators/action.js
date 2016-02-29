@@ -19,7 +19,7 @@ export default function action(target, key, desc) {
             const { id } = req.params;
 
             if (id) {
-              req.record = await self.model.findById(id, {
+              req.record = await self.model.findRecord(id, {
                 include: self.include,
                 attributes: self.serializedAttributes
               });

@@ -67,7 +67,7 @@ class Server extends Base {
         }
 
         if (/(PATCH|POST|PUT)/g.test(req.method)) {
-          const body = await bodyParser(request);
+          const body = await bodyParser(req);
 
           req.body = body;
           req.params = {
