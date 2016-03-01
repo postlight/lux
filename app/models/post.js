@@ -9,6 +9,11 @@ class Post extends Model {
     },
     body: {
       type: DataTypes.TEXT
+    },
+    isPublic: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
     }
   };
 }
