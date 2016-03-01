@@ -1,19 +1,22 @@
 import pick from '../../../utils/pick';
 
 export default function sanitizeParams(params, keys) {
-  let { id, type, attributes } = params;
   const result = {};
 
-  if (id) {
-    result.id = id;
-  }
+  if (params.data) {
+    let { id, type, attributes } = params.data;
 
-  if (type) {
-    result.type = type;
-  }
+    if (id) {
+      result.id = id;
+    }
 
-  if (attributes) {
-    result.attributes = pick(attributes, ...keys);
+    if (type) {
+      result.type = type;
+    }
+
+    if (attributes) {
+      result.attributes = pick(attributes, ...keys);
+    }
   }
 
   return result;
