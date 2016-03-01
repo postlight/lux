@@ -58,17 +58,25 @@ class Router extends Base {
       action: 'destroy'
     });
 
-    if (this.enableCORS) {
-      this.route(name, {
-        method: 'HEAD',
-        action: 'ok'
-      });
+    this.route(name, {
+      method: 'HEAD',
+      action: 'preflight'
+    });
 
-      this.route(name, {
-        method: 'OPTIONS',
-        action: 'ok'
-      });
-    }
+    this.route(name, {
+      method: 'OPTIONS',
+      action: 'preflight'
+    });
+
+    this.route(`${name}/:id`, {
+      method: 'HEAD',
+      action: 'preflight'
+    });
+
+    this.route(`${name}/:id`, {
+      method: 'OPTIONS',
+      action: 'preflight'
+    });
   }
 
   resolve(req, res) {
@@ -122,12 +130,14 @@ class Router extends Base {
             break;
 
           case 'DELETE':
-            res.statusCode = 204;
-            res.removeHeader('Content-Type');
-            return res.end();
+            return this.noContent(req, res);
 
           default:
-            res.statusCode = 200;
+            if (data === true) {
+              return this.noContent(req, res);
+            } else {
+              res.statusCode = 200;
+            }
         }
 
         data.pipe(res);
@@ -174,6 +184,12 @@ class Router extends Base {
         status: 404
       }]
     }).pipe(res);
+  }
+
+  noContent(req, res) {
+    res.statusCode = 204;
+    res.removeHeader('Content-Type');
+    res.end();
   }
 }
 

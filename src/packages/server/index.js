@@ -31,8 +31,6 @@ class Server extends Base {
 
         res.setHeader('Content-Type', 'application/vnd.api+json');
 
-        req.xhr = req.headers['x-requested-with'] === 'XMLHttpRequest';
-
         req.url = parseURL(req.url, true);
 
         req.session = Session.create({
