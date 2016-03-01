@@ -12,7 +12,7 @@ export default function action(target, key, desc) {
 
         const handlers = [
           async (req, res) => {
-            if (self.sanitizeParams) {
+            if (self.sanitizeParams && key !== 'preflight') {
               const permit = self.params.map(param => {
                 return dasherize(underscore(param));
               });
@@ -22,26 +22,32 @@ export default function action(target, key, desc) {
           },
 
           async (req, res) => {
-            const { id } = req.params;
+            if (key !== 'preflight') {
+              const { id } = req.params;
 
-            if (id) {
-              req.record = await self.model.findRecord(id, {
-                include: self.include,
-                attributes: self.serializedAttributes
-              });
+              if (id) {
+                req.record = await self.model.findRecord(id, {
+                  include: self.include,
+                  attributes: self.serializedAttributes
+                });
+              }
             }
           },
 
           ...this.middleware,
 
           async (req, res) => {
-            const data = await value.call(self, req, res);
+            let data = await value.call(self, req, res);
 
-            if (data) {
-              return self.serializer.serialize({
-                data
-              });
+            if (key !== 'preflight') {
+              if (data) {
+                data = self.serializer.serialize({
+                  data
+                });
+              }
             }
+
+            return data;
           }
         ];
 

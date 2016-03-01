@@ -23,17 +23,10 @@ class Framework extends Base {
 
   sessionSecret = process.env.APP_SECRET || '1e71b30b17d2cef327b2625572d378a656de059ae24d69b2f1f7678bf6cf236d677d763b5819b1c5c5c2d31b3cdc9a5786ef1729abb05644d8b2cff30128fdab';
 
-  enableCORS = false;
-
-  environment = process.env.NODE_ENV || 'development';
-
   constructor() {
     super();
 
-    const router = Router.create({
-      enableCORS: this.enableCORS
-    });
-
+    const router = Router.create();
     const container = Container.create({
       application: this
     });
