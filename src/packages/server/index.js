@@ -1,8 +1,11 @@
 import http from 'http';
 import { parse as parseURL } from 'url';
 
+import colors from 'colors/safe';
+
 import Base from '../base';
 import Session from '../session';
+import { line } from '../logger';
 
 import bodyParser from './utils/body-parser';
 
@@ -21,64 +24,88 @@ class Server extends Base {
 
   listen(port) {
     this.instance.listen(port);
+    this.logger.log(`Server listening on port ${colors.cyan(`${port}`)}`);
+  }
+
+  logRequest(req, res) {
+    const startTime = new Date();
+
+    res.once('finish', () => {
+      const { url, method } = req;
+      const { statusCode, statusMessage } = res;
+      let statusColor;
+
+      if (statusCode >= 200 && statusCode < 400) {
+        statusColor = 'green';
+      } else {
+        statusColor = 'red';
+      }
+
+      this.logger.log(line`
+        ${colors.cyan(`${method}`)} ${url.pathname} -> Finished after
+        ${new Date().getTime() - startTime.getTime()} ms with
+        ${colors[statusColor].call(null, `${statusCode}`)}
+        ${colors[statusColor].call(null, `${statusMessage}`)}
+      `);
+    });
   }
 
   @bound
-  handleRequest(req, res) {
-    setImmediate(async () => {
-      try {
-        req.setEncoding('utf8');
+  async handleRequest(req, res) {
+    this.logRequest(req, res);
 
-        res.setHeader('Content-Type', 'application/vnd.api+json');
+    try {
+      req.setEncoding('utf8');
 
-        req.url = parseURL(req.url, true);
+      res.setHeader('Content-Type', 'application/vnd.api+json');
 
-        req.session = Session.create({
-          cookie: req.headers.cookie,
-          sessionKey: this.application.sessionKey,
-          sessionSecret: this.application.sessionSecret
-        });
+      req.url = parseURL(req.url, true);
 
-        req.params = {};
+      req.session = Session.create({
+        cookie: req.headers.cookie,
+        sessionKey: this.application.sessionKey,
+        sessionSecret: this.application.sessionSecret
+      });
 
-        for (let key in req.url.query) {
-          req.params[key.replace('[]', '')] = req.url.query[key];
-        }
+      req.params = {};
 
-        for (let key in req.params) {
-          let value = req.params[key];
-
-          if (isArray(value)) {
-            req.params[key] = value.map(v => {
-              return /^\d+$/ig.test(value) ? parseInt(v, 10) : v;
-            });
-          } else {
-            if (/^\d+$/ig.test(value)) {
-              req.params[key] = parseInt(value, 10);
-            }
-          }
-
-          if (key.includes('[]')) {
-            delete req.params[key];
-            req.params[key.replace('[]', '')] = value;
-          }
-        }
-
-        if (/(PATCH|POST|PUT)/g.test(req.method)) {
-          const body = await bodyParser(req);
-
-          req.body = body;
-          req.params = {
-            ...body,
-            ...req.params
-          };
-        }
-
-        this.router.resolve(req, res);
-      } catch (err) {
-        console.error(err);
+      for (let key in req.url.query) {
+        req.params[key.replace('[]', '')] = req.url.query[key];
       }
-    });
+
+      for (let key in req.params) {
+        let value = req.params[key];
+
+        if (isArray(value)) {
+          req.params[key] = value.map(v => {
+            return /^\d+$/ig.test(value) ? parseInt(v, 10) : v;
+          });
+        } else {
+          if (/^\d+$/ig.test(value)) {
+            req.params[key] = parseInt(value, 10);
+          }
+        }
+
+        if (key.includes('[]')) {
+          delete req.params[key];
+          req.params[key.replace('[]', '')] = value;
+        }
+      }
+
+      if (/(PATCH|POST|PUT)/g.test(req.method)) {
+        const body = await bodyParser(req);
+
+        req.body = body;
+        req.params = {
+          ...body,
+          ...req.params
+        };
+      }
+
+      this.router.resolve(req, res);
+    } catch (err) {
+      console.error(err);
+    }
   }
 }
 
