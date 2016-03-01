@@ -8,6 +8,7 @@ import Base from './src/packages/base';
 import Model from './src/packages/model';
 import Server from './src/packages/server';
 import Router from './src/packages/router';
+import Logger from './src/packages/logger';
 import Container from './src/packages/container';
 
 import loader from './src/packages/loader';
@@ -15,9 +16,11 @@ import loader from './src/packages/loader';
 promisifyAll(fs);
 
 class Framework extends Base {
-  root = process.env.PWD;
-
   port = process.env.PORT || 4000;
+
+  router = Router.create();
+
+  logger = Logger.create();
 
   sessionKey = 'app::sess';
 
@@ -26,19 +29,20 @@ class Framework extends Base {
   constructor() {
     super();
 
-    const router = Router.create();
+    const { router, logger } = this;
     const container = Container.create({
       application: this
     });
 
     container.register('router', 'main', router);
+    container.register('logger', 'main', logger);
 
     this.setProps({
       container,
-      router,
 
       server: Server.create({
         router,
+        logger,
         application: this
       })
     });
@@ -47,119 +51,143 @@ class Framework extends Base {
   }
 
   async boot() {
-    const { root, container } = this;
-    const db = new Map();
+    try {
+      const { root, container } = this;
+      const db = new Map();
 
-    let dbConfig = JSON.parse(
-      await fs.readFileAsync(`${root}/config/database.json`)
-    );
+      await this.createLogFile();
 
-    const {
-      database,
-      username,
-      password,
-      ...options
-    } = dbConfig[this.environment];
-
-    const sequelize = new Sequelize(database, username, password, options);
-
-    container.register('store', 'main', db);
-
-    db.set('Sequelize', Sequelize);
-    db.set('sequelize', sequelize);
-
-    let [
-      routes,
-      models,
-      controllers,
-      serializers
-    ] = await Promise.all([
-      loader('routes'),
-      loader('models'),
-      loader('controllers'),
-      loader('serializers')
-    ]);
-
-    for (let [key, model] of models) {
-      let {
-        name,
-        indices,
-        attributes,
-        classMethods,
-        instanceMethods,
-        ...etc
-      } = model;
-
-      for (let attrKey in attributes) {
-        let attr = attributes[attrKey];
-
-        attributes[attrKey] = {
-          ...attr,
-          field: underscore(attrKey)
-        };
-      }
-
-      model = sequelize.define(name,
-        {
-          ...attributes,
-          ...Model.attributes
-        },
-        {
-          indexes: indices,
-          tableName: pluralize(underscore(name)),
-          underscored: true,
-          defaultScope: Model.defaultScope,
-          classMethods: {
-            ...classMethods,
-            ...Model.classMethods,
-            registeredKey: key
-          },
-          instanceMethods: {
-            ...instanceMethods,
-            ...Model.instanceMethods
-          },
-          ...etc
-        }
+      let dbConfig = JSON.parse(
+        await fs.readFileAsync(`${root}/config/database.json`)
       );
 
-      db.set(name, model);
-      container.register('model', key, model);
+      const {
+        database,
+        username,
+        password,
+        ...options
+      } = dbConfig[this.environment];
+
+      const sequelize = new Sequelize(database, username, password, options);
+
+      container.register('store', 'main', db);
+
+      db.set('Sequelize', Sequelize);
+      db.set('sequelize', sequelize);
+
+      let [
+        routes,
+        models,
+        controllers,
+        serializers
+      ] = await Promise.all([
+        loader('routes'),
+        loader('models'),
+        loader('controllers'),
+        loader('serializers')
+      ]);
+
+      for (let [key, model] of models) {
+        let {
+          name,
+          indices,
+          attributes,
+          classMethods,
+          instanceMethods,
+          ...etc
+        } = model;
+
+        for (let attrKey in attributes) {
+          let attr = attributes[attrKey];
+
+          attributes[attrKey] = {
+            ...attr,
+            field: underscore(attrKey)
+          };
+        }
+
+        model = sequelize.define(name,
+          {
+            ...attributes,
+            ...Model.attributes
+          },
+          {
+            indexes: indices,
+            tableName: pluralize(underscore(name)),
+            underscored: true,
+            defaultScope: Model.defaultScope,
+            classMethods: {
+              ...classMethods,
+              ...Model.classMethods,
+              registeredKey: key
+            },
+            instanceMethods: {
+              ...instanceMethods,
+              ...Model.instanceMethods
+            },
+            ...etc
+          }
+        );
+
+        db.set(name, model);
+        container.register('model', key, model);
+      }
+
+      await sequelize.sync();
+
+      for (let model of db.values()) {
+        if (model.associate) {
+          model.associate(mapToObject(db));
+        }
+      }
+
+      for (let [key, serializer] of serializers) {
+        let model = container.lookup('model', singularize(key));
+
+        serializer = serializer.create({
+          model
+        });
+
+        container.register('serializer', key, serializer);
+      }
+
+      for (let [key, controller] of controllers) {
+        let model = container.lookup('model', singularize(key));
+        let serializer = container.lookup('serializer', key);
+
+        controller = controller.create({
+          model,
+          serializer
+        });
+
+        container.register('controller', key, controller);
+      }
+
+      routes = routes[1];
+      routes(this.router.route, this.router.resource);
+
+      this.server.listen(this.port);
+    } catch (err) {
+      console.error(err);
     }
+  }
 
-    await sequelize.sync();
+  async createLogFile() {
+    const { root, environment } = this;
 
-    for (let model of db.values()) {
-      if (model.associate) {
-        model.associate(mapToObject(db));
+    try {
+      await fs.mkdirAsync(`${root}/log`);
+    } catch (err) {
+      if (err.code !== 'EEXIST') {
+        throw err;
       }
     }
 
-    for (let [key, serializer] of serializers) {
-      let model = container.lookup('model', singularize(key));
-
-      serializer = serializer.create({
-        model
-      });
-
-      container.register('serializer', key, serializer);
+    try {
+      await fs.accessAsync(`${root}/log/${environment}.log`);
+    } catch (err) {
+      await fs.writeFileAsync(`${root}/log/${environment}.log`, '', 'utf8');
     }
-
-    for (let [key, controller] of controllers) {
-      let model = container.lookup('model', singularize(key));
-      let serializer = container.lookup('serializer', key);
-
-      controller = controller.create({
-        model,
-        serializer
-      });
-
-      container.register('controller', key, controller);
-    }
-
-    routes = routes[1];
-    routes(this.router.route, this.router.resource);
-
-    this.server.listen(this.port);
   }
 }
 
