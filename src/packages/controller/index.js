@@ -32,7 +32,7 @@ class Controller extends Base {
   }
 
   @action
-  index(req, res) {
+  index(req) {
     return this.model.query({
       ...req.params,
       include: this.include,
@@ -41,28 +41,33 @@ class Controller extends Base {
   }
 
   @action
-  show(req, res) {
+  show(req) {
     return req.record;
   }
 
   @action
-  create(req, res) {
+  create(req) {
     return this.model.createRecord(req.params);
   }
 
   @action
-  update(req, res) {
+  update(req) {
     if (req.record) {
       return req.record.updateRecord(req.params);
     }
   }
 
   @action
-  async destroy(req, res) {
+  async destroy(req) {
     if (req.record) {
       await req.record.destroyRecord();
       return req.record;
     }
+  }
+
+  @action
+  preflight() {
+    return true;
   }
 }
 
