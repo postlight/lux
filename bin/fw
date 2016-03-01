@@ -1,0 +1,4 @@
+#!/usr/bin/env node --use_strict
+require('babel-core/register');
+require('babel-polyfill');
+require('../src/packages/cli');
