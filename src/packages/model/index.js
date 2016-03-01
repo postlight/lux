@@ -79,7 +79,7 @@ class Model {
     },
 
     createRecord(params = {}) {
-      let { attributes } = params;
+      let { attributes } = params.data;
 
       attributes = camelizeKeys(attributes);
 
@@ -89,7 +89,7 @@ class Model {
 
   static instanceMethods = {
     updateRecord(params = {}) {
-      let { attributes } = params;
+      let { attributes } = params.data;
 
       attributes = camelizeKeys(attributes);
 
