@@ -1,4 +1,5 @@
 import Base from '../base';
+import Route from '../route';
 
 import bound from '../../decorators/bound';
 
@@ -12,15 +13,17 @@ class Router extends Base {
   }
 
   @bound
-  route(name, options = {}) {
+  route(path, options = {}) {
+    const { method, action } = options;
     const routes = this[routesKey];
-    const controller = this.container.lookup('controller', name.replace(/^(.+)\/.+$/ig, '$1'));
-    let { action, method } = options;
+    const route = Route.create({
+      path,
+      method,
+      action,
+      container: this.container
+    });
 
-    if (controller) {
-      method = (method || 'GET').toUpperCase();
-      routes.set(`${method}:/${name}`, controller[action]);
-    }
+    routes.set(`${route.method}:/${route.staticPath}`, route);
   }
 
   @bound
@@ -70,15 +73,21 @@ class Router extends Base {
 
   resolve(req, res) {
     const routes = this[routesKey];
-    const idPattern = /(?![\=])(\d+)/ig;
-    const staticPath = req.url.pathname.replace(idPattern, ':id');
+    const idPattern = /(?![\=])(\d+)/g;
+    const staticPath = req.url.pathname.replace(idPattern, ':dynamic');
 
     const route = routes.get(`${req.method}:${staticPath}`);
 
-    if (route) {
-      (req.url.pathname.match(idPattern) || []).find(id => {
-        req.params.id = parseInt(id, 10);
-      });
+    if (route && route.handlers) {
+      const ids = (req.url.pathname.match(idPattern) || []);
+
+      for (let i = 0; i < ids.length; i++) {
+        let key = route.dynamicSegments[i];
+
+        if (key) {
+          req.params[key] = parseInt(ids[i], 10);
+        }
+      }
 
       this.visit(req, res, route);
     } else {
@@ -90,7 +99,7 @@ class Router extends Base {
     try {
       let data, handler;
       const { session } = req;
-      const handlers = route();
+      const handlers = route.handlers();
 
       for (handler of handlers()) {
         data = await handler(req, res);
