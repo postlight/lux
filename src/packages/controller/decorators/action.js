@@ -1,3 +1,5 @@
+import { underscore, dasherize } from 'inflection';
+
 import sanitizeParams from '../utils/sanitize-params';
 
 export default function action(target, key, desc) {
@@ -11,7 +13,11 @@ export default function action(target, key, desc) {
         const handlers = [
           async (req, res) => {
             if (self.sanitizeParams) {
-              req.params = sanitizeParams(req.params, self.params);
+              const permit = self.params.map(param => {
+                return dasherize(underscore(param));
+              });
+
+              req.params = sanitizeParams(req.params, permit);
             }
           },
 

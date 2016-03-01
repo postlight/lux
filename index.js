@@ -2,7 +2,7 @@ import fs from 'fs';
 
 import Sequelize from 'sequelize';
 import Promise, { promisifyAll } from 'bluebird';
-import { singularize } from 'inflection';
+import { underscore, pluralize, singularize } from 'inflection';
 
 import Base from './src/packages/base';
 import Model from './src/packages/model';
@@ -97,6 +97,15 @@ class Framework extends Base {
         ...etc
       } = model;
 
+      for (let attrKey in attributes) {
+        let attr = attributes[attrKey];
+
+        attributes[attrKey] = {
+          ...attr,
+          field: underscore(attrKey)
+        };
+      }
+
       model = sequelize.define(name,
         {
           ...attributes,
@@ -104,6 +113,8 @@ class Framework extends Base {
         },
         {
           indexes: indices,
+          tableName: pluralize(underscore(name)),
+          underscored: true,
           defaultScope: Model.defaultScope,
           classMethods: {
             ...classMethods,
