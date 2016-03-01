@@ -98,7 +98,7 @@ class Router extends Base {
   async visit(req, res, route) {
     try {
       let data, handler;
-      const { session } = req;
+      const { method, session } = req;
       const handlers = route.handlers();
 
       for (handler of handlers()) {
@@ -116,7 +116,20 @@ class Router extends Base {
       }
 
       if (data) {
-        res.statusCode = req.method === 'POST' ? 201 : 200;
+        switch (method) {
+          case 'POST':
+            res.statusCode = 201;
+            break;
+
+          case 'DELETE':
+            res.statusCode = 204;
+            res.removeHeader('Content-Type');
+            return res.end();
+
+          default:
+            res.statusCode = 200;
+        }
+
         data.pipe(res);
       } else {
         this.notFound(req, res);
