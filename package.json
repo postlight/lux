@@ -1,6 +1,7 @@
 {
-  "name": "framework",
-  "version": "0.0.1",
+  "name": "@zacharygolba/framework",
+  "private": true,
+  "version": "0.0.1-alpha",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -19,6 +20,7 @@
     "babel-preset-stage-1": "^6.5.0",
     "bluebird": "^3.3.3",
     "colors": "^1.1.2",
+    "commander": "^2.9.0",
     "inflection": "^1.8.0",
     "moment": "^2.11.2",
     "mysql": "^2.10.2",

@@ -1,23 +1,19 @@
-import fs from 'fs';
+import fs from '../fs';
 
-import { promisifyAll } from 'bluebird';
-
-const projectRoot = process.env.PWD;
-
-promisifyAll(fs);
+const pwd = process.env.PWD;
 
 export default async function loader(type) {
   if (type === 'routes') {
     return [
       'routes',
-      require(`${projectRoot}/app/routes`).default
+      require(`${pwd}/app/routes`).default
     ];
   } else {
-    return (await fs.readdirAsync(`${projectRoot}/app/${type}`))
+    return (await fs.readdirAsync(`${pwd}/app/${type}`))
       .map(file => {
         return [
           file.replace('.js', ''),
-          require(`${projectRoot}/app/${type}/${file}`).default
+          require(`${pwd}/app/${type}/${file}`).default
         ];
       });
   }

@@ -1,12 +1,12 @@
-import fs from 'fs';
+import fs from '../../fs';
 
 import ansiRegex from 'ansi-regex';
 
 export default async function write(path, message) {
-  message = message.replace(ansiRegex(), '');
-  fs.appendFile(path, message, 'utf8', err => {
-    if (err) {
-      console.error(err);
-    }
-  });
+  try {
+    message = message.replace(ansiRegex(), '');
+    await fs.appendFileAsync(path, message, 'utf8');
+  } catch (err) {
+    console.error(err);
+  }
 }

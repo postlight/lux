@@ -1,0 +1,101 @@
+import cli from 'commander';
+import colors from 'colors';
+
+import test from './commands/test';
+import serve from './commands/serve';
+import create from './commands/create';
+import destroy from './commands/destroy';
+import generate from './commands/generate';
+
+cli.version('0.0.1');
+
+cli
+  .command('n <name>')
+  .alias('new')
+  .description('Create a new application')
+  .action(async name => {
+    try {
+      await create(name);
+    } catch (err) {
+      console.error(err);
+      process.exit(1);
+    }
+  });
+
+cli
+  .command('t')
+  .alias('test')
+  .description('Run your app\'s tests')
+  .action(async (...args) => {
+    try {
+      await test();
+    } catch (err) {
+      console.error(err);
+      process.exit(1);
+    }
+  });
+
+cli
+  .command('s')
+  .alias('serve')
+  .description('Serve your application')
+  .option('-e, --environment', '(Default: development)')
+  .option('-p, --port', '(Default: 4000)')
+  .action(async (...args) => {
+    try {
+      let port = 4000;
+
+      args.forEach(arg => {
+        if (/^\d+$/ig.test(arg)) {
+          port = parseInt(arg, 10);
+        } else if (/^\w+$/ig.test(arg)) {
+          process.env.NODE_ENV = arg;
+        }
+      });
+
+      await serve(port);
+    } catch (err) {
+      console.error(err);
+      process.exit(1);
+    }
+  });
+
+cli
+  .command('g')
+  .alias('generate')
+  .description('Example: fw generate model user')
+  .option('type')
+  .option('name')
+  .action(async (type, name) => {
+    try {
+      if (typeof type === 'string' && typeof name === 'string') {
+        await generate(type, name);
+      } else {
+        throw new TypeError('Invalid arguements for type or name');
+      }
+    } catch (err) {
+      console.error(err);
+      process.exit(1);
+    }
+  });
+
+cli
+  .command('d')
+  .alias('destroy')
+  .description('Example: fw destroy model user')
+  .option('type')
+  .option('name')
+  .action(async (type, name) => {
+    try {
+      if (typeof type === 'string' && typeof name === 'string') {
+        await destroy(type, name);
+      } else {
+        throw new TypeError('Invalid arguements for type or name');
+      }
+    } catch (err) {
+      console.error(err);
+      process.exit(1);
+    }
+  });
+
+cli.parse(process.argv);
