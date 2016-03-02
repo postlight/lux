@@ -47,7 +47,7 @@ class Application extends Base {
 
   async boot() {
     const { root, container } = this;
-    const db = new Map();
+    const db = {};
 
     await this.createLogFile();
 
@@ -66,8 +66,8 @@ class Application extends Base {
 
     container.register('store', 'main', db);
 
-    db.set('Sequelize', Sequelize);
-    db.set('sequelize', sequelize);
+    db.Sequelize = Sequelize;
+    db.sequelize = sequelize;
 
     let [
       routes,
@@ -91,15 +91,6 @@ class Application extends Base {
         ...etc
       } = model;
 
-      for (let attrKey in attributes) {
-        let attr = attributes[attrKey];
-
-        attributes[attrKey] = {
-          ...attr,
-          field: underscore(attrKey)
-        };
-      }
-
       model = sequelize.define(name,
         {
           ...attributes,
@@ -107,8 +98,6 @@ class Application extends Base {
         },
         {
           indexes: indices,
-          tableName: pluralize(underscore(name)),
-          underscored: true,
           defaultScope: Model.defaultScope,
           classMethods: {
             ...classMethods,
@@ -123,15 +112,19 @@ class Application extends Base {
         }
       );
 
-      db.set(name, model);
+      db[name] = model;
       container.register('model', key, model);
     }
 
     await sequelize.sync();
 
-    for (let model of db.values()) {
-      if (model.associate) {
-        model.associate(mapToObject(db));
+    for (let key in db) {
+      if (db.hasOwnProperty(key)) {
+        let model = db[key];
+
+        if (model.associate) {
+          model.associate(db);
+        }
       }
     }
 
@@ -150,6 +143,7 @@ class Application extends Base {
       let serializer = container.lookup('serializer', key);
 
       controller = controller.create({
+        db,
         model,
         serializer
       });

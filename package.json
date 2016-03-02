@@ -1,8 +1,11 @@
 {
-  "name": "@zacharygolba/framework",
-  "version": "0.0.1-alpha.1",
+  "name": "framework",
+  "version": "0.0.1-alpha",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "fw": "bin/fw"
+  },
   "scripts": {
     "start": "bin/app",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,6 +20,7 @@
     "babel-polyfill": "^6.5.0",
     "babel-preset-es2015": "^6.5.0",
     "babel-preset-stage-1": "^6.5.0",
+    "bcryptjs": "^2.3.0",
     "bluebird": "^3.3.3",
     "colors": "^1.1.2",
     "commander": "^2.9.0",

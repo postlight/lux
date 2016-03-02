@@ -27,15 +27,13 @@ class Model {
     createdAt: {
       allowNull: false,
       type: DataTypes.DATE,
-      defaultValue: new Date(),
-      field: 'created_at'
+      defaultValue: new Date()
     },
 
     updatedAt: {
       allowNull: false,
       type: DataTypes.DATE,
-      defaultValue: new Date(),
-      field: 'updated_at'
+      defaultValue: new Date()
     }
   }
 

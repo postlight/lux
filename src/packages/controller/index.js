@@ -1,7 +1,13 @@
+import { camelize, capitalize, classify, singularize } from 'inflection';
+
 import Base from '../base';
+
+import flatten from '../../utils/flatten';
 
 import memoize from '../../decorators/memoize';
 import action from './decorators/action';
+
+const { keys } = Object;
 
 class Controller extends Base {
   params = [];
@@ -29,6 +35,48 @@ class Controller extends Base {
     if (parent !== this) {
       return parent;
     }
+  }
+
+  @memoize
+  get include() {
+    const { serializer } = this;
+
+    if (serializer) {
+      return flatten([
+        serializer.hasOne,
+        serializer.hasMany
+      ]).map(related => {
+        const name = singularize(classify(related.replace('-', '_')));
+
+        return {
+          model: this.db[name],
+          as: camelize(related),
+          attributes: ['id']
+        };
+      });
+    }
+  }
+
+  @memoize
+  get serializedAttributes() {
+    let attrs;
+    const { model, serializer } = this;
+
+    if (model) {
+      attrs = keys(model.attributes);
+
+      if (serializer) {
+        attrs = flatten([
+          'id',
+          serializer.attributes,
+          serializer.hasOne
+            .map(related => `${capitalize(related)}Id`)
+            .filter(related => attrs.includes(related))
+        ]);
+      }
+    }
+
+    return attrs;
   }
 
   @action
