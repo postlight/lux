@@ -1,14 +1,14 @@
 {
-  "name": "framework",
+  "name": "lux",
   "version": "0.0.1-alpha",
   "description": "",
   "main": "index.js",
   "bin": {
-    "fw": "bin/fw"
+    "lux": "bin/lux"
   },
   "scripts": {
-    "start": "bin/app",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "lux serve",
+    "test": "lux test"
   },
   "author": "Zachary Golba",
   "license": "MIT",

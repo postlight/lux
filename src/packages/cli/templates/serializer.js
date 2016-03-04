@@ -8,7 +8,7 @@ export default (name) => {
   }
 
   return `
-import { Serializer } from 'framework';
+import { Serializer } from 'lux';
 
 class ${name}Serializer extends Serializer {
 

@@ -4,9 +4,9 @@ export default (name) => {
   name = classify(name.replace('-', '_'));
 
   return `
-import Framework from 'framework';
+import Lux from 'lux';
 
-class ${name} extends Framework {
+class ${name} extends Lux {
 
 }
 

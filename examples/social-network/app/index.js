@@ -1,6 +1,6 @@
-import Framework from '../../../index';
+import Lux from '../../../index';
 
-class SocialNetwork extends Framework {
+class SocialNetwork extends Lux {
 
 }
 

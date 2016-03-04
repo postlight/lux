@@ -8,7 +8,7 @@ export default (name) => {
   }
 
   return `
-import { Controller, action } from 'framework';
+import { Controller, action } from 'lux';
 
 class ${name}Controller extends Controller {
 
