@@ -7,9 +7,11 @@ class Post extends Model {
       allowNull: false,
       defaultValue: 'New Post'
     },
+
     body: {
       type: DataTypes.TEXT
     },
+
     isPublic: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
