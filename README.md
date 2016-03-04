@@ -1,4 +1,4 @@
-# please-name-me.js
+# Lux
 
 A MVC style framework for building highly performant, large scale JSON APIs that anybody who knows the JavaScript language and it's modern features will understand.
 
@@ -35,7 +35,7 @@ This isn't another wrapper around [Express](http://expressjs.com/) or a framewor
 
 ##### Minimal API surface area
 
-This framework utilizes JavaScript's standard library rather than creating a ton of functions you'll have to learn and remember.
+Lux utilizes JavaScript's standard library rather than creating a ton of functions you'll have to learn and remember.
 
 After your learn how to use it, you'll rarely need to look at the docs.
 
@@ -88,7 +88,7 @@ Shouldn't there be a better way to do this? Can't I just return a promise or a J
 
 Fortunately ES2015+ has introduced great new features to the JavaScript language, especially when it comes to meta programming.
 
-With please-name-me your code from before can now look like this:
+With Lux your code from before can now look like this:
 
 ```javascript
 class PostsController extends Controller {
@@ -115,7 +115,7 @@ It's about time a Node server framework learned something from client-side JS fr
 ### Installation
 
 ```bash
-npm install -g framework
+npm install -g lux-framework
 ```
 
 ### Creating Your First Project
@@ -123,7 +123,7 @@ npm install -g framework
 Use the `new` command to create your first project.
 
 ```bash
-fw new <app-name>
+lux new <app-name>
 ```
 
 ### Running
@@ -132,7 +132,7 @@ To run your application use the `serve` command.
 
 ```bash
 cd <app-name>
-fw serve
+lux serve
 ```
 
 For more information checkout out the [Guides](https://github.com/postlight/node-framework/wiki).
@@ -148,8 +148,8 @@ Coming Soon!
 ### Installation
 
 ```bash
-git clone https://github.com/postlight/node-framework
-cd node-framework
+git clone https://github.com/postlight/lux
+cd lux
 npm install
 ```
 
@@ -159,16 +159,16 @@ Execute the following command to run the example blog app in the app directory.
 
 
 ```bash
-./bin/fw serve
+lux serve
 ```
 
-Be sure to have MySQL running locally on port `3306` and a database schema with the name `framework_dev` and charset `utf8`.
+Be sure to have MySQL running locally on port `3306` and a database schema with the name `lux_dev` and charset `utf8`.
 
 
 ### Testing
 
 ```bash
-./bin/fw test
+lux test
 ```
 
 

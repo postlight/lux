@@ -1,6 +1,6 @@
-import Framework from '../index';
+import Lux from '../index';
 
-class Blog extends Framework {
+class Blog extends Lux {
 
 }
 

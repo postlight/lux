@@ -7,7 +7,7 @@ import create from './commands/create';
 import destroy from './commands/destroy';
 import generate from './commands/generate';
 
-cli.version('0.0.1');
+cli.version('0.0.1-alpha');
 
 cli
   .command('n <name>')
@@ -63,7 +63,7 @@ cli
 cli
   .command('g')
   .alias('generate')
-  .description('Example: fw generate model user')
+  .description('Example: lux generate model user')
   .option('type')
   .option('name')
   .action(async (type, name) => {
@@ -82,7 +82,7 @@ cli
 cli
   .command('d')
   .alias('destroy')
-  .description('Example: fw destroy model user')
+  .description('Example: lux destroy model user')
   .option('type')
   .option('name')
   .action(async (type, name) => {

@@ -4,7 +4,7 @@ export default (name) => {
   name = classify(name.replace('-', '_'));
 
   return `
-import { Model, DataTypes } from 'framework';
+import { Model, DataTypes } from 'lux';
 
 class ${name} extends Model {
 
