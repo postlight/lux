@@ -1,54 +1,21 @@
-import { Model, DataTypes } from '../../../../index';
+import { Model } from '../../../../index';
 
 class Post extends Model {
   static attributes = {
     body: {
-      type: DataTypes.TEXT
+      type: 'text'
     },
 
     isPublic: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
+      type: 'boolean',
       defaultValue: false
-    },
-
-    userId: {
-      type: DataTypes.INTEGER
     }
   };
 
-  static indices = [
-    {
-      name: 'posts_non_unique',
-      unique: false,
-      fields: [
-        'isPublic',
-        'userId',
-        'createdAt',
-        'updatedAt'
-      ]
-    }
-  ];
-
-  static classMethods = {
-    associate(db) {
-      this.belongsTo(db.User, {
-        foreignKey: 'userId'
-      });
-
-      this.hasMany(db.Like, {
-        scope: {
-          likeableType: 'Post'
-        },
-        foreignKey: 'likeableId'
-      });
-
-      this.hasMany(db.Comment, {
-        scope: {
-          commentableType: 'Post'
-        },
-        foreignKey: 'commentableId'
-      });
+  static hasOne = {
+    user: {
+      model: 'user',
+      reverse: 'posts'
     }
   };
 }

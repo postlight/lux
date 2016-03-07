@@ -52,7 +52,9 @@ class Server extends Base {
 
   @bound
   async handleRequest(req, res) {
-    this.logRequest(req, res);
+    if (this.environment !== 'production') {
+      this.logRequest(req, res);
+    }
 
     try {
       req.setEncoding('utf8');

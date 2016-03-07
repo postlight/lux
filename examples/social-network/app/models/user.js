@@ -1,100 +1,53 @@
-import { Model, DataTypes } from '../../../../index';
-import { promisifyAll } from 'bluebird';
-import bcrypt from 'bcryptjs';
+import { Model } from '../../../../index';
 
-promisifyAll(bcrypt);
+import {
+  generateSalt,
+  encryptPassword,
+  decryptPassword
+} from '../utils/password';
 
 class User extends Model {
   static attributes = {
      name: {
-       type: DataTypes.STRING,
-       allowNull: false
+       type: 'text'
      },
 
      email: {
-       type: DataTypes.STRING,
-       unique: true,
-       allowNull: false
+       type: 'text',
+       unique: true
+     },
+
+     password: {
+       type: 'text'
      },
 
      passwordSalt: {
-       type: DataTypes.STRING,
-       defaultValue: ''
-     },
-
-     passwordHash: {
-       type: DataTypes.STRING,
-       defaultValue: ''
+       type: 'text'
      }
   };
 
-  static indices = [
-    {
-      unique: true,
-      fields: [
-        'email'
-      ]
-    },
-
-    {
-      name: 'users_non_unique',
-      unique: false,
-      fields: [
-        'createdAt',
-        'updatedAt'
-      ]
-    }
-  ];
-
   static hooks = {
-    async beforeCreate(user) {
-
-    }
-  };
-
-  static classMethods = {
-    associate(db) {
-      this.hasMany(db.Action);
-
-      this.hasMany(db.Comment);
-
-      this.hasMany(db.Like);
-
-      this.hasMany(db.Post);
-
-      this.hasMany(db.Notification);
-
-      this.belongsToMany(db.User, {
-        as: 'followees',
-        through: db.Friendship,
-        foreignKey: 'userId'
-      });
-
-      this.belongsToMany(db.User, {
-        as: 'followers',
-        through: db.Friendship,
-        foreignKey: 'followerId'
-      });
-    },
-
-    async authenticate(email, password) {
-      const user = await this.findOne({
-        where: {
-          email
-        }
-      });
-
-      if (user) {
-        const hash = user.get('passwordHash');
-
-        if (await bcrypt.compareAsync(password, hash)) {
-          return user;
-        }
+    beforeValidation() {
+      if (this.dirtyProperties.includes('password')) {
+        this.passwordSalt = generateSalt();
+        this.password = encryptPassword(this.password, this.passwordSalt);
       }
-
-      return false;
     }
   };
+
+  static async authenticate(email, password) {
+    const user = await this.oneAsync({
+      email
+    });
+
+    if (user) {
+      if (password === decryptPassword(user.password, user.passwordSalt)) {
+        return user;
+      }
+    }
+
+    return false;
+  }
 }
 
 export default User;

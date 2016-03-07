@@ -14,8 +14,9 @@ import omit from '../../utils/omit';
 
 import bound from '../../decorators/bound';
 
+const { max } = Math;
 const { isArray } = Array;
-const { entries } = Object;
+const { keys, entries } = Object;
 
 class Serializer extends Base {
   hasOne = [];
@@ -24,39 +25,89 @@ class Serializer extends Base {
 
   attributes = [];
 
-  nameFor(item) {
-    const name = item.$modelOptions.name;
-
-    return name ? camelize(name.singular, true) : 'object';
-  }
-
   attributesFor(item) {
-    let attrs = omit(item.dataValues, 'id',
-      ...this.hasOne.map(relatedKey => {
-        return`${capitalize(relatedKey)}Id`;
-      })
-    );
+    let attrs = {};
 
-    if (this.attributes.length) {
-      attrs = {};
-
-      for (let attr of this.attributes) {
-        attrs[this.formatKey(attr)] = item.get(attr);
-      }
+    for (let attr of this.attributes) {
+      attrs[this.formatKey(attr)] = item[attr];
     }
 
     return attrs;
   }
 
-  relationshipsFor(item) {
-    const hash = {};
+  relationshipsFor(item, include = []) {
+    const hash = {
+      data: {},
+      included: []
+    };
 
-    for (let related of this.hasOne) {
-      hash[related] = item[camelize(related)];
+    for (let key of this.hasOne) {
+      let related = item[key];
+
+      if (related) {
+        let relatedModelName = pluralize(related.getModelName());
+
+        hash.data[key] = {
+          data: {
+            id: related.id,
+            type: relatedModelName
+          }
+        };
+
+        if (include.includes(key)) {
+          let relatedSerializer = this.container.lookup(
+            'serializer',
+            relatedModelName
+          );
+
+          if (relatedSerializer) {
+            hash.included.push(
+              relatedSerializer.serializeOne(related)
+            );
+          }
+        }
+      }
     }
 
-    for (let related of this.hasMany) {
-      hash[related] = item[camelize(related)];
+    for (let key of this.hasMany) {
+      let records = item[key];
+
+      if (records && records.length) {
+        let relatedModelName, relatedSerializer;
+
+        hash.data[key] = [];
+        records = records.slice();
+
+        for (let i = 0; i < records.length; i++) {
+          let related = records[i];
+
+          if (related) {
+            if (!relatedModelName) {
+              relatedModelName = pluralize(related.getModelName());
+            }
+
+            hash.data[key][i] = {
+              id: related.id,
+              type: relatedModelName
+            };
+
+            if (include.includes(key)) {
+              if (!relatedSerializer) {
+                relatedSerializer = this.container.lookup(
+                  'serializer',
+                  relatedModelName
+                );
+              }
+
+              if (relatedSerializer) {
+                hash.included.push(
+                  relatedSerializer.serializeOne(related)
+                );
+              }
+            }
+          }
+        }
+      }
     }
 
     return hash;
@@ -66,37 +117,77 @@ class Serializer extends Base {
     return dasherize(underscore(key));
   }
 
-  serializeGroup(stream, key, data) {
+  serializeGroup(stream, key, data, include) {
     stream.push(`"${this.formatKey(key)}":`);
 
     if (key === 'data') {
+      let included = [];
+      let lastItemIndex;
+
       if (isArray(data)) {
+        lastItemIndex = max(data.length - 1, 0);
+
         stream.push('[');
 
-        data
-          .map(this.serializeOne)
-          .forEach((chunk, index, a) => {
-            stream.push(chunk);
-            if (index !== a.length - 1) {
-              stream.push(',');
-            }
-          });
+        for (let i = 0; i < data.length; i++) {
+          let item = this.serializeOne(data[i], include);
+
+          if (item.included && item.included.length) {
+            included = [...included, ...item.included];
+            delete item.included;
+          }
+
+          stream.push(
+            JSON.stringify(item)
+          );
+
+          if (i !== lastItemIndex) {
+            stream.push(',');
+          }
+        }
 
         stream.push(']');
       } else {
-        stream.push(this.serializeOne(data));
+        data = this.serializeOne(data, include);
+
+        if (data.included && data.included.length) {
+          included = [...included, ...data.included];
+          delete data.included;
+        }
+
+        stream.push(
+          JSON.stringify(data)
+        );
+      }
+
+      if (included.length) {
+        lastItemIndex = max(included.length - 1, 0);
+
+        stream.push(`,"included":[`);
+
+        for (let i = 0; i < included.length; i++) {
+          stream.push(
+            JSON.stringify(included[i])
+          );
+
+          if (i !== lastItemIndex) {
+            stream.push(',');
+          }
+        }
+
+        stream.push(']');
       }
     } else {
       stream.push(JSON.stringify(data));
     }
   }
 
-  async serializePayload(payload, stream) {
+  async serializePayload(payload, stream, include) {
     try {
       stream.push('{');
 
       for (let key in payload) {
-        this.serializeGroup(stream, key, payload[key]);
+        this.serializeGroup(stream, key, payload[key], include);
       }
 
       stream.push(',"jsonapi":{"version": "1.0"}');
@@ -111,53 +202,35 @@ class Serializer extends Base {
     return stream;
   }
 
-  serialize(payload) {
+  serialize(payload, include) {
     const stream = new Readable({
       encoding: 'utf8'
     });
 
-    this.serializePayload(payload, stream);
+    this.serializePayload(payload, stream, include);
 
     return stream;
   }
 
   @bound
-  serializeOne(item) {
+  serializeOne(item, include) {
     const data = {
-      id: item.get('id'),
-      type: pluralize(this.formatKey(this.nameFor(item))),
-      attributes: this.attributesFor(item),
-      relationships: {}
+      id: item.id,
+      type: pluralize(item.getModelName()),
+      attributes: this.attributesFor(item)
     };
 
-    entries(this.relationshipsFor(item))
-      .forEach(entry => {
-        let [key, value] = entry;
+    const relationships = this.relationshipsFor(item, include);
 
-        if (value) {
-          key = this.formatKey(key);
+    if (keys(relationships.data).length) {
+      data.relationships = relationships.data;
+    }
 
-          if (isArray(value)) {
-            data.relationships[key] = {
-              data: value.map(related => {
-                return {
-                  id: related.get('id'),
-                  type: this.nameFor(related)
-                };
-              })
-            };
-          } else {
-            data.relationships[key] = {
-              data: {
-                id: value.get('id'),
-                type: this.nameFor(value)
-              }
-            };
-          }
-        }
-      });
+    if (relationships.included.length) {
+      data.included = relationships.included;
+    }
 
-    return JSON.stringify(data);
+    return data;
   }
 }
 

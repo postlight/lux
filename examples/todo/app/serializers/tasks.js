@@ -10,7 +10,7 @@ class TasksSerializer extends Serializer {
   ];
 
   hasOne = [
-    'taskList'
+    'list'
   ];
 }
 

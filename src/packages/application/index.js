@@ -1,12 +1,12 @@
-import Sequelize from 'sequelize';
 import Promise from 'bluebird';
 import { underscore, pluralize, singularize } from 'inflection';
 
 import Base from '../base';
-import Model from '../model';
+import Model, { adapter } from '../model';
 import Server from '../server';
 import Router from '../router';
 import Logger from '../logger';
+import Database from '../database';
 import Container from '../container';
 
 import fs from '../fs';
@@ -47,27 +47,16 @@ class Application extends Base {
 
   async boot() {
     const { root, container } = this;
-    const db = {};
 
     await this.createLogFile();
 
-    let dbConfig = JSON.parse(
-      await fs.readFileAsync(`${root}/config/database.json`)
+    const store = Database.create(
+      JSON.parse(
+        await fs.readFileAsync(`${root}/config/database.json`)
+      )
     );
 
-    const {
-      database,
-      username,
-      password,
-      ...options
-    } = dbConfig[this.environment];
-
-    const sequelize = new Sequelize(database, username, password, options);
-
-    container.register('store', 'main', db);
-
-    db.Sequelize = Sequelize;
-    db.sequelize = sequelize;
+    await store.connect();
 
     let [
       routes,
@@ -82,69 +71,50 @@ class Application extends Base {
     ]);
 
     for (let [key, model] of models) {
-      let {
-        name,
-        indices,
-        attributes,
-        classMethods,
-        instanceMethods,
-        ...etc
-      } = model;
+      let [attributes, options, classMethods] = adapter(model);
 
-      model = sequelize.define(name,
+      store.define(model.name, [
         {
-          ...attributes,
-          ...Model.attributes
+          ...Model.attributes,
+          ...attributes
         },
-        {
-          indexes: indices,
-          defaultScope: Model.defaultScope,
-          classMethods: {
-            ...classMethods,
-            ...Model.classMethods,
-            registeredKey: key
-          },
-          instanceMethods: {
-            ...instanceMethods,
-            ...Model.instanceMethods
-          },
-          ...etc
-        }
-      );
 
-      db[name] = model;
-      container.register('model', key, model);
+        options,
+        classMethods
+      ]);
     }
 
-    await sequelize.sync();
+    for (let [key, model] of models) {
+      let [attrs, options, classMethods, hasOne, hasMany] = adapter(model);
 
-    for (let key in db) {
-      if (db.hasOwnProperty(key)) {
-        let model = db[key];
+      for (let relatedKey in hasOne) {
+        if (hasOne.hasOwnProperty(relatedKey)) {
+          let relationship = hasOne[relatedKey];
 
-        if (model.associate) {
-          model.associate(db);
+          store.associate(key, 'hasOne', ...relationship);
+        }
+      }
+
+      for (let relatedKey in hasMany) {
+        if (hasMany.hasOwnProperty(relatedKey)) {
+          let relationship = hasMany[relatedKey];
+
+          store.associate(key, 'hasMany', ...relationship);
         }
       }
     }
 
+    await store.sync();
+
     for (let [key, serializer] of serializers) {
-      let model = container.lookup('model', singularize(key));
-
-      serializer = serializer.create({
-        model
-      });
-
-      container.register('serializer', key, serializer);
+      container.register('serializer', key, serializer.create());
     }
 
     for (let [key, controller] of controllers) {
-      let model = container.lookup('model', singularize(key));
       let serializer = container.lookup('serializer', key);
 
       controller = controller.create({
-        db,
-        model,
+        store,
         serializer
       });
 

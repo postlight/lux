@@ -20,13 +20,14 @@
     "babel-polyfill": "^6.5.0",
     "babel-preset-es2015": "^6.5.0",
     "babel-preset-stage-1": "^6.5.0",
-    "bcryptjs": "^2.3.0",
     "bluebird": "^3.3.3",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
     "inflection": "^1.8.0",
     "moment": "^2.11.2",
-    "mysql": "^2.10.2",
-    "sequelize": "^3.19.3"
+    "orm": "^2.1.30"
+  },
+  "devDependencies": {
+    "mysql": "^2.10.2"
   }
 }
