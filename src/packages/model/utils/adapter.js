@@ -47,7 +47,7 @@ export default function adapter(model) {
 
         {
           autoFetch: true,
-          autoFetchLimit: 50,
+          autoFetchLimit: 25,
           ...omit(options, 'model')
         }
       ];

@@ -8,8 +8,6 @@ import camelizeKeys from '../../utils/camelize-keys';
 import memoize from '../../decorators/memoize';
 import action from './decorators/action';
 
-const { assign } = Object;
-
 class Controller extends Base {
   params = [];
 
@@ -36,7 +34,10 @@ class Controller extends Base {
     let middleware = this.beforeAction;
 
     if (parent) {
-      middleware = [...parent.beforeAction, ...middleware];
+      middleware = [
+        ...parent.beforeAction,
+        ...middleware
+      ];
     }
 
     return middleware;
@@ -53,9 +54,7 @@ class Controller extends Base {
 
   @action
   index(req) {
-    return this.store.query(this.modelName, req.params, {
-      select: this.serializedAttributes
-    });
+    return this.store.query(this.modelName, req.params);
   }
 
   @action

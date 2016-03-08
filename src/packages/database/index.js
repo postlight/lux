@@ -143,14 +143,14 @@ class Database extends Base {
     return model.countAsync(query, options);
   }
 
-  findRecord(type, id) {
+  findRecord(type, id, options = {}) {
     const model = this.modelFor(type);
 
     if (!model) {
       throw new Error();
     }
 
-    return model.getAsync(id);
+    return model.getAsync(id, options);
   }
 
   queryRecord(type, query = {}, options = {}) {
