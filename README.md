@@ -94,7 +94,7 @@ With Lux your code from before can now look like this:
 class PostsController extends Controller {
   @action
   index(req, res) {
-    return Post.query(req.params);
+    return this.store.query('post', req.params);
   }
 }
 ```
