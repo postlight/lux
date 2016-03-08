@@ -175,5 +175,5 @@ lux test
 ## Useful Links
 
 * [JSON API](http://jsonapi.org/)
-* [Sequelize](http://docs.sequelizejs.com/en/latest/)
+* [node-orm](http://dresende.github.io/node-orm2/)
 * [Chai](http://chaijs.com/) / [Mocha](http://mochajs.org/)

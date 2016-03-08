@@ -1,14 +1,16 @@
-export default function setUser(req, res) {
+export default async function setUser(req, res) {
   const { method } = req;
 
-  if (/^(PATCH|POST)$/g.test(method)) {
+  if (/^(PUT|POST)$/g.test(method)) {
     const { session } = req;
     const { attributes } = req.params.data;
 
     if (attributes) {
+      const userId = session.get('currentUserId');
+
       req.params.data.attributes = {
         ...attributes,
-        userId: session.get('currentUserId')
+        user: await this.store.findRecord('user', userId)
       };
     }
   }

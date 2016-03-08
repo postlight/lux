@@ -1,107 +1,62 @@
-import DataTypes from 'sequelize/lib/data-types';
+import Promise from 'bluebird';
 
-import omit from '../../utils/omit';
-import camelizeKeys from '../../utils/camelize-keys';
-import normalizePage from './utils/normalize-page';
-
-const { min } = Math;
-const { isArray } = Array;
+const { assign } = Object;
 
 class Model {
-  static timestamps = true
-
-  static hooks = {}
-
-  static scopes = {}
-
-  static indices = []
-
   static attributes = {
     id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
+      type: 'serial',
+      key: true
     },
 
     createdAt: {
-      allowNull: false,
-      type: DataTypes.DATE,
-      defaultValue: new Date()
+      type: 'date',
+      time: true,
+      mapsTo: 'created_at'
     },
 
     updatedAt: {
-      allowNull: false,
-      type: DataTypes.DATE,
-      defaultValue: new Date()
+      type: 'date',
+      time: true,
+      mapsTo: 'updated_at'
     }
-  }
+  };
 
-  static classMethods = {
-    async query(query = {}) {
-      const { include, attributes } = query;
+  static hasOne = {};
 
-      const where = omit(query, ...[
-        'sort',
-        'page',
-        'limit',
-        'offset',
-        'include',
-        'attributes'
-      ]);
+  static hasMany = {};
 
-      const limit = min(query.limit || 50, 50);
-      const order = [query.sort || ['createdAt', 'DESC']];
-      const offset = normalizePage(query.page) * limit;
+  static hooks = {};
 
-      for (let key in where) {
-        let value = where[key];
-
-        if (isArray(value)) {
-          where[key] = {
-            in: value
-          };
-        }
-      }
-
-      return await this.findAll({
-        where,
-        order,
-        limit,
-        offset,
-        include,
-        attributes
+  update(params = {}) {
+    return new Promise((resolve, reject) => {
+      assign(this, params, {
+        updatedAt: new Date()
       });
-    },
 
-    findRecord(id, options) {
-      return this.findById(id, options);
-    },
-
-    createRecord(params = {}) {
-      let { attributes } = params.data;
-
-      attributes = camelizeKeys(attributes);
-
-      return this.create(attributes);
-    }
+      this.save(err => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(this);
+        }
+      });
+    });
   }
 
-  static instanceMethods = {
-    updateRecord(params = {}) {
-      let { attributes } = params.data;
-
-      attributes = camelizeKeys(attributes);
-
-      return this.update(attributes);
-    },
-
-    destroyRecord() {
-      return this.destroy();
-    }
+  destroy() {
+    return new Promise((resolve, reject) => {
+      this.remove(err => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(true);
+        }
+      });
+    });
   }
 }
 
-export DataTypes from 'sequelize/lib/data-types';
+export adapter from './utils/adapter';
 
 export default Model;

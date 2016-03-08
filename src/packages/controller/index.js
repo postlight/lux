@@ -1,13 +1,14 @@
-import { camelize, capitalize, classify, singularize } from 'inflection';
+import Promise from 'bluebird';
+import { singularize, underscore, dasherize } from 'inflection';
 
 import Base from '../base';
 
-import flatten from '../../utils/flatten';
+import camelizeKeys from '../../utils/camelize-keys';
 
 import memoize from '../../decorators/memoize';
 import action from './decorators/action';
 
-const { keys } = Object;
+const { assign } = Object;
 
 class Controller extends Base {
   params = [];
@@ -15,6 +16,19 @@ class Controller extends Base {
   beforeAction = [];
 
   sanitizeParams = true;
+
+  @memoize
+  get modelName() {
+    const { name } = this.constructor;
+
+    return dasherize(
+      underscore(
+        singularize(
+          name.substr(0, name.length - 10)
+        )
+      )
+    );
+  }
 
   @memoize
   get middleware() {
@@ -38,53 +52,18 @@ class Controller extends Base {
   }
 
   @memoize
-  get include() {
-    const { serializer } = this;
+  get serializedAttributes() {
+    let { serializer } = this;
 
     if (serializer) {
-      return flatten([
-        serializer.hasOne,
-        serializer.hasMany
-      ]).map(related => {
-        const name = singularize(classify(related.replace('-', '_')));
-
-        return {
-          model: this.db[name],
-          as: camelize(related),
-          attributes: ['id']
-        };
-      });
+      return serializer.attributes;
     }
-  }
-
-  @memoize
-  get serializedAttributes() {
-    let attrs;
-    const { model, serializer } = this;
-
-    if (model) {
-      attrs = keys(model.attributes);
-
-      if (serializer) {
-        attrs = flatten([
-          'id',
-          serializer.attributes,
-          serializer.hasOne
-            .map(related => `${capitalize(related)}Id`)
-            .filter(related => attrs.includes(related))
-        ]);
-      }
-    }
-
-    return attrs;
   }
 
   @action
   index(req) {
-    return this.model.query({
-      ...req.params,
-      include: this.include,
-      attributes: this.serializedAttributes
+    return this.store.query(this.modelName, req.params, {
+      select: this.serializedAttributes
     });
   }
 
@@ -95,21 +74,22 @@ class Controller extends Base {
 
   @action
   create(req) {
-    return this.model.createRecord(req.params);
+    return this.store.createRecord(this.modelName, req.params);
   }
 
   @action
-  update(req) {
+  async update(req) {
     if (req.record) {
-      return req.record.updateRecord(req.params);
+      const params = camelizeKeys(req.params.data.attributes || {});
+
+      return await req.record.update(params);
     }
   }
 
   @action
   async destroy(req) {
     if (req.record) {
-      await req.record.destroyRecord();
-      return req.record;
+      return await req.record.destroy();
     }
   }
 

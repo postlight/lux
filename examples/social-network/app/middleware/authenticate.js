@@ -1,10 +1,9 @@
 export default async function authenticate(req, res) {
   const { url, method, record, session } = req;
-  const resource = url.pathname.replace(/^\/(\w+)(\/.+)?$/g, '$1');
   const currentUserId = session.get('currentUserId');
   let authenticated = true;
 
-  switch (resource) {
+  switch (this.modelName) {
     case 'actions':
     case 'comments':
     case 'posts':
@@ -12,7 +11,7 @@ export default async function authenticate(req, res) {
       switch (method) {
         case 'DELETE':
         case 'PATCH':
-          authenticated = currentUserId === record.get('userId');
+          authenticated = record.user && record.user.id === currentUserId;
           break;
 
         case 'POST':
@@ -25,9 +24,6 @@ export default async function authenticate(req, res) {
       switch (method) {
         case 'DELETE':
         case 'PATCH':
-          authenticated = currentUserId === record.get('friendId');
-          break;
-
         case 'POST':
           authenticated = !!currentUserId;
           break;
@@ -37,13 +33,13 @@ export default async function authenticate(req, res) {
     case 'users':
       if (/^(DELETE|PATCH)$/g.test(method)) {
         authenticated = url.pathname.includes('logout') ||
-          currentUserId === record.get('id');
+          currentUserId === record.id;
       }
       break;
 
     case 'notifications':
       if (record) {
-        authenticated = currentUserId === record.get('userId');
+        authenticated = record.user && record.user.id === currentUserId;
       } else {
         authenticated = !!currentUserId;
       }

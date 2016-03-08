@@ -9,12 +9,13 @@ class UsersController extends Controller {
 
   @action
   async login(req, res) {
-    const { session } = req;
-    const { email, password } = req.params;
-    const user = await this.model.authenticate(email, password);
+    const { store } = this;
+    const { params, session } = req;
+    const { email, password } = params;
+    const user = await store.modelFor('user').authenticate(email, password);
 
     if (user) {
-      session.set('currentUserId', user.get('id'));
+      session.set('currentUserId', user.id);
     }
 
     return user;
