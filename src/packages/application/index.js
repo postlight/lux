@@ -7,7 +7,6 @@ import Server from '../server';
 import Router from '../router';
 import Logger from '../logger';
 import Database from '../database';
-import Container from '../container';
 
 import fs from '../fs';
 import loader from '../loader';
@@ -25,16 +24,8 @@ class Application extends Base {
     super(props);
 
     const { router, logger } = this;
-    const container = Container.create({
-      application: this
-    });
-
-    container.register('router', 'main', router);
-    container.register('logger', 'main', logger);
 
     this.setProps({
-      container,
-
       server: Server.create({
         router,
         logger,
@@ -46,7 +37,7 @@ class Application extends Base {
   }
 
   async boot() {
-    const { root, container } = this;
+    const { root, router } = this;
 
     await this.createLogFile();
 
@@ -107,22 +98,37 @@ class Application extends Base {
     await store.sync();
 
     for (let [key, serializer] of serializers) {
-      container.register('serializer', key, serializer.create());
+      serializers.set(key, serializer.create());
     }
 
+    for (let serializer of serializers.values()) {
+      serializer.serializers = serializers;
+    }
+
+    const appController = controllers.get('application').create({
+      store,
+      serializer: serializers.get('application')
+    });
+
+    controllers.set('application', appController);
+
     for (let [key, controller] of controllers) {
-      let serializer = container.lookup('serializer', key);
+      if (key === 'application') {
+        continue;
+      }
 
       controller = controller.create({
         store,
-        serializer
+        serializer: serializers.get(key),
+        parentController: appController
       });
 
-      container.register('controller', key, controller);
+      controllers.set(key, controller);
     }
 
-    routes = routes[1];
-    routes(this.router.route, this.router.resource);
+    router.controllers = controllers;
+
+    routes.get('routes').call(null, router.route, router.resource);
 
     this.server.listen(this.port);
 

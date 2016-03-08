@@ -18,7 +18,7 @@
   "production": {
     "username": "root",
     "password": "root",
-    "database": "todo_prod",
+    "database": "todo_dev",
     "host": "127.0.0.1",
     "port": "3306",
     "protocol": "mysql"
