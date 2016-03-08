@@ -30,7 +30,7 @@ class Route extends Base {
 
   @memoize
   get controller() {
-    return this.container.lookup('controller', this.resource);
+    return this.controllers.get(this.resource);
   }
 
   @memoize

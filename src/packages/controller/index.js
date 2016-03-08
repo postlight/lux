@@ -43,15 +43,6 @@ class Controller extends Base {
   }
 
   @memoize
-  get parentController() {
-    let parent = this.container.lookup('controller', 'application');
-
-    if (parent !== this) {
-      return parent;
-    }
-  }
-
-  @memoize
   get serializedAttributes() {
     let { serializer } = this;
 

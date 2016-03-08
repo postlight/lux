@@ -1,11 +1,16 @@
 import Base from '../base';
 import Route from '../route';
+import Serializer from '../serializer';
 
 import bound from '../../decorators/bound';
 
 const routesKey = Symbol('routes');
 
 class Router extends Base {
+  serializer = Serializer.create();
+
+  controllers = new Map();
+
   constructor() {
     return super({
       [routesKey]: new Map()
@@ -20,7 +25,7 @@ class Router extends Base {
       path,
       method,
       action,
-      container: this.container
+      controllers: this.controllers
     });
 
     routes.set(`${route.method}:/${route.staticPath}`, route);
@@ -150,10 +155,8 @@ class Router extends Base {
   }
 
   error(err, req, res) {
-    const serializer = this.container.lookup('serializer', 'application');
-
     res.statusCode = 500;
-    serializer.serialize({
+    this.serializer.serialize({
       errors: [{
         title: 'Internal Server Error',
         status: 500,
@@ -163,10 +166,8 @@ class Router extends Base {
   }
 
   unauthorized(req, res) {
-    const serializer = this.container.lookup('serializer', 'application');
-
     res.statusCode = 401;
-    serializer.serialize({
+    this.serializer.serialize({
       errors: [{
         title: 'Unauthorized',
         status: 401
@@ -175,10 +176,8 @@ class Router extends Base {
   }
 
   notFound(req, res) {
-    const serializer = this.container.lookup('serializer', 'application');
-
     res.statusCode = 404;
-    serializer.serialize({
+    this.serializer.serialize({
       errors: [{
         title: 'Not Found',
         status: 404

@@ -25,6 +25,8 @@ class Serializer extends Base {
 
   attributes = [];
 
+  serializers = new Map();
+
   attributesFor(item) {
     let attrs = {};
 
@@ -55,10 +57,7 @@ class Serializer extends Base {
         };
 
         if (include.includes(key)) {
-          let relatedSerializer = this.container.lookup(
-            'serializer',
-            relatedModelName
-          );
+          let relatedSerializer = this.serializers.get(relatedModelName);
 
           if (relatedSerializer) {
             hash.included.push(
@@ -93,10 +92,7 @@ class Serializer extends Base {
 
             if (include.includes(key)) {
               if (!relatedSerializer) {
-                relatedSerializer = this.container.lookup(
-                  'serializer',
-                  relatedModelName
-                );
+                relatedSerializer = this.serializers.get(relatedModelName);
               }
 
               if (relatedSerializer) {

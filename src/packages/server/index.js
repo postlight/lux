@@ -7,11 +7,9 @@ import Base from '../base';
 import Session from '../session';
 import { line } from '../logger';
 
-import bodyParser from './utils/body-parser';
+import formatParams from './utils/format-params';
 
 import bound from '../../decorators/bound';
-
-const { isArray } = Array;
 
 class Server extends Base {
   constructor(props) {
@@ -56,58 +54,19 @@ class Server extends Base {
       this.logRequest(req, res);
     }
 
-    try {
-      req.setEncoding('utf8');
+    req.setEncoding('utf8');
 
-      res.setHeader('Content-Type', 'application/vnd.api+json');
+    res.setHeader('Content-Type', 'application/vnd.api+json');
 
-      req.url = parseURL(req.url, true);
+    req.url = parseURL(req.url, true);
+    req.params = await formatParams(req);
+    req.session = Session.create({
+      cookie: req.headers.cookie,
+      sessionKey: this.application.sessionKey,
+      sessionSecret: this.application.sessionSecret
+    });
 
-      req.session = Session.create({
-        cookie: req.headers.cookie,
-        sessionKey: this.application.sessionKey,
-        sessionSecret: this.application.sessionSecret
-      });
-
-      req.params = {};
-
-      for (let key in req.url.query) {
-        req.params[key.replace('[]', '')] = req.url.query[key];
-      }
-
-      for (let key in req.params) {
-        let value = req.params[key];
-
-        if (isArray(value)) {
-          req.params[key] = value.map(v => {
-            return /^\d+$/ig.test(value) ? parseInt(v, 10) : v;
-          });
-        } else {
-          if (/^\d+$/ig.test(value)) {
-            req.params[key] = parseInt(value, 10);
-          }
-        }
-
-        if (key.includes('[]')) {
-          delete req.params[key];
-          req.params[key.replace('[]', '')] = value;
-        }
-      }
-
-      if (/(PATCH|POST|PUT)/g.test(req.method)) {
-        const body = await bodyParser(req);
-
-        req.body = body;
-        req.params = {
-          ...body,
-          ...req.params
-        };
-      }
-
-      this.router.resolve(req, res);
-    } catch (err) {
-      console.error(err);
-    }
+    this.router.resolve(req, res);
   }
 }
 
