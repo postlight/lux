@@ -1,5 +1,4 @@
 import Promise from 'bluebird';
-import { underscore, pluralize, singularize } from 'inflection';
 
 import Base from '../base';
 import Model, { adapter } from '../model';
@@ -16,19 +15,13 @@ class Application extends Base {
 
   logger = Logger.create();
 
-  sessionKey = 'app::sess';
-
-  sessionSecret = process.env.APP_SECRET || '1e71b30b17d2cef327b2625572d378a656de059ae24d69b2f1f7678bf6cf236d677d763b5819b1c5c5c2d31b3cdc9a5786ef1729abb05644d8b2cff30128fdab';
-
   constructor(props) {
     super(props);
 
-    const { router, logger } = this;
-
     this.setProps({
       server: Server.create({
-        router,
-        logger,
+        router: this.router,
+        logger: this.logger,
         application: this
       })
     });
@@ -61,7 +54,7 @@ class Application extends Base {
       loader('serializers')
     ]);
 
-    for (let [key, model] of models) {
+    for (let model of models.values()) {
       let [attributes, options, classMethods] = adapter(model);
 
       store.define(model.name, [
@@ -76,7 +69,7 @@ class Application extends Base {
     }
 
     for (let [key, model] of models) {
-      let [attrs, options, classMethods, hasOne, hasMany] = adapter(model);
+      let [ , , , hasOne, hasMany] = adapter(model);
 
       for (let relatedKey in hasOne) {
         if (hasOne.hasOwnProperty(relatedKey)) {

@@ -1,22 +1,18 @@
 import { Readable } from 'stream';
 
 import {
-  camelize,
   underscore,
   dasherize,
-  pluralize,
-  capitalize
+  pluralize
 } from 'inflection';
 
 import Base from '../base';
 
-import omit from '../../utils/omit';
-
 import bound from '../../decorators/bound';
 
 const { max } = Math;
+const { keys } = Object;
 const { isArray } = Array;
-const { keys, entries } = Object;
 
 class Serializer extends Base {
   hasOne = [];
@@ -159,7 +155,7 @@ class Serializer extends Base {
       if (included.length) {
         lastItemIndex = max(included.length - 1, 0);
 
-        stream.push(`,"included":[`);
+        stream.push(',"included":[');
 
         for (let i = 0; i < included.length; i++) {
           stream.push(

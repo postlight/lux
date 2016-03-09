@@ -4,14 +4,21 @@ import sanitizeParams from '../utils/sanitize-params';
 
 const { isArray } = Array;
 
+function* createHandlers(handlers) {
+  let i = 0;
+
+  while (i < handlers.length) {
+    yield (req, res) => handlers[i].call(this, req, res);
+    i++;
+  }
+}
+
 export default function action(target, key, desc) {
   const { value } = desc;
 
   return {
     get() {
       return () => {
-        const controller = this;
-
         const handlers = [
           async function (req, res) {
             if (this.sanitizeParams && key !== 'preflight') {
@@ -64,14 +71,7 @@ export default function action(target, key, desc) {
           }
         ];
 
-        return function* () {
-          let i = 0;
-
-          while (i < handlers.length) {
-            yield (req, res) => handlers[i].call(controller, req, res);
-            i++;
-          }
-        };
+        return () => createHandlers.call(this, handlers);
       };
     }
   };

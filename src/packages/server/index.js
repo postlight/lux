@@ -9,8 +9,6 @@ import { line } from '../logger';
 
 import formatParams from './utils/format-params';
 
-import bound from '../../decorators/bound';
-
 class Server extends Base {
   constructor(props) {
     const { sessionKey, sessionSecret } = props.application;
@@ -20,23 +18,27 @@ class Server extends Base {
       logger: props.logger,
 
       instance: http.createServer(async (req, res) => {
-        if (this.environment !== 'production') {
-          this.logRequest(req, res);
+        try {
+          if (this.environment !== 'production') {
+            this.logRequest(req, res);
+          }
+
+          req.setEncoding('utf8');
+
+          res.setHeader('Content-Type', 'application/vnd.api+json');
+
+          req.url = parseURL(req.url, true);
+          req.params = await formatParams(req);
+          req.session = Session.create({
+            cookie: req.headers.cookie,
+            sessionKey,
+            sessionSecret
+          });
+
+          resolver.next().value(req, res);
+        } catch (err) {
+          console.error(err);
         }
-
-        req.setEncoding('utf8');
-
-        res.setHeader('Content-Type', 'application/vnd.api+json');
-
-        req.url = parseURL(req.url, true);
-        req.params = await formatParams(req);
-        req.session = Session.create({
-          cookie: req.headers.cookie,
-          sessionKey,
-          sessionSecret
-        });
-
-        resolver.next().value(req, res);
       })
     });
 

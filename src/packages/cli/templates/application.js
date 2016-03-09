@@ -1,4 +1,4 @@
-import { classify, pluralize } from 'inflection';
+import { classify } from 'inflection';
 
 export default (name) => {
   name = classify(name.replace('-', '_'));

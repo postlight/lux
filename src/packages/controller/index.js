@@ -1,4 +1,3 @@
-import Promise from 'bluebird';
 import { singularize, underscore, dasherize } from 'inflection';
 
 import Base from '../base';
