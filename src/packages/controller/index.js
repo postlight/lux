@@ -45,7 +45,7 @@ class Controller extends Base {
 
   @memoize
   get serializedAttributes() {
-    let { serializer } = this;
+    const { serializer } = this;
 
     if (serializer) {
       return serializer.attributes;

@@ -198,7 +198,7 @@ class Serializer extends Base {
     return stream;
   }
 
-  serialize(payload, include) {
+  stream(payload, include) {
     const stream = new Readable({
       encoding: 'utf8'
     });

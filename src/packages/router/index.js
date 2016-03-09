@@ -84,37 +84,12 @@ class Router extends Base {
     });
   }
 
-  resolve(req, res) {
-    const routes = this[routesKey];
-    const idPattern = /(?![\=])(\d+)/g;
-    const staticPath = req.url.pathname.replace(idPattern, ':dynamic');
-
-    const route = routes.get(`${req.method}:${staticPath}`);
-
-    if (route && route.handlers) {
-      const ids = (req.url.pathname.match(idPattern) || []);
-
-      for (let i = 0; i < ids.length; i++) {
-        let key = route.dynamicSegments[i];
-
-        if (key) {
-          req.params[key] = parseInt(ids[i], 10);
-        }
-      }
-
-      this.visit(req, res, route);
-    } else {
-      this.notFound(req, res);
-    }
-  }
-
   async visit(req, res, route) {
     try {
       let data, handler;
       const { method, session } = req;
-      const handlers = route.handlers();
 
-      for (handler of handlers()) {
+      for (handler of route.handlers().call(null)) {
         data = await handler(req, res);
 
         if (data === false) {
@@ -123,9 +98,10 @@ class Router extends Base {
       }
 
       if (session.didChange) {
-        const cookie = `${session.sessionKey}=${session.cookie}; path=/`;
-
-        res.setHeader('Set-Cookie', cookie);
+        res.setHeader(
+          'Set-Cookie',
+          `${session.sessionKey}=${session.cookie}; path=/`
+        );
       }
 
       if (data) {
@@ -156,7 +132,7 @@ class Router extends Base {
 
   error(err, req, res) {
     res.statusCode = 500;
-    this.serializer.serialize({
+    this.serializer.stream({
       errors: [{
         title: 'Internal Server Error',
         status: 500,
@@ -167,7 +143,7 @@ class Router extends Base {
 
   unauthorized(req, res) {
     res.statusCode = 401;
-    this.serializer.serialize({
+    this.serializer.stream({
       errors: [{
         title: 'Unauthorized',
         status: 401
@@ -177,7 +153,7 @@ class Router extends Base {
 
   notFound(req, res) {
     res.statusCode = 404;
-    this.serializer.serialize({
+    this.serializer.stream({
       errors: [{
         title: 'Not Found',
         status: 404
@@ -189,6 +165,37 @@ class Router extends Base {
     res.statusCode = 204;
     res.removeHeader('Content-Type');
     res.end();
+  }
+
+  *createResolver() {
+    const routes = this[routesKey];
+    const idPattern = /(?![\=])(\d+)/g;
+
+    while (true) {
+      yield (req, res) => {
+        const { pathname } = req.url;
+        const staticPath = pathname.replace(idPattern, ':dynamic');
+
+        const route = routes.get(`${req.method}:${staticPath}`);
+
+        if (route && route.handlers) {
+          const { dynamicSegments } = route;
+          const ids = (pathname.match(idPattern) || []);
+
+          for (let i = 0; i < ids.length; i++) {
+            let key = dynamicSegments[i];
+
+            if (key) {
+              req.params[key] = parseInt(ids[i], 10);
+            }
+          }
+
+          this.visit(req, res, route);
+        } else {
+          this.notFound(req, res);
+        }
+      };
+    }
   }
 }
 

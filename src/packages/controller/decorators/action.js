@@ -56,7 +56,7 @@ export default function action(target, key, desc) {
               }
 
               if (data) {
-                data = this.serializer.serialize({ data }, include);
+                data = this.serializer.stream({ data }, include);
               }
             }
 
