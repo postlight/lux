@@ -3,7 +3,6 @@ import orm from 'orm';
 import { underscore } from 'inflection';
 
 import Base from '../base';
-import { adapter } from '../model';
 
 import omit from '../../utils/omit';
 import camelizeKeys from '../../utils/camelize-keys';
@@ -104,7 +103,7 @@ class Database extends Base {
   modelFor(type = '') {
     const connection = this[ormKey];
 
-    return connection.models[type.replace(/-/g, '_')]
+    return connection.models[type.replace(/-/g, '_')];
   }
 
   query(type, query = {}, options = {}) {

@@ -6,6 +6,7 @@ import exec from '../utils/exec';
 import generate from './generate';
 
 import appTemplate from '../templates/application';
+import configTemplate from '../templates/config';
 import routesTemplate from '../templates/routes';
 import dbJSONTemplate from '../templates/database-json';
 import pkgJSONTemplate from '../templates/package-json';
@@ -24,25 +25,42 @@ export default async function create(name) {
   ]);
 
   await Promise.all([
-    Promise.all([
-      fs.mkdirAsync(`${project}/app/models`),
-      fs.mkdirAsync(`${project}/app/serializers`),
-      fs.mkdirAsync(`${project}/app/controllers`)
-    ]),
+    fs.mkdirAsync(`${project}/app/models`),
+    fs.mkdirAsync(`${project}/app/serializers`),
+    fs.mkdirAsync(`${project}/app/controllers`),
+    fs.mkdirAsync(`${project}/config/environments`)
+  ]);
 
-    Promise.all([
-      fs.writeFileAsync(
-        `${project}/app/index.js`,
-        appTemplate(name),
-        'utf8'
-      ),
+  await Promise.all([
+    fs.writeFileAsync(
+      `${project}/app/index.js`,
+      appTemplate(name),
+      'utf8'
+    ),
 
-      fs.writeFileAsync(
-        `${project}/app/routes.js`,
-        routesTemplate(),
-        'utf8'
-      )
-    ]),
+    fs.writeFileAsync(
+      `${project}/app/routes.js`,
+      routesTemplate(),
+      'utf8'
+    ),
+
+    fs.writeFileAsync(
+      `${project}/config/environments/development.json`,
+      configTemplate(name),
+      'utf8'
+    ),
+
+    fs.writeFileAsync(
+      `${project}/config/environments/test.json`,
+      configTemplate(name),
+      'utf8'
+    ),
+
+    fs.writeFileAsync(
+      `${project}/config/environments/production.json`,
+      configTemplate(name),
+      'utf8'
+    ),
 
     fs.writeFileAsync(
       `${project}/config/database.json`,
@@ -80,15 +98,11 @@ export default async function create(name) {
     generate('controller', 'application', project)
   ]);
 
-  await Promise.all([
-    /*
-    exec('npm install', {
-      cwd: project
-    }),
-    */
+  await exec('git init && git add .', {
+    cwd: project
+  });
 
-    exec('git init && git add .', {
-      cwd: project
-    })
-  ]);
+  await exec('npm install', {
+    cwd: project
+  });
 }

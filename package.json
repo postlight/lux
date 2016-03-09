@@ -28,6 +28,11 @@
     "orm": "^2.1.30"
   },
   "devDependencies": {
+    "babel-eslint": "^6.0.0-beta.5",
+    "eslint": "2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-eslint": "^2.0.0",
     "mysql": "^2.10.2"
   }
 }

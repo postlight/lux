@@ -20,9 +20,7 @@ class Session extends Base {
 
     if (cookie) {
       cookie = `; ${cookie}`.split(`; ${sessionKey}=`);
-      if (cookie.length === 2) {
-        cookie = cookie.pop();
-      }
+      cookie = cookie.length === 2 ? cookie.pop() : null;
     }
 
     this.updateCookie(cookie);

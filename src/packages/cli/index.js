@@ -1,5 +1,4 @@
 import cli from 'commander';
-import colors from 'colors';
 
 import test from './commands/test';
 import serve from './commands/serve';
