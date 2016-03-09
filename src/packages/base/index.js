@@ -1,19 +1,12 @@
 const { assign } = Object;
 
 class Base {
-  static mixins = [];
-
   root = process.env.PWD;
 
   environment = process.env.NODE_ENV || 'development';
 
   constructor(props = {}) {
-    for (let mixin of this.constructor.mixins) {
-      mixin.call(this);
-    }
-
     this.setProps(props);
-
     return this;
   }
 

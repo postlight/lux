@@ -13,9 +13,32 @@ import bound from '../../decorators/bound';
 
 class Server extends Base {
   constructor(props) {
-    super(props);
+    const { sessionKey, sessionSecret } = props.application;
+    const resolver = props.router.createResolver();
 
-    this.instance = http.createServer(this.handleRequest);
+    super({
+      logger: props.logger,
+
+      instance: http.createServer(async (req, res) => {
+        if (this.environment !== 'production') {
+          this.logRequest(req, res);
+        }
+
+        req.setEncoding('utf8');
+
+        res.setHeader('Content-Type', 'application/vnd.api+json');
+
+        req.url = parseURL(req.url, true);
+        req.params = await formatParams(req);
+        req.session = Session.create({
+          cookie: req.headers.cookie,
+          sessionKey,
+          sessionSecret
+        });
+
+        resolver.next().value(req, res);
+      })
+    });
 
     return this;
   }
@@ -46,27 +69,6 @@ class Server extends Base {
         ${colors[statusColor].call(null, `${statusMessage}`)}
       `);
     });
-  }
-
-  @bound
-  async handleRequest(req, res) {
-    if (this.environment !== 'production') {
-      this.logRequest(req, res);
-    }
-
-    req.setEncoding('utf8');
-
-    res.setHeader('Content-Type', 'application/vnd.api+json');
-
-    req.url = parseURL(req.url, true);
-    req.params = await formatParams(req);
-    req.session = Session.create({
-      cookie: req.headers.cookie,
-      sessionKey: this.application.sessionKey,
-      sessionSecret: this.application.sessionSecret
-    });
-
-    this.router.resolve(req, res);
   }
 }
 
