@@ -47,7 +47,6 @@ class Server extends Base {
 
   listen(port) {
     this.instance.listen(port);
-    this.logger.log(`Server listening on port ${colors.cyan(`${port}`)}`);
   }
 
   logRequest(req, res) {

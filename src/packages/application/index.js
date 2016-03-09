@@ -4,7 +4,6 @@ import Base from '../base';
 import Model, { adapter } from '../model';
 import Server from '../server';
 import Router from '../router';
-import Logger from '../logger';
 import Database from '../database';
 
 import fs from '../fs';
@@ -12,8 +11,6 @@ import loader from '../loader';
 
 class Application extends Base {
   router = Router.create();
-
-  logger = Logger.create();
 
   constructor(props) {
     super(props);
