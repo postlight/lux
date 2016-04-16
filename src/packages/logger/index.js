@@ -17,7 +17,7 @@ class Logger extends Base {
   }
 
   get timestamp() {
-    return moment().format('M/d/YY h:m:ss A');
+    return moment().format('M/D/YY h:m:ss A');
   }
 
   @bound

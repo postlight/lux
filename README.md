@@ -1,4 +1,4 @@
-# Lux
+# Lux [![Build Status](https://travis-ci.org/postlight/lux.svg?branch=master)](https://travis-ci.org/postlight/lux)
 
 A MVC style framework for building highly performant, large scale JSON APIs that anybody who knows the JavaScript language and it's modern features will understand.
 
@@ -7,6 +7,8 @@ A MVC style framework for building highly performant, large scale JSON APIs that
 **Disclaimer:**
 
 This isn't another wrapper around [Express](http://expressjs.com/) or a framework for building frameworks. This also isn't a replacement for server-side frameworks that render DHTML.
+
+[Check out the Medium Article!](https://trackchanges.postlight.com/not-another-node-js-framework-33103ebeedf8)
 
 ## What?
 
