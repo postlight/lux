@@ -8,6 +8,8 @@ A MVC style framework for building highly performant, large scale JSON APIs that
 
 This isn't another wrapper around [Express](http://expressjs.com/) or a framework for building frameworks. This also isn't a replacement for server-side frameworks that render DHTML.
 
+[Check out the Medium Article!](https://trackchanges.postlight.com/not-another-node-js-framework-33103ebeedf8)
+
 ## What?
 
 ### Features
