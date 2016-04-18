@@ -8,6 +8,7 @@ export default (name) => {
     "password": "root",
     "database": "${name}_dev",
     "host": "127.0.0.1",
+    "port": "3306",
     "dialect": "mysql",
     "logging": false
   },
@@ -16,6 +17,7 @@ export default (name) => {
     "password": "root",
     "database": "${name}_test",
     "host": "127.0.0.1",
+    "port": "3306",
     "dialect": "mysql",
     "logging": false
   },
@@ -24,6 +26,7 @@ export default (name) => {
     "password": "root",
     "database": "${name}_prod",
     "host": "127.0.0.1",
+    "port": "3306",
     "dialect": "mysql",
     "logging": false
   }
