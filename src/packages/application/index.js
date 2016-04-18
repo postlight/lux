@@ -28,7 +28,7 @@ class Application extends Base {
   }
 
   async boot() {
-    const { root, router, domain } = this;
+    const { root, router, domain, server, port } = this;
     const store = Database.create(
       require(`${root}/config/database.json`)
     );
@@ -133,7 +133,8 @@ class Application extends Base {
 
     routes.get('routes').call(null, router.route, router.resource);
 
-    this.server.listen(this.port);
+    server.instance.once('listening', () => process.send('ready'));
+    server.listen(port);
 
     return this;
   }

@@ -12,18 +12,24 @@ export default async function serve(port = 4000) {
   const Application = require(`${pwd}/bin/app`);
   const config = require(`${pwd}/config/environments/${env}.json`);
   const logger = await Logger.create();
-  let workers = 0;
 
   if (config.port) {
     port = config.port;
   }
 
   if (cluster.isMaster) {
-    for (var i = 0; i < os.cpus().length; i++) {
-      cluster.fork().once('online', () => {
-        workers++;
-        if (i === workers) {
-          logger.log(`Lux Server listening on port ${cyan(`${port}`)}`);
+    const total = os.cpus().length;
+    let current = 0;
+
+    logger.log(`Starting Lux Server with ${cyan(`${total}`)} worker processes`);
+
+    for (let i = 0; i < total; i++) {
+      cluster.fork().once('message', msg => {
+        if (msg === 'ready') {
+          current++;
+          if (current === total) {
+            logger.log(`Lux Server listening on port ${cyan(`${port}`)}`);
+          }
         }
       });
     }
