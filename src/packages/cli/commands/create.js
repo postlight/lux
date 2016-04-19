@@ -1,3 +1,4 @@
+import Ora from 'ora';
 import Promise from 'bluebird';
 import { green } from 'colors/safe';
 
@@ -134,9 +135,17 @@ ${green('create')} .gitignore
   });
 
   console.log(`${green('initialize')} git`);
-  console.log('Installing dependencies from npm...');
+
+  const spinner = new Ora({
+    text: 'Installing dependencies from npm...',
+    spinner: 'dots'
+  });
+
+  spinner.start();
 
   await exec('npm install', {
     cwd: project
   });
+
+  spinner.stop();
 }
