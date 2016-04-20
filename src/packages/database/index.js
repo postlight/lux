@@ -15,6 +15,7 @@ class Database extends Base {
     config = config[this.environment] || {};
 
     orm.settings.set('connection.pool', true);
+    orm.settings.set('instance.cache', false);
 
     this.setProps({
       config: {
