@@ -167,7 +167,7 @@ cat test/fixtures/data.sql | mysql -u root -p
 npm test
 ```
 
-*Note:* Make sure you have MySQL installed and accesible on port `3306`.
+*Note:* Make sure you have MySQL installed and accessible on port `3306`.
 
 ## Useful Links
 
