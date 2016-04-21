@@ -1,6 +1,6 @@
 # Lux
 
-[![Join the chat at https://gitter.im/postlight/lux](https://badges.gitter.im/postlight/lux.svg)](https://gitter.im/postlight/lux?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![npm version](https://badge.fury.io/js/lux-framework.svg)](https://badge.fury.io/js/lux-framework) [![Join the chat at https://gitter.im/postlight/lux](https://badges.gitter.im/postlight/lux.svg)](https://gitter.im/postlight/lux?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 A MVC style framework for building highly performant, large scale JSON APIs that anybody who knows the JavaScript language and its modern features will understand.
 
