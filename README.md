@@ -1,6 +1,6 @@
 # Lux
 
-A MVC style framework for building highly performant, large scale JSON APIs that anybody who knows the JavaScript language and it's modern features will understand.
+A MVC style framework for building highly performant, large scale JSON APIs that anybody who knows the JavaScript language and its modern features will understand.
 
 \* _Inspired by [Rails](https://github.com/rails/rails/), [Ember](http://emberjs.com/), and [React](https://facebook.github.io/react/)._
 
