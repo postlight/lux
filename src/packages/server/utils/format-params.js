@@ -11,7 +11,7 @@ const int = /^\d+$/g;
 const bool = /^(true|false)$/i;
 const isoDate = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}(Z|\+\d{4})$/ig;
 
-function format(params) {
+function format(params, method = 'GET') {
   const result = {};
   let i, key, value, paramKeys;
 
@@ -31,12 +31,12 @@ function format(params) {
               return int.test(v) ? parseInt(v, 10) : v;
             });
           } else {
-            value = format(value);
+            value = format(value, method);
           }
           break;
 
         case 'string':
-          if (value.indexOf(',') >= 0) {
+          if (method === 'GET' && value.indexOf(',') >= 0) {
             value = value.split(',').map(v => {
               return camelize(v.replace(/\-/g, '_'), true);
             });
@@ -60,15 +60,11 @@ function format(params) {
 }
 
 export default async function formatParams(req) {
+  const { method, url: { query } } = req;
   const pattern = /^(.+)\[(.+)\]$/g;
   let i, key, parent, nested, params, paramKeys;
 
-  params = assign({
-    data: {
-      attributes: {}
-    }
-  }, req.url.query);
-
+  params = assign({ data: { attributes: {} } }, query);
   paramKeys = keys(params);
 
   for (i = 0; i < paramKeys.length; i++) {
@@ -88,9 +84,9 @@ export default async function formatParams(req) {
     }
   }
 
-  if (/(PATCH|POST)/g.test(req.method)) {
+  if (/(PATCH|POST)/g.test(method)) {
     assign(params, await bodyParser(req));
   }
 
-  return format(params);
+  return format(params, method);
 }
