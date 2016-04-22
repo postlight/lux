@@ -1,7 +1,10 @@
 import Base from '../base';
 
+import { line } from '../logger';
+
 import encrypt from './utils/encrypt';
 import decrypt from './utils/decrypt';
+import tryCatch from '../../utils/try-catch';
 
 class Session extends Base {
   data = {};
@@ -11,9 +14,10 @@ class Session extends Base {
   didChange = false;
 
   constructor(props = {}) {
-    let { cookie, sessionKey, sessionSecret } = props;
+    let { cookie, logger, sessionKey, sessionSecret } = props;
 
     super({
+      logger,
       sessionKey,
       sessionSecret
     });
@@ -30,13 +34,29 @@ class Session extends Base {
     const { sessionSecret } = this;
 
     if (value) {
-      this.setProps({
-        data: JSON.parse(decrypt(value, sessionSecret)),
-        cookie: value
+      tryCatch(() => {
+        this.setProps({
+          data: JSON.parse(decrypt(value, sessionSecret)),
+          cookie: value
+        });
+      }, () => {
+        const { environment } = this;
+
+        if (environment === 'development') {
+          this.logger.error(line`
+            Error: Unable to decrypt "${this.sessionKey}". Make sure your
+            configuration for "${environment}" has the correct sessionSecret.
+          `);
+        }
+
+        this.setProps({
+          cookie: encrypt('{}', sessionSecret),
+          didChange: true
+        });
       });
     } else {
       this.setProps({
-        cookie: encrypt(JSON.stringify(this.data), sessionSecret),
+        cookie: encrypt('{}', sessionSecret),
         didChange: true
       });
     }

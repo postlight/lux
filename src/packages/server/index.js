@@ -38,6 +38,7 @@ class Server extends Base {
         req.params = await formatParams(req);
         req.session = Session.create({
           cookie: headers.cookie,
+          logger,
           sessionKey,
           sessionSecret
         });
