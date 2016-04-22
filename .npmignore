@@ -15,3 +15,6 @@ gulpfile.babel.js
 # logs
 /log
 npm-debug.log
+
+# tests
+/test
