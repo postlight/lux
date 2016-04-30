@@ -1,4 +1,4 @@
-import Lux from 'lux-framework';
+import Lux from '../../../dist';
 
 class Todo extends Lux {
 

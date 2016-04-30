@@ -1,4 +1,4 @@
-import { Model } from 'lux-framework';
+import { Model } from '../../../../dist';
 
 class Task extends Model {
   static attributes = {
@@ -18,10 +18,10 @@ class Task extends Model {
     }
   };
 
-  static hasOne = {
+  static belongsTo = {
     list: {
       model: 'task-list',
-      reverse: 'tasks'
+      inverse: 'tasks'
     }
   };
 }

@@ -2,12 +2,11 @@ import { camelize } from 'inflection';
 
 import pick from '../../../utils/pick';
 
-const { keys, assign } = Object;
+const { entries, assign } = Object;
 
 export default function sanitizeParams(req, res) {
-  const { modelName, serializedAttributes } = this;
+  const { modelName } = this;
   const params = { ...req.params };
-  let i, key, value;
   let { page, limit, sort, filter, include, fields } = params;
 
   if (!page) {
@@ -53,32 +52,29 @@ export default function sanitizeParams(req, res) {
     }
   }
 
-  if (!fields) {
-    fields = {};
-  } else {
-    const fieldKeys = keys(fields);
-
-    for (i = 0; i < fieldKeys.length; i++) {
-      key = fieldKeys[i];
-      value = fields[key];
-
+  fields = entries(fields || {})
+    .reduce((obj, [key, value]) => {
       if (typeof value === 'string') {
         value = [value];
       }
 
       if (key === modelName) {
+        const { attributes } = this;
+
         if (value.length) {
-          value = serializedAttributes.filter(attr => {
+          value = attributes.filter(attr => {
             return attr.indexOf('id') >= 0 || value.indexOf(attr) >= 0;
           });
         } else {
-          value = serializedAttributes;
+          value = attributes;
         }
       }
 
-      fields[key] = value;
-    }
-  }
+      return {
+        ...obj,
+        [key]: value
+      };
+    }, {});
 
   req.params = {
     id: params.id,

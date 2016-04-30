@@ -3,34 +3,31 @@ import Base from '../base';
 import memoize from '../../decorators/memoize';
 
 class Route extends Base {
-  constructor(props) {
-    let { method } = props;
+  path;
+  method;
+  action;
+  resource;
+  controller;
 
-    method = (method || 'GET').toUpperCase();
+  constructor({ path, action, controllers, method = 'GET', ...props }) {
+    const resource = path.replace(/^(.+)\/.+$/ig, '$1');
+    const controller = controllers.get(resource);
 
-    super({
-      ...props,
-      method
-    });
-  }
-
-  @memoize
-  get handlers() {
-    const { controller, action } = this;
-
-    if (controller) {
-      return controller[action]();
+    if (action && controller) {
+      props = {
+        ...props,
+        handlers: controller[action]()
+      };
     }
-  }
 
-  @memoize
-  get resource() {
-    return this.path.replace(/^(.+)\/.+$/ig, '$1');
-  }
-
-  @memoize
-  get controller() {
-    return this.controllers.get(this.resource);
+    return super({
+      ...props,
+      path,
+      action,
+      resource,
+      controller,
+      method: method.toUpperCase()
+    });
   }
 
   @memoize

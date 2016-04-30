@@ -1,4 +1,4 @@
-import { Serializer } from 'lux-framework';
+import { Serializer } from '../../../../dist';
 
 class TaskListsSerializer extends Serializer {
   attributes = [

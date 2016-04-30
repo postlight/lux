@@ -172,5 +172,5 @@ npm test
 ## Useful Links
 
 * [JSON API](http://jsonapi.org/)
-* [node-orm2](http://dresende.github.io/node-orm2/)
+* [Knex.js](http://knexjs.org/)
 * [Chai](http://chaijs.com/) / [Mocha](http://mochajs.org/)

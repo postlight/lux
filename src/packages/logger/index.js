@@ -75,5 +75,5 @@ class Logger extends Base {
 }
 
 export line from './utils/line';
-
+export sql from './utils/sql';
 export default Logger;

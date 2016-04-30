@@ -5,7 +5,7 @@
     "database": "todo_dev",
     "host": "127.0.0.1",
     "port": "3306",
-    "protocol": "mysql"
+    "dialect": "mysql"
   },
   "test": {
     "username": "root",
@@ -13,7 +13,7 @@
     "database": "todo_test",
     "host": "127.0.0.1",
     "port": "3306",
-    "protocol": "mysql"
+    "dialect": "mysql"
   },
   "production": {
     "username": "root",
@@ -21,6 +21,6 @@
     "database": "todo_dev",
     "host": "127.0.0.1",
     "port": "3306",
-    "protocol": "mysql"
+    "dialect": "mysql"
   }
 }

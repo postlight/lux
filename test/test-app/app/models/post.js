@@ -1,27 +1,9 @@
 import { Model } from '../../../../dist';
 
 class Post extends Model {
-  static attributes = {
-    title: {
-      type: 'text',
-      defaultValue: 'New Post'
-    },
-
-    body: {
-      type: 'text',
-      defaultValue: ''
-    },
-
-    isPublic: {
-      type: 'boolean',
-      defaultValue: false
-    }
-  };
-
-  static hasOne = {
+  static belongsTo = {
     author: {
-      model: 'author',
-      reverse: 'posts'
+      inverse: 'posts'
     }
   };
 }

@@ -4,7 +4,7 @@ import { camelize } from 'inflection';
 import bodyParser from './body-parser';
 import camelizeKeys from '../../../utils/camelize-keys';
 
-const { keys, assign } = Object;
+const { assign, entries } = Object;
 const { isArray } = Array;
 
 const int = /^\d+$/g;
@@ -12,24 +12,14 @@ const bool = /^(true|false)$/i;
 const isoDate = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}(Z|\+\d{4})$/ig;
 
 function format(params, method = 'GET') {
-  const result = {};
-  let i, key, value, paramKeys;
-
-  paramKeys = keys(params);
-
-  for (i = 0; i < paramKeys.length; i++) {
-    key = paramKeys[i];
-    value = params[key];
-
+  params = entries(params).reduce((result, [key, value]) => {
     key = key.replace(/(\[\])/g, '');
 
     if (value) {
       switch (typeof value) {
         case 'object':
           if (isArray(value)) {
-            value = value.map(v => {
-              return int.test(v) ? parseInt(v, 10) : v;
-            });
+            value = value.map(v => int.test(v) ? parseInt(v, 10) : v);
           } else {
             value = format(value, method);
           }
@@ -53,36 +43,47 @@ function format(params, method = 'GET') {
       }
     }
 
-    result[key] = value;
-  }
+    return {
+      ...result,
+      [key]: value
+    };
+  }, {});
 
-  return camelizeKeys(result, true);
+  return camelizeKeys(params, true);
 }
 
 export default async function formatParams(req) {
   const { method, url: { query } } = req;
   const pattern = /^(.+)\[(.+)\]$/g;
-  let i, key, parent, nested, params, paramKeys;
+  let params = assign({ data: { attributes: {} } }, query);
 
-  params = assign({ data: { attributes: {} } }, query);
-  paramKeys = keys(params);
-
-  for (i = 0; i < paramKeys.length; i++) {
-    key = paramKeys[i];
-
+  params = entries(params).reduce((result, [key, value]) => {
     if (pattern.test(key)) {
-      parent = key.replace(pattern, '$1');
-      nested = key.replace(pattern, '$2');
+      let parentKey, parentValue, childKey;
 
-      if (!params[parent]) {
-        params[parent] = {};
+      parentKey = key.replace(pattern, '$1');
+      parentValue = result[parentKey];
+
+      childKey = key.replace(pattern, '$2');
+
+      if (!parentValue) {
+        parentValue = {};
       }
 
-      params[parent][nested] = params[key];
-
-      delete params[key];
+      return {
+        ...result,
+        [parentKey]: {
+          ...parentValue,
+          [childKey]: value
+        }
+      };
+    } else {
+      return {
+        ...result,
+        [key]: value
+      };
     }
-  }
+  }, {});
 
   if (/(PATCH|POST)/g.test(method)) {
     assign(params, await bodyParser(req));

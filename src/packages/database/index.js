@@ -1,182 +1,81 @@
-import Promise, { promisifyAll } from 'bluebird';
-import orm from 'orm';
-import { underscore } from 'inflection';
+import Promise from 'bluebird';
+import knex from 'knex';
 
 import Base from '../base';
 
-import normalizePage from './utils/normalize-page';
+import { ModelMissingError } from './errors';
 
-const ormKey = Symbol('connection');
+const { env: { NODE_ENV: environment = 'development' } } = process;
+const knexKey = Symbol('connection');
 
 class Database extends Base {
-  constructor(config = {}) {
-    super();
+  models = new Map();
 
-    config = config[this.environment] || {};
+  constructor({ logger, config: { [environment]: config } }) {
+    const {
+      host,
+      database,
+      password,
+      debug = environment === 'development',
+      dialect: client,
+      username: user
+    } = config;
 
-    orm.settings.set('connection.pool', true);
-    orm.settings.set('instance.cache', false);
+    return super({
+      debug,
+      logger,
 
-    this.setProps({
       config: {
         host: '127.0.0.1',
         port: '3306',
         protocol: 'mysql',
         username: 'root',
         ...config
-      }
-    });
+      },
 
-    return this;
+      [knexKey]: knex({
+        client,
+
+        connection: {
+          host,
+          user,
+          password,
+          database
+        },
+
+        pool: {
+          min: 0,
+          max: 8
+        },
+
+        debug: false
+      })
+    });
   }
 
-  define(name, model) {
-    const connection = this[ormKey];
-    const [attrs, options, classMethods] = model;
+  define(models) {
+    const { [knexKey]: connection } = this;
 
-    model = connection.define(
-      underscore(name).toLowerCase(),
-      attrs,
-      options
+    models.forEach((model, name) => {
+      this.models.set(name, model);
+    });
+
+    return Promise.all(
+      [...models.values()]
+        .map(model => {
+          return model.initialize(this, () => connection(model.tableName));
+        })
     );
-
-    promisifyAll(model);
-
-    for (let key in classMethods) {
-      if (classMethods.hasOwnProperty(key)) {
-        model[key] = classMethods[key];
-      }
-    }
-
-    return this;
   }
 
-  associate(type, relationshipType, key, relatedModelType, options) {
-    const model = this.modelFor(type);
-    const relatedModel = this.modelFor(relatedModelType);
+  modelFor(type) {
+    const model = this.models.get(type);
 
     if (!model) {
-      throw new Error();
+      throw new ModelMissingError(type);
     }
 
-    if (!relatedModel) {
-      throw new Error();
-    }
-
-    model[relationshipType].call(model, key, relatedModel, options);
-
-    promisifyAll(model);
-    promisifyAll(relatedModel);
-
-    return this;
-  }
-
-  sync() {
-    const connection = this[ormKey];
-
-    return new Promise((resolve, reject) => {
-      connection.sync(err => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(this);
-        }
-      });
-    });
-  }
-
-  connect() {
-    return new Promise((resolve, reject) => {
-      orm.connect(this.config, (err, connection) => {
-        if (err) {
-          reject(err);
-        } else {
-          this[ormKey] = connection;
-
-          resolve(this);
-        }
-      });
-    });
-  }
-
-  modelFor(type = '') {
-    const connection = this[ormKey];
-
-    return connection.models[type.replace(/-/g, '_')];
-  }
-
-  query(type, query = {}, options = {}) {
-    const model = this.modelFor(type);
-    let order = ['createdAt', 'A'];
-    let limit = 25;
-    let offset = 0;
-
-    if (!model) {
-      throw new Error();
-    }
-
-    if (query.sort) {
-      order = query.sort;
-      if (order.charAt(0) === '-') {
-        order = [order.substr(1), 'Z'];
-      } else {
-        order = [order, 'A'];
-      }
-    }
-
-    if (query.limit) {
-      limit = parseInt(query.limit, 10);
-    }
-
-    if (query.page) {
-      offset = limit * normalizePage(query.page);
-    }
-
-    return model.findAsync(query.filter, { ...options, offset }, limit, order);
-  }
-
-  count(type, query = {}) {
-    const model = this.modelFor(type);
-
-    if (!model) {
-      throw new Error();
-    }
-
-    return model.countAsync(query.filter);
-  }
-
-  findRecord(type, id, options = {}) {
-    const model = this.modelFor(type);
-
-    if (!model) {
-      throw new Error();
-    }
-
-    return model.oneAsync({ id }, options);
-  }
-
-  queryRecord(type, query = {}, options = {}) {
-    const model = this.modelFor(type);
-
-    if (!model) {
-      throw new Error();
-    }
-
-    return model.oneAsync(query.filter, options);
-  }
-
-  createRecord(type, params) {
-    const model = this.modelFor(type);
-
-    if (!model) {
-      throw new Error();
-    }
-
-    return model.createAsync({
-      ...params,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    });
+    return model;
   }
 }
 

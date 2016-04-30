@@ -1,10 +1,9 @@
 import { Model } from '../../../../dist';
 
 class Author extends Model {
-  static attributes = {
-    name: {
-      type: 'text',
-      defaultValue: 'New Author'
+  static hasMany = {
+    posts: {
+      inverse: 'author'
     }
   };
 }

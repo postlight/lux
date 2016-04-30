@@ -1,4 +1,3 @@
-import Promise from 'bluebird';
 import { red } from 'colors/safe';
 import { pluralize } from 'inflection';
 

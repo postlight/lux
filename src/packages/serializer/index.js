@@ -1,7 +1,6 @@
 import { Readable } from 'stream';
 
 import {
-  underscore,
   dasherize,
   pluralize,
   camelize
@@ -10,6 +9,7 @@ import {
 import Base from '../base';
 
 import tryCatch from '../../utils/try-catch';
+import underscore from '../../utils/underscore';
 
 import bound from '../../decorators/bound';
 
@@ -18,6 +18,8 @@ const { keys } = Object;
 const { isArray } = Array;
 
 class Serializer extends Base {
+  model;
+
   hasOne = [];
 
   hasMany = [];
@@ -61,7 +63,7 @@ class Serializer extends Base {
 
       if (related) {
         id = related.id;
-        type = pluralize(related.getModelName());
+        type = pluralize(related.modelName);
 
         hash.data[key] = {
           data: {
@@ -75,7 +77,7 @@ class Serializer extends Base {
         };
 
         if (include.indexOf(key) >= 0) {
-          relatedSerializer = this.serializers.get(type);
+          relatedSerializer = related.constructor.serializer;
 
           if (relatedSerializer) {
             hash.included.push(
@@ -89,47 +91,43 @@ class Serializer extends Base {
     hash.data = {
       ...hash.data,
 
-      ...hasMany.reduce((group, relatedKey) => {
-        records = item[relatedKey];
+      ...hasMany.reduce((obj, k) => {
+        records = item[k];
 
-        if (!records || !records.length) {
-          return group;
+        if (records && records.length) {
+          return {
+            [k]: {
+              data: records.map(r => {
+                id = r.id;
+
+                if (!type) {
+                  type = pluralize(r.modelName);
+                }
+
+                if (include.indexOf(k) >= 0) {
+                  if (!relatedSerializer) {
+                    relatedSerializer = r.constructor.serializer;
+                  }
+
+                  if (relatedSerializer) {
+                    hash.included.push(
+                      relatedSerializer.serializeOne(r, [], fields)
+                    );
+                  }
+                }
+
+                return {
+                  id,
+                  type,
+
+                  links: {
+                    self: `${domain}/${type}/${id}`
+                  }
+                };
+              })
+            }
+          };
         }
-
-        return {
-          ...group,
-
-          [relatedKey]: {
-            data: records.map(record => {
-              id = record.id;
-
-              if (!type) {
-                type = pluralize(record.getModelName());
-              }
-
-              if (include.indexOf(relatedKey) >= 0) {
-                if (!relatedSerializer) {
-                  relatedSerializer = this.serializers.get(type);
-                }
-
-                if (relatedSerializer) {
-                  hash.included.push(
-                    relatedSerializer.serializeOne(record, [], fields)
-                  );
-                }
-              }
-
-              return {
-                id,
-                type,
-
-                links: {
-                  self: `${domain}/${type}/${id}`
-                }
-              };
-            })
-          }
-        };
       }, {})
     };
 
@@ -156,7 +154,19 @@ class Serializer extends Base {
           let item = this.serializeOne(data[i], include, fields);
 
           if (item.included && item.included.length) {
-            included = [...included, ...item.included];
+            included = item.included.reduce((value, record) => {
+              const { id, type } = record;
+              const shouldInclude = !value.some(({ id: vId, type: vType }) => {
+                return vId === id && vType === type;
+              });
+
+              if (shouldInclude) {
+                value = [...value, record];
+              }
+
+              return value;
+            }, included);
+
             delete item.included;
           }
 
@@ -243,7 +253,7 @@ class Serializer extends Base {
   @bound
   serializeOne(item, include, fields, links = true) {
     const { id } = item;
-    const name = item.getModelName();
+    const name = item.modelName;
     const type = pluralize(name);
     const data = {
       id,

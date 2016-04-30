@@ -23,9 +23,9 @@
     "colors": "1.1.2",
     "commander": "2.9.0",
     "inflection": "1.10.0",
+    "knex": "0.10.0",
     "moment": "2.13.0",
-    "ora": "0.2.1",
-    "orm": "2.1.30"
+    "ora": "0.2.1"
   },
   "devDependencies": {
     "babel-core": "6.7.7",
