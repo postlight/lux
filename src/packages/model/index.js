@@ -1,11 +1,9 @@
 import Promise from 'bluebird';
-import { camelize, dasherize, pluralize, singularize } from 'inflection';
+import { dasherize, pluralize } from 'inflection';
 
 import Collection from './collection';
 import { sql } from '../logger';
 
-import initHooks from './utils/init-hooks';
-import initProps from './utils/init-props';
 import getOffset from './utils/get-offset';
 import formatSelect from './utils/format-select';
 import fetchHasMany from './utils/fetch-has-many';
@@ -84,10 +82,6 @@ class Model {
 
   static get relationshipNames() {
     return keys(this.relationships);
-  }
-
-  async save() {
-    return this;
   }
 
   async update(props = {}) {
@@ -407,7 +401,11 @@ class Model {
   }
 
   static getColumn(key) {
-    const { attributes: { [key]: column } } = this;
+    const {
+      attributes: {
+        [key]: column
+      }
+    } = this;
 
     return column;
   }
@@ -428,92 +426,6 @@ class Model {
     } = this;
 
     return relationship;
-  }
-
-  static async initialize(store, table) {
-    const { hooks } = this;
-    const { logger } = store;
-
-    const attributes = entries(await table().columnInfo())
-      .reduce((hash, [columnName, value]) => {
-        return {
-          ...hash,
-          [camelize(columnName, true)]: {
-            ...value,
-            columnName,
-            docName: dasherize(columnName)
-          }
-        };
-      }, {});
-
-    const belongsTo = entries(this.belongsTo || {})
-      .reduce((hash, [relatedName, value]) => {
-        return {
-          ...hash,
-
-          [relatedName]: {
-            foreignKey: `${underscore(relatedName)}_id`,
-
-            ...value,
-
-            type: 'belongsTo',
-            model: store.modelFor(value.model || relatedName)
-          }
-        };
-      }, {});
-
-    const hasOne = entries(this.hasOne || {})
-      .reduce((hash, [relatedName, value]) => {
-        return {
-          foreignKey: `${underscore(value.inverse)}_id`,
-
-          ...hash,
-
-          [relatedName]: {
-
-            ...value,
-
-            type: 'hasOne',
-            model: store.modelFor(value.model || relatedName)
-          }
-        };
-      }, {});
-
-    const hasMany = entries(this.hasMany || {})
-      .reduce((hash, [relatedName, value]) => {
-        return {
-          ...hash,
-
-          [relatedName]: {
-            foreignKey: `${underscore(value.inverse)}_id`,
-
-            ...value,
-
-            type: 'hasMany',
-            model: store.modelFor(value.model || singularize(relatedName))
-          }
-        };
-      }, {});
-
-    assign(this, {
-      store,
-      table,
-      logger,
-      attributes,
-      belongsTo,
-      hasOne,
-      hasMany
-    });
-
-    initHooks(this, hooks);
-
-    initProps(this.prototype, attributes, {
-      ...belongsTo,
-      ...hasOne,
-      ...hasMany
-    });
-
-    return this;
   }
 }
 

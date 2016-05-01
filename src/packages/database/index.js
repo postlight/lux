@@ -3,6 +3,8 @@ import knex from 'knex';
 
 import Base from '../base';
 
+import initializeModel from './utils/initialize-model';
+
 import { ModelMissingError } from './errors';
 
 const { env: { NODE_ENV: environment = 'development' } } = process;
@@ -63,7 +65,9 @@ class Database extends Base {
     return Promise.all(
       [...models.values()]
         .map(model => {
-          return model.initialize(this, () => connection(model.tableName));
+          return initializeModel(this, model, () => {
+            return connection(model.tableName);
+          });
         })
     );
   }
