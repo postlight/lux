@@ -1,6 +1,7 @@
 import Base from '../base';
 
-import memoize from '../../decorators/memoize';
+import getStaticPath from './utils/get-static-path';
+import getDynamicSegments from './utils/get-dynamic-segments';
 
 class Route extends Base {
   path;
@@ -8,10 +9,13 @@ class Route extends Base {
   action;
   resource;
   controller;
+  staticPath;
+  dynamicSegments;
 
   constructor({ path, action, controllers, method = 'GET', ...props }) {
     const resource = path.replace(/^(.+)\/.+$/ig, '$1');
     const controller = controllers.get(resource);
+    const dynamicSegments = getDynamicSegments(path);
 
     if (action && controller) {
       props = {
@@ -26,27 +30,10 @@ class Route extends Base {
       action,
       resource,
       controller,
-      method: method.toUpperCase()
+      dynamicSegments,
+      method: method.toUpperCase(),
+      staticPath: getStaticPath(path, dynamicSegments)
     });
-  }
-
-  @memoize
-  get staticPath() {
-    const { path, dynamicSegments } = this;
-    let staticPath = path;
-
-    if (dynamicSegments.length) {
-      const pattern = new RegExp(`(${dynamicSegments.join('|')})`, 'g');
-
-      staticPath = path.replace(pattern, 'dynamic');
-    }
-
-    return staticPath;
-  }
-
-  @memoize
-  get dynamicSegments() {
-    return (this.path.match(/(:\w+)/g) || []).map(part => part.substr(1));
   }
 }
 
