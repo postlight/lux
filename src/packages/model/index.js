@@ -239,7 +239,7 @@ class Model {
     }
 
     assign(instance, {
-      id: (await query)[0]
+      [primaryKey]: (await query)[0]
     });
 
     await afterCreate(instance);
@@ -263,11 +263,13 @@ class Model {
     return (await query)[0].count;
   }
 
-  static async find(id, options = {}) {
+  static async find(pk, options = {}) {
+    const { primaryKey, tableName } = this;
+
     return await this.findOne({
       ...options,
       where: {
-        [`${this.tableName}.id`]: id
+        [`${tableName}.${primaryKey}`]: pk
       }
     });
   }
@@ -276,6 +278,8 @@ class Model {
     const {
       table,
       tableName,
+      primaryKey,
+
       store: {
         debug
       }
@@ -361,12 +365,12 @@ class Model {
             model.tableName,
             `${tableName}.${foreignKey}`,
             '=',
-            `${model.tableName}.id`
+            `${model.tableName}.${model.primaryKey}`
           );
         } else if (type === 'hasOne') {
           records = records.leftOuterJoin(
             model.tableName,
-            `${tableName}.id`,
+            `${tableName}.${primaryKey}`,
             '=',
             `${model.tableName}.${foreignKey}`
           );

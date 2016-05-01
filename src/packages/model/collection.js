@@ -9,7 +9,7 @@ function insert(collection, records) {
 class Collection extends Array {
   constructor({ model, records = [], related = {} } = {}) {
     const { length } = records;
-    const { modelName } = model;
+    const { modelName, primaryKey } = model;
 
     super(length);
     insert(this, records);
@@ -18,7 +18,9 @@ class Collection extends Array {
       entries(related)
         .forEach(([name, relatedRecords]) => {
           const match = relatedRecords
-            .filter(({ [`${modelName}.id`]: id }) => id === row.id)
+            .filter(({ [`${modelName}.${primaryKey}`]: pk }) => {
+              return pk === row[primaryKey];
+            })
             .map(relatedRecord => {
               return entries(relatedRecord).reduce((rR, [key, value]) => {
                 if (key.indexOf('.') >= 0) {
@@ -39,7 +41,7 @@ class Collection extends Array {
 
       row = entries(row)
         .reduce((r, [key, value]) => {
-          if (/^.+\.id$/.test(key) && !value) {
+          if (new RegExp(`^.+\.${primaryKey}$`).test(key) && !value) {
             return r;
           } else if (key.indexOf('.') >= 0) {
             const [a, b] = key.split('.');

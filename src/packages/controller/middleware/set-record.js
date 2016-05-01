@@ -7,7 +7,7 @@ export default async function setRecord(req, res) {
 
     let {
       params: {
-        id,
+        id: pk,
         include = [],
         fields: {
           [model.modelName]: select,
@@ -16,14 +16,14 @@ export default async function setRecord(req, res) {
       }
     } = req;
 
-    if (id) {
+    if (pk) {
       if (!select) {
         select = this.attributes;
       }
 
       include = formatInclude(model, include, includedFields, relationships);
 
-      req.record = await model.find(id, {
+      req.record = await model.find(pk, {
         select,
         include
       });
