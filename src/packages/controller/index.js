@@ -3,7 +3,6 @@ import Base from '../base';
 import formatInclude from './utils/format-include';
 import createPageLinks from './utils/create-page-links';
 
-import memoize from '../../decorators/memoize';
 import action from './decorators/action';
 
 class Controller extends Base {
@@ -49,10 +48,16 @@ class Controller extends Base {
       props = {
         ...props,
         serializer,
+
         attributes: ['id', ...serializer.attributes]
           .filter(attr => {
             return attributes.indexOf(attr) >= 0;
-          })
+          }),
+
+        relationships: [
+          ...serializer.hasOne,
+          ...serializer.hasMany
+        ]
       };
     }
 
@@ -60,6 +65,7 @@ class Controller extends Base {
       props = {
         ...props,
         parentController,
+
         middleware: [
           ...parentController.middleware,
           ...this.beforeAction
@@ -75,16 +81,6 @@ class Controller extends Base {
     this.setProps(props);
 
     return this;
-  }
-
-  @memoize
-  get relationships() {
-    const { serializer } = this;
-
-    return [
-      ...serializer.hasOne,
-      ...serializer.hasMany
-    ];
   }
 
   @action
