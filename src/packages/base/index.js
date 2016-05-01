@@ -2,7 +2,6 @@ const { assign } = Object;
 
 class Base {
   root = process.env.PWD;
-
   environment = process.env.NODE_ENV || 'development';
 
   constructor(props = {}) {

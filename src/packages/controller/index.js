@@ -154,30 +154,54 @@ class Controller extends Base {
 
   @action
   async create(req) {
-    const { url, params } = req;
-    const data = await this.store.createRecord(
-      this.modelName,
-      params.data.attributes
-    );
+    const { domain, model } = this;
+
+    const {
+      url: {
+        pathname
+      },
+
+      params: {
+        data: {
+          attributes,
+          // relationships
+        }
+      }
+    } = req;
 
     return {
-      data,
+      data: await model.create(attributes),
 
       links: {
-        self: this.domain + url.pathname
+        self: domain + pathname
       }
     };
   }
 
   @action
   async update(req) {
-    const { url, params } = req;
+    const { domain } = this;
+
+    const {
+      record: data,
+
+      url: {
+        pathname
+      },
+
+      params: {
+        data: {
+          attributes,
+          // relationships
+        }
+      }
+    } = req;
+
     let links;
-    let data = req.record;
 
     if (data) {
-      links = { self: this.domain + url.pathname };
-      data = await data.update(params.data.attributes);
+      links = { self: domain + pathname };
+      await data.update(attributes);
     }
 
     return {
@@ -188,11 +212,12 @@ class Controller extends Base {
 
   @action
   async destroy(req) {
-    const { url, record: data } = req;
+    const { domain } = this;
+    const { url: { pathname }, record: data } = req;
     let links;
 
     if (data) {
-      links = { self: this.domain + url.pathname };
+      links = { self: domain + pathname };
       await data.destroy();
     }
 

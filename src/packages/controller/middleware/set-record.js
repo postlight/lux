@@ -6,7 +6,6 @@ export default async function setRecord(req, res) {
     const { model, relationships } = this;
 
     let {
-      method,
       params: {
         id,
         include = [],
@@ -18,10 +17,8 @@ export default async function setRecord(req, res) {
     } = req;
 
     if (id) {
-      if (method === 'GET') {
-        if (!select) {
-          select = this.attributes;
-        }
+      if (!select) {
+        select = this.attributes;
       }
 
       include = formatInclude(model, include, includedFields, relationships);

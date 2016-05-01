@@ -10,10 +10,11 @@ import formatSelect from './utils/format-select';
 import fetchHasMany from './utils/fetch-has-many';
 
 import pick from '../../utils/pick';
+import omit from '../../utils/omit';
 import underscore from '../../utils/underscore';
 
 const { isArray } = Array;
-const { keys, assign, entries } = Object;
+const { assign, entries, keys } = Object;
 
 class Model {
   static table;
@@ -28,8 +29,27 @@ class Model {
   static _tableName;
 
   static hooks = {};
+  static primaryKey = 'id';
   static validations = {};
   static defaultPerPage = 25;
+
+  constructor(props = {}) {
+    const {
+      constructor: {
+        attributeNames,
+        relationshipNames
+      }
+    } = this;
+
+    return assign(
+      this,
+      pick(props, ...attributeNames, ...relationshipNames)
+    );
+  }
+
+  get modelName() {
+    return this.constructor.modelName;
+  }
 
   static get modelName() {
     return dasherize(underscore(this.name));
@@ -65,36 +85,119 @@ class Model {
     return keys(this.relationships);
   }
 
-  get modelName() {
-    return this.constructor.modelName;
-  }
-
-  constructor(props = {}) {
-    const {
-      constructor: {
-        attributeNames,
-        relationshipNames
-      }
-    } = this;
-
-    assign(this, pick(props, ...attributeNames, ...relationshipNames));
-    return this;
-  }
-
   async save() {
     return this;
   }
 
-  async update(params = {}) {
-    return await this.save();
+  async update(props = {}) {
+    const {
+      constructor: {
+        primaryKey,
+        table,
+        store: {
+          debug
+        }
+      }
+    } = this;
+
+    assign(this, {
+      ...props,
+      updatedAt: new Date()
+    });
+
+    const query = table()
+      .where({ [primaryKey]: this[primaryKey] })
+      .update(omit(this.format('database'), primaryKey));
+
+    if (debug) {
+      const { constructor: { logger } } = this;
+
+      query.on('query', () => {
+        setImmediate(() => logger.log(sql`${query.toString()}`));
+      });
+    }
+
+    await query;
+    return this;
   }
 
   async destroy() {
-    return;
+    const {
+      constructor: {
+        primaryKey,
+        table,
+        store: {
+          debug
+        }
+      }
+    } = this;
+
+    const query = table()
+      .where({ [primaryKey]: this[primaryKey] })
+      .del();
+
+    if (debug) {
+      const { constructor: { logger } } = this;
+
+      query.on('query', () => {
+        setImmediate(() => logger.log(sql`${query.toString()}`));
+      });
+    }
+
+    await query;
+    return this;
   }
 
-  static create(props = {}) {
-    return new this(props).save();
+  format(dest) {
+    const { constructor: { attributes } } = this;
+
+    switch (dest) {
+      case 'database':
+        return entries(attributes)
+          .reduce((hash, [key, { columnName }]) => {
+            return {
+              ...hash,
+              [columnName]: this[key]
+            };
+          }, {});
+
+      case 'jsonapi':
+        return entries(attributes)
+          .reduce((hash, [key, { docName }]) => {
+            return {
+              ...hash,
+              [docName]: this[key]
+            };
+          }, {});
+    }
+  }
+
+  static async create(props = {}) {
+    const { primaryKey, table, store: { debug } } = this;
+    const datetime = new Date();
+    const instance = new this({
+      ...props,
+      createdAt: datetime,
+      updatedAt: datetime
+    });
+
+    const query = table()
+      .returning(primaryKey)
+      .insert(omit(instance.format('database'), primaryKey));
+
+    if (debug) {
+      const { logger } = this;
+
+      query.on('query', () => {
+        setImmediate(() => logger.log(sql`${query.toString()}`));
+      });
+    }
+
+    const [id] = await query;
+
+    return assign(instance, {
+      id
+    });
   }
 
   static async count(where = {}) {
@@ -284,7 +387,8 @@ class Model {
           ...hash,
           [camelize(columnName, true)]: {
             ...value,
-            columnName
+            columnName,
+            docName: dasherize(columnName)
           }
         };
       }, {});
