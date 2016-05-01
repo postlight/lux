@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { red, dim } from 'colors/safe';
+import { dim, red, yellow } from 'colors/safe';
 
 import Base from '../base';
 import fs from '../fs';
@@ -37,6 +37,16 @@ class Logger extends Base {
     message = `${red(`[${timestamp}]`)} ${message}\n`;
 
     process.stderr.write(message);
+    setImmediate(write, file, message);
+  }
+
+  @bound
+  warn(message) {
+    const { file, timestamp } = this;
+
+    message = `${yellow(`\n\n[${timestamp}] Warning:`)} ${message}\n\n`;
+
+    process.stdout.write(message);
     setImmediate(write, file, message);
   }
 

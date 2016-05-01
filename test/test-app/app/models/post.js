@@ -6,6 +6,12 @@ class Post extends Model {
       inverse: 'posts'
     }
   };
+
+  static hooks = {
+    async afterCreate(post) {
+
+    }
+  };
 }
 
 export default Post;

@@ -4,6 +4,7 @@ import { camelize, dasherize, pluralize, singularize } from 'inflection';
 import Collection from './collection';
 import { sql } from '../logger';
 
+import initHooks from './utils/init-hooks';
 import initProps from './utils/init-props';
 import getOffset from './utils/get-offset';
 import formatSelect from './utils/format-select';
@@ -94,8 +95,16 @@ class Model {
       constructor: {
         primaryKey,
         table,
+
         store: {
           debug
+        },
+
+        hooks: {
+          afterUpdate,
+          afterSave,
+          beforeUpdate,
+          beforeSave
         }
       }
     } = this;
@@ -104,6 +113,9 @@ class Model {
       ...props,
       updatedAt: new Date()
     });
+
+    await beforeUpdate(this);
+    await beforeSave(this);
 
     const query = table()
       .where({ [primaryKey]: this[primaryKey] })
@@ -118,6 +130,10 @@ class Model {
     }
 
     await query;
+
+    await afterUpdate(this);
+    await afterSave(this);
+
     return this;
   }
 
@@ -126,11 +142,19 @@ class Model {
       constructor: {
         primaryKey,
         table,
+
         store: {
           debug
+        },
+
+        hooks: {
+          afterDestroy,
+          beforeDestroy
         }
       }
     } = this;
+
+    await beforeDestroy(this);
 
     const query = table()
       .where({ [primaryKey]: this[primaryKey] })
@@ -145,6 +169,9 @@ class Model {
     }
 
     await query;
+
+    await afterDestroy(this);
+
     return this;
   }
 
@@ -173,13 +200,31 @@ class Model {
   }
 
   static async create(props = {}) {
-    const { primaryKey, table, store: { debug } } = this;
+    const {
+      primaryKey,
+      table,
+
+      store: {
+        debug
+      },
+
+      hooks: {
+        afterCreate,
+        afterSave,
+        beforeCreate,
+        beforeSave
+      }
+    } = this;
+
     const datetime = new Date();
     const instance = new this({
       ...props,
       createdAt: datetime,
       updatedAt: datetime
     });
+
+    await beforeCreate(instance);
+    await beforeSave(instance);
 
     const query = table()
       .returning(primaryKey)
@@ -193,11 +238,14 @@ class Model {
       });
     }
 
-    const [id] = await query;
-
-    return assign(instance, {
-      id
+    assign(instance, {
+      id: (await query)[0]
     });
+
+    await afterCreate(instance);
+    await afterSave(instance);
+
+    return instance;
   }
 
   static async count(where = {}) {
@@ -379,6 +427,7 @@ class Model {
   }
 
   static async initialize(store, table) {
+    const { hooks } = this;
     const { logger } = store;
 
     const attributes = entries(await table().columnInfo())
@@ -442,13 +491,7 @@ class Model {
         };
       }, {});
 
-    initProps(this.prototype, attributes, {
-      ...belongsTo,
-      ...hasOne,
-      ...hasMany
-    });
-
-    return assign(this, {
+    assign(this, {
       store,
       table,
       logger,
@@ -457,6 +500,16 @@ class Model {
       hasOne,
       hasMany
     });
+
+    initHooks(this, hooks);
+
+    initProps(this.prototype, attributes, {
+      ...belongsTo,
+      ...hasOne,
+      ...hasMany
+    });
+
+    return this;
   }
 }
 
