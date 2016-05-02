@@ -225,7 +225,9 @@ class Controller extends Base {
 
   @action
   preflight() {
-    return true;
+    return {
+      data: true
+    };
   }
 }
 

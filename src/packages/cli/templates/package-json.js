@@ -12,7 +12,7 @@ export default (name) => {
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "lux-framework": "0.0.1-beta.6",
+    "lux-framework": "0.0.1-beta.7",
     "babel-core": "6.7.7",
     "babel-eslint": "6.0.3",
     "babel-plugin-transform-decorators-legacy": "1.3.4",
