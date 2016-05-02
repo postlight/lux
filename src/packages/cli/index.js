@@ -8,7 +8,7 @@ import generate from './commands/generate';
 
 import tryCatch from '../../utils/try-catch';
 
-cli.version('0.0.1-beta.6');
+cli.version('0.0.1-beta.7');
 
 cli
   .command('n <name>')
