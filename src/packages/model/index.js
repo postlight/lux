@@ -12,6 +12,10 @@ import pick from '../../utils/pick';
 import omit from '../../utils/omit';
 import underscore from '../../utils/underscore';
 
+import readonly from '../../decorators/readonly';
+import nonenumerable from '../../decorators/nonenumerable';
+import nonconfigurable from '../../decorators/nonconfigurable';
+
 const { isArray } = Array;
 const { assign, entries, keys } = Object;
 
@@ -32,7 +36,21 @@ class Model {
   static validations = {};
   static defaultPerPage = 25;
 
-  constructor(props = {}) {
+  @nonenumerable
+  @nonconfigurable
+  initialized = false;
+
+  @readonly
+  @nonenumerable
+  @nonconfigurable
+  initialValues = new Map();
+
+  @readonly
+  @nonenumerable
+  @nonconfigurable
+  dirtyAttributes = new Set();
+
+  constructor(props = {}, initialize = true) {
     const {
       constructor: {
         attributeNames,
@@ -40,10 +58,18 @@ class Model {
       }
     } = this;
 
-    return assign(
+    assign(
       this,
       pick(props, ...attributeNames, ...relationshipNames)
     );
+
+    this.initialized = initialize;
+
+    return this;
+  }
+
+  get isDirty() {
+    return Boolean(this.dirtyAttributes.size);
   }
 
   get modelName() {
@@ -103,30 +129,33 @@ class Model {
       }
     } = this;
 
-    assign(this, {
-      ...props,
-      updatedAt: new Date()
-    });
+    assign(this, props);
 
-    await beforeUpdate(this);
-    await beforeSave(this);
+    if (this.isDirty) {
+      await beforeUpdate(this);
+      await beforeSave(this);
 
-    const query = table()
-      .where({ [primaryKey]: this[primaryKey] })
-      .update(omit(this.format('database'), primaryKey));
+      this.updatedAt = new Date();
 
-    if (debug) {
-      const { constructor: { logger } } = this;
+      const query = table()
+        .where({ [primaryKey]: this[primaryKey] })
+        .update(this.format('database', ...this.dirtyAttributes));
 
-      query.on('query', () => {
-        setImmediate(() => logger.log(sql`${query.toString()}`));
-      });
+      if (debug) {
+        const { constructor: { logger } } = this;
+
+        query.on('query', () => {
+          setImmediate(() => logger.log(sql`${query.toString()}`));
+        });
+      }
+
+      await query;
+
+      this.dirtyAttributes.clear();
+
+      await afterUpdate(this);
+      await afterSave(this);
     }
-
-    await query;
-
-    await afterUpdate(this);
-    await afterSave(this);
 
     return this;
   }
@@ -169,12 +198,16 @@ class Model {
     return this;
   }
 
-  format(dest) {
-    const { constructor: { attributes } } = this;
+  format(dest, ...only) {
+    const {
+      constructor: {
+        attributes
+      }
+    } = this;
 
     switch (dest) {
       case 'database':
-        return entries(attributes)
+        return entries(only.length ? pick(attributes, ...only) : attributes)
           .reduce((hash, [key, { columnName }]) => {
             return {
               ...hash,
@@ -183,7 +216,7 @@ class Model {
           }, {});
 
       case 'jsonapi':
-        return entries(attributes)
+        return entries(only.length ? pick(attributes, ...only) : attributes)
           .reduce((hash, [key, { docName }]) => {
             return {
               ...hash,
@@ -215,7 +248,7 @@ class Model {
       ...props,
       createdAt: datetime,
       updatedAt: datetime
-    });
+    }, false);
 
     await beforeCreate(instance);
     await beforeSave(instance);
@@ -235,6 +268,8 @@ class Model {
     assign(instance, {
       [primaryKey]: (await query)[0]
     });
+
+    instance.initialized = true;
 
     await afterCreate(instance);
     await afterSave(instance);
@@ -400,6 +435,8 @@ class Model {
     return record ? record : null;
   }
 
+  @readonly
+  @nonconfigurable
   static getColumn(key) {
     const {
       attributes: {
@@ -410,6 +447,8 @@ class Model {
     return column;
   }
 
+  @readonly
+  @nonconfigurable
   static getColumnName(key) {
     const column = this.getColumn(key);
 
@@ -418,6 +457,8 @@ class Model {
     }
   }
 
+  @readonly
+  @nonconfigurable
   static getRelationship(key) {
     const {
       relationships: {

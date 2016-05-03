@@ -11,6 +11,10 @@ const { env: { NODE_ENV: environment = 'development' } } = process;
 const knexKey = Symbol('connection');
 
 class Database extends Base {
+  debug;
+  logger;
+  config;
+
   models = new Map();
 
   constructor({ logger, config: { [environment]: config } }) {

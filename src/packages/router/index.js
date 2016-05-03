@@ -9,8 +9,7 @@ import bound from '../../decorators/bound';
 const routesKey = Symbol('routes');
 
 class Router extends Base {
-  serializer = Serializer.create();
-
+  serializer = new Serializer();
   controllers = new Map();
 
   constructor() {
@@ -23,7 +22,7 @@ class Router extends Base {
   route(path, options = {}) {
     const { method, action } = options;
     const routes = this[routesKey];
-    const route = Route.create({
+    const route = new Route({
       path,
       method,
       action,

@@ -4,14 +4,7 @@ import { line } from '../../logger';
 import underscore from '../../../utils/underscore';
 
 const { isArray } = Array;
-
-const {
-  assign,
-  create,
-  defineProperties,
-  defineProperty,
-  entries
-} = Object;
+const { create, defineProperties, entries } = Object;
 
 const REFS = new WeakMap();
 
@@ -72,27 +65,25 @@ function refsFor(instance) {
 }
 
 function initializeHooks(model, hooks) {
-  defineProperty(model, 'hooks', {
-    value: entries({ ...DEFAULT_HOOKS, ...hooks })
-      .filter(([key]) => {
-        const isValid = VALID_HOOKS.indexOf(key) >= 0;
+  return entries({ ...DEFAULT_HOOKS, ...hooks })
+    .filter(([key]) => {
+      const isValid = VALID_HOOKS.indexOf(key) >= 0;
 
-        if (!isValid) {
-          model.logger.warn(line`
-            Invalid hook '${key}' will not be added to Model '${model.name}'.
-            Valid hooks are ${VALID_HOOKS.map(h => `'${h}'`).join(', ')}.
-          `);
-        }
+      if (!isValid) {
+        model.logger.warn(line`
+          Invalid hook '${key}' will not be added to Model '${model.name}'.
+          Valid hooks are ${VALID_HOOKS.map(h => `'${h}'`).join(', ')}.
+        `);
+      }
 
-        return isValid;
-      })
-      .reduce((hash, [key, hook]) => {
-        return {
-          ...hash,
-          [key]: async (...args) => await hook.apply(model, args)
-        };
-      }, create(null))
-  });
+      return isValid;
+    })
+    .reduce((hash, [key, hook]) => {
+      return {
+        ...hash,
+        [key]: async (...args) => await hook.apply(model, args)
+      };
+    }, create(null));
 }
 
 function initializeProps(prototype, attributes, relationships) {
@@ -107,16 +98,34 @@ function initializeProps(prototype, attributes, relationships) {
           return refs[key] || defaultValue;
         },
 
-        set(value) {
+        set(nextValue) {
           const refs = refsFor(this);
+          const currentValue = refs[key] || defaultValue;
 
-          if (type === 'tinyint') {
-            value = Boolean(value);
-          } else if (!value && !nullable) {
-            return;
+          if (nextValue !== currentValue) {
+            const { initialized, initialValues } = this;
+
+            if (type === 'tinyint') {
+              nextValue = Boolean(nextValue);
+            } else if (!nextValue && !nullable) {
+              return;
+            }
+
+            refs[key] = nextValue;
+
+            if (initialized) {
+              const { dirtyAttributes } = this;
+              const initialValue = initialValues.get(key) || defaultValue;
+
+              if (nextValue !== initialValue) {
+                dirtyAttributes.add(key);
+              } else {
+                dirtyAttributes.delete(key);
+              }
+            } else {
+              initialValues.set(key, nextValue);
+            }
           }
-
-          refs[key] = value;
         }
       };
 
@@ -167,9 +176,11 @@ export default async function initializeModel(store, model, table) {
     .reduce((hash, [columnName, value]) => {
       return {
         ...hash,
+
         [camelize(columnName, true)]: {
           ...value,
           columnName,
+
           docName: dasherize(columnName)
         }
       };
@@ -224,17 +235,63 @@ export default async function initializeModel(store, model, table) {
       };
     }, {});
 
-  assign(model, {
-    store,
-    table,
-    logger,
-    attributes,
-    belongsTo,
-    hasOne,
-    hasMany
-  });
+  defineProperties(model, {
+    store: {
+      value: store,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    },
 
-  initializeHooks(model, hooks);
+    table: {
+      value: table,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    },
+
+    logger: {
+      value: logger,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    },
+
+    attributes: {
+      value: attributes,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    },
+
+    belongsTo: {
+      value: belongsTo,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    },
+
+    hasOne: {
+      value: hasOne,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    },
+
+    hasMany: {
+      value: hasMany,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    },
+
+    hooks: {
+      value: initializeHooks(model, hooks),
+      writable: false,
+      enumerable: false,
+      configurable: false
+    }
+  });
 
   initializeProps(model.prototype, attributes, {
     ...belongsTo,

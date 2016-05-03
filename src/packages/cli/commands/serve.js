@@ -34,7 +34,7 @@ export default async function serve(port = 4000) {
       });
     }
   } else {
-    await Application.create({
+    await new Application({
       ...config,
       port,
       logger

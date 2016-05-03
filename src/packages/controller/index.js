@@ -1,3 +1,5 @@
+import Promise from 'bluebird';
+
 import Base from '../base';
 
 import formatInclude from './utils/format-include';
