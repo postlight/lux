@@ -25,14 +25,16 @@ export default async function create(name) {
   await Promise.all([
     fs.mkdirAsync(`${project}/app`),
     fs.mkdirAsync(`${project}/bin`),
-    fs.mkdirAsync(`${project}/config`)
+    fs.mkdirAsync(`${project}/config`),
+    fs.mkdirAsync(`${project}/db`)
   ]);
 
   await Promise.all([
     fs.mkdirAsync(`${project}/app/models`),
     fs.mkdirAsync(`${project}/app/serializers`),
     fs.mkdirAsync(`${project}/app/controllers`),
-    fs.mkdirAsync(`${project}/config/environments`)
+    fs.mkdirAsync(`${project}/config/environments`),
+    fs.mkdirAsync(`${project}/db/migrate`)
   ]);
 
   await Promise.all([
@@ -117,6 +119,7 @@ ${green('create')} config/environments/development.json
 ${green('create')} config/environments/test.json
 ${green('create')} config/environments/production.json
 ${green('create')} config/database.json
+${green('create')} db/migrate
 ${green('create')} README.md
 ${green('create')} LICENSE
 ${green('create')} package.json

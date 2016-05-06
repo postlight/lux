@@ -1,9 +1,11 @@
+import moment from 'moment';
 import { green } from 'colors/safe';
 import { pluralize } from 'inflection';
 
 import fs from '../../fs';
 
 import modelTemplate from '../templates/model';
+import migrationTemplate from '../templates/migration';
 import serializerTemplate from '../templates/serializer';
 import controllerTemplate from '../templates/controller';
 
@@ -17,6 +19,10 @@ export async function generateType(type, name, pwd) {
       data = modelTemplate(name);
       break;
 
+    case 'migration':
+      data = migrationTemplate();
+      break;
+
     case 'serializer':
       data = serializerTemplate(name);
       break;
@@ -26,11 +32,16 @@ export async function generateType(type, name, pwd) {
       break;
   }
 
-  if (type !== 'model' && name !== 'application') {
+  if (type !== 'model' && type !== 'migration' && name !== 'application') {
     name = pluralize(name);
   }
 
-  path = `app/${pluralize(type)}/${name}.js`;
+  if (type === 'migration') {
+    path = `db/migrate/${moment().format('YYYYMMDDHHmmssSS')}-${name}.js`;
+  } else {
+    path = `app/${pluralize(type)}/${name}.js`;
+  }
+
   await fs.writeFile(`${pwd}/${path}`, data, 'utf8');
 
   console.log(`${green('create')} ${path}`);

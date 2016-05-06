@@ -184,7 +184,11 @@ class Model {
       .del();
 
     if (debug) {
-      const { constructor: { logger } } = this;
+      const {
+        constructor: {
+          logger
+        }
+      } = this;
 
       query.on('query', () => {
         setImmediate(() => logger.log(sql`${query.toString()}`));

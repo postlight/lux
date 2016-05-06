@@ -27,7 +27,7 @@ class Application extends Base {
 
   async boot() {
     const { root, router, logger, domain, server, port } = this;
-    const store = Database.create({
+    const store = new Database({
       logger,
       config: require(`${root}/config/database.json`)
     });

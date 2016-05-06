@@ -5,6 +5,8 @@ import serve from './commands/serve';
 import create from './commands/create';
 import destroy from './commands/destroy';
 import generate from './commands/generate';
+import migrate from './commands/migrate';
+import rollback from './commands/rollback';
 
 import tryCatch from '../../utils/try-catch';
 
@@ -93,6 +95,33 @@ cli
       } else {
         throw new TypeError('Invalid arguements for type or name');
       }
+    }, err => {
+      console.error(err);
+      process.exit(1);
+    });
+  });
+
+cli
+  .command('db:migrate')
+  .description('Run database migrations')
+  .action(async () => {
+    await tryCatch(async () => {
+      await migrate();
+      process.exit(0);
+    }, err => {
+      console.error(err);
+      process.exit(1);
+    });
+  });
+
+
+cli
+  .command('db:rollback')
+  .description('Rollback the last database migration')
+  .action(async () => {
+    await tryCatch(async () => {
+      await rollback();
+      process.exit(0);
     }, err => {
       console.error(err);
       process.exit(1);
