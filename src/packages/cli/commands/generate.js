@@ -5,11 +5,14 @@ import { pluralize } from 'inflection';
 import fs from '../../fs';
 
 import modelTemplate from '../templates/model';
-import migrationTemplate from '../templates/migration';
 import serializerTemplate from '../templates/serializer';
 import controllerTemplate from '../templates/controller';
+import emptyMigrationTemplate from '../templates/empty-migration';
+import modelMigrationTemplate from '../templates/model-migration';
 
-export async function generateType(type, name, pwd) {
+const { env: { PWD } } = process;
+
+export async function generateType(type, name, pwd, args = []) {
   let path, data;
 
   type = type.toLowerCase();
@@ -20,7 +23,11 @@ export async function generateType(type, name, pwd) {
       break;
 
     case 'migration':
-      data = migrationTemplate();
+      data = emptyMigrationTemplate();
+      break;
+
+    case 'model-migration':
+      data = modelMigrationTemplate(name, args);
       break;
 
     case 'serializer':
@@ -37,26 +44,30 @@ export async function generateType(type, name, pwd) {
   }
 
   if (type === 'migration') {
-    path = `db/migrate/${moment().format('YYYYMMDDHHmmssSS')}-${name}.js`;
+    const timestamp = moment().format('YYYYMMDDHHmmssSS');
+
+    path = `db/migrate/${timestamp}-${name}.js`;
+  } else if (type === 'model-migration') {
+    const timestamp = moment().format('YYYYMMDDHHmmssSS');
+
+    path = `db/migrate/${timestamp}-create-${pluralize(name)}.js`;
   } else {
     path = `app/${pluralize(type)}/${name}.js`;
   }
 
-  await fs.writeFile(`${pwd}/${path}`, data, 'utf8');
-
+  await fs.writeFileAsync(`${pwd}/${path}`, `${data}\n`, 'utf8');
   console.log(`${green('create')} ${path}`);
 }
 
-export default async function generate(type, name, pwd) {
-  pwd = pwd ? pwd : process.env.PWD;
-
+export default async function generate(type, name, pwd = PWD, args = []) {
   if (type === 'resource') {
     await Promise.all([
-      generateType('model', name, pwd),
-      generateType('serializer', name, pwd),
-      generateType('controller', name, pwd)
+      generateType('model', name, pwd, args),
+      generateType('model-migration', name, pwd, args),
+      generateType('serializer', name, pwd, args),
+      generateType('controller', name, pwd, args)
     ]);
   } else {
-    await generateType(type, name, pwd);
+    await generateType(type, name, pwd, args);
   }
 }

@@ -6,12 +6,10 @@ import {
   MigrationsPendingError
 } from './errors';
 
-import fs from '../fs';
-
 import connect from './utils/connect';
 import initializeModel from './utils/initialize-model';
-import getPendingMigrations from './utils/get-pending-migrations';
-import createMigrationsTable from './utils/create-migrations-table';
+import createMigrations from './utils/create-migrations';
+import pendingMigrations from './utils/pending-migrations';
 
 import bound from '../../decorators/bound';
 import readonly from '../../decorators/readonly';
@@ -20,7 +18,7 @@ import nonconfigurable from '../../decorators/nonconfigurable';
 
 const { defineProperties } = Object;
 const { worker, isMaster } = cluster;
-const { env: { PWD, NODE_ENV: environment = 'development' } } = process;
+const { env: { NODE_ENV: environment = 'development' } } = process;
 
 class Database {
   debug;
@@ -94,9 +92,9 @@ class Database {
     const { connection, schema } = this;
 
     if (isMaster || worker && worker.id === 1) {
-      await createMigrationsTable(schema);
+      await createMigrations(schema);
 
-      const pending = await getPendingMigrations(() => {
+      const pending = await pendingMigrations(() => {
         return connection('migrations');
       });
 
@@ -118,52 +116,9 @@ class Database {
         })
     );
   }
-
-  async migrate() {
-    const { connection, schema } = this;
-
-    await createMigrationsTable(schema);
-
-    const pending = await getPendingMigrations(() => {
-      return connection('migrations');
-    });
-
-    if (pending.length) {
-      await Promise.all(
-        pending.map(async (migration) => {
-          const { up } = require(`${PWD}/db/migrate/${migration}`);
-          const version = migration.replace(/^(\d{16})-.+$/g, '$1');
-
-          await up(schema());
-          await connection('migrations').insert({ version });
-        })
-      );
-    }
-  }
-
-  async rollback() {
-    const { connection, schema } = this;
-    const migrations = await fs.readdirAsync(`${PWD}/db/migrate`);
-
-    await createMigrationsTable(schema);
-
-    if (migrations.length) {
-      const { version } = await connection('migrations')
-        .orderBy('version', 'desc')
-        .first();
-
-      const target = migrations.find(migration => {
-        return migration.indexOf(version) === 0;
-      });
-
-      if (target) {
-        const { down } = require(`${PWD}/db/migrate/${target}`);
-
-        await down(schema());
-        await connection('migrations').where({ version }).del();
-      }
-    }
-  }
 }
 
+export connect from './utils/connect';
+export createMigrations from './utils/create-migrations';
+export pendingMigrations from './utils/pending-migrations';
 export default Database;

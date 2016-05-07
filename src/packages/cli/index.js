@@ -1,16 +1,24 @@
 import cli from 'commander';
 
-import test from './commands/test';
-import serve from './commands/serve';
-import create from './commands/create';
-import destroy from './commands/destroy';
-import generate from './commands/generate';
-import migrate from './commands/migrate';
-import rollback from './commands/rollback';
+import {
+  test,
+  serve,
+  create,
+  destroy,
+  generate,
+  dbCreate,
+  dbDrop,
+  dbSeed,
+  dbMigrate,
+  dbRollback
+} from './commands';
 
 import tryCatch from '../../utils/try-catch';
+import { version as VERSION } from '../../../package.json';
 
-cli.version('0.0.1-beta.7');
+const { argv, exit, env: { PWD } } = process;
+
+cli.version(VERSION);
 
 cli
   .command('n <name>')
@@ -19,9 +27,10 @@ cli
   .action(async name => {
     await tryCatch(async () => {
       await create(name);
+      exit(0);
     }, err => {
       console.error(err);
-      process.exit(1);
+      exit(1);
     });
   });
 
@@ -32,9 +41,10 @@ cli
   .action(async (...args) => {
     await tryCatch(async () => {
       await test();
+      exit(0);
     }, err => {
       console.error(err);
-      process.exit(1);
+      exit(1);
     });
   });
 
@@ -59,7 +69,7 @@ cli
       await serve(port);
     }, err => {
       console.error(err);
-      process.exit(1);
+      exit(1);
     });
   });
 
@@ -69,16 +79,18 @@ cli
   .description('Example: lux generate model user')
   .option('type')
   .option('name')
-  .action(async (type, name) => {
+  .action(async (type, name, ...args) => {
     await tryCatch(async () => {
       if (typeof type === 'string' && typeof name === 'string') {
-        await generate(type, name);
+        args = args.filter(a => typeof a === 'string');
+        await generate(type, name, PWD, args);
+        exit(0);
       } else {
         throw new TypeError('Invalid arguements for type or name');
       }
     }, err => {
       console.error(err);
-      process.exit(1);
+      exit(1);
     });
   });
 
@@ -92,12 +104,53 @@ cli
     await tryCatch(async () => {
       if (typeof type === 'string' && typeof name === 'string') {
         await destroy(type, name);
+        exit(0);
       } else {
         throw new TypeError('Invalid arguements for type or name');
       }
     }, err => {
       console.error(err);
-      process.exit(1);
+      exit(1);
+    });
+  });
+
+cli
+  .command('db:create')
+  .description('Create your database schema')
+  .action(async () => {
+    await tryCatch(async () => {
+      await dbCreate();
+      exit(0);
+    }, err => {
+      console.error(err);
+      exit(1);
+    });
+  });
+
+cli
+  .command('db:drop')
+  .description('Drop your database schema')
+  .action(async () => {
+    await tryCatch(async () => {
+      await dbDrop();
+      exit(0);
+    }, err => {
+      console.error(err);
+      exit(1);
+    });
+  });
+
+cli
+  .command('db:reset')
+  .description('Drop your database schema and create a new schema')
+  .action(async () => {
+    await tryCatch(async () => {
+      await dbDrop();
+      await dbCreate();
+      exit(0);
+    }, err => {
+      console.error(err);
+      exit(1);
     });
   });
 
@@ -106,26 +159,38 @@ cli
   .description('Run database migrations')
   .action(async () => {
     await tryCatch(async () => {
-      await migrate();
-      process.exit(0);
+      await dbMigrate();
+      exit(0);
     }, err => {
       console.error(err);
-      process.exit(1);
+      exit(1);
     });
   });
-
 
 cli
   .command('db:rollback')
   .description('Rollback the last database migration')
   .action(async () => {
     await tryCatch(async () => {
-      await rollback();
-      process.exit(0);
+      await dbRollback();
+      exit(0);
     }, err => {
       console.error(err);
-      process.exit(1);
+      exit(1);
     });
   });
 
-cli.parse(process.argv);
+cli
+  .command('db:seed')
+  .description('Add fixtures to your db from the seed function')
+  .action(async () => {
+    await tryCatch(async () => {
+      await dbSeed();
+      exit(0);
+    }, err => {
+      console.error(err);
+      exit(1);
+    });
+  });
+
+cli.parse(argv);

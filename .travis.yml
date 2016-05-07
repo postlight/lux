@@ -8,7 +8,6 @@ services:
   - mysql
 
 before_script:
-  - cat test/fixtures/data.sql | mysql -u travis
   - npm install -g gulp
   - npm install -g lux-framework
 

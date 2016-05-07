@@ -1,4 +1,4 @@
-export default async function createMigrationsTable(schema) {
+export default async function createMigrations(schema) {
   const hasTable = await schema().hasTable('migrations');
 
   if (!hasTable) {

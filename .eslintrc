@@ -12,6 +12,7 @@
     "Symbol": true,
     "WeakMap": true,
     "before": true,
+    "after": true,
     "describe": true,
     "it": true
   },

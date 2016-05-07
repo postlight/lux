@@ -5,30 +5,24 @@ export default (name) => {
 {
   "development": {
     "username": "root",
-    "password": "root",
+    "password": null,
     "database": "${name}_dev",
     "host": "127.0.0.1",
-    "port": "3306",
-    "dialect": "mysql",
-    "logging": false
+    "dialect": "mysql"
   },
   "test": {
     "username": "root",
-    "password": "root",
+    "password": null,
     "database": "${name}_test",
     "host": "127.0.0.1",
-    "port": "3306",
-    "dialect": "mysql",
-    "logging": false
+    "dialect": "mysql"
   },
   "production": {
     "username": "root",
-    "password": "root",
+    "password": null,
     "database": "${name}_prod",
     "host": "127.0.0.1",
-    "port": "3306",
-    "dialect": "mysql",
-    "logging": false
+    "dialect": "mysql"
   }
 }
   `.substr(1).trim();

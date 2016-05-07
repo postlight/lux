@@ -11,5 +11,6 @@ class ${name} extends Model {
 }
 
 export default ${name};
+
   `.substr(1).trim();
 };

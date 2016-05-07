@@ -1,19 +1,26 @@
-import os from 'os';
 import path from 'path';
 import { spawn } from 'child_process';
 
+import exec from '../src/packages/cli/utils/exec';
+
 let app;
 
-before(done => {
+before(async done => {
   const testApp = path.join(__dirname, 'test-app');
 
-  app = spawn('lux', ['serve'], {
+  const options = {
     cwd: testApp,
     env: {
       ...process.env,
       PWD: testApp
     }
-  });
+  };
+
+  await exec('node ../../bin/lux db:reset', options);
+  await exec('node ../../bin/lux db:migrate', options);
+  await exec('node ../../bin/lux db:seed', options);
+
+  app = spawn('lux', ['serve'], options);
 
   app.once('error', done);
 
