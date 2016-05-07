@@ -8,10 +8,10 @@ export default (name, env) => {
   }
 
   return `
-{
-  "domain": "http://localhost:4000",
-  "sessionKey": "${keyPrefix}::session",
-  "sessionSecret": "${randomBytes(32).toString('hex')}"
-}
+const domain = "http://localhost:4000";
+const sessionKey = "${keyPrefix}::session";
+const sessionSecret = "${randomBytes(32).toString('hex')}";
+
+export { domain, sessionKey, sessionSecret };
   `.substr(1).trim();
 };
