@@ -1,5 +1,5 @@
 export default function* range(start = 1, end = 1) {
-  do {
+  while (start <= end) {
     yield start++;
-  } while (start <= end);
+  }
 }

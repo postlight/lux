@@ -10,16 +10,18 @@ import controllerTemplate from '../templates/controller';
 import emptyMigrationTemplate from '../templates/empty-migration';
 import modelMigrationTemplate from '../templates/model-migration';
 
+import indent from '../utils/indent';
+
 const { env: { PWD } } = process;
 
-export async function generateType(type, name, pwd, args = []) {
+export async function generateType(type, name, pwd, attrs = []) {
   let path, data;
 
   type = type.toLowerCase();
 
   switch (type) {
     case 'model':
-      data = modelTemplate(name);
+      data = modelTemplate(name, attrs);
       break;
 
     case 'migration':
@@ -27,15 +29,15 @@ export async function generateType(type, name, pwd, args = []) {
       break;
 
     case 'model-migration':
-      data = modelMigrationTemplate(name, args);
+      data = modelMigrationTemplate(name, attrs);
       break;
 
     case 'serializer':
-      data = serializerTemplate(name);
+      data = serializerTemplate(name, attrs);
       break;
 
     case 'controller':
-      data = controllerTemplate(name);
+      data = controllerTemplate(name, attrs);
       break;
   }
 
@@ -59,15 +61,30 @@ export async function generateType(type, name, pwd, args = []) {
   console.log(`${green('create')} ${path}`);
 }
 
-export default async function generate(type, name, pwd = PWD, args = []) {
+export default async function generate(type, name, pwd = PWD, attrs = []) {
   if (type === 'resource') {
+    const routes = (await fs.readFileAsync(`${pwd}/app/routes.js`, 'utf8'))
+      .split('\n')
+      .reduce((str, line, index, array) => {
+        const closeIndex = array.lastIndexOf('};');
+
+        if (index <= closeIndex) {
+          str += `${line}\n`;
+        } if (index + 1 === closeIndex) {
+          str += `${indent(2)}resource('${pluralize(name)}');\n`;
+        }
+
+        return str;
+      }, '');
+
     await Promise.all([
-      generateType('model', name, pwd, args),
-      generateType('model-migration', name, pwd, args),
-      generateType('serializer', name, pwd, args),
-      generateType('controller', name, pwd, args)
+      generateType('model', name, pwd, attrs),
+      generateType('model-migration', name, pwd, attrs),
+      generateType('serializer', name, pwd, attrs),
+      generateType('controller', name, pwd, attrs),
+      await fs.writeFileAsync(`${pwd}/app/routes.js`, routes, 'utf8')
     ]);
   } else {
-    await generateType(type, name, pwd, args);
+    await generateType(type, name, pwd, attrs);
   }
 }
