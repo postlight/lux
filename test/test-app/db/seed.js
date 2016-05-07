@@ -5,7 +5,7 @@ import range from '../app/utils/range';
 
 export default async function seed() {
   await Promise.all(
-    [...range(1, 2)].map(n => {
+    [1, 2].map(n => {
       return Author.create({
         name: `New Author ${n}`
       });
