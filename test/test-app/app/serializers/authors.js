@@ -5,6 +5,10 @@ class AuthorsSerializer extends Serializer {
     'name',
     'createdAt'
   ];
+
+  hasMany = [
+    'posts'
+  ];
 }
 
 export default AuthorsSerializer;

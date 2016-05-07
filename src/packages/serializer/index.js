@@ -53,7 +53,7 @@ class Serializer extends Base {
   relationshipsFor(item, include, fields) {
     const { domain, hasOne, hasMany } = this;
     const hash = { data: {}, included: [] };
-    let i, _i, id, key, type, records, related, relatedSerializer;
+    let i, id, key, type, records, related, relatedSerializer;
 
     for (i = 0; i < hasOne.length; i++) {
       key = hasOne[i];
@@ -86,48 +86,52 @@ class Serializer extends Base {
       }
     }
 
-    for (i = 0; i < hasMany.length; i++) {
-      key = hasMany[i];
-      records = item[key];
+    hash.data = {
+      ...hash.data,
 
-      if (records && records.length) {
-        hash.data[key] = [];
-        records = records.slice();
+      ...hasMany.reduce((group, relatedKey) => {
+        records = item[relatedKey];
 
-        for (_i = 0; i < records.length; _i++) {
-          related = records[_i];
-
-          if (related) {
-            id = related.id;
-
-            if (!type) {
-              type = pluralize(related.getModelName());
-            }
-
-            hash.data[key][i] = {
-              id,
-              type,
-
-              links: {
-                self: `${domain}/${type}/${id}`
-              }
-            };
-
-            if (include.indexOf(key) >= 0) {
-              if (!relatedSerializer) {
-                relatedSerializer = this.serializers.get(type);
-              }
-
-              if (relatedSerializer) {
-                hash.included.push(
-                  relatedSerializer.serializeOne(related, [], fields)
-                );
-              }
-            }
-          }
+        if (!records || !records.length) {
+          return group;
         }
-      }
-    }
+
+        return {
+          ...group,
+
+          [relatedKey]: {
+            data: records.map(record => {
+              id = record.id;
+
+              if (!type) {
+                type = pluralize(record.getModelName());
+              }
+
+              if (include.indexOf(relatedKey) >= 0) {
+                if (!relatedSerializer) {
+                  relatedSerializer = this.serializers.get(type);
+                }
+
+                if (relatedSerializer) {
+                  hash.included.push(
+                    relatedSerializer.serializeOne(record, [], fields)
+                  );
+                }
+              }
+
+              return {
+                id,
+                type,
+
+                links: {
+                  self: `${domain}/${type}/${id}`
+                }
+              };
+            })
+          }
+        };
+      }, {})
+    };
 
     return hash;
   }

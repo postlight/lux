@@ -1,2 +1,6 @@
 #!/usr/bin/env node
-require('../dist/packages/cli');
+try {
+  require(`${process.env.PWD}/node_modules/lux-framework/dist/packages/cli`);
+} catch (err) {
+  require('../dist/packages/cli');
+}

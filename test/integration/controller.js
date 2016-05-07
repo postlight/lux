@@ -451,4 +451,18 @@ describe('Integration: class Controller', () => {
       expect(subject.status).to.equal(204);
     });
   });
+
+  describe('#preflight()', () => {
+    let subject;
+
+    before(async () => {
+      subject = await fetch(`${host}/posts`, {
+        method: 'OPTIONS'
+      });
+    });
+
+    it('has 204 status code', () => {
+      expect(subject.status).to.equal(204);
+    });
+  });
 });
