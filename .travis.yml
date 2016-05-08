@@ -9,7 +9,7 @@ services:
 
 before_script:
   - npm install -g gulp
-  - npm install -g lux-framework
+  - npm link
 
 env:
   - NODE_ENV="test"
