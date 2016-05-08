@@ -30,7 +30,7 @@ class Application extends Base {
   async boot() {
     const { root, router, domain, server, port } = this;
     const store = Database.create(
-      require(`${root}/config/database.js`)
+      require(`${root}/config/database`).default
     );
 
     await store.connect();

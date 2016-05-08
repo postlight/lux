@@ -3,7 +3,7 @@ import { randomBytes } from 'crypto';
 import fetch from 'isomorphic-fetch';
 
 import encrypt from '../../../src/packages/session/utils/encrypt';
-import { sessionKey } from '../../test-app/config/environments/test';
+var { default: config } = require('../../test-app/config/environments/test');
 
 const host = 'http://localhost:4000';
 
@@ -13,7 +13,7 @@ describe('Unit: class Session ', () => {
       const session = encrypt('{}', randomBytes(32).toString('hex'));
       const { status, headers } = await fetch(`${host}/posts`, {
         headers: new Headers({
-          'Cookie': `${sessionKey}=${session};`
+          'Cookie': `${config.sessionKey}=${session};`
         })
       });
 

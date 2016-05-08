@@ -10,7 +10,8 @@ const env = process.env.NODE_ENV || 'development';
 
 export default async function serve(port = 4000) {
   const Application = require(`${pwd}/bin/app`);
-  const config = require(`${pwd}/config/environments/${env}.js`);
+  const config = require(`${pwd}/config/environments/${env}`).default;
+
   const logger = await Logger.create();
 
   if (config.port) {
