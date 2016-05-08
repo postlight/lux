@@ -1,10 +1,6 @@
-const { entries } = Object;
+import insert from './utils/insert';
 
-function insert(collection, records) {
-  for (let i = 0; i < collection.length; i++) {
-    collection[i] = records[i];
-  }
-}
+const { entries } = Object;
 
 class Collection extends Array {
   constructor({ model, records = [], related = {} } = {}) {

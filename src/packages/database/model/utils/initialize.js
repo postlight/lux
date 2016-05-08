@@ -1,10 +1,10 @@
 import { camelize, dasherize, singularize } from 'inflection';
 
-import { line } from '../../logger';
-import underscore from '../../../utils/underscore';
+import { line } from '../../../logger';
+import underscore from '../../../../utils/underscore';
 
 const { isArray } = Array;
-const { create, defineProperties, entries } = Object;
+const { create, defineProperties, entries, keys } = Object;
 
 const REFS = new WeakMap();
 
@@ -13,10 +13,12 @@ const VALID_HOOKS = [
   'afterDestroy',
   'afterSave',
   'afterUpdate',
+  'afterValidation',
   'beforeCreate',
   'beforeDestroy',
   'beforeSave',
-  'beforeUpdate'
+  'beforeUpdate',
+  'beforeValidation'
 ];
 
 const DEFAULT_HOOKS = {
@@ -36,6 +38,10 @@ const DEFAULT_HOOKS = {
     return true;
   },
 
+  async afterValidation() {
+    return true;
+  },
+
   async beforeCreate() {
     return true;
   },
@@ -51,6 +57,10 @@ const DEFAULT_HOOKS = {
   async beforeUpdate() {
     return true;
   },
+
+  async beforeValidation() {
+    return true;
+  }
 };
 
 function refsFor(instance) {
@@ -62,28 +72,6 @@ function refsFor(instance) {
   }
 
   return table;
-}
-
-function initializeHooks(model, hooks) {
-  return entries({ ...DEFAULT_HOOKS, ...hooks })
-    .filter(([key]) => {
-      const isValid = VALID_HOOKS.indexOf(key) >= 0;
-
-      if (!isValid) {
-        model.logger.warn(line`
-          Invalid hook '${key}' will not be added to Model '${model.name}'.
-          Valid hooks are ${VALID_HOOKS.map(h => `'${h}'`).join(', ')}.
-        `);
-      }
-
-      return isValid;
-    })
-    .reduce((hash, [key, hook]) => {
-      return {
-        ...hash,
-        [key]: async (...args) => await hook.apply(model, args)
-      };
-    }, create(null));
 }
 
 function initializeProps(prototype, attributes, relationships) {
@@ -168,8 +156,63 @@ function initializeProps(prototype, attributes, relationships) {
   defineProperties(prototype, props);
 }
 
-export default async function initializeModel(store, model, table) {
-  const { hooks } = model;
+function initializeHooks(model, hooks) {
+  return entries({ ...DEFAULT_HOOKS, ...hooks })
+    .filter(([key]) => {
+      const isValid = VALID_HOOKS.indexOf(key) >= 0;
+
+      if (!isValid) {
+        model.logger.warn(line`
+          Invalid hook '${key}' will not be added to Model '${model.name}'.
+          Valid hooks are ${VALID_HOOKS.map(h => `'${h}'`).join(', ')}.
+        `);
+      }
+
+      return isValid;
+    })
+    .reduce((hash, [key, hook]) => {
+      return {
+        ...hash,
+        [key]: async (...args) => await hook.apply(model, args)
+      };
+    }, create(null));
+}
+
+function initializeValidations(model, attributes, validations) {
+  const attributeNames = keys(attributes);
+
+  return entries(validations)
+    .filter(([key, value]) => {
+      let isValid = attributeNames.indexOf(key) >= 0;
+
+      if (!isValid) {
+        model.logger.warn(line`
+          Invalid valiation '${key}' will not be added to Model '${model.name}'.
+          '${key}' is not an attribute of Model '${model.name}'.
+        `);
+      }
+
+      if (typeof value !== 'function') {
+        isValid = false;
+
+        model.logger.warn(line`
+          Invalid valiation '${key}' will not be added to Model '${model.name}'.
+          Validations must be a function.
+        `);
+      }
+
+      return isValid;
+    })
+    .reduce((hash, [key, value]) => {
+      return {
+        ...hash,
+        [key]: value
+      };
+    }, create(null));
+}
+
+export default async function initialize(store, model, table) {
+  const { hooks, validates } = model;
   const { logger } = store;
 
   const attributes = entries(await table().columnInfo())
@@ -287,6 +330,13 @@ export default async function initializeModel(store, model, table) {
 
     hooks: {
       value: initializeHooks(model, hooks),
+      writable: false,
+      enumerable: false,
+      configurable: false
+    },
+
+    validates: {
+      value: initializeValidations(model, attributes, validates),
       writable: false,
       enumerable: false,
       configurable: false

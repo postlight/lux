@@ -1,7 +1,7 @@
 import Promise from 'bluebird';
 
 import formatSelect from './format-select';
-import { sql } from '../../logger';
+import { sql } from '../../../logger';
 
 export default async function fetchHasMany(model, related) {
   const {

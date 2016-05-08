@@ -1,7 +1,7 @@
 export default () => {
   return `
-export default async function seed() {
+export default async () => {
 
-}
+};
   `.substr(1).trim();
 };

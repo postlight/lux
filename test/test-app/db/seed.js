@@ -3,7 +3,7 @@ import Post from '../app/models/post';
 
 import range from '../app/utils/range';
 
-export default async function seed() {
+export default async () => {
   await Promise.all(
     [1, 2].map(n => {
       return Author.create({
@@ -22,4 +22,4 @@ export default async function seed() {
       });
     })
   );
-}
+};

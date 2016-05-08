@@ -6,8 +6,9 @@ import {
   MigrationsPendingError
 } from './errors';
 
+import { initialize } from './model';
+
 import connect from './utils/connect';
-import initializeModel from './utils/initialize-model';
 import createMigrations from './utils/create-migrations';
 import pendingMigrations from './utils/pending-migrations';
 
@@ -110,7 +111,7 @@ class Database {
     return await Promise.all(
       [...models.values()]
         .map(model => {
-          return initializeModel(this, model, () => {
+          return initialize(this, model, () => {
             return connection(model.tableName);
           });
         })
@@ -121,4 +122,6 @@ class Database {
 export connect from './utils/connect';
 export createMigrations from './utils/create-migrations';
 export pendingMigrations from './utils/pending-migrations';
+
+export Model from './model';
 export default Database;

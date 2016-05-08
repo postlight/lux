@@ -1,20 +1,21 @@
 import Promise from 'bluebird';
 import { dasherize, pluralize } from 'inflection';
 
-import Collection from './collection';
-import { sql } from '../logger';
+import Collection from '../collection';
+import { sql } from '../../logger';
 
+import validate from './utils/validate';
 import getOffset from './utils/get-offset';
 import formatSelect from './utils/format-select';
 import fetchHasMany from './utils/fetch-has-many';
 
-import pick from '../../utils/pick';
-import omit from '../../utils/omit';
-import underscore from '../../utils/underscore';
+import pick from '../../../utils/pick';
+import omit from '../../../utils/omit';
+import underscore from '../../../utils/underscore';
 
-import readonly from '../../decorators/readonly';
-import nonenumerable from '../../decorators/nonenumerable';
-import nonconfigurable from '../../decorators/nonconfigurable';
+import readonly from '../../../decorators/readonly';
+import nonenumerable from '../../../decorators/nonenumerable';
+import nonconfigurable from '../../../decorators/nonconfigurable';
 
 const { isArray } = Array;
 const { assign, entries, keys } = Object;
@@ -32,8 +33,8 @@ class Model {
   static _tableName;
 
   static hooks = {};
+  static validates = {};
   static primaryKey = 'id';
-  static validations = {};
   static defaultPerPage = 25;
 
   @nonenumerable
@@ -81,7 +82,8 @@ class Model {
   }
 
   static get tableName() {
-    return this._tableName ? this._tableName : pluralize(underscore(this.name));
+    return this._tableName ?
+      this._tableName : pluralize(underscore(this.name));
   }
 
   static set tableName(value) {
@@ -123,8 +125,10 @@ class Model {
         hooks: {
           afterUpdate,
           afterSave,
+          afterValidation,
           beforeUpdate,
-          beforeSave
+          beforeSave,
+          beforeValidation
         }
       }
     } = this;
@@ -132,8 +136,14 @@ class Model {
     assign(this, props);
 
     if (this.isDirty) {
+      await beforeValidation(this);
+
+      validate(this);
+
+      await afterValidation(this);
       await beforeUpdate(this);
       await beforeSave(this);
+
 
       this.updatedAt = new Date();
 
@@ -242,8 +252,10 @@ class Model {
       hooks: {
         afterCreate,
         afterSave,
+        afterValidation,
         beforeCreate,
-        beforeSave
+        beforeSave,
+        beforeValidation
       }
     } = this;
 
@@ -254,6 +266,11 @@ class Model {
       updatedAt: datetime
     }, false);
 
+    await beforeValidation(instance);
+
+    validate(instance);
+
+    await afterValidation(instance);
     await beforeCreate(instance);
     await beforeSave(instance);
 
@@ -474,4 +491,5 @@ class Model {
   }
 }
 
+export initialize from './utils/initialize';
 export default Model;
