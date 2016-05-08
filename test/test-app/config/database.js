@@ -1,7 +1,7 @@
 export default {
   development: {
     username: 'root',
-    password: '',
+    password: 'root',
     database: 'lux_test',
     host: '127.0.0.1',
     port: '3306',
@@ -11,7 +11,7 @@ export default {
 
   test: {
     username: 'root',
-    password: '',
+    password: 'root',
     database: 'lux_test',
     host: '127.0.0.1',
     port: '3306',
@@ -21,7 +21,7 @@ export default {
 
   production: {
     username: 'root',
-    password: '',
+    password: 'root',
     database: 'lux_test',
     host: '127.0.0.1',
     port: '3306',
