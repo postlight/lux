@@ -16,9 +16,9 @@ before(async done => {
     }
   };
 
-  await exec('node ../../bin/lux db:reset', options);
-  await exec('node ../../bin/lux db:migrate', options);
-  await exec('node ../../bin/lux db:seed', options);
+  await exec('lux db:reset', options);
+  await exec('lux db:migrate', options);
+  await exec('lux db:seed', options);
 
   app = spawn('lux', ['serve'], options);
 
