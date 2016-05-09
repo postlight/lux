@@ -3,7 +3,7 @@ import { randomBytes } from 'crypto';
 import fetch from 'isomorphic-fetch';
 
 import encrypt from '../../../src/packages/session/utils/encrypt';
-var { default: config } = require('../../test-app/config/environments/test');
+import config from '../../test-app/config/environments/test';
 
 const host = 'http://localhost:4000';
 
