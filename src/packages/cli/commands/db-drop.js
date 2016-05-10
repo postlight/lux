@@ -6,11 +6,13 @@ export default async function dbDrop() {
   require(`${PWD}/node_modules/babel-core/register`);
 
   const {
-    [environment]: {
-      database,
-      ...config
+    default: {
+      [environment]: {
+        database,
+        ...config
+      }
     }
-  } = require(`${PWD}/config/database.json`);
+  } = require(`${PWD}/config/database`);
 
   const { schema } = connect(config);
   const query = schema.raw(`DROP DATABASE IF EXISTS ${database}`);

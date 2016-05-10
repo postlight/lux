@@ -9,7 +9,7 @@ export default async function dbSeed() {
 
   await new Database({
     logger: await Logger.create(),
-    config: require(`${PWD}/config/database.json`)
+    config: require(`${PWD}/config/database`).default
   }).define(await loader('models'));
 
   await require(`${PWD}/db/seed`).default();

@@ -29,7 +29,7 @@ class Application extends Base {
     const { root, router, logger, domain, server, port } = this;
     const store = new Database({
       logger,
-      config: require(`${root}/config/database.json`)
+      config: require(`${root}/config/database`).default
     });
 
     let [

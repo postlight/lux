@@ -6,11 +6,13 @@ export default async function dbCreate() {
   require(`${PWD}/node_modules/babel-core/register`);
 
   const {
-    [environment]: {
-      database,
-      ...config
+    default: {
+      [environment]: {
+        database,
+        ...config
+      }
     }
-  } = require(`${PWD}/config/database.json`);
+  } = require(`${PWD}/config/database`);
 
   const { schema } = connect(config);
   const query = schema.raw(`CREATE DATABASE IF NOT EXISTS ${database}`);

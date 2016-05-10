@@ -10,7 +10,7 @@ export default async function dbMigrate() {
 
   const { connection, schema } = new Database({
     logger: await Logger.create(),
-    config: require(`${PWD}/config/database.json`)
+    config: require(`${PWD}/config/database`).default
   });
 
   await createMigrations(schema);

@@ -10,7 +10,8 @@ import appTemplate from '../templates/application';
 import appBinaryTemplate from '../templates/app-binary';
 import configTemplate from '../templates/config';
 import routesTemplate from '../templates/routes';
-import dbJSONTemplate from '../templates/database-json';
+import dbTemplate from '../templates/database';
+import seedTemplate from '../templates/seed';
 import pkgJSONTemplate from '../templates/package-json';
 import babelRcTemplate from '../templates/babel-rc';
 import readmeTemplate from '../templates/readme';
@@ -57,26 +58,32 @@ export default async function create(name) {
     ),
 
     fs.writeFileAsync(
-      `${project}/config/environments/development.json`,
+      `${project}/config/environments/development.js`,
       configTemplate(name, 'development'),
       'utf8'
     ),
 
     fs.writeFileAsync(
-      `${project}/config/environments/test.json`,
+      `${project}/config/environments/test.js`,
       configTemplate(name, 'test'),
       'utf8'
     ),
 
     fs.writeFileAsync(
-      `${project}/config/environments/production.json`,
+      `${project}/config/environments/production.js`,
       configTemplate(name, 'production'),
       'utf8'
     ),
 
     fs.writeFileAsync(
-      `${project}/config/database.json`,
-      dbJSONTemplate(name),
+      `${project}/config/database.js`,
+      dbTemplate(name),
+      'utf8'
+    ),
+
+    fs.writeFileAsync(
+      `${project}/db/seed.js`,
+      seedTemplate(),
       'utf8'
     ),
 
@@ -115,11 +122,12 @@ export default async function create(name) {
 ${green('create')} app/index.js
 ${green('create')} app/routes.js
 ${green('create')} bin/app.js
-${green('create')} config/environments/development.json
-${green('create')} config/environments/test.json
-${green('create')} config/environments/production.json
-${green('create')} config/database.json
+${green('create')} config/environments/development.js
+${green('create')} config/environments/test.js
+${green('create')} config/environments/production.js
+${green('create')} config/database.js
 ${green('create')} db/migrate
+${green('create')} db/seed.js
 ${green('create')} README.md
 ${green('create')} LICENSE
 ${green('create')} package.json
