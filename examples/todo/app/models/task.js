@@ -1,4 +1,4 @@
-import { Model } from '../../../../dist';
+import { Model } from 'lux-framework';
 
 class Task extends Model {
   static attributes = {

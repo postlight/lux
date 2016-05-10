@@ -1,4 +1,4 @@
-import { Controller } from '../../../../dist';
+import { Controller } from 'lux-framework';
 
 class TasksController extends Controller {
   params = [
