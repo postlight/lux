@@ -13,8 +13,9 @@ before_script:
   - npm link
 
 env:
-  - CXX=g++-4.8
-  - NODE_ENV="test"
+  global:
+    - CXX=g++-4.8
+    - NODE_ENV=test
 
 addons:
   apt:
