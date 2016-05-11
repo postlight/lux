@@ -1,3 +1,5 @@
+sudo: true
+
 language: node_js
 
 node_js:
@@ -12,4 +14,14 @@ before_script:
   - npm link
 
 env:
-  - NODE_ENV="test"
+  global:
+    - CXX=g++-4.8
+    - NODE_ENV=test
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+
+    packages:
+      - g++-4.8
