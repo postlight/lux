@@ -3,21 +3,29 @@ sudo: true
 language: node_js
 
 node_js:
-  - "6"
-  - "5"
-  - "4"
+  - '4'
+  - '5'
+  - '6'
 
 services:
   - mysql
+  - postgresql
 
 before_script:
-  - npm install -g gulp
+  - mysql -e 'create database lux_test;'
+  - psql -c 'create database lux_test;' -U postgres
+  - touch test/test-app/db/lux_test_test.sqlite
   - npm link
 
 env:
   global:
     - CXX=g++-4.8
     - NODE_ENV=test
+
+  matrix:
+    - DB=mysql
+    - DB=sqlite
+    - DB=postgresql
 
 addons:
   apt:
@@ -26,3 +34,8 @@ addons:
 
     packages:
       - g++-4.8
+      - gcc-4.8
+      - postgresql-9.4
+
+notifications:
+  email: false

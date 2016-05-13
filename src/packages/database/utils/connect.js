@@ -10,13 +10,13 @@ export default function connect(appPath, config = {}) {
   let knex;
 
   const {
-    host = '127.0.0.1',
+    host,
     pool,
     socket,
     driver,
     database,
     username,
-    password = null
+    password
   } = config;
 
   if (VALID_DRIVERS.indexOf(driver) < 0) {

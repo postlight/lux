@@ -1,32 +1,45 @@
 import path from 'path';
 
 import Logger from '../dist/packages/logger';
+
 import exec from '../dist/packages/cli/utils/exec';
+import tryCatch from '../dist/utils/try-catch';
 
 const { assign } = Object;
-const { env: { NODE_ENV = 'development' } } = process;
 
-before(async done => {
+const {
+  env: {
+    TRAVIS = false,
+    NODE_ENV = 'development'
+  }
+} = process;
+
+before(done => {
   process.once('ready', done);
 
-  const appPath = path.join(__dirname, 'test-app');
-  const options = { cwd: appPath };
+  tryCatch(async () => {
+    const appPath = path.join(__dirname, 'test-app');
+    const options = { cwd: appPath };
 
-  await exec('lux db:reset', options);
-  await exec('lux db:migrate', options);
-  await exec('lux db:seed', options);
+    if (!TRAVIS) {
+      await exec('lux db:reset', options);
+    }
 
-  const TestApp = require(`${appPath}/bin/app`);
+    await exec('lux db:migrate', options);
+    await exec('lux db:seed', options);
 
-  const {
-    default: config
-  } = require(`./test-app/config/environments/${NODE_ENV}`);
+    const TestApp = require(`${appPath}/bin/app`);
 
-  assign(config, {
-    port: 4000,
-    path: appPath,
-    logger: await Logger.create()
-  });
+    const {
+      default: config
+    } = require(`./test-app/config/environments/${NODE_ENV}`);
 
-  await new TestApp(config).boot();
+    assign(config, {
+      port: 4000,
+      path: appPath,
+      logger: await Logger.create()
+    });
+
+    await new TestApp(config).boot();
+  }, done);
 });
