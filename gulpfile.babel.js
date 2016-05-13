@@ -4,7 +4,6 @@ import mocha from 'gulp-mocha';
 import eslint from 'gulp-eslint';
 import uglify from 'gulp-uglify';
 
-import exec from './src/packages/cli/utils/exec';
 import rmrf from './src/packages/cli/utils/rmrf';
 
 gulp.task('clean', () => {
@@ -18,12 +17,6 @@ gulp.task('build', ['lint', 'clean'], () => {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('build:test', ['build'], () => {
-  return exec('npm install', {
-    cwd: `${__dirname}/test/test-app`
-  });
-});
-
 gulp.task('lint', () => {
   return gulp.src('src/**/*.js')
     .pipe(eslint())
@@ -31,7 +24,7 @@ gulp.task('lint', () => {
     .pipe(eslint.failAfterError());
 });
 
-gulp.task('test', ['build:test'], () => {
+gulp.task('test', ['build'], () => {
   return gulp.src([
     'test/helper.js',
     'test/unit/**/*.js',
