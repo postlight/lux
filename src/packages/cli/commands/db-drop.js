@@ -1,22 +1,29 @@
 import { connect } from '../../database';
 
-const { env: { PWD, NODE_ENV: environment = 'development' } } = process;
+import rmrf from '../utils/rmrf';
+
+const { env: { PWD, NODE_ENV = 'development' } } = process;
 
 export default async function dbDrop() {
   require(`${PWD}/node_modules/babel-core/register`);
 
   const {
     default: {
-      [environment]: {
+      [NODE_ENV]: {
+        driver,
         database,
         ...config
       }
     }
   } = require(`${PWD}/config/database`);
 
-  const { schema } = connect(config);
-  const query = schema.raw(`DROP DATABASE IF EXISTS ${database}`);
+  if (driver === 'sqlite3') {
+    await rmrf(`${PWD}/db/${database}_${NODE_ENV}.sqlite`);
+  } else {
+    const { schema } = connect(PWD, { ...config, driver });
+    const query = schema.raw(`DROP DATABASE IF EXISTS ${database}`);
 
-  query.on('query', () => console.log(query.toString()));
-  await query;
+    query.on('query', () => console.log(query.toString()));
+    await query;
+  }
 }

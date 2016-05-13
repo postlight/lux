@@ -1,48 +1,32 @@
 import path from 'path';
-import { spawn } from 'child_process';
 
-import exec from '../src/packages/cli/utils/exec';
+import Logger from '../dist/packages/logger';
+import exec from '../dist/packages/cli/utils/exec';
 
-let app;
+const { assign } = Object;
+const { env: { NODE_ENV = 'development' } } = process;
 
 before(async done => {
-  const testApp = path.join(__dirname, 'test-app');
+  process.once('ready', done);
 
-  const options = {
-    cwd: testApp,
-    env: {
-      ...process.env,
-      PWD: testApp
-    }
-  };
+  const appPath = path.join(__dirname, 'test-app');
+  const options = { cwd: appPath };
 
   await exec('lux db:reset', options);
   await exec('lux db:migrate', options);
   await exec('lux db:seed', options);
 
-  app = spawn('lux', ['serve'], options);
+  const TestApp = require(`${appPath}/bin/app`);
 
-  app.once('error', done);
+  const {
+    default: config
+  } = require(`./test-app/config/environments/${NODE_ENV}`);
 
-  app.stdout.setEncoding('utf8');
-  app.stderr.setEncoding('utf8');
-
-  app.stdout.on('data', data => {
-    const isListening = /^.+listening\son\sport\s\d+\n$/g.test(data);
-
-    if (isListening) {
-      done();
-    }
+  assign(config, {
+    port: 4000,
+    path: appPath,
+    logger: await Logger.create()
   });
 
-  app.stderr.once('data', err => {
-    err = new Error(err);
-    done(err);
-  });
-});
-
-after(() => {
-  if (app) {
-    app.kill();
-  }
+  await new TestApp(config).boot();
 });

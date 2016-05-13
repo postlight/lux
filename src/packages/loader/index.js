@@ -1,19 +1,17 @@
 import fs from '../fs';
 
-const { env: { PWD } } = process;
-
-export default async function loader(type) {
+export default async function loader(appPath, type) {
   if (type === 'routes') {
     return new Map([
-      ['routes', require(`${PWD}/app/routes`).default]
+      ['routes', require(`${appPath}/app/routes`).default]
     ]);
   } else {
     return new Map(
-      (await fs.readdirAsync(`${PWD}/app/${type}`))
+      (await fs.readdirAsync(`${appPath}/app/${type}`))
         .map(file => {
           return [
             file.replace('.js', ''),
-            require(`${PWD}/app/${type}/${file}`).default
+            require(`${appPath}/app/${type}/${file}`).default
           ];
         })
     );

@@ -9,12 +9,13 @@ export default async function dbMigrate() {
   require(`${PWD}/node_modules/babel-core/register`);
 
   const { connection, schema } = new Database({
+    path: PWD,
     logger: await Logger.create(),
     config: require(`${PWD}/config/database`).default
   });
 
   await createMigrations(schema);
-  const pending = await pendingMigrations(() => connection('migrations'));
+  const pending = await pendingMigrations(PWD, () => connection('migrations'));
 
   if (pending.length) {
     await Promise.all(

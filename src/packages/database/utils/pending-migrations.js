@@ -1,9 +1,7 @@
 import fs from '../../fs';
 
-const { env: { PWD } } = process;
-
-export default async function pendingMigrations(table) {
-  const migrations = await fs.readdirAsync(`${PWD}/db/migrate`);
+export default async function pendingMigrations(appPath, table) {
+  const migrations = await fs.readdirAsync(`${appPath}/db/migrate`);
   const versions = await table().select().map(({ version }) => version);
 
   return migrations.filter(migration => {

@@ -1,4 +1,5 @@
 import Promise from 'bluebird';
+import cluster from 'cluster';
 import { singularize } from 'inflection';
 
 import Base from '../base';
@@ -8,11 +9,18 @@ import Database from '../database';
 
 import loader from '../loader';
 
+const { isMaster } = cluster;
+
 class Application extends Base {
+  path;
+
   router = Router.create();
 
-  constructor(props) {
-    super(props);
+  constructor({ path = process.env.PWD, ...props }) {
+    super({
+      ...props,
+      path
+    });
 
     this.setProps({
       server: Server.create({
@@ -26,10 +34,12 @@ class Application extends Base {
   }
 
   async boot() {
-    const { root, router, logger, domain, server, port } = this;
+    const { router, logger, domain, server, port, path } = this;
+
     const store = new Database({
+      path,
       logger,
-      config: require(`${root}/config/database`).default
+      config: require(`${path}/config/database`).default
     });
 
     let [
@@ -38,10 +48,10 @@ class Application extends Base {
       controllers,
       serializers
     ] = await Promise.all([
-      loader('routes'),
-      loader('models'),
-      loader('controllers'),
-      loader('serializers')
+      loader(path, 'routes'),
+      loader(path, 'models'),
+      loader(path, 'controllers'),
+      loader(path, 'serializers')
     ]);
 
     await store.define(models);
@@ -96,7 +106,13 @@ class Application extends Base {
     routes.get('routes').call(null, router.route, router.resource);
 
     server.listen(port);
-    server.instance.once('listening', () => process.send('ready'));
+    server.instance.once('listening', () => {
+      if (isMaster) {
+        process.emit('ready');
+      } else {
+        process.send('ready');
+      }
+    });
 
     return this;
   }

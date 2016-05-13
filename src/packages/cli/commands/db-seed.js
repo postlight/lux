@@ -8,9 +8,10 @@ export default async function dbSeed() {
   require(`${PWD}/node_modules/babel-core/register`);
 
   await new Database({
+    path: PWD,
     logger: await Logger.create(),
     config: require(`${PWD}/config/database`).default
-  }).define(await loader('models'));
+  }).define(await loader(PWD, 'models'));
 
   await require(`${PWD}/db/seed`).default();
 }

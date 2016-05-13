@@ -8,6 +8,7 @@ export default async function dbRollback() {
   require(`${PWD}/node_modules/babel-core/register`);
 
   const { connection, schema } = new Database({
+    path: PWD,
     logger: await Logger.create(),
     config: require(`${PWD}/config/database`).default
   });

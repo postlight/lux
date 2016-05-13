@@ -19,9 +19,10 @@ import nonconfigurable from '../../decorators/nonconfigurable';
 
 const { defineProperties } = Object;
 const { worker, isMaster } = cluster;
-const { env: { NODE_ENV: environment = 'development' } } = process;
+const { env: { PWD, NODE_ENV: environment = 'development' } } = process;
 
 class Database {
+  path;
   debug;
   logger;
   config;
@@ -32,10 +33,17 @@ class Database {
   @nonconfigurable
   models = new Map();
 
-  constructor({ logger, config: { [environment]: config } }) {
+  constructor({ path = PWD, logger, config: { [environment]: config } }) {
     const { debug = environment === 'development' } = config;
 
     defineProperties(this, {
+      path: {
+        value: path,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
+
       debug: {
         value: debug,
         writable: false,
@@ -58,7 +66,7 @@ class Database {
       },
 
       connection: {
-        value: connect(config),
+        value: connect(path, config),
         writable: false,
         enumerable: false,
         configurable: false
@@ -90,12 +98,12 @@ class Database {
   }
 
   async define(models) {
-    const { connection, schema } = this;
+    const { path, connection, schema } = this;
 
     if (isMaster || worker && worker.id === 1) {
       await createMigrations(schema);
 
-      const pending = await pendingMigrations(() => {
+      const pending = await pendingMigrations(path, () => {
         return connection('migrations');
       });
 

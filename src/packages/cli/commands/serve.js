@@ -38,7 +38,8 @@ export default async function serve(port = 4000) {
     await new Application({
       ...config,
       port,
-      logger
+      logger,
+      path: pwd
     }).boot();
   }
 }
