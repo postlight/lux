@@ -9,8 +9,12 @@ export default async function dbRollback() {
 
   const { connection, schema } = new Database({
     path: PWD,
-    logger: await Logger.create(),
-    config: require(`${PWD}/config/database`).default
+    config: require(`${PWD}/config/database`).default,
+
+    logger: await Logger.create({
+      appPath: PWD,
+      enabled: false
+    })
   });
 
   const migrations = await fs.readdirAsync(`${PWD}/db/migrate`);

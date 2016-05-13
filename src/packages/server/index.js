@@ -22,9 +22,7 @@ class Server extends Base {
         const { headers } = req;
         const methodOverride = headers['X-HTTP-Method-Override'];
 
-        if (this.environment !== 'production') {
-          this.logRequest(req, res);
-        }
+        this.logRequest(req, res);
 
         req.setEncoding('utf8');
 

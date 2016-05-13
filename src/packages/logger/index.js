@@ -1,7 +1,6 @@
 import moment from 'moment';
 import { dim, red, yellow } from 'colors/safe';
 
-import Base from '../base';
 import fs from '../fs';
 
 import write from './utils/write';
@@ -10,10 +9,44 @@ import tryCatch from '../../utils/try-catch';
 import bound from '../../decorators/bound';
 import memoize from '../../decorators/memoize';
 
-class Logger extends Base {
+const { defineProperties } = Object;
+
+const {
+  env: {
+    PWD,
+    NODE_ENV = 'development'
+  }
+} = process;
+
+class Logger {
+  enabled;
+  appPath;
+
+  constructor({ enabled, appPath = PWD } = {}) {
+    defineProperties(this, {
+      enabled: {
+        value: Boolean(enabled),
+        writable: false,
+        enumerable: true,
+        configurable: false
+      },
+
+      appPath: {
+        value: appPath,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      }
+    });
+
+    return this;
+  }
+
   @memoize
   get file() {
-    return `${this.root}/log/${this.environment}.log`;
+    const { appPath } = this;
+
+    return `${appPath}/log/${NODE_ENV}.log`;
   }
 
   get timestamp() {
@@ -22,61 +55,65 @@ class Logger extends Base {
 
   @bound
   log(message) {
-    const { file, timestamp } = this;
+    const { enabled } = this;
 
-    message = `${dim(`[${timestamp}]`)} ${message}\n`;
+    if (enabled) {
+      const { file, timestamp } = this;
 
-    process.stdout.write(message);
-    setImmediate(write, file, message);
+      message = `${dim(`[${timestamp}]`)} ${message}\n`;
+
+      process.stdout.write(message);
+      setImmediate(write, file, message);
+    }
   }
 
   @bound
   error(message) {
-    const { file, timestamp } = this;
+    const { enabled } = this;
 
-    message = `${red(`[${timestamp}]`)} ${message}\n`;
+    if (enabled) {
+      const { file, timestamp } = this;
 
-    process.stderr.write(message);
-    setImmediate(write, file, message);
+      message = `${red(`[${timestamp}]`)} ${message}\n`;
+
+      process.stderr.write(message);
+      setImmediate(write, file, message);
+    }
   }
 
   @bound
   warn(message) {
-    const { file, timestamp } = this;
+    const { enabled } = this;
 
-    message = `${yellow(`\n\n[${timestamp}] Warning:`)} ${message}\n\n`;
+    if (enabled) {
+      const { file, timestamp } = this;
 
-    process.stdout.write(message);
-    setImmediate(write, file, message);
+      message = `${yellow(`\n\n[${timestamp}] Warning:`)} ${message}\n\n`;
+
+      process.stdout.write(message);
+      setImmediate(write, file, message);
+    }
   }
 
   static async create(props) {
-    const instance = super.create(props);
-    const { root, environment } = instance;
+    const instance = new this(props);
+    const { appPath } = instance;
     let logFileExists = false;
 
-    await tryCatch(async () => {
-      await fs.mkdirAsync(`${root}/log`);
-    }, () => {
-      // Do nothing...
-    });
+    await tryCatch(() => fs.mkdirAsync(`${appPath}/log`));
 
     await tryCatch(async () => {
-      await fs.accessAsync(`${root}/log/${environment}.log`);
+      await fs.accessAsync(`${appPath}/log/${NODE_ENV}.log`);
       logFileExists = true;
-    }, () => {
-      // Do nothing...
     });
 
     if (!logFileExists) {
-      await tryCatch(async () => {
-        await fs.writeFileAsync(
-          `${root}/log/${environment}.log`,
+      await tryCatch(() => {
+        return fs.writeFileAsync(
+          `${appPath}/log/${NODE_ENV}.log`,
           '',
           'utf8'
         );
-      }, () => {
-        // Do nothing...
       });
     }
 

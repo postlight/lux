@@ -9,8 +9,12 @@ export default async function dbSeed() {
 
   await new Database({
     path: PWD,
-    logger: await Logger.create(),
-    config: require(`${PWD}/config/database`).default
+    config: require(`${PWD}/config/database`).default,
+
+    logger: await Logger.create({
+      appPath: PWD,
+      enabled: false
+    })
   }).define(await loader(PWD, 'models'));
 
   await require(`${PWD}/db/seed`).default();

@@ -1,4 +1,6 @@
-export function tryCatchSync(fn, rescue) {
+import K from './k';
+
+export function tryCatchSync(fn, rescue = K) {
   try {
     return fn();
   } catch (err) {
@@ -6,7 +8,7 @@ export function tryCatchSync(fn, rescue) {
   }
 }
 
-export default async function tryCatch(fn, rescue) {
+export default async function tryCatch(fn, rescue = K) {
   try {
     return await fn();
   } catch (err) {

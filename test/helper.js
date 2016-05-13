@@ -37,7 +37,11 @@ before(done => {
     assign(config, {
       port: 4000,
       path: appPath,
-      logger: await Logger.create()
+
+      logger: await Logger.create({
+        appPath,
+        enabled: config.log
+      })
     });
 
     await new TestApp(config).boot();

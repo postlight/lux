@@ -5,14 +5,21 @@ import { cyan } from 'colors/safe';
 
 import Logger from '../../logger';
 
-const pwd = process.env.PWD;
-const env = process.env.NODE_ENV || 'development';
+const {
+  env: {
+    PWD,
+    NODE_ENV = 'development'
+  }
+} = process;
 
 export default async function serve(port = 4000) {
-  const Application = require(`${pwd}/bin/app`);
-  const config = require(`${pwd}/config/environments/${env}`).default;
+  const Application = require(`${PWD}/bin/app`);
+  const config = require(`${PWD}/config/environments/${NODE_ENV}`).default;
 
-  const logger = await Logger.create();
+  const logger = await Logger.create({
+    enabled: config.log,
+    appPath: PWD
+  });
 
   if (config.port) {
     port = config.port;
@@ -39,7 +46,7 @@ export default async function serve(port = 4000) {
       ...config,
       port,
       logger,
-      path: pwd
+      path: PWD
     }).boot();
   }
 }
