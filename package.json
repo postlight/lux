@@ -8,8 +8,10 @@
     "lux": "bin/lux"
   },
   "scripts": {
+    "build": "npm run lint && gulp build",
+    "lint": "eslint ./src/**",
     "start": "lux serve",
-    "test": "gulp test"
+    "test": "eslint ./src/** && gulp test"
   },
   "author": "Zachary Golba",
   "license": "MIT",
@@ -34,7 +36,6 @@
     "babel-preset-es2015": "6.6.0",
     "babel-preset-stage-1": "6.5.0",
     "chai": "3.5.0",
-    "eslint": "2.10.1",
     "gulp": "3.9.1",
     "gulp-babel": "6.1.2",
     "gulp-eslint": "2.0.0",
