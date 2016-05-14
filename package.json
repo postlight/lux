@@ -9,9 +9,9 @@
   },
   "scripts": {
     "build": "npm run lint && gulp build",
-    "lint": "eslint ./src/**",
+    "lint": "./node_modules/.bin/eslint ./src/**",
     "start": "lux serve",
-    "test": "eslint ./src/** && gulp test"
+    "test": "npm run lint && gulp test"
   },
   "author": "Zachary Golba",
   "license": "MIT",
