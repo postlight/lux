@@ -167,8 +167,6 @@ cat test/fixtures/data.sql | mysql -u root -p
 npm test
 ```
 
-*Note:* Make sure you have MySQL installed and accessible on port `3306`.
-
 ## Useful Links
 
 * [JSON API](http://jsonapi.org/)
