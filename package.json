@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "npm run lint && gulp build",
-    "lint": "./node_modules/.bin/eslint ./src/**",
+    "lint": "eslint ./src/**",
     "start": "lux serve",
     "test": "npm run lint && gulp test"
   },
