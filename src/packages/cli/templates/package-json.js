@@ -14,15 +14,15 @@ export default (name) => {
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "lux-framework": "${VERSION}",
-    "babel-core": "6.7.7",
-    "babel-eslint": "6.0.3",
+    "babel-core": "6.8.0",
+    "babel-eslint": "6.0.4",
     "babel-plugin-transform-decorators-legacy": "1.3.4",
-    "babel-plugin-transform-runtime": "6.7.5",
+    "babel-plugin-transform-runtime": "6.8.0",
     "babel-preset-es2015": "6.6.0",
     "babel-preset-stage-1": "6.5.0",
     "babel-runtime": "6.6.1",
-    "knex": "0.11.1"
+    "knex": "0.11.3",
+    "lux-framework": "${VERSION}"
   }
 }
   `.substr(1).trim();
