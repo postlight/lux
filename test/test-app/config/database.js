@@ -1,4 +1,4 @@
-const { env: { DB = 'mysql' } } = process;
+const { env: { DB = 'sqlite' } } = process;
 
 let config;
 
