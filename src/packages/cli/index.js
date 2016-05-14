@@ -1,5 +1,7 @@
 import cli from 'commander';
 
+import { VALID_DATABASES } from './constants';
+
 import {
   test,
   serve,
@@ -24,9 +26,14 @@ cli
   .command('n <name>')
   .alias('new')
   .description('Create a new application')
-  .action(async name => {
+  .option('-db, --database [database]', '(Default: sqlite)')
+  .action(async (name, { database = 'sqlite' } = {}) => {
     await tryCatch(async () => {
-      await create(name);
+      if (VALID_DATABASES.indexOf(database) < 0) {
+        database = 'sqlite';
+      }
+
+      await create(name, database);
       exit(0);
     }, err => {
       console.error(err);
@@ -52,20 +59,11 @@ cli
   .command('s')
   .alias('serve')
   .description('Serve your application')
-  .option('-e, --environment', '(Default: development)')
-  .option('-p, --port', '(Default: 4000)')
-  .action(async (...args) => {
+  .option('-e, --environment [env]', '(Default: development)')
+  .option('-p, --port [port]', '(Default: 4000)')
+  .action(async ({ environment = 'development', port = 4000 } = {}) => {
     await tryCatch(async () => {
-      let port = 4000;
-
-      args.forEach(arg => {
-        if (/^\d+$/ig.test(arg)) {
-          port = parseInt(arg, 10);
-        } else if (/^\w+$/ig.test(arg)) {
-          process.env.NODE_ENV = arg;
-        }
-      });
-
+      process.env.NODE_ENV = environment;
       await serve(port);
     }, err => {
       console.error(err);

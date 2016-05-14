@@ -20,8 +20,7 @@ export default (name) => {
     "babel-preset-es2015": "6.6.0",
     "babel-preset-stage-1": "6.5.0",
     "babel-runtime": "6.6.1",
-    "knex": "0.11.1",
-    "mysql2": "1.0.0-rc.1"
+    "knex": "0.11.1"
   }
 }
   `.substr(1).trim();

@@ -2,7 +2,9 @@ import Ora from 'ora';
 import { green } from 'colors/safe';
 
 import fs from '../../fs';
+
 import exec from '../utils/exec';
+import driverFor from '../utils/driver-for';
 
 import generate from './generate';
 
@@ -18,7 +20,8 @@ import readmeTemplate from '../templates/readme';
 import licenseTemplate from '../templates/license';
 import gitignoreTemplate from '../templates/gitignore';
 
-export default async function create(name) {
+export default async function create(name, database) {
+  const driver = driverFor(database);
   const project = `${process.env.PWD}/${name}`;
 
   await fs.mkdirAsync(project);
@@ -77,7 +80,7 @@ export default async function create(name) {
 
     fs.writeFileAsync(
       `${project}/config/database.js`,
-      dbTemplate(name),
+      dbTemplate(name, driver),
       'utf8'
     ),
 
@@ -101,7 +104,7 @@ export default async function create(name) {
 
     fs.writeFileAsync(
       `${project}/package.json`,
-      pkgJSONTemplate(name),
+      pkgJSONTemplate(name, database),
       'utf8'
     ),
 
@@ -154,6 +157,10 @@ ${green('create')} .gitignore
   spinner.start();
 
   await exec('npm install', {
+    cwd: project
+  });
+
+  await exec(`npm install --save --save-exact ${driver}`, {
     cwd: project
   });
 

@@ -6,22 +6,23 @@ switch (DB) {
   case 'mysql':
     config = {
       development: {
+        pool: 5,
         driver: 'mysql2',
-        socket: '/tmp/mysql.sock',
         username: 'root',
         password: 'root',
         database: 'lux_test'
       },
 
       test: {
+        pool: 5,
         driver: 'mysql2',
         username: 'travis',
         database: 'lux_test'
       },
 
       production: {
+        pool: 5,
         driver: 'mysql2',
-        socket: '/tmp/mysql.sock',
         username: 'root',
         password: 'root',
         database: 'lux_test'
@@ -44,6 +45,7 @@ switch (DB) {
 
   case 'postgresql':
     const postgresql = {
+      pool: 5,
       driver: 'pg',
       username: 'postgres',
       database: 'lux_test'

@@ -8,10 +8,10 @@ const { env: { NODE_ENV = 'development' } } = process;
 
 export default function connect(appPath, config = {}) {
   let knex;
+  let { pool } = config;
 
   const {
     host,
-    pool,
     socket,
     driver,
     database,
@@ -21,6 +21,13 @@ export default function connect(appPath, config = {}) {
 
   if (VALID_DRIVERS.indexOf(driver) < 0) {
     throw new InvalidDriverError(driver);
+  }
+
+  if (pool && typeof pool === 'number') {
+    pool = {
+      min: 0,
+      max: pool
+    };
   }
 
   tryCatchSync(() => {
