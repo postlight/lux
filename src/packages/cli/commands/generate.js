@@ -82,7 +82,12 @@ export default async function generate(type, name, pwd = PWD, attrs = []) {
       generateType('model-migration', name, pwd, attrs),
       generateType('serializer', name, pwd, attrs),
       generateType('controller', name, pwd, attrs),
-      await fs.writeFileAsync(`${pwd}/app/routes.js`, routes, 'utf8')
+      fs.writeFileAsync(`${pwd}/app/routes.js`, routes, 'utf8')
+    ]);
+  } else if (type === 'model') {
+    await Promise.all([
+      generateType(type, name, pwd, attrs),
+      generateType('model-migration', name, pwd, attrs)
     ]);
   } else {
     await generateType(type, name, pwd, attrs);

@@ -37,11 +37,28 @@ export async function destroyType(type, name) {
 
 export default async function destroy(type, name) {
   if (type === 'resource') {
+    const routes = (await fs.readFileAsync(`${PWD}/app/routes.js`, 'utf8'))
+      .split('\n')
+      .reduce((lines, line) => {
+        const pattern = new RegExp(
+          `\s*resource\\(('|"|\`)${pluralize(name)}('|"|\`)\\);?`
+        );
+
+        return pattern.test(line) ? lines : [...lines, line];
+      }, '')
+      .join('\n');
+
     await Promise.all([
       destroyType('model', name),
       destroyType('migration', `create-${pluralize(name)}`),
       destroyType('serializer', name),
-      destroyType('controller', name)
+      destroyType('controller', name),
+      fs.writeFileAsync(`${PWD}/app/routes.js`, routes, 'utf8')
+    ]);
+  } else if (type === 'model') {
+    await Promise.all([
+      destroyType(type, name),
+      destroyType('migration', `create-${pluralize(name)}`)
     ]);
   } else {
     await destroyType(type, name);
