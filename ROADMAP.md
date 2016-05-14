@@ -103,7 +103,7 @@ Here is the middleware that would be executed when a user visits `/admin/posts`
 [\* Middleware flattening already is implemented in the current release of Lux.](https://github.com/postlight/lux/blob/master/src/packages/controller/decorators/action.js)
 
 
-## Polymorphic Relationships
+## Polymorphic Relationships (#75)
 
 Currently Lux uses [node-orm2](http://dresende.github.io/node-orm2/) which doesn't support polymorphic relationships.
 
@@ -153,4 +153,5 @@ Below is a list of features that will likely be a part of the `1.0` release but 
 - Application Testing
   - Test Generators
   - Debugging Tools
-  - Generated SQL Logging ([#48](https://github.com/postlight/lux/issues/48))
+  - ~~Generated SQL Logging ([#48](https://github.com/postlight/lux/issues/48))~~
+    - Implemented in #65
