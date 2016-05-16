@@ -3,6 +3,15 @@
   "version": "0.0.1-beta.8",
   "description": "A MVC style Node.js framework for building lightning fast JSON APIs",
   "repository": "https://github.com/postlight/lux",
+  "keywords": [
+    "mvc",
+    "api",
+    "lux",
+    "jsonapi",
+    "json-api",
+    "rest",
+    "framework"
+  ],
   "main": "dist/index.js",
   "bin": {
     "lux": "bin/lux"
