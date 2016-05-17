@@ -2,14 +2,12 @@ import { Serializer } from 'lux-framework';
 
 class NotificationsSerializer extends Serializer {
   attributes = [
-    'unread',
-    'createdAt',
-    'updatedAt'
+    'message',
+    'unread'
   ];
 
   hasOne = [
-    'action',
-    'user'
+    'recipient'
   ];
 }
 

@@ -2,16 +2,16 @@ import { Serializer } from 'lux-framework';
 
 class CommentsSerializer extends Serializer {
   attributes = [
-    'commentableId',
-    'commentableType',
-    'edited',
     'message',
-    'createdAt',
-    'updatedAt'
+    'edited'
   ];
 
   hasOne = [
     'user'
+  ];
+
+  hasMany = [
+    'reactions'
   ];
 }
 

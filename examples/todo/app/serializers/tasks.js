@@ -3,7 +3,7 @@ import { Serializer } from 'lux-framework';
 class TasksSerializer extends Serializer {
   attributes = [
     'name',
-    'completed',
+    'isCompleted',
     'dueDate',
     'createdAt',
     'updatedAt'

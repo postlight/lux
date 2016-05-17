@@ -3,9 +3,7 @@ import { Serializer } from 'lux-framework';
 class PostsSerializer extends Serializer {
   attributes = [
     'body',
-    'isPublic',
-    'createdAt',
-    'updatedAt'
+    'isPublic'
   ];
 
   hasOne = [
@@ -13,8 +11,8 @@ class PostsSerializer extends Serializer {
   ];
 
   hasMany = [
-    'likes',
-    'comments'
+    'comments',
+    'reactions'
   ];
 }
 

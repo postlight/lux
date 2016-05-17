@@ -1,21 +1,19 @@
 import { Model } from 'lux-framework';
 
 class Post extends Model {
-  static attributes = {
-    body: {
-      type: 'text'
-    },
-
-    isPublic: {
-      type: 'boolean',
-      defaultValue: false
+  static belongsTo = {
+    user: {
+      inverse: 'post'
     }
   };
 
-  static hasOne = {
-    user: {
-      model: 'user',
-      reverse: 'posts'
+  static hasMany = {
+    comments: {
+      inverse: 'post'
+    },
+
+    reactions: {
+      inverse: 'post'
     }
   };
 }

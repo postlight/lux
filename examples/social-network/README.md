@@ -8,6 +8,9 @@
 
 ## Running / Development
 
+* `lux db:reset`
+* `lux db:migrate`
+* `lux db:seed`
 * `lux serve`
 
 ## Testing

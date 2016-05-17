@@ -1,5 +1,6 @@
 export default {
+  log: true,
   domain: 'http://localhost:4000',
   sessionKey: 'todo::test::session',
-  sessionSecret: 'd3334e7556e1f6990cbc70f3feb9e5fb6bcc71fb89cadbc32ccbbaaf33f3b4c5'
+  sessionSecret: '5bb39b824a8f85a00a2f6d967a59a866cd1859830211f55b05458d2825e6c3bc'
 };

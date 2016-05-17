@@ -1,5 +1,6 @@
 export default {
+  log: false,
   domain: 'http://localhost:4000',
   sessionKey: 'social-network::session',
-  sessionSecret: '684935450c903a249a930a4abf735bda8052ff176c3b458c1d690c67fdfa01cb'
-}
+  sessionSecret: 'd54dc706d6b7f4f88ddefab178ec8e4370d3ba12d977d8aaff36b782402c207c'
+};

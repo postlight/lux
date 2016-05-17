@@ -1,6 +1,6 @@
 import { Serializer } from 'lux-framework';
 
-class TaskListsSerializer extends Serializer {
+class ListsSerializer extends Serializer {
   attributes = [
     'name',
     'createdAt',
@@ -12,4 +12,4 @@ class TaskListsSerializer extends Serializer {
   ];
 }
 
-export default TaskListsSerializer;
+export default ListsSerializer;

@@ -6,42 +6,56 @@ import {
   decryptPassword
 } from '../utils/password';
 
+const { assign } = Object;
+
 class User extends Model {
-  static attributes = {
-     name: {
-       type: 'text'
-     },
+  static hasMany = {
+    comments: {
+      inverse: 'user'
+    },
 
-     email: {
-       type: 'text',
-       unique: true
-     },
+    notifications: {
+      inverse: 'recipient'
+    },
 
-     password: {
-       type: 'text'
-     },
+    posts: {
+      inverse: 'user'
+    },
 
-     passwordSalt: {
-       type: 'text'
-     }
+    reactions: {
+      inverse: 'user'
+    }
   };
 
   static hooks = {
-    beforeValidation() {
-      if (this.dirtyProperties.indexOf('password') >= 0) {
-        this.passwordSalt = generateSalt();
-        this.password = encryptPassword(this.password, this.passwordSalt);
+    async beforeSave(user) {
+      const { id, password, dirtyAttributes } = user;
+
+      if (!id && password || dirtyAttributes.has('password')) {
+        const salt = generateSalt();
+
+        assign(user, {
+          password: encryptPassword(password, salt),
+          passwordSalt: salt
+        });
       }
     }
   };
 
   static async authenticate(email, password) {
-    const user = await this.oneAsync({
-      email
+    const user = await this.findOne({
+      where: {
+        email
+      }
     });
 
     if (user) {
-      if (password === decryptPassword(user.password, user.passwordSalt)) {
+      const {
+        password,
+        passwordSalt: salt
+      } = user;
+
+      if (password === decryptPassword(password, salt)) {
         return user;
       }
     }

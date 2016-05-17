@@ -3,13 +3,14 @@ import { Serializer } from 'lux-framework';
 class UsersSerializer extends Serializer {
   attributes = [
     'name',
-    'email',
-    'createdAt',
-    'updatedAt'
+    'email'
   ];
 
   hasMany = [
-    'posts'
+    'comments',
+    'notifications',
+    'posts',
+    'reactions'
   ];
 }
 

@@ -1,31 +1,16 @@
 export default {
   development: {
-    username: 'root',
-    password: 'root',
-    database: 'todo_dev',
-    host: '127.0.0.1',
-    port: '3306',
-    dialect: 'mysql',
-    logging: false
+    driver: 'sqlite3',
+    database: 'todo_dev'
   },
 
   test: {
-    username: 'root',
-    password: 'root',
-    database: 'todo_test',
-    host: '127.0.0.1',
-    port: '3306',
-    dialect: 'mysql',
-    logging: false
+    driver: 'sqlite3',
+    database: 'todo_test'
   },
 
   production: {
-    username: 'root',
-    password: 'root',
-    database: 'todo_prod',
-    host: '127.0.0.1',
-    port: '3306',
-    dialect: 'mysql',
-    logging: false
+    driver: 'sqlite3',
+    database: 'todo_prod'
   }
 };
