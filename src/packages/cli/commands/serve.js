@@ -1,7 +1,7 @@
 import os from 'os';
 import cluster from 'cluster';
 
-import { cyan } from 'colors/safe';
+import { cyan } from 'chalk';
 
 import Logger from '../../logger';
 
