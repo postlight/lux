@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "ansi-regex": "2.0.0",
-    "babel-runtime": "6.6.1",
+    "babel-runtime": "6.9.0",
     "bluebird": "3.3.5",
     "colors": "1.1.2",
     "commander": "2.9.0",
