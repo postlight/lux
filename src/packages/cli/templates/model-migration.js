@@ -1,6 +1,7 @@
-import { underscore, pluralize } from 'inflection';
+import { pluralize } from 'inflection';
 
 import indent from '../utils/indent';
+import underscore from '../../../utils/underscore';
 
 export default (name, attrs = []) => {
   const table = pluralize(underscore(name));
@@ -11,6 +12,8 @@ export default (name, attrs = []) => {
     .map(attr => attr.split(':'))
     .filter(([, type]) => !/^has-(one|many)$/g.test(type))
     .map(([column, type]) => {
+      column = underscore(column);
+
       if (type === 'belongs-to') {
         type = 'integer';
         column = `${column}_id`;
