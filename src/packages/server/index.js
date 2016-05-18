@@ -1,7 +1,7 @@
 import http from 'http';
 import { parse as parseURL } from 'url';
 
-import colors from 'colors/safe';
+import chalk, { cyan } from 'chalk';
 
 import Base from '../base';
 import Session from '../session';
@@ -67,10 +67,10 @@ class Server extends Base {
       }
 
       this.logger.log(line`
-        ${colors.cyan(`${method}`)} ${url.pathname} -> Finished after
+        ${cyan(`${method}`)} ${url.pathname} -> Finished after
         ${new Date().getTime() - startTime.getTime()} ms with
-        ${colors[statusColor].call(null, `${statusCode}`)}
-        ${colors[statusColor].call(null, `${statusMessage}`)}
+        ${chalk[statusColor].call(null, `${statusCode}`)}
+        ${chalk[statusColor].call(null, `${statusMessage}`)}
       `);
     });
   }

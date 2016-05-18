@@ -1,4 +1,4 @@
-import { green, yellow } from 'colors/safe';
+import { green, yellow } from 'chalk';
 
 import { VALID_DRIVERS } from '../constants';
 

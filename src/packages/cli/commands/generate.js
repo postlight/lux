@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { green } from 'colors/safe';
+import { green } from 'chalk';
 import { pluralize } from 'inflection';
 
 import fs from '../../fs';

@@ -1,5 +1,5 @@
 import Ora from 'ora';
-import { green } from 'colors/safe';
+import { green } from 'chalk';
 
 import fs from '../../fs';
 
