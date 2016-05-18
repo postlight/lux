@@ -6,6 +6,12 @@ class PostsController extends Controller {
     'body',
     'isPublic'
   ];
+
+  beforeAction = [
+    function (req, res) {
+      res.setHeader('X-Controller', 'Posts');
+    }
+  ];
 }
 
 export default PostsController;
