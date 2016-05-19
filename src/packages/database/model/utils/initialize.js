@@ -93,8 +93,10 @@ function initializeProps(prototype, attributes, relationships) {
           if (nextValue !== currentValue) {
             const { initialized, initialValues } = this;
 
-            if (type === 'tinyint') {
+            if (/^(boolean|tinyint)$/.test(type)) {
               nextValue = Boolean(nextValue);
+            } else if (type === 'datetime' && typeof nextValue === 'number') {
+              nextValue = new Date(nextValue);
             } else if (!nextValue && !nullable) {
               return;
             }
