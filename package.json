@@ -35,7 +35,7 @@
     "commander": "2.9.0",
     "inflection": "1.10.0",
     "moment": "2.13.0",
-    "ora": "0.2.1"
+    "ora": "0.2.2"
   },
   "devDependencies": {
     "babel-core": "6.9.0",
