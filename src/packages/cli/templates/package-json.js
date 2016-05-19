@@ -14,13 +14,13 @@ export default (name) => {
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "babel-core": "6.8.0",
+    "babel-core": "6.9.0",
     "babel-eslint": "6.0.4",
     "babel-plugin-transform-decorators-legacy": "1.3.4",
-    "babel-plugin-transform-runtime": "6.8.0",
-    "babel-preset-es2015": "6.6.0",
+    "babel-plugin-transform-runtime": "6.9.0",
+    "babel-preset-es2015": "6.9.0",
     "babel-preset-stage-1": "6.5.0",
-    "babel-runtime": "6.6.1",
+    "babel-runtime": "6.9.0",
     "knex": "0.11.3",
     "lux-framework": "${VERSION}"
   }

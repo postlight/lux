@@ -1,4 +1,4 @@
-import { red, green } from 'colors/safe';
+import { red, green } from 'chalk';
 
 import { line } from '../packages/logger';
 

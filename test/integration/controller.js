@@ -465,4 +465,24 @@ describe('Integration: class Controller', () => {
       expect(subject.status).to.equal(204);
     });
   });
+
+  describe('Regression: #middleware (https://github.com/postlight/lux/issues/94)', () => {
+    let subject;
+
+    before(async () => {
+      subject = await fetch(`${host}/posts`);
+    });
+
+    it('includes middleware from it\'s `parentController`', () => {
+      expect(
+        subject.headers.get('X-Powered-By')
+      ).to.equal('Lux');
+    });
+
+    it('includes middleware defined in `beforeAction`', () => {
+      expect(
+        subject.headers.get('X-Controller')
+      ).to.equal('Posts');
+    });
+  });
 });

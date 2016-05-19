@@ -26,7 +26,7 @@ cli
   .command('n <name>')
   .alias('new')
   .description('Create a new application')
-  .option('-db, --database [database]', '(Default: sqlite)')
+  .option('--database [database]', '(Default: sqlite)')
   .action(async (name, { database = 'sqlite' } = {}) => {
     await tryCatch(async () => {
       if (VALID_DATABASES.indexOf(database) < 0) {

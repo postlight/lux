@@ -1,4 +1,4 @@
-import { red } from 'colors/safe';
+import { red } from 'chalk';
 import { pluralize } from 'inflection';
 
 import fs from '../../fs';

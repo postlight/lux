@@ -75,7 +75,8 @@ class Application extends Base {
       serializer.serializers = serializers;
     });
 
-    const appController = controllers.get('application').create({
+    let appController = controllers.get('application');
+    appController = new appController({
       store,
       domain,
       serializers,
@@ -88,7 +89,7 @@ class Application extends Base {
       if (key !== 'application') {
         const model = store.modelFor(singularize(key));
 
-        controller = controller.create({
+        controller = new controller({
           store,
           model,
           domain,

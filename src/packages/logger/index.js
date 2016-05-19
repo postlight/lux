@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { dim, red, yellow } from 'colors/safe';
+import { dim, red, yellow } from 'chalk';
 
 import fs from '../fs';
 
