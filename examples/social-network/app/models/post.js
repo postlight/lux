@@ -1,9 +1,11 @@
 import { Model } from 'lux-framework';
 
+import track from '../utils/track';
+
 class Post extends Model {
   static belongsTo = {
     user: {
-      inverse: 'post'
+      inverse: 'posts'
     }
   };
 
@@ -14,6 +16,12 @@ class Post extends Model {
 
     reactions: {
       inverse: 'post'
+    }
+  };
+
+  static hooks = {
+    async afterCreate(post) {
+      await track(post);
     }
   };
 }

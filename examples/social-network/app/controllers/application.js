@@ -1,7 +1,11 @@
 import { Controller } from 'lux-framework';
 
-class ApplicationController extends Controller {
+import authenticate from '../middleware/authenticate';
 
+class ApplicationController extends Controller {
+  beforeAction = [
+    authenticate
+  ];
 }
 
 export default ApplicationController;

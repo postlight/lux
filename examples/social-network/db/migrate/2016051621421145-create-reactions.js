@@ -1,8 +1,21 @@
 export function up(schema) {
   return schema.createTable('reactions', table => {
     table.increments('id');
-    table.enum('type');
-    table.integer('user_id');
+
+    table
+      .enum('type', [
+        ':+1:',
+        ':heart:',
+        ':confetti_ball:',
+        ':laughing:',
+        ':disappointed:'
+      ])
+      .notNullable();
+
+    table
+      .integer('user_id')
+      .notNullable();
+
     table.integer('post_id');
     table.integer('comment_id');
     table.timestamps();

@@ -3,7 +3,7 @@ import { Serializer } from 'lux-framework';
 class PostsSerializer extends Serializer {
   attributes = [
     'body',
-    'isPublic'
+    'title'
   ];
 
   hasOne = [

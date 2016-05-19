@@ -7,6 +7,7 @@ class CommentsSerializer extends Serializer {
   ];
 
   hasOne = [
+    'post',
     'user'
   ];
 

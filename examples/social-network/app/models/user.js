@@ -42,6 +42,12 @@ class User extends Model {
     }
   };
 
+  static validates = {
+    password(password = '') {
+      return password.length >= 8;
+    }
+  };
+
   static async authenticate(email, password) {
     const user = await this.findOne({
       where: {
@@ -51,11 +57,11 @@ class User extends Model {
 
     if (user) {
       const {
-        password,
+        password: encrypted,
         passwordSalt: salt
       } = user;
 
-      if (password === decryptPassword(password, salt)) {
+      if (password === decryptPassword(encrypted, salt)) {
         return user;
       }
     }

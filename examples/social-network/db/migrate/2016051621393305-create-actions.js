@@ -7,6 +7,8 @@ export function up(schema) {
 
     table.index([
       'id',
+      'trackable_id',
+      'trackable_type',
       'created_at',
       'updated_at'
     ]);
