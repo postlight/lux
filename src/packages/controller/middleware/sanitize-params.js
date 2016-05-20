@@ -2,10 +2,11 @@ import { camelize } from 'inflection';
 
 import pick from '../../../utils/pick';
 
+const { isArray } = Array;
 const { entries, assign } = Object;
 
 export default function sanitizeParams(req, res) {
-  const { modelName } = this;
+  const { modelName, model: { relationshipNames } } = this;
   const params = { ...req.params };
   let { page, limit, sort, filter, include, fields } = params;
 
@@ -43,7 +44,9 @@ export default function sanitizeParams(req, res) {
   }
 
   if (!include || typeof include !== 'string') {
-    include = [];
+    if (!isArray(include)) {
+      include = [];
+    }
   } else {
     if (include.indexOf(',') >= 0) {
       include = include.split(',');
@@ -51,6 +54,9 @@ export default function sanitizeParams(req, res) {
       include = [include];
     }
   }
+
+  include = include
+    .filter(included => relationshipNames.indexOf(included) >= 0);
 
   fields = entries(fields || {})
     .reduce((obj, [key, value]) => {
