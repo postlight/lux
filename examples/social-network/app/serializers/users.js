@@ -8,7 +8,6 @@ class UsersSerializer extends Serializer {
 
   hasMany = [
     'comments',
-    'notifications',
     'posts',
     'reactions'
   ];

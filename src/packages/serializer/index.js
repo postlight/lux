@@ -95,39 +95,36 @@ class Serializer extends Base {
         records = item[k];
 
         if (records && records.length) {
-          return {
-            [k]: {
-              data: records.map(r => {
-                id = r.id;
+          obj[k] = {
+            data: records.map(r => {
+              id = r.id;
+              type = pluralize(r.modelName);
 
-                if (!type) {
-                  type = pluralize(r.modelName);
+              if (include.indexOf(k) >= 0) {
+                if (!relatedSerializer) {
+                  relatedSerializer = r.constructor.serializer;
                 }
 
-                if (include.indexOf(k) >= 0) {
-                  if (!relatedSerializer) {
-                    relatedSerializer = r.constructor.serializer;
-                  }
-
-                  if (relatedSerializer) {
-                    hash.included.push(
-                      relatedSerializer.serializeOne(r, [], fields)
-                    );
-                  }
+                if (relatedSerializer) {
+                  hash.included.push(
+                    relatedSerializer.serializeOne(r, [], fields)
+                  );
                 }
+              }
 
-                return {
-                  id,
-                  type,
+              return {
+                id,
+                type,
 
-                  links: {
-                    self: `${domain}/${type}/${id}`
-                  }
-                };
-              })
-            }
+                links: {
+                  self: `${domain}/${type}/${id}`
+                }
+              };
+            })
           };
         }
+
+        return obj;
       }, {})
     };
 
