@@ -79,6 +79,15 @@ function initializeProps(prototype, attributes, relationships) {
 
   entries(attributes)
     .reduce((hash, [key, { type, nullable, defaultValue }]) => {
+      if (/^(boolean|tinyint)$/.test(type)) {
+        defaultValue = Boolean(
+          typeof defaultValue === 'string' ?
+            parseInt(defaultValue, 10) : defaultValue
+        );
+      } else if (type === 'datetime' && typeof defaultValue === 'number') {
+        defaultValue = new Date(defaultValue);
+      }
+
       hash[key] = {
         get() {
           const refs = refsFor(this);
@@ -94,7 +103,10 @@ function initializeProps(prototype, attributes, relationships) {
             const { initialized, initialValues } = this;
 
             if (/^(boolean|tinyint)$/.test(type)) {
-              nextValue = Boolean(nextValue);
+              nextValue = Boolean(
+                typeof nextValue === 'string' ?
+                  parseInt(nextValue, 10) : nextValue
+              );
             } else if (type === 'datetime' && typeof nextValue === 'number') {
               nextValue = new Date(nextValue);
             } else if (!nextValue && !nullable) {
