@@ -1,4 +1,5 @@
 import fs from '../fs';
+import isJsFile from '../fs/utils/is-js-file';
 
 export default async function loader(appPath, type) {
   if (type === 'routes') {
@@ -8,6 +9,7 @@ export default async function loader(appPath, type) {
   } else {
     return new Map(
       (await fs.readdirAsync(`${appPath}/app/${type}`))
+        .filter(isJsFile)
         .map(file => {
           return [
             file.replace('.js', ''),
