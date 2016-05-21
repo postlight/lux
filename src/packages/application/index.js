@@ -1,12 +1,17 @@
 import Promise from 'bluebird';
 import cluster from 'cluster';
-import { singularize } from 'inflection';
+import { pluralize, singularize } from 'inflection';
 
 import Server from '../server';
 import Router from '../router';
 import Database from '../database';
 
 import loader from '../loader';
+
+import {
+  ControllerMissingError,
+  SerializerMissingError
+} from './errors';
 
 const { defineProperties } = Object;
 
@@ -114,6 +119,18 @@ class Application {
     ]);
 
     await store.define(models);
+
+    models.forEach((model, name) => {
+      const resource = pluralize(name);
+
+      if (!controllers.get(resource)) {
+        throw new ControllerMissingError(resource);
+      }
+
+      if (!serializers.get(resource)) {
+        throw new SerializerMissingError(resource);
+      }
+    });
 
     serializers.forEach((serializer, name) => {
       const model = models.get(singularize(name));
