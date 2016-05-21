@@ -18,6 +18,7 @@ import nonenumerable from '../../../decorators/nonenumerable';
 import nonconfigurable from '../../../decorators/nonconfigurable';
 
 const { isArray } = Array;
+const { isFinite } = Number;
 const { assign, entries, keys } = Object;
 
 class Model {
@@ -310,7 +311,10 @@ class Model {
       });
     }
 
-    return (await query)[0].count;
+    let [{ count }] = await query;
+    count = parseInt(count, 10);
+
+    return isFinite(count) ? count : 0;
   }
 
   static async find(pk, options = {}) {

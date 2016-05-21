@@ -7,7 +7,7 @@ export default function createPageLinks(domain, path, params, total) {
   let i, key, str, val, first, last, prev, next, filterKeys, fieldKeys;
   let { page, limit, sort, filter, include, fields } = params;
   let base = domain + path;
-  let lastPageNum = ceil(total / limit);
+  let lastPageNum = total === 0 ? 1 : ceil(total / limit);
 
   first = `${base}?page=1`;
   last = `${base}?page=${lastPageNum}`;
@@ -18,7 +18,7 @@ export default function createPageLinks(domain, path, params, total) {
     prev = null;
   }
 
-  if (page !== lastPageNum) {
+  if (page !== lastPageNum && lastPageNum !== 1) {
     next = `${base}?page=${page + 1}`;
   } else {
     next = null;
