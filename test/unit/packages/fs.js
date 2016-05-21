@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import isJSFile from '../../../src/packages/fs/utils/is-js-file';
+import { isJSFile } from '../../../src/packages/fs';
 
 describe('Unit: class fs ', () => {
   describe('Unit: util isJSFile', () => {
