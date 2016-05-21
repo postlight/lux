@@ -3,46 +3,59 @@ import { parse as parseURL } from 'url';
 
 import chalk, { cyan } from 'chalk';
 
-import Base from '../base';
 import Session from '../session';
 import { line } from '../logger';
 
 import formatParams from './utils/format-params';
 
-class Server extends Base {
-  constructor(props) {
-    const { router, logger, application } = props;
-    const { sessionKey, sessionSecret } = application;
+const { defineProperties } = Object;
+
+class Server {
+  logger;
+  instance;
+
+  constructor({ logger, router, sessionKey, sessionSecret } = {}) {
     const resolver = router.createResolver();
+    const instance = http.createServer(async (req, res) => {
+      const { headers } = req;
+      const methodOverride = headers['X-HTTP-Method-Override'];
 
-    super({
-      logger: logger,
+      this.logRequest(req, res);
 
-      instance: http.createServer(async (req, res) => {
-        const { headers } = req;
-        const methodOverride = headers['X-HTTP-Method-Override'];
+      req.setEncoding('utf8');
 
-        this.logRequest(req, res);
+      res.setHeader('Content-Type', 'application/vnd.api+json');
 
-        req.setEncoding('utf8');
+      if (methodOverride) {
+        req.method = methodOverride;
+      }
 
-        res.setHeader('Content-Type', 'application/vnd.api+json');
+      req.url = parseURL(req.url, true);
+      req.params = await formatParams(req);
+      req.session = new Session({
+        cookie: headers.cookie,
+        logger,
+        sessionKey,
+        sessionSecret
+      });
 
-        if (methodOverride) {
-          req.method = methodOverride;
-        }
+      resolver.next().value(req, res);
+    });
 
-        req.url = parseURL(req.url, true);
-        req.params = await formatParams(req);
-        req.session = Session.create({
-          cookie: headers.cookie,
-          logger,
-          sessionKey,
-          sessionSecret
-        });
+    defineProperties(this, {
+      logger: {
+        value: logger,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
 
-        resolver.next().value(req, res);
-      })
+      instance: {
+        value: instance,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      }
     });
 
     return this;

@@ -1,4 +1,3 @@
-import Base from '../base';
 import Route from '../route';
 import Serializer from '../serializer';
 
@@ -6,16 +5,39 @@ import tryCatch from '../../utils/try-catch';
 
 import bound from '../../decorators/bound';
 
+const { defineProperties } = Object;
+
 const routesKey = Symbol('routes');
 
-class Router extends Base {
-  serializer = new Serializer();
-  controllers = new Map();
+class Router {
+  serializer;
+  controllers;
 
   constructor() {
-    return super({
-      [routesKey]: new Map()
+    defineProperties(this, {
+      [routesKey]: {
+        value: new Map(),
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
+
+      controllers: {
+        value: new Map(),
+        writable: true,
+        enumerable: false,
+        configurable: false
+      },
+
+      serializer: {
+        value: new Serializer(),
+        writable: false,
+        enumerable: false,
+        configurable: false
+      }
     });
+
+    return this;
   }
 
   @bound

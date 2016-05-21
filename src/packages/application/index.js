@@ -2,45 +2,104 @@ import Promise from 'bluebird';
 import cluster from 'cluster';
 import { singularize } from 'inflection';
 
-import Base from '../base';
 import Server from '../server';
 import Router from '../router';
 import Database from '../database';
 
 import loader from '../loader';
 
+const { defineProperties } = Object;
+
+const { env: { PWD, PORT } } = process;
 const { isMaster } = cluster;
 
-class Application extends Base {
+class Application {
   path;
+  port;
+  store;
+  domain;
+  logger;
+  router;
 
-  router = Router.create();
+  constructor({
+    path = PWD,
+    port = PORT || 4000,
+    domain = 'http://localhost',
+    logger,
+    sessionKey,
+    sessionSecret
+  } = {}) {
+    const router = new Router();
 
-  constructor({ path = process.env.PWD, ...props }) {
-    super({
-      ...props,
-      path
+    const server = new Server({
+      router,
+      logger,
+      sessionKey,
+      sessionSecret
     });
-
-    this.setProps({
-      server: Server.create({
-        router: this.router,
-        logger: this.logger,
-        application: this
-      })
-    });
-
-    return this;
-  }
-
-  async boot() {
-    const { router, logger, domain, server, port, path } = this;
 
     const store = new Database({
       path,
       logger,
       config: require(`${path}/config/database`).default
     });
+
+    defineProperties(this, {
+      path: {
+        value: path,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      },
+
+      port: {
+        value: port,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      },
+
+      store: {
+        value: store,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      },
+
+      domain: {
+        value: domain,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      },
+
+      router: {
+        value: router,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      },
+
+      logger: {
+        value: logger,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      },
+
+      server: {
+        value: server,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      }
+    });
+
+    return this;
+  }
+
+  async boot() {
+    const { router, domain, server, port, path, store } = this;
 
     let [
       routes,

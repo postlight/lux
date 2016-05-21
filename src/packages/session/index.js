@@ -1,25 +1,46 @@
-import Base from '../base';
-
 import { line } from '../logger';
 
 import encrypt from './utils/encrypt';
 import decrypt from './utils/decrypt';
 import tryCatch from '../../utils/try-catch';
 
-class Session extends Base {
+const { assign, defineProperties } = Object;
+
+const { env: { NODE_ENV = 'development' } } = process;
+
+class Session {
   data = {};
-
-  cookie = '';
-
   didChange = false;
 
-  constructor(props = {}) {
-    let { cookie, logger, sessionKey, sessionSecret } = props;
+  constructor({ cookie = '', logger, sessionKey, sessionSecret } = {}) {
+    defineProperties(this, {
+      cookie: {
+        value: cookie,
+        writable: true,
+        enumerable: true,
+        configurable: false
+      },
 
-    super({
-      logger,
-      sessionKey,
-      sessionSecret
+      logger: {
+        value: logger,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      },
+
+      sessionKey: {
+        value: sessionKey,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      },
+
+      sessionSecret: {
+        value: sessionSecret,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      }
     });
 
     if (cookie) {
@@ -28,6 +49,8 @@ class Session extends Base {
     }
 
     this.updateCookie(cookie);
+
+    return this;
   }
 
   updateCookie(value) {
@@ -35,27 +58,25 @@ class Session extends Base {
 
     if (value) {
       tryCatch(() => {
-        this.setProps({
+        assign(this, {
           data: JSON.parse(decrypt(value, sessionSecret)),
           cookie: value
         });
       }, () => {
-        const { environment } = this;
-
-        if (environment === 'development') {
+        if (NODE_ENV === 'development') {
           this.logger.error(line`
             Error: Unable to decrypt "${this.sessionKey}". Make sure your
-            configuration for "${environment}" has the correct sessionSecret.
+            configuration for "${NODE_ENV}" has the correct sessionSecret.
           `);
         }
 
-        this.setProps({
+        assign(this, {
           cookie: encrypt('{}', sessionSecret),
           didChange: true
         });
       });
     } else {
-      this.setProps({
+      assign(this, {
         cookie: encrypt('{}', sessionSecret),
         didChange: true
       });

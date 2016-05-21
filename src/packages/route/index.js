@@ -1,13 +1,14 @@
-import Base from '../base';
-
 import getStaticPath from './utils/get-static-path';
 import getDynamicSegments from './utils/get-dynamic-segments';
 
-class Route extends Base {
+const { defineProperties } = Object;
+
+class Route {
   path;
-  method;
   action;
+  method;
   resource;
+  handlers;
   controller;
   staticPath;
   dynamicSegments;
@@ -16,24 +17,71 @@ class Route extends Base {
     const resource = path.replace(/^(.+)\/.+$/ig, '$1');
     const controller = controllers.get(resource);
     const dynamicSegments = getDynamicSegments(path);
+    let handlers;
 
     if (action && controller) {
-      props = {
-        ...props,
-        handlers: controller[action]()
-      };
+      handlers = controller[action]();
     }
 
-    return super({
-      ...props,
-      path,
-      action,
-      resource,
-      controller,
-      dynamicSegments,
-      method: method.toUpperCase(),
-      staticPath: getStaticPath(path, dynamicSegments)
+    defineProperties(this, {
+      path: {
+        value: path,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      },
+
+      action: {
+        value: action,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      },
+
+      method: {
+        value: method.toUpperCase(),
+        writable: false,
+        enumerable: true,
+        configurable: false
+      },
+
+      resource: {
+        value: resource,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
+
+      handlers: {
+        value: handlers,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
+
+      controller: {
+        value: controller,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
+
+      dynamicSegments: {
+        value: dynamicSegments,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
+
+      staticPath: {
+        value: getStaticPath(path, dynamicSegments),
+        writable: false,
+        enumerable: false,
+        configurable: false
+      }
     });
+
+    return this;
   }
 }
 
