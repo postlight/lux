@@ -1,5 +1,4 @@
-import fs from '../fs';
-import isJSFile from '../fs/utils/is-js-file';
+import fs, { isJSFile } from '../fs';
 
 export default async function loader(appPath, type) {
   if (type === 'routes') {
