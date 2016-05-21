@@ -1,3 +1,5 @@
+import { singularize } from 'inflection';
+
 export default function formatInclude(model, include, fields, relationships) {
   return relationships.reduce((included, value) => {
     const relationship = model.getRelationship(value);
@@ -15,7 +17,7 @@ export default function formatInclude(model, include, fields, relationships) {
         }
       } = relationship;
 
-      let fieldsForRelationship = fields[value];
+      let fieldsForRelationship = fields[singularize(value)];
 
       if (fieldsForRelationship) {
         fieldsForRelationship = fieldsForRelationship.filter(attr => {

@@ -1,12 +1,5 @@
 import { Readable } from 'stream';
-
-import {
-  dasherize,
-  pluralize,
-  camelize
-} from 'inflection';
-
-import Base from '../base';
+import { dasherize, pluralize, camelize } from 'inflection';
 
 import tryCatch from '../../utils/try-catch';
 import underscore from '../../utils/underscore';
@@ -14,100 +7,130 @@ import underscore from '../../utils/underscore';
 import bound from '../../decorators/bound';
 
 const { max } = Math;
-const { keys } = Object;
 const { isArray } = Array;
+const { keys, defineProperties } = Object;
 
-class Serializer extends Base {
+class Serializer {
   model;
+  domain;
+  serializers;
 
   hasOne = [];
-
   hasMany = [];
-
   attributes = [];
 
-  serializers = new Map();
+  constructor({ model, domain, serializers } = {}) {
+    defineProperties(this, {
+      model: {
+        value: model,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
 
-  fieldsFor(name, fields = {}) {
-    return fields[camelize(name.replace(/\-/g, '_'), true)];
+      domain: {
+        value: domain,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
+
+      serializers: {
+        value: serializers,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      }
+    });
+
+    return this;
   }
 
-  attributesFor(item, fields) {
-    let i, attr, attrs;
+  formatKey(key) {
+    return dasherize(underscore(key));
+  }
 
-    attrs = {};
+  fieldsFor(name, fields = {}) {
+    fields = fields[camelize(name.replace(/\-/g, '_'), true)];
 
-    if (!fields) {
-      fields = this.attributes;
+    if (fields) {
+      fields = [...fields];
     }
 
-    for (i = 0; i < fields.length; i++) {
-      attr = fields[i];
+    return fields;
+  }
 
-      if (attr.indexOf('id') < 0) {
-        attrs[this.formatKey(attr)] = item[attr];
-      }
-    }
+  attributesFor(item, fields = []) {
+    return (fields.length ? fields : this.attributes)
+      .reduce((hash, attr) => {
+        if (attr.indexOf('id') < 0) {
+          hash[this.formatKey(attr)] = item[attr];
+        }
 
-    return attrs;
+        return hash;
+      }, {});
   }
 
   relationshipsFor(item, include, fields) {
     const { domain, hasOne, hasMany } = this;
     const hash = { data: {}, included: [] };
-    let i, id, key, type, records, related, relatedSerializer;
-
-    for (i = 0; i < hasOne.length; i++) {
-      key = hasOne[i];
-      related = item[key];
-
-      if (related) {
-        id = related.id;
-        type = pluralize(related.modelName);
-
-        hash.data[key] = {
-          data: {
-            id,
-            type
-          },
-
-          links: {
-            self: `${domain}/${type}/${id}`
-          }
-        };
-
-        if (include.indexOf(key) >= 0) {
-          relatedSerializer = related.constructor.serializer;
-
-          if (relatedSerializer) {
-            hash.included.push(
-              relatedSerializer.serializeOne(related, [], fields)
-            );
-          }
-        }
-      }
-    }
 
     hash.data = {
-      ...hash.data,
+      ...hasOne.reduce((obj, key) => {
+        const related = item[key];
 
-      ...hasMany.reduce((obj, k) => {
-        records = item[k];
+        if (related) {
+          const { id, modelName } = related;
+          const type = pluralize(modelName);
+
+          obj[key] = {
+            data: {
+              id,
+              type
+            },
+
+            links: {
+              self: `${domain}/${type}/${id}`
+            }
+          };
+
+          if (include.indexOf(key) >= 0) {
+            const {
+              constructor: {
+                serializer: relatedSerializer
+              }
+            } = related;
+
+            if (relatedSerializer) {
+              hash.included.push(
+                relatedSerializer.serializeOne(related, [], fields)
+              );
+            }
+          }
+        }
+
+        return obj;
+      }, {}),
+
+      ...hasMany.reduce((obj, key) => {
+        const records = item[key];
 
         if (records && records.length) {
-          obj[k] = {
-            data: records.map(r => {
-              id = r.id;
-              type = pluralize(r.modelName);
+          obj[key] = {
+            data: records.map(related => {
+              const { id, modelName } = related;
+              const type = pluralize(modelName);
 
-              if (include.indexOf(k) >= 0) {
-                if (!relatedSerializer) {
-                  relatedSerializer = r.constructor.serializer;
-                }
+              if (include.indexOf(key) >= 0) {
+                const {
+                  constructor: {
+                    serializer: relatedSerializer
+                  }
+                } = related;
 
                 if (relatedSerializer) {
                   hash.included.push(
-                    relatedSerializer.serializeOne(r, [], fields)
+                    relatedSerializer.serializeOne(related, [], fields)
                   );
                 }
               }
@@ -129,10 +152,6 @@ class Serializer extends Base {
     };
 
     return hash;
-  }
-
-  formatKey(key) {
-    return dasherize(underscore(key));
   }
 
   serializeGroup(stream, key, data, include, fields) {
@@ -249,9 +268,9 @@ class Serializer extends Base {
 
   @bound
   serializeOne(item, include, fields, links = true) {
-    const { id } = item;
-    const name = item.modelName;
+    const { id, modelName: name } = item;
     const type = pluralize(name);
+
     const data = {
       id,
       type,

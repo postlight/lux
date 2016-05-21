@@ -59,9 +59,10 @@ class Application extends Base {
     serializers.forEach((serializer, name) => {
       const model = models.get(singularize(name));
 
-      serializer = serializer.create({
+      serializer = new serializer({
         model,
-        domain
+        domain,
+        serializers
       });
 
       if (model) {
@@ -69,10 +70,6 @@ class Application extends Base {
       }
 
       serializers.set(name, serializer);
-    });
-
-    serializers.forEach(serializer => {
-      serializer.serializers = serializers;
     });
 
     let appController = controllers.get('application');
