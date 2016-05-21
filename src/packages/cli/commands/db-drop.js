@@ -4,7 +4,7 @@ import { rmrf } from '../../fs';
 const { env: { PWD, NODE_ENV = 'development' } } = process;
 
 export default async function dbDrop() {
-  require(`${PWD}/node_modules/babel-core/register`);
+  external(`${PWD}/node_modules/babel-core/register`);
 
   const {
     default: {
@@ -14,7 +14,7 @@ export default async function dbDrop() {
         ...config
       }
     }
-  } = require(`${PWD}/config/database`);
+  } = external(`${PWD}/config/database`);
 
   if (driver === 'sqlite3') {
     await rmrf(`${PWD}/db/${database}_${NODE_ENV}.sqlite`);

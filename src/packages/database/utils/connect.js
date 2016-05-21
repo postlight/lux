@@ -31,7 +31,7 @@ export default function connect(appPath, config = {}) {
   }
 
   tryCatchSync(() => {
-    knex = require(`${appPath}/node_modules/knex`);
+    knex = external(`${appPath}/node_modules/knex`);
   }, () => {
     throw new ModuleMissingError('knex');
   });

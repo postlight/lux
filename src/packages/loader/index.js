@@ -3,7 +3,7 @@ import fs, { isJSFile } from '../fs';
 export default async function loader(appPath, type) {
   if (type === 'routes') {
     return new Map([
-      ['routes', require(`${appPath}/app/routes`).default]
+      ['routes', external(`${appPath}/app/routes`).default]
     ]);
   } else {
     return new Map(
@@ -12,7 +12,7 @@ export default async function loader(appPath, type) {
         .map(file => {
           return [
             file.replace('.js', ''),
-            require(`${appPath}/app/${type}/${file}`).default
+            external(`${appPath}/app/${type}/${file}`).default
           ];
         })
     );

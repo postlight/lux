@@ -4,7 +4,7 @@ import { connect } from '../../database';
 const { env: { PWD, NODE_ENV = 'development' } } = process;
 
 export default async function dbCreate() {
-  require(`${PWD}/node_modules/babel-core/register`);
+  external(`${PWD}/node_modules/babel-core/register`);
 
   const {
     default: {
@@ -14,7 +14,7 @@ export default async function dbCreate() {
         ...config
       }
     }
-  } = require(`${PWD}/config/database`);
+  } = external(`${PWD}/config/database`);
 
   if (driver === 'sqlite3') {
     await fs.writeFileAsync(`${PWD}/db/${database}_${NODE_ENV}.sqlite`, '');

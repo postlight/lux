@@ -1,9 +1,10 @@
+global.external = require;
+
 import path from 'path';
+import Logger from '../src/packages/logger';
 
-import Logger from '../dist/packages/logger';
-
-import exec from '../dist/packages/cli/utils/exec';
-import tryCatch from '../dist/utils/try-catch';
+import exec from '../src/packages/cli/utils/exec';
+import tryCatch from '../src/utils/try-catch';
 
 const { assign } = Object;
 

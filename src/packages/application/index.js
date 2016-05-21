@@ -46,7 +46,7 @@ class Application {
     const store = new Database({
       path,
       logger,
-      config: require(`${path}/config/database`).default
+      config: external(`${path}/config/database`).default
     });
 
     defineProperties(this, {

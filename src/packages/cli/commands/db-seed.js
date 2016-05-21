@@ -5,11 +5,11 @@ import loader from '../../loader';
 const { env: { PWD } } = process;
 
 export default async function dbSeed() {
-  require(`${PWD}/node_modules/babel-core/register`);
+  external(`${PWD}/node_modules/babel-core/register`);
 
   await new Database({
     path: PWD,
-    config: require(`${PWD}/config/database`).default,
+    config: external(`${PWD}/config/database`).default,
 
     logger: await Logger.create({
       appPath: PWD,
@@ -17,5 +17,5 @@ export default async function dbSeed() {
     })
   }).define(await loader(PWD, 'models'));
 
-  await require(`${PWD}/db/seed`).default();
+  await external(`${PWD}/db/seed`).default();
 }

@@ -1,6 +1,16 @@
 #!/usr/bin/env node
+'use strict';
+
+const PWD = process.env.PWD;
+
 try {
-  require(`${process.env.PWD}/node_modules/lux-framework/dist/packages/cli`);
+  const Lux = require(`${PWD}/node_modules/lux-framework`);
+
+  if (typeof Lux.CLI === 'function') {
+    Lux.CLI();
+  } else {
+    require(`${PWD}/node_modules/lux-framework/dist/packages/cli`);
+  }
 } catch (err) {
-  require('../dist/packages/cli');
+  require('../dist').CLI();
 }

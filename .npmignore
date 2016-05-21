@@ -7,10 +7,16 @@
 # misc
 .git
 .babelrc
-.eslint
+.eslintrc
+.editorconfig
+.travis.yml
 *.DS_Store
-gulpfile.babel.js
+webpack.config.babel.js
 /examples
+
+# docs
+CHANGELOG.md
+ROADMAP.md
 
 # logs
 /log
