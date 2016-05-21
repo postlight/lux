@@ -1,8 +1,7 @@
 import fs from 'fs';
-
 import { promisifyAll } from 'bluebird';
 
-promisifyAll(fs);
-
-export default fs;
+export default promisifyAll(fs);
+export rmrf from './utils/rmrf';
+export exists from './utils/exists';
 export isJSFile from './utils/is-js-file';

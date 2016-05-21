@@ -1,6 +1,5 @@
 import { connect } from '../../database';
-
-import rmrf from '../utils/rmrf';
+import { rmrf } from '../../fs';
 
 const { env: { PWD, NODE_ENV = 'development' } } = process;
 

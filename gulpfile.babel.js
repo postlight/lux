@@ -3,7 +3,7 @@ import babel from 'gulp-babel';
 import mocha from 'gulp-mocha';
 import uglify from 'gulp-uglify';
 
-import rmrf from './src/packages/cli/utils/rmrf';
+import { rmrf } from './src/packages/fs';
 
 gulp.task('clean', () => {
   return rmrf('dist');

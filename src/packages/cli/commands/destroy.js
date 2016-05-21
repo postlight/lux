@@ -1,9 +1,7 @@
-import { red } from 'chalk';
+import { red, green } from 'chalk';
 import { pluralize } from 'inflection';
 
-import fs from '../../fs';
-
-import rmrf from '../utils/rmrf';
+import fs, { rmrf, exists } from '../../fs';
 
 const { env: { PWD } } = process;
 
@@ -31,8 +29,10 @@ export async function destroyType(type, name) {
       break;
   }
 
-  await rmrf(`${PWD}/${path}`);
-  console.log(`${red('remove')} ${path}`);
+  if (await exists(`${PWD}/${path}`)) {
+    await rmrf(`${PWD}/${path}`);
+    console.log(`${red('remove')} ${path}`);
+  }
 }
 
 export default async function destroy(type, name) {
@@ -52,9 +52,11 @@ export default async function destroy(type, name) {
       destroyType('model', name),
       destroyType('migration', `create-${pluralize(name)}`),
       destroyType('serializer', name),
-      destroyType('controller', name),
-      fs.writeFileAsync(`${PWD}/app/routes.js`, routes, 'utf8')
+      destroyType('controller', name)
     ]);
+
+    await fs.writeFileAsync(`${PWD}/app/routes.js`, routes, 'utf8');
+    console.log(`${green('update')} app/routes.js`);
   } else if (type === 'model') {
     await Promise.all([
       destroyType(type, name),
