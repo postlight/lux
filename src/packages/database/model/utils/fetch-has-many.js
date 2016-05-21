@@ -3,11 +3,11 @@ import Promise from 'bluebird';
 import formatSelect from './format-select';
 import { sql } from '../../../logger';
 
-export default async function fetchHasMany(model, related) {
+export default async function fetchHasMany(model, related, records) {
   const {
-    table,
     tableName,
-    modelName,
+    primaryKey,
+
     store: {
       debug
     }
@@ -19,20 +19,23 @@ export default async function fetchHasMany(model, related) {
       attrs,
       relationship: {
         foreignKey,
-        model: relatedModel
+        model: relatedModel,
+
+        model: {
+          table,
+          tableName: relatedTableName
+        }
       }
     } = included;
 
     const query = table()
       .select(
-        `${tableName}.id AS ${modelName}.id`,
-        ...formatSelect(relatedModel, attrs, `${name}.`)
+        ...formatSelect(relatedModel, attrs, `${name}.`),
+        `${relatedTableName}.${foreignKey} AS ${tableName}.${primaryKey}`
       )
-      .innerJoin(
-        relatedModel.tableName,
-        `${relatedModel.tableName}.${foreignKey}`,
-        '=',
-        `${tableName}.id`
+      .whereIn(
+        `${relatedTableName}.${foreignKey}`,
+        records.map(({ [primaryKey]: pk }) => pk)
       );
 
     if (debug) {

@@ -5,7 +5,7 @@ const { entries } = Object;
 class Collection extends Array {
   constructor({ model, records = [], related = {} } = {}) {
     const { length } = records;
-    const { modelName, primaryKey } = model;
+    const { tableName, primaryKey } = model;
 
     super(length);
     insert(this, records);
@@ -14,7 +14,7 @@ class Collection extends Array {
       entries(related)
         .forEach(([name, relatedRecords]) => {
           const match = relatedRecords
-            .filter(({ [`${modelName}.${primaryKey}`]: pk }) => {
+            .filter(({ [`${tableName}.${primaryKey}`]: pk }) => {
               return pk === row[primaryKey];
             })
             .map(relatedRecord => {

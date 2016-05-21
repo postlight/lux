@@ -1,4 +1,3 @@
-import Promise from 'bluebird';
 import { dasherize, pluralize } from 'inflection';
 
 import Collection from '../collection';
@@ -439,10 +438,8 @@ class Model {
       });
     }
 
-    [records, related] = await Promise.all([
-      records,
-      fetchHasMany(this, related)
-    ]);
+    records = await records;
+    related = await fetchHasMany(this, related, records);
 
     return new Collection({
       records,
