@@ -105,14 +105,6 @@ Here is the middleware that would be executed when a user visits `/admin/posts`
 
 ## Polymorphic Relationships (#75)
 
-Currently Lux uses [node-orm2](http://dresende.github.io/node-orm2/) which doesn't support polymorphic relationships.
-
-For `1.0` we can either of the following:
-
-- Implement our own (miniature) ORM using [knex.js](http://knexjs.org/)
-- Fork [node-orm2](http://dresende.github.io/node-orm2/) add the ability to have polymorphic relationships
-
-
 #### API
 
 Declaring a polymorphic relationship on a model should be as simple as a boolean flag.
