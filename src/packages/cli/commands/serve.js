@@ -32,7 +32,7 @@ export default async function serve(port = 4000) {
     logger.log(`Starting Lux Server with ${cyan(`${total}`)} worker processes`);
 
     for (let i = 0; i < total; i++) {
-      cluster.fork().once('message', msg => {
+      cluster.fork({ NODE_ENV }).once('message', msg => {
         if (msg === 'ready') {
           current++;
           if (current === total) {
