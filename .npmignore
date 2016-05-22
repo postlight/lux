@@ -12,6 +12,9 @@
 gulpfile.babel.js
 /examples
 
+# docs
+CHANGELOG.md
+
 # logs
 /log
 npm-debug.log
