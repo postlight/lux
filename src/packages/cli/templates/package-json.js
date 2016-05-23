@@ -21,7 +21,7 @@ export default (name) => {
     "babel-preset-es2015": "6.9.0",
     "babel-preset-stage-1": "6.5.0",
     "babel-runtime": "6.9.0",
-    "knex": "0.11.3",
+    "knex": "0.11.4",
     "lux-framework": "${VERSION}"
   }
 }

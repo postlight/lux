@@ -1,5 +1,30 @@
 # Lux Changelog
 
+### 0.0.1-beta.10 (May 23, 2016)
+
+* [[`f2b63501c9`](https://github.com/postlight/lux/commit/f2b63501c9)] - **chore**: bump version to 0.0.1-beta.10 (Zachary Golba)
+* [[`00a139653b`](https://github.com/postlight/lux/commit/00a139653b)] - **refactor**: use webpack for build (#121) (Zachary Golba)
+* [[`47cfa90f02`](https://github.com/postlight/lux/commit/47cfa90f02)] - **deps**: update mocha to version 2.5.1 (#128) (Greenkeeper)
+* [[`bbf73047eb`](https://github.com/postlight/lux/commit/bbf73047eb)] - **docs**: remove node-orm2 references from ROADMAP.md (#126) (Zachary Golba)
+* [[`4338d05c3b`](https://github.com/postlight/lux/commit/4338d05c3b)] - **docs**: fix broken links in CHANGELOG.md (#125) (Zachary Golba)
+* [[`50c18275a0`](https://github.com/postlight/lux/commit/50c18275a0)] - **docs**: update code sample in README.md (#124) (Zachary Golba)
+* [[`940b53a7ed`](https://github.com/postlight/lux/commit/940b53a7ed)] - **chore**: add CHANGELOG.md (#123) (Zachary Golba)
+* [[`8837cb5064`](https://github.com/postlight/lux/commit/8837cb5064)] - **fix**: NODE_ENV is not being passed down to child processes (#122) (Zachary Golba)
+* [[`c9f2aef952`](https://github.com/postlight/lux/commit/c9f2aef952)] - **feat**: confirm overwriting files with lux generate cmd (#120) (Zachary Golba)
+* [[`06dffaf0cd`](https://github.com/postlight/lux/commit/06dffaf0cd)] - **chore**: .editorconfig file (#119) (Joan Piedra)
+* [[`a7f191003d`](https://github.com/postlight/lux/commit/a7f191003d)] - **feat**: improve error handling on missing controller & serializer files (#118) (Joan Piedra)
+* [[`1dd3ab64c4`](https://github.com/postlight/lux/commit/1dd3ab64c4)] - **refactor**: remove Base package (#117) (Zachary Golba)
+* [[`0f64cc864a`](https://github.com/postlight/lux/commit/0f64cc864a)] - **fix**: hasMany relationships are not eager loading properly (#116) (Zachary Golba)
+* [[`11cb766267`](https://github.com/postlight/lux/commit/11cb766267)] - **fix**: select statement not being optimized by fields param (#115) (Zachary Golba)
+* [[`ad3564fc8b`](https://github.com/postlight/lux/commit/ad3564fc8b)] - **fix**: pagination links break with an empty table (#114) (Zachary Golba)
+* [[`1b84009543`](https://github.com/postlight/lux/commit/1b84009543)] - **fix**: ignore hidden and non .js files in loader (#113) (Joan Piedra)
+* [[`6d97ca7545`](https://github.com/postlight/lux/commit/6d97ca7545)] - **fix**: using ?include is not working with multiple resources (#112) (Zachary Golba)
+* [[`ef8e779867`](https://github.com/postlight/lux/commit/ef8e779867)] - **fix**: defaultValue is not accounted for in #108 (#111) (Zachary Golba)
+* [[`71a1be6ccc`](https://github.com/postlight/lux/commit/71a1be6ccc)] - **fix**: column data not consistent across all dbms (#108) (Zachary Golba)
+* [[`7c897ae0f2`](https://github.com/postlight/lux/commit/7c897ae0f2)] - **fix**: multiple 'hasMany' 'type' values are incorrect in serialized data (#109) (Zachary Golba)
+* [[`a03cde5195`](https://github.com/postlight/lux/commit/a03cde5195)] - **chore**: update example apps (#105) (Zachary Golba)
+* [[`824caab17f`](https://github.com/postlight/lux/commit/824caab17f)] - **deps**: update ora to version 0.2.3 (#101) (Greenkeeper)
+
 ### 0.0.1-beta.9 (May 18, 2016)
 
 * [[`4002a5a64d`](https://github.com/postlight/lux/commit/4002a5a64d)] - **chore**: bump version to 0.0.1-beta.9 (#97) (Zachary Golba)

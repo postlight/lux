@@ -18,8 +18,8 @@
     "babel-preset-stage-1": "6.5.0",
     "babel-runtime": "6.9.0",
     "faker": "3.1.0",
-    "knex": "0.11.3",
-    "lux-framework": "0.0.1-beta.9",
+    "knex": "0.11.4",
+    "lux-framework": "0.0.1-beta.10",
     "sqlite3": "3.1.4"
   }
 }
