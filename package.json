@@ -19,7 +19,7 @@
   "scripts": {
     "build": "npm run lint && npm run clean && webpack",
     "clean": "rm -rf dist",
-    "lint": "eslint src/**",
+    "lint": "eslint src/**/*.js",
     "start": "lux serve",
     "test": "npm run build && mocha --timeout 60000 --compilers=js:babel-core/register test/helper.js test/unit/**/*.js test/integration/**/*.js"
   },

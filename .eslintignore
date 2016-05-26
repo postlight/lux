@@ -1,0 +1,11 @@
+# compiled output
+dist/*
+
+# tests
+test/*
+
+# dependencies
+node_modules/*
+
+# misc
+examples/*

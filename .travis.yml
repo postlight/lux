@@ -16,7 +16,6 @@ before_script:
   - psql -c 'create database lux_test;' -U postgres
   - touch test/test-app/db/lux_test_test.sqlite
   - cd test/test-app && npm install && cd ../../
-  - npm install -g eslint babel-eslint
   - npm link
 
 env:
