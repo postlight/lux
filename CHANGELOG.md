@@ -1,5 +1,11 @@
 # Lux Changelog
 
+### 0.0.1-beta.12 (June 13, 2016)
+
+* [[`723c403598`](https://github.com/postlight/lux/commit/723c403598)] - **feat**: generate basic .eslintrc.json with `lux new` cmd (Zachary Golba)
+* [[`952fa65db3`](https://github.com/postlight/lux/commit/952fa65db3)] - **deps**: update rollup to version 0.31.2 (#141) (Greenkeeper)
+* [[`07bdc43db1`](https://github.com/postlight/lux/commit/07bdc43db1)] - **docs**: update CHANGELOG.md (Zachary Golba)
+
 ### 0.0.1-beta.11 (June 12, 2016)
 
 This is the last big set of breaking changes before a stable `1.0.0` release
@@ -239,7 +245,6 @@ for a Lux application (plus the ones you installed yourself).
 ### 0.0.1-beta.3 (April 18, 2016)
 
 * [[`03958b98d1`](https://github.com/postlight/lux/commit/03958b98d1)] - **chore**: bump version to 0.0.1-beta.3 (#37) (Zachary Golba)
-* [[`18199d6993`](https://github.com/postlight/lux/commit/18199d6993)] - Merge pull request #36 from postlight/database-missing-port (kev5873)
 * [[`10b782be1f`](https://github.com/postlight/lux/commit/10b782be1f)] - **fix**: logger date incorrect (#35) (kev5873)
 * [[`e9897371be`](https://github.com/postlight/lux/commit/e9897371be)] - **chore**: Link to Medium Article in Readme (#33) (Zachary Golba)
 
