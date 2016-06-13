@@ -15,7 +15,8 @@ import routesTemplate from '../templates/routes';
 import dbTemplate from '../templates/database';
 import seedTemplate from '../templates/seed';
 import pkgJSONTemplate from '../templates/package-json';
-import babelRcTemplate from '../templates/babel-rc';
+import babelrcTemplate from '../templates/babelrc';
+import eslintrcTemplate from '../templates/eslintrc';
 import readmeTemplate from '../templates/readme';
 import licenseTemplate from '../templates/license';
 import gitignoreTemplate from '../templates/gitignore';
@@ -106,7 +107,13 @@ export default async function create(name, database) {
 
     fs.writeFileAsync(
       `${project}/.babelrc`,
-      babelRcTemplate(),
+      babelrcTemplate(),
+      'utf8'
+    ),
+
+    fs.writeFileAsync(
+      `${project}/.eslintrc.json`,
+      eslintrcTemplate(),
       'utf8'
     ),
 
@@ -131,6 +138,7 @@ export default async function create(name, database) {
     ${green('create')} LICENSE
     ${green('create')} package.json
     ${green('create')} .babelrc
+    ${green('create')} .eslintrc.json
     ${green('create')} .gitignore
   `;
 
