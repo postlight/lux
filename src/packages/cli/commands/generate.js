@@ -136,7 +136,7 @@ export default async function generate(type, name, pwd = PWD, attrs = []) {
         }
 
         if (index + 1 === closeIndex) {
-          str += `${indent(2)}resource('${pluralize(name)}');\n`;
+          str += `${indent(2)}this.resource('${pluralize(name)}');\n`;
         }
 
         return str;

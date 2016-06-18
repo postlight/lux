@@ -38,13 +38,6 @@ export default async function initialize(app: Application, {
     enabled: log
   });
 
-  const router = new Router();
-
-  const server = new Server({
-    router,
-    logger
-  });
-
   const store = await new Database({
     path,
     models,
@@ -54,56 +47,6 @@ export default async function initialize(app: Application, {
   });
 
   Object.freeze(store);
-
-  Object.defineProperties(app, {
-    path: {
-      value: path,
-      writable: false,
-      enumerable: true,
-      configurable: false
-    },
-
-    port: {
-      value: port,
-      writable: false,
-      enumerable: true,
-      configurable: false
-    },
-
-    store: {
-      value: store,
-      writable: false,
-      enumerable: false,
-      configurable: false
-    },
-
-    logger: {
-      value: logger,
-      writable: false,
-      enumerable: true,
-      configurable: false
-    },
-
-    router: {
-      value: router,
-      writable: false,
-      enumerable: false,
-      configurable: false
-    },
-
-    server: {
-      value: server,
-      writable: false,
-      enumerable: false,
-      configurable: false
-    }
-  });
-
-  Object.assign(app, {
-    models,
-    controllers,
-    serializers
-  });
 
   models.forEach((model, name) => {
     const resource = pluralize(name);
@@ -162,8 +105,15 @@ export default async function initialize(app: Application, {
     }
   });
 
-  router.controllers = controllers;
-  routes.call(null, router.route, router.resource);
+  const router = new Router({
+    routes,
+    controllers
+  });
+
+  const server = new Server({
+    router,
+    logger
+  });
 
   server.instance.listen(port).once('listening', () => {
     if (typeof process.send === 'function') {
@@ -172,6 +122,71 @@ export default async function initialize(app: Application, {
       });
     } else {
       process.emit('ready');
+    }
+  });
+
+  Object.defineProperties(app, {
+    path: {
+      value: path,
+      writable: false,
+      enumerable: true,
+      configurable: false
+    },
+
+    port: {
+      value: port,
+      writable: false,
+      enumerable: true,
+      configurable: false
+    },
+
+    models: {
+      value: models,
+      writable: false,
+      enumerable: true,
+      configurable: false
+    },
+
+    controllers: {
+      value: controllers,
+      writable: false,
+      enumerable: true,
+      configurable: false
+    },
+
+    serializers: {
+      value: serializers,
+      writable: false,
+      enumerable: true,
+      configurable: false
+    },
+
+    store: {
+      value: store,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    },
+
+    logger: {
+      value: logger,
+      writable: false,
+      enumerable: true,
+      configurable: false
+    },
+
+    router: {
+      value: router,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    },
+
+    server: {
+      value: server,
+      writable: false,
+      enumerable: false,
+      configurable: false
     }
   });
 

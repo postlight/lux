@@ -37,5 +37,8 @@ before(done => {
       path,
       port: 4000
     });
-  }, done);
+  }, (err) => {
+    process.removeListener('ready', done);
+    done(err);
+  });
 });

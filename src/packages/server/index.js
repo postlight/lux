@@ -4,9 +4,11 @@ import { parse as parseURL } from 'url';
 
 import chalk, { cyan } from 'chalk';
 
+import responder from './responder';
 import { line } from '../logger';
 
 import entries from '../../utils/entries';
+import tryCatch from '../../utils/try-catch';
 import formatParams from './utils/format-params';
 
 import type {
@@ -67,27 +69,44 @@ class Server {
     this.instance.listen(port);
   }
 
-  async receiveRequest(
-    req: IncomingMessage,
-    res: ServerResponse
-  ): Promise<void> {
-    const { headers } = req;
-    const methodOverride = headers['X-HTTP-Method-Override'];
+  receiveRequest(req: IncomingMessage, res: ServerResponse): void {
+    tryCatch(async () => {
+      req.setEncoding('utf8');
+      res.setHeader('Content-Type', 'application/vnd.api+json');
 
-    this.logRequest(req, res);
+      req.url = parseURL(req.url, true);
 
-    req.setEncoding('utf8');
-    res.setHeader('Content-Type', 'application/vnd.api+json');
+      Object.assign(req, {
+        route: this.router.match(req),
+        params: await formatParams(req),
+        headers: new Map(entries(req.headers)),
+      });
 
-    if (methodOverride) {
-      req.method = methodOverride;
+      if (req.headers.has('X-HTTP-Method-Override')) {
+        req.method = req.headers.get('X-HTTP-Method-Override');
+      }
+
+      this.logRequest(req, res);
+
+      if (req.route) {
+        req.params = {
+          ...req.params,
+          ...req.route.parseParams(req.url.pathname)
+        };
+      }
+
+      this.sendResponse(res, await this.router.visit(req, res));
+    }, err => {
+      this.sendResponse(res, err);
+    });
+  }
+
+  sendResponse(res: ServerResponse, data: void | mixed): void {
+    if (data && typeof data.pipe === 'function') {
+      data.pipe(res);
+    } else {
+      responder.resolve(res, data);
     }
-
-    req.url = parseURL(req.url, true);
-    req.params = await formatParams(req);
-    req.headers = new Map(entries(headers));
-
-    this.router.resolve(req, res);
   }
 
   logRequest(req: IncomingMessage, res: ServerResponse): void {

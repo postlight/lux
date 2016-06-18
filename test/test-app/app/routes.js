@@ -1,5 +1,5 @@
-export default function routes(route, resource) {
-  resource('authors');
-  resource('posts');
-  resource('tags');
+export default function routes() {
+  this.resource('authors');
+  this.resource('posts');
+  this.resource('tags');
 }

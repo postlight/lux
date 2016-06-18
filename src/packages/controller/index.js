@@ -412,6 +412,8 @@ class Controller {
       }
     } = req;
 
+    res.statusCode = 201;
+
     return this.model.create(attributes);
   }
 
@@ -444,14 +446,14 @@ class Controller {
   /**
    * Destroy a single `Model` instance that the Controller instance represents.
    */
-  async destroy(req: IncomingMessage, res: ServerResponse): Promise<?Model> {
+  async destroy(req: IncomingMessage, res: ServerResponse): Promise<number> {
     const record = await this.model.find(req.params.id);
 
     if (record) {
       await record.destroy();
     }
 
-    return record;
+    return 204;
   }
 
   /**
@@ -459,8 +461,8 @@ class Controller {
    *
    * @private
    */
-  preflight(req: IncomingMessage, res: ServerResponse): boolean {
-    return true;
+  preflight(req: IncomingMessage, res: ServerResponse): number {
+    return 204;
   }
 }
 

@@ -1,11 +1,12 @@
 // @flow
+import { ID_PATTERN, RESOURCE_PATTERN } from './constants';
+
 import createAction from './utils/create-action';
 import getStaticPath from './utils/get-static-path';
 import getDynamicSegments from './utils/get-dynamic-segments';
 
-import type { Controller } from '../controller';
-
-const resourcePattern = /^((?!\/)[a-z\-]+)/ig;
+import type Controller from '../controller';
+import type { options } from './interfaces';
 
 /**
  * @private
@@ -32,13 +33,8 @@ class Route {
     action,
     controllers,
     method
-  }: {
-    path: string,
-    action: string,
-    controllers: Map<string, Controller>,
-    method: string
-  }) {
-    const [resource] = path.match(resourcePattern) || [path];
+  }: options) {
+    const [resource] = path.match(RESOURCE_PATTERN) || [path];
     const controller: ?Controller = controllers.get(resource);
     const dynamicSegments = getDynamicSegments(path);
     let handlers;
@@ -119,6 +115,24 @@ class Route {
 
     return this;
   }
+
+  parseParams(pathname: string): Object {
+    const parts = pathname.match(ID_PATTERN) || [];
+
+    return parts.reduce((params, val, index) => {
+      const key = this.dynamicSegments[index];
+
+      if (key) {
+        params = {
+          ...params,
+          [key]: parseInt(val, 10)
+        };
+      }
+
+      return params;
+    }, {});
+  }
 }
 
+export { ID_PATTERN, RESOURCE_PATTERN } from './constants';
 export default Route;

@@ -47,7 +47,7 @@ export default async function destroy(type, name) {
       .split('\n')
       .reduce((lines, line) => {
         const pattern = new RegExp(
-          `\s*resource\\(('|"|\`)${pluralize(name)}('|"|\`)\\);?`
+          `\s*this.resource\\(('|"|\`)${pluralize(name)}('|"|\`)\\);?`
         );
 
         return pattern.test(line) ? lines : [...lines, line];

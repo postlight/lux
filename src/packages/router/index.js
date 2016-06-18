@@ -1,250 +1,84 @@
-import Route from '../route';
-import Serializer from '../serializer';
+// @flow
+import { ID_PATTERN } from '../route';
 
-import tryCatch from '../../utils/try-catch';
+import define from './define';
 
-const idPattern = /(?![\=])(\d+)/g;
+import type { IncomingMessage, ServerResponse } from 'http';
+
+import type Controller from '../controller';
+import type Route from '../route';
+import type { options } from '../route/interfaces';
 
 /**
  * @private
  */
-class Router {
-  routes;
-  serializer;
-  controllers;
+class Router extends Map<string, Route> {
+  initialized: boolean;
 
-  constructor() {
-    const {
-      route,
-      resource
-    } = this;
+  constructor({
+    routes,
+    controllers
+  }: {
+    routes: () => void,
+    controllers: Map<string, Controller>
+  }): Router {
+    super();
 
-    Object.defineProperties(this, {
-      routes: {
-        value: new Map(),
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
+    routes.call({
+      route: (path: string, opts: options) => define.route({
+        ...opts,
+        path,
+        controllers,
+        router: this
+      }),
 
-      controllers: {
-        value: new Map(),
-        writable: true,
-        enumerable: false,
-        configurable: false
-      },
+      resource: (path: string) => define.resource({
+        path,
+        controllers,
+        router: this
+      })
+    });
 
-      serializer: {
-        value: new Serializer(),
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      route: {
-        value: (path, options) => route.call(this, path, options),
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      resource: {
-        value: (name, options) => resource.call(this, name, options),
-        writable: false,
-        enumerable: false,
-        configurable: false
-      }
+    Object.defineProperty(this, 'initialized', {
+      value: true,
+      writable: false,
+      enumerable: false,
+      configurable: false
     });
 
     return this;
   }
 
-  route(path, options = {}) {
-    const { routes, controllers } = this;
-    const { method, action } = options;
-
-    const route = new Route({
-      path,
-      method,
-      action,
-      controllers
-    });
-
-    routes.set(`${route.method}:/${route.staticPath}`, route);
-  }
-
-  resource(name, options = {}) {
-    this.route(name, {
-      method: 'GET',
-      action: 'index'
-    });
-
-    this.route(`${name}/:id`, {
-      method: 'GET',
-      action: 'show'
-    });
-
-    this.route(name, {
-      method: 'POST',
-      action: 'create'
-    });
-
-    this.route(`${name}/:id`, {
-      method: 'PATCH',
-      action: 'update'
-    });
-
-    this.route(`${name}/:id`, {
-      method: 'DELETE',
-      action: 'destroy'
-    });
-
-    this.route(name, {
-      method: 'HEAD',
-      action: 'preflight'
-    });
-
-    this.route(name, {
-      method: 'OPTIONS',
-      action: 'preflight'
-    });
-
-    this.route(`${name}/:id`, {
-      method: 'HEAD',
-      action: 'preflight'
-    });
-
-    this.route(`${name}/:id`, {
-      method: 'OPTIONS',
-      action: 'preflight'
-    });
-  }
-
-  resolve(req, res) {
-    const { routes } = this;
-    const { url: { pathname } } = req;
-    const staticPath = pathname.replace(idPattern, ':dynamic');
-
-    const route = routes.get(`${req.method}:${staticPath}`);
-
-    if (route && route.handlers) {
-      const { dynamicSegments } = route;
-      const ids = (pathname.match(idPattern) || []);
-
-      for (let i = 0; i < ids.length; i++) {
-        let key = dynamicSegments[i];
-
-        if (key) {
-          req.params[key] = parseInt(ids[i], 10);
-        }
-      }
-
-      req.route = route;
-      this.visit(req, res, route);
-    } else {
-      this.notFound(req, res);
+  set(key: string, value: Route): Router {
+    if (!this.initialized) {
+      super.set(key, value);
     }
+
+    return this;
   }
 
-  visit(req, res, route) {
-    tryCatch(async () => {
+  match({ method, url: { pathname } }: IncomingMessage): void | Route {
+    const staticPath = pathname.replace(ID_PATTERN, ':dynamic');
+
+    return this.get(`${method}:${staticPath}`);
+  }
+
+  async visit(req: IncomingMessage, res: ServerResponse): void | ?mixed {
+    if (req.route) {
       let i, data, handler;
-      const { handlers } = route;
-      const { method } = req;
+      const { route: { handlers } } = req;
 
       for (i = 0; i < handlers.length; i++) {
         handler = handlers[i];
         data = await handler(req, res);
 
-        if (data === false) {
-          return this.unauthorized(req, res);
+        if (typeof data !== 'undefined') {
+          return data;
         }
       }
 
-      if (data) {
-        switch (method) {
-          case 'POST':
-            res.statusCode = 201;
-            break;
-
-          case 'DELETE':
-            return this.noContent(req, res);
-
-          default:
-            if (data === true) {
-              return this.noContent(req, res);
-            } else {
-              res.statusCode = 200;
-            }
-        }
-
-        data.pipe(res);
-      } else {
-        this.notFound(req, res);
-      }
-    }, err => {
-      this.error(err, req, res);
-    });
-  }
-
-  error(err, req, res) {
-    const { message } = err;
-
-    console.error(err);
-
-    if (message.indexOf('Validation failed') === 0) {
-      res.statusCode = 403;
-      this.serializer.stream({
-        data: {
-          errors: [{
-            title: 'Forbidden',
-            status: 403,
-            detail: message
-          }]
-        }
-      }).pipe(res);
-    } else {
-      res.statusCode = 500;
-      this.serializer.stream({
-        data: {
-          errors: [{
-            title: 'Internal Server Error',
-            status: 500,
-            detail: message
-          }]
-        }
-      }).pipe(res);
+      return data;
     }
-  }
-
-  unauthorized(req, res) {
-    res.statusCode = 401;
-    this.serializer.stream({
-      data: {
-        errors: [{
-          title: 'Unauthorized',
-          status: 401
-        }]
-      }
-    }).pipe(res);
-  }
-
-  notFound(req, res) {
-    res.statusCode = 404;
-    this.serializer.stream({
-      data: {
-        errors: [{
-          title: 'Not Found',
-          status: 404
-        }]
-      }
-    }).pipe(res);
-  }
-
-  noContent(req, res) {
-    res.statusCode = 204;
-    res.removeHeader('Content-Type');
-    res.end();
   }
 }
 

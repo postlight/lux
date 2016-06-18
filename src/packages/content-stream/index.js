@@ -14,10 +14,16 @@ class ContentStream extends Transform {
     return this;
   }
 
-  _transform(chunk: ?Object, encoding: string, done: () => void): void {
+  _transform(
+    chunk: string | Buffer | Object,
+    encoding: string,
+    done: () => void
+  ): void {
     if (chunk && typeof chunk === 'object') {
-      this.push(JSON.stringify(chunk));
+      chunk = JSON.stringify(chunk);
     }
+
+    this.push(chunk);
 
     done(null);
   }

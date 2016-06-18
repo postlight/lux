@@ -1,9 +1,8 @@
 // @flow
 import { pluralize } from 'inflection';
 
+import ContentStream from '../content-stream';
 import { Model } from '../database';
-
-import ContentStream from './content-stream';
 
 import pick from '../../utils/pick';
 import insert from '../../utils/insert';
@@ -304,13 +303,13 @@ class Serializer {
     domain = '',
     include = {}
   }: {
-    data: ?(Model | Array<Model>),
-    links: Object,
-    fields: Array<string>,
-    domain: string,
-    include: Object
+    data?: ?(Model | Array<Model>);
+    links?: Object;
+    fields?: Array<string>;
+    domain?: string;
+    include?: Object;
   }): ContentStream {
-    return new ContentStream().on('ready', (stream: ContentStream) => {
+    return new ContentStream().once('ready', (stream: ContentStream) => {
       const serialized = this.serialize({
         data,
         links,
