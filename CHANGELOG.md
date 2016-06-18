@@ -1,5 +1,14 @@
 # Lux Changelog
 
+### 0.0.1-beta.13 (June 18, 2016)
+
+* [[`30a60c10ca`](https://github.com/postlight/lux/commit/30a60c10ca)] - **chore**: bump version to 0.0.1-beta.13 (Zachary Golba)
+* [[`a569225072`](https://github.com/postlight/lux/commit/a569225072)] - **feat**: match ember-data jsonapi pagination implementation (#151) (Zachary Golba)
+* [[`ea4786b791`](https://github.com/postlight/lux/commit/ea4786b791)] - **deps**: update mysql2 to version 1.0.0-rc.5 in test-app (#150) (Zachary Golba)
+* [[`9b78c19540`](https://github.com/postlight/lux/commit/9b78c19540)] - **style**: change tabs to spaces in .eslintrc.js (#149) (Zachary Golba)
+* [[`853d81a5d5`](https://github.com/postlight/lux/commit/853d81a5d5)] - **deps**: update bluebird to version 3.4.1 (#147) (Greenkeeper)
+* [[`873f92dcac`](https://github.com/postlight/lux/commit/873f92dcac)] - **deps**: update eslint to version 2.13.0 (#146) (Greenkeeper)
+
 ### 0.0.1-beta.12 (June 13, 2016)
 
 * [[`723c403598`](https://github.com/postlight/lux/commit/723c403598)] - **feat**: generate basic .eslintrc.json with `lux new` cmd (Zachary Golba)
