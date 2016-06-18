@@ -71,6 +71,7 @@ export default async function formatParams(req) {
 
       return {
         ...result,
+
         [parentKey]: {
           ...parentValue,
           [childKey]: value
@@ -85,7 +86,10 @@ export default async function formatParams(req) {
   }, {});
 
   if (/(PATCH|POST)/g.test(method)) {
-    Object.assign(params, await bodyParser(req));
+    params = {
+      ...params,
+      ...(await bodyParser(req))
+    };
   }
 
   return format(params, method);

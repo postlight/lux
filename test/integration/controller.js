@@ -52,7 +52,9 @@ describe('Integration: class Controller', () => {
       before(async () => {
         pagesWithLimit = await Promise.all([
           ...[1, 2, 4, 5, 6].map(async (page) => {
-            page = await fetch(`${host}/posts?page=${page}&limit=10`);
+            page = await fetch(
+              `${host}/posts?page%5Bsize%5D=10&page%5Bnumber%5D=${page}`
+            );
 
             return {
               subject: page,
@@ -63,7 +65,7 @@ describe('Integration: class Controller', () => {
 
         pagesWithoutLimit = await Promise.all([
           ...[1, 2, 3].map(async (page) => {
-            page = await fetch(`${host}/posts?page=${page}`);
+            page = await fetch(`${host}/posts?page%5Bnumber%5D=${page}`);
 
             return {
               subject: page,
@@ -81,7 +83,7 @@ describe('Integration: class Controller', () => {
         ).to.be.false;
       });
 
-      it('supports limit parameter', () => {
+      it('supports page[size] parameter', () => {
         let page;
 
         for (page of pagesWithLimit) {
@@ -89,7 +91,7 @@ describe('Integration: class Controller', () => {
         }
       });
 
-      it('has a default limit parameter of 25', () => {
+      it('has a default page[size] of 25', () => {
         let page;
 
         for (page of pagesWithoutLimit) {

@@ -21,6 +21,7 @@ export default function sanitizeParams(
     }
   }: {
     modelName: string,
+
     model: {
       relationshipNames: Array<string>
     }
@@ -32,24 +33,11 @@ export default function sanitizeParams(
 
   let {
     page,
-    limit,
     sort,
     filter,
     include,
     fields
   } = params;
-
-  if (!page) {
-    page = 1;
-  } else if (typeof page === 'string') {
-    page = parseInt(page, 10);
-  }
-
-  if (!limit) {
-    limit = 25;
-  } else if (typeof limit === 'string') {
-    limit = parseInt(limit, 10);
-  }
 
   if (!sort) {
     sort = ['createdAt', 'ASC'];
@@ -118,14 +106,12 @@ export default function sanitizeParams(
     }, {});
 
   req.params = {
-    id: params.id,
-    filter: pick(filter, ...this.filter),
-
     page,
-    limit,
     sort,
     include,
-    fields
+    fields,
+    id: params.id,
+    filter: pick(filter, ...this.filter)
   };
 
   if (/^(POST|PATCH)$/g.test(req.method)) {
@@ -136,13 +122,15 @@ export default function sanitizeParams(
       }
     } = params;
 
-    Object.assign(req.params, {
+    req.params = {
+      ...req.params,
+
       data: {
         id: params.data.id,
 
         type,
         attributes: pick(attributes, ...this.params)
       }
-    });
+    };
   }
 }

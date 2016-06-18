@@ -365,7 +365,6 @@ class Controller {
       params: {
         sort,
         page,
-        limit,
         filter,
         fields,
         include
@@ -374,8 +373,8 @@ class Controller {
 
     return this.model.select(...fields)
       .include(include)
-      .limit(limit)
-      .page(page)
+      .limit(page.size)
+      .page(page.number)
       .where(filter)
       .order(...sort);
   }

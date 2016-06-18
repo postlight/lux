@@ -4,7 +4,7 @@ import { Model, Query } from '../../database';
 import sanitizeParams from '../middleware/sanitize-params';
 import setInclude from '../middleware/set-include';
 import setFields from '../middleware/set-fields';
-import setLimit from '../middleware/set-limit';
+import setPage from '../middleware/set-page';
 
 import insert from '../../../utils/insert';
 import createPageLinks from './create-page-links';
@@ -25,7 +25,7 @@ export default function createAction(
     sanitizeParams,
     setInclude,
     setFields,
-    setLimit
+    setPage
   ];
 
   const handlers = new Array(builtIns.length + middleware.length + 1);
@@ -52,7 +52,6 @@ export default function createAction(
 
         params: {
           page,
-          limit,
           include
         }
       } = req;
@@ -76,7 +75,6 @@ export default function createAction(
 
             ...createPageLinks({
               page,
-              limit,
               total,
               query,
               domain,

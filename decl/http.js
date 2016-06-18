@@ -16,12 +16,15 @@ type params = {
     relationships?: Object;
   };
 
+  page: {
+    size: number;
+    number: number;
+  };
+
   fields: Object;
   filter: Object;
   id?: number | string | Buffer;
   include: Array<string> | Object;
-  limit: number;
-  page: number;
   sort: string | [string, string];
 };
 

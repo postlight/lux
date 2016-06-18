@@ -119,8 +119,8 @@ class Serializer {
     *   ],
     *   "links": {
     *     "self": "http://localhost:4000/posts",
-    *     "first": "http://localhost:4000/posts?page=1",
-    *     "last": "http://localhost:4000/posts?page=1",
+    *     "first": "http://localhost:4000/posts",
+    *     "last": "http://localhost:4000/posts",
     *     "prev": null,
     *     "next": null
     *   }
@@ -198,8 +198,8 @@ class Serializer {
     *   ],
     *   "links": {
     *     "self": "http://localhost:4000/posts",
-    *     "first": "http://localhost:4000/posts?page=1",
-    *     "last": "http://localhost:4000/posts?page=1",
+    *     "first": "http://localhost:4000/posts",
+    *     "last": "http://localhost:4000/posts",
     *     "prev": null,
     *     "next": null
     *   }
@@ -261,8 +261,8 @@ class Serializer {
     *   ],
     *   "links": {
     *     "self": "http://localhost:4000/posts",
-    *     "first": "http://localhost:4000/posts?page=1",
-    *     "last": "http://localhost:4000/posts?page=1",
+    *     "first": "http://localhost:4000/posts",
+    *     "last": "http://localhost:4000/posts",
     *     "prev": null,
     *     "next": null
     *   }
