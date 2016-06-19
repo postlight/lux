@@ -13,7 +13,7 @@ let bundle: Map<string, any>;
 export default function loader(appPath: string, type: string): ?mixed {
   if (!bundle) {
     const pattern = /^.+(Controller|Down|Serializer|Up)/g;
-    const manifest = external(path.join(appPath, 'dist', 'bundle'));
+    const manifest = require(path.join(appPath, 'dist', 'bundle'));
 
     if (typeof manifest === 'object') {
       bundle = new Map(

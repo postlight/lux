@@ -5,7 +5,7 @@ import template from '../../template';
  * @private
  */
 export default (): string => template`
-  export default function routes(route, resource) {
+  export default function routes() {
 
   }
 `;

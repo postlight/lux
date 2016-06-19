@@ -7,8 +7,12 @@ import template from '../../template';
 /**
  * @private
  */
-export default async function createBootScript(dir: string): Promise<void> {
-  await fs.writeFileAsync(path.join(dir, 'dist/boot.js'), template`
+export default async function createBootScript(dir: string, {
+  useStrict
+}: {
+  useStrict: boolean;
+}): Promise<void> {
+  let data = template`
     const { env: { PWD, PORT } } = process;
     const { Application, config, database } = require('./bundle');
 
@@ -19,5 +23,11 @@ export default async function createBootScript(dir: string): Promise<void> {
         port: PORT
       })
     );
-  `, 'utf8');
+  `;
+
+  if (useStrict) {
+    data = `'use strict';\n\n${data}`;
+  }
+
+  await fs.writeFileAsync(path.join(dir, 'dist', 'boot.js'), data, 'utf8');
 }

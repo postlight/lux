@@ -12,14 +12,13 @@
     "rest",
     "framework"
   ],
-  "main": "dist/index.js",
+  "main": "src/index.js",
   "bin": {
     "lux": "bin/lux"
   },
   "scripts": {
-    "build": "npm run clean && npm run flow && npm run build-cli && npm run build-lux",
+    "build": "npm run clean && npm run flow && npm run build-cli",
     "build-cli": "rollup -c build/config.js --format=cjs --output=dist/cli.js -- src/packages/cli/index.js",
-    "build-lux": "rollup -c build/config.js --format=cjs --output=dist/index.js -- src/index.js",
     "build-test": "rollup -c build/config.test.js --format=cjs --output=test/dist/index.js",
     "clean": "rm -rf dist test/dist test/test-app/dist",
     "docs": "rm -rf docs && documentation build src -o docs -f html",
@@ -47,7 +46,6 @@
     "rollup": "0.32.0",
     "rollup-plugin-alias": "1.2.0",
     "rollup-plugin-babel": "2.4.0",
-    "rollup-plugin-commonjs": "3.0.0",
     "rollup-plugin-eslint": "2.0.1",
     "rollup-plugin-json": "2.0.0",
     "rollup-plugin-node-resolve": "1.7.0",
@@ -55,10 +53,7 @@
   },
   "devDependencies": {
     "babel-core": "6.9.1",
-    "babel-plugin-syntax-flow": "6.8.0",
-    "babel-plugin-syntax-trailing-function-commas": "6.8.0",
-    "babel-plugin-transform-flow-strip-types": "6.8.0",
-    "babel-preset-lux": "1.0.0",
+    "babel-preset-lux": "1.1.0",
     "chai": "3.5.0",
     "documentation": "4.0.0-beta5",
     "flow-bin": "0.27.0",

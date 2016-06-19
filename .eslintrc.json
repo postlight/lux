@@ -18,8 +18,7 @@
     "before": true,
     "after": true,
     "describe": true,
-    "it": true,
-    "external": true
+    "it": true
   },
   "parser": "babel-eslint",
   "rules": {

@@ -27,13 +27,14 @@ import underscore from '../../../utils/underscore';
  */
 export default async function createManifest(
   dir: string,
-  assets: Map<string, Array<string> | string>
+  assets: Map<string, Array<string> | string>,
+  { useStrict }: { useStrict: boolean }
 ): Promise<void> {
   const dist = joinPath(dir, 'dist');
   const file = joinPath(dist, 'index.js');
 
   await tryCatch(() => fs.mkdirAsync(dist));
-  await fs.writeFileAsync(file, '', 'utf8');
+  await fs.writeFileAsync(file, useStrict ? '\'use strict\';\n\n' : '', 'utf8');
 
   for (const [key, value] of assets) {
     switch (key) {

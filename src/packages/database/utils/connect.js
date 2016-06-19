@@ -1,3 +1,5 @@
+import { join as joinPath } from 'path';
+
 import { tryCatchSync } from '../../../utils/try-catch';
 import { ModuleMissingError } from '../../../errors';
 
@@ -31,7 +33,7 @@ export default function connect(path, config = {}) {
   }
 
   tryCatchSync(() => {
-    knex = external(`${path}/node_modules/knex`);
+    knex = require(joinPath(path, 'node_modules', 'knex'));
   }, () => {
     throw new ModuleMissingError('knex');
   });
@@ -52,7 +54,8 @@ export default function connect(path, config = {}) {
       socketPath: socket,
 
       filename: usingSQLite ?
-        `${path}/db/${database}_${NODE_ENV}.sqlite` : undefined
+        joinPath(path, 'db', `${database}_${NODE_ENV}.sqlite`)
+        : undefined
     }
   });
 }

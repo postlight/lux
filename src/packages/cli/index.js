@@ -78,10 +78,12 @@ export default function CLI() {
     .option('-e, --environment [env]', '(Default: development)')
     .option('-p, --port [port]', '(Default: 4000)')
     .option('-h, --hot', 'Reload when a file change is detected')
+    .option('--use-strict', 'Run your application in strict mode')
     .action(({
       environment = NODE_ENV,
       port = 4000,
-      hot = (environment === 'development')
+      hot = (environment === 'development'),
+      useStrict = false
     } = {}) => {
       return tryCatch(async () => {
         port = parseInt(port, 10);
@@ -98,7 +100,10 @@ export default function CLI() {
           });
         }
 
-        await compile(PWD, environment);
+        await compile(PWD, environment, {
+          useStrict
+        });
+
         await serve(port);
       }, rescue);
     });
