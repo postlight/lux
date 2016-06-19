@@ -1,7 +1,10 @@
 // @flow
 import { STATUS_CODES } from '../constants.js';
 
-export default function responseFor(
+/**
+ * @private
+ */
+export default function dataFor(
   status: number,
   err?: Error
 ): void | Object {

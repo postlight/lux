@@ -1,13 +1,13 @@
 // @flow
-import ContentStream from '../../content-stream';
+import Response from './response';
 
 import normalize from './utils/normalize';
 
 import type { ServerResponse } from 'http';
 
 export function resolve(res: ServerResponse, data: ?mixed | void): void {
-  new ContentStream()
-    .once('ready', (stream: ContentStream) => {
+  new Response()
+    .once('ready', (stream: Response) => {
       const {
         normalized,
         statusCode

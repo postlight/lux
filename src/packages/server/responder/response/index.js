@@ -1,7 +1,7 @@
 import { Transform } from 'stream';
 
-class ContentStream extends Transform {
-  constructor(): ContentStream {
+class Response extends Transform {
+  constructor(): Response {
     super({
       encoding: 'utf8',
       writableObjectMode: true
@@ -29,4 +29,4 @@ class ContentStream extends Transform {
   }
 }
 
-export default ContentStream;
+export default Response;

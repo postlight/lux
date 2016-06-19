@@ -19,7 +19,7 @@ export default function createAction(
   controller: Controller,
   action: () => Promise
 ): Array<Function> {
-  const { middleware } = controller;
+  const { middleware, serializer } = controller;
 
   const builtIns = [
     sanitizeParams,
@@ -83,7 +83,7 @@ export default function createAction(
             })
           };
 
-          return controller.serializer.stream({
+          return serializer.format({
             data,
             links,
             domain,
@@ -99,7 +99,7 @@ export default function createAction(
             fields = controller.attributes;
           }
 
-          return controller.serializer.stream({
+          return serializer.format({
             data,
             links,
             domain,

@@ -1,6 +1,6 @@
 // @flow
 import { STATUS_CODES } from '../constants';
-import responseFor from './response-for';
+import dataFor from './data-for';
 
 export default function normalize(data: ?mixed | void): {
   normalized: mixed;
@@ -15,7 +15,7 @@ export default function normalize(data: ?mixed | void): {
         statusCode = 204;
       } else {
         statusCode = 401;
-        normalized = responseFor(statusCode);
+        normalized = dataFor(statusCode);
       }
       break;
 
@@ -25,22 +25,24 @@ export default function normalize(data: ?mixed | void): {
       } else {
         statusCode = 404;
       }
-      normalized = responseFor(statusCode);
+      normalized = dataFor(statusCode);
       break;
 
     case 'object':
       if (!data) {
         statusCode = 404;
-        normalized = responseFor(statusCode);
+        normalized = dataFor(statusCode);
       } else if (data instanceof Error) {
         statusCode = 500;
-        normalized = responseFor(statusCode, data);
+        normalized = dataFor(statusCode, data);
+      } else {
+        normalized = data;
       }
       break;
 
     case 'undefined':
       statusCode = 404;
-      normalized = responseFor(statusCode);
+      normalized = dataFor(statusCode);
       break;
 
     default:

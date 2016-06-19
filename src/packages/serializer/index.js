@@ -1,7 +1,6 @@
 // @flow
 import { pluralize } from 'inflection';
 
-import ContentStream from '../content-stream';
 import { Model } from '../database';
 
 import pick from '../../utils/pick';
@@ -296,36 +295,7 @@ class Serializer {
   /**
    * @private
    */
-  stream({
-    data,
-    links = {},
-    fields = [],
-    domain = '',
-    include = {}
-  }: {
-    data?: ?(Model | Array<Model>);
-    links?: Object;
-    fields?: Array<string>;
-    domain?: string;
-    include?: Object;
-  }): ContentStream {
-    return new ContentStream().once('ready', (stream: ContentStream) => {
-      const serialized = this.serialize({
-        data,
-        links,
-        fields,
-        domain,
-        include
-      });
-
-      stream.end(serialized);
-    });
-  }
-
-  /**
-   * @private
-   */
-  serialize({
+  format({
     data,
     links,
     fields,
@@ -354,7 +324,7 @@ class Serializer {
           ...serialized,
 
           data: data.map(item => {
-            return this.serializeOne({
+            return this.formatOne({
               item,
               fields,
               domain,
@@ -367,7 +337,7 @@ class Serializer {
         serialized = {
           ...serialized,
 
-          data: this.serializeOne({
+          data: this.formatOne({
             fields,
             domain,
             include,
@@ -407,7 +377,7 @@ class Serializer {
   /**
    * @private
    */
-  serializeOne({
+  formatOne({
     item,
     links,
     fields,
@@ -451,7 +421,7 @@ class Serializer {
         attrs = attrs.filter(field => !idRegExp.test(field));
 
         if (related instanceof Model) {
-          hash[name] = this.serializeRelationship({
+          hash[name] = this.formatRelationship({
             domain,
             included,
             item: related,
@@ -464,7 +434,7 @@ class Serializer {
               const {
                 data: relatedData,
                 links: relatedLinks
-              } = this.serializeRelationship({
+              } = this.formatRelationship({
                 domain,
                 included,
                 item: relatedItem,
@@ -503,7 +473,7 @@ class Serializer {
   /**
    * @private
    */
-  serializeRelationship({
+  formatRelationship({
     item,
     fields,
     domain,
@@ -532,7 +502,7 @@ class Serializer {
 
       if (shouldInclude) {
         included.push(
-          serializer.serializeOne({
+          serializer.formatOne({
             item,
             domain,
             fields,
