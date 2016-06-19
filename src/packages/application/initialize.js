@@ -46,7 +46,7 @@ export default async function initialize(app: Application, {
     checkMigrations: true
   });
 
-  Object.freeze(store);
+  port = parseInt(port, 10);
 
   models.forEach((model, name) => {
     const resource = pluralize(name);
@@ -191,6 +191,7 @@ export default async function initialize(app: Application, {
   });
 
   Object.freeze(app);
+  Object.freeze(store);
   Object.freeze(logger);
   Object.freeze(router);
   Object.freeze(server);
