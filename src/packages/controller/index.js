@@ -412,8 +412,6 @@ class Controller {
       }
     } = req;
 
-    res.statusCode = 201;
-
     return this.model.create(attributes);
   }
 

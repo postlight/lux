@@ -25,7 +25,9 @@ import type Router from '../router';
  */
 class Server {
   router: Router;
+
   logger: Logger;
+
   instance: HTTPServer;
 
   constructor({
@@ -95,17 +97,21 @@ class Server {
         };
       }
 
-      this.sendResponse(res, await this.router.visit(req, res));
+      this.sendResponse(req, res, await this.router.visit(req, res));
     }, err => {
-      this.sendResponse(res, err);
+      this.sendResponse(req, res, err);
     });
   }
 
-  sendResponse(res: ServerResponse, data: void | mixed): void {
+  sendResponse(
+    req: IncomingMessage,
+    res: ServerResponse,
+    data: void | ?mixed
+  ): void {
     if (data && typeof data.pipe === 'function') {
       data.pipe(res);
     } else {
-      responder.resolve(res, data);
+      responder.resolve(req, res, data);
     }
   }
 
