@@ -37,7 +37,7 @@ export async function compile(dir: string, env: string, {
     fs.readdirAsync(nodeModules),
     fs.readdirAsync(luxNodeModules),
   ]).then(([a, b]: [Array<string>, Array<string>]) => {
-    return a.concat(b);
+    return a.concat(b).filter(name => name !== 'lux-framework');
   });
 
   const assets = await Promise.all([
