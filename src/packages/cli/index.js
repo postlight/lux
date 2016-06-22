@@ -1,5 +1,6 @@
 import cli from 'commander';
 
+import { CWD, NODE_ENV } from '../../constants';
 import { VALID_DATABASES } from './constants';
 import { version as VERSION } from '../../../package.json';
 
@@ -25,15 +26,7 @@ import {
  * @private
  */
 export default function CLI() {
-  const {
-    argv,
-    exit,
-
-    env: {
-      PWD,
-      NODE_ENV = 'development'
-    }
-  } = process;
+  const { argv, exit } = process;
 
   /**
    * @private
@@ -92,15 +85,15 @@ export default function CLI() {
         process.env.NODE_ENV = environment;
 
         if (hot) {
-          const watcher = await new Watcher(PWD);
+          const watcher = await new Watcher(CWD);
 
           watcher.on('change', async (changed) => {
-            await compile(PWD, environment);
+            await compile(CWD, environment);
             process.emit('update', changed);
           });
         }
 
-        await compile(PWD, environment, {
+        await compile(CWD, environment, {
           useStrict
         });
 
@@ -118,7 +111,7 @@ export default function CLI() {
       return tryCatch(async () => {
         if (typeof type === 'string' && typeof name === 'string') {
           args = args.filter(a => typeof a === 'string');
-          await generate(type, name, PWD, args);
+          await generate(type, name, CWD, args);
           exit(0);
         } else {
           throw new TypeError('Invalid arguements for type or name');
@@ -148,7 +141,7 @@ export default function CLI() {
     .description('Create your database schema')
     .action(() => {
       return tryCatch(async () => {
-        await compile(PWD, NODE_ENV);
+        await compile(CWD, NODE_ENV);
         await dbCreate();
         exit(0);
       }, rescue);
@@ -159,7 +152,7 @@ export default function CLI() {
     .description('Drop your database schema')
     .action(() => {
       return tryCatch(async () => {
-        await compile(PWD, NODE_ENV);
+        await compile(CWD, NODE_ENV);
         await dbDrop();
         exit(0);
       }, rescue);
@@ -170,7 +163,7 @@ export default function CLI() {
     .description('Drop your database schema and create a new schema')
     .action(() => {
       return tryCatch(async () => {
-        await compile(PWD, NODE_ENV);
+        await compile(CWD, NODE_ENV);
         await dbDrop();
         await dbCreate();
         exit(0);
@@ -182,7 +175,7 @@ export default function CLI() {
     .description('Run database migrations')
     .action(() => {
       return tryCatch(async () => {
-        await compile(PWD, NODE_ENV);
+        await compile(CWD, NODE_ENV);
         await dbMigrate();
         exit(0);
       }, rescue);
@@ -193,7 +186,7 @@ export default function CLI() {
     .description('Rollback the last database migration')
     .action(() => {
       return tryCatch(async () => {
-        await compile(PWD, NODE_ENV);
+        await compile(CWD, NODE_ENV);
         await dbRollback();
         exit(0);
       }, rescue);
@@ -204,7 +197,7 @@ export default function CLI() {
     .description('Add fixtures to your db from the seed function')
     .action(() => {
       return tryCatch(async () => {
-        await compile(PWD, NODE_ENV);
+        await compile(CWD, NODE_ENV);
         await dbSeed();
         exit(0);
       }, rescue);

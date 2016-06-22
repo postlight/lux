@@ -1,30 +1,29 @@
+import { CWD } from '../../../constants';
 import Database, { pendingMigrations } from '../../database';
 import Logger, { sql } from '../../logger';
 import loader from '../../loader';
-
-const { env: { PWD } } = process;
 
 /**
  * @private
  */
 export default async function dbMigrate() {
-  const { database: config } = loader(PWD, 'config');
-  const models = loader(PWD, 'models');
-  const migrations = loader(PWD, 'migrations');
+  const { database: config } = loader(CWD, 'config');
+  const models = loader(CWD, 'models');
+  const migrations = loader(CWD, 'migrations');
 
   const { connection, schema } = await new Database({
     config,
     models,
-    path: PWD,
+    path: CWD,
     checkMigrations: false,
 
     logger: await new Logger({
-      path: PWD,
+      path: CWD,
       enabled: false
     })
   });
 
-  const pending = await pendingMigrations(PWD, () => connection('migrations'));
+  const pending = await pendingMigrations(CWD, () => connection('migrations'));
 
   if (pending.length) {
     await Promise.all(

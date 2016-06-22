@@ -1,9 +1,8 @@
+import { CWD } from '../../../constants';
 import { red, green } from 'chalk';
 import { pluralize } from 'inflection';
 
 import fs, { rmrf, exists } from '../../fs';
-
-const { env: { PWD } } = process;
 
 /**
  * @private
@@ -19,7 +18,7 @@ export async function destroyType(type, name) {
       break;
 
     case 'migration':
-      const migrations = await fs.readdirAsync(`${PWD}/db/migrate`);
+      const migrations = await fs.readdirAsync(`${CWD}/db/migrate`);
 
       name = migrations.find(file => `${name}.js` === file.substr(17));
       path = `db/migrate/${name}`;
@@ -32,8 +31,8 @@ export async function destroyType(type, name) {
       break;
   }
 
-  if (await exists(`${PWD}/${path}`)) {
-    await rmrf(`${PWD}/${path}`);
+  if (await exists(`${CWD}/${path}`)) {
+    await rmrf(`${CWD}/${path}`);
     console.log(`${red('remove')} ${path}`);
   }
 }
@@ -43,7 +42,7 @@ export async function destroyType(type, name) {
  */
 export default async function destroy(type, name) {
   if (type === 'resource') {
-    const routes = (await fs.readFileAsync(`${PWD}/app/routes.js`, 'utf8'))
+    const routes = (await fs.readFileAsync(`${CWD}/app/routes.js`, 'utf8'))
       .split('\n')
       .reduce((lines, line) => {
         const pattern = new RegExp(
@@ -61,7 +60,7 @@ export default async function destroy(type, name) {
       destroyType('controller', name)
     ]);
 
-    await fs.writeFileAsync(`${PWD}/app/routes.js`, routes, 'utf8');
+    await fs.writeFileAsync(`${CWD}/app/routes.js`, routes, 'utf8');
     console.log(`${green('update')} app/routes.js`);
   } else if (type === 'model') {
     await Promise.all([

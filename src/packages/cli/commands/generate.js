@@ -3,6 +3,7 @@ import { red, green, yellow } from 'chalk';
 import { pluralize } from 'inflection';
 import { createInterface } from 'readline';
 
+import { CWD } from '../../../constants';
 import fs, { rmrf, exists } from '../../fs';
 
 import modelTemplate from '../templates/model';
@@ -13,12 +14,10 @@ import modelMigrationTemplate from '../templates/model-migration';
 
 import indent from '../utils/indent';
 
-const { env: { PWD } } = process;
-
 /**
  * @private
  */
-export async function generateType(type, name, pwd, attrs = []) {
+export async function generateType(type, name, cwd, attrs = []) {
   const rl = createInterface({
     input: process.stdin,
     output: process.stdout
@@ -74,9 +73,9 @@ export async function generateType(type, name, pwd, attrs = []) {
   if (isMigration) {
     const regexp = new RegExp(`^\\d+-${path.split('/').pop().substr(17)}$`);
 
-    doesExist = await exists(regexp, `${pwd}/db/migrate`);
+    doesExist = await exists(regexp, `${cwd}/db/migrate`);
   } else {
-    doesExist = await exists(`${pwd}/${path}`);
+    doesExist = await exists(`${cwd}/${path}`);
   }
 
   if (doesExist) {
@@ -89,7 +88,7 @@ export async function generateType(type, name, pwd, attrs = []) {
 
     if (overwrite) {
       if (isMigration) {
-        const migrations = await fs.readdirAsync(`${pwd}/db/migrate`);
+        const migrations = await fs.readdirAsync(`${cwd}/db/migrate`);
         const isModelMigration = type === 'model-migration';
 
         const oldName = migrations.find(file => {
@@ -100,21 +99,21 @@ export async function generateType(type, name, pwd, attrs = []) {
         if (oldName) {
           const oldPath = `db/migrate/${oldName}`;
 
-          await rmrf(`${pwd}/${oldPath}`);
+          await rmrf(`${cwd}/${oldPath}`);
           console.log(`${red('remove')} ${oldPath}`);
         }
 
-        await fs.writeFileAsync(`${pwd}/${path}`, data, 'utf8');
+        await fs.writeFileAsync(`${cwd}/${path}`, data, 'utf8');
         console.log(`${green('create')} ${path}`);
       } else {
-        await fs.writeFileAsync(`${pwd}/${path}`, data, 'utf8');
+        await fs.writeFileAsync(`${cwd}/${path}`, data, 'utf8');
         console.log(`${yellow('overwrite')} ${path}`);
       }
     } else {
       console.log(`${yellow('skip')} ${path}`);
     }
   } else {
-    await fs.writeFileAsync(`${pwd}/${path}`, data, 'utf8');
+    await fs.writeFileAsync(`${cwd}/${path}`, data, 'utf8');
     console.log(`${green('create')} ${path}`);
   }
 
@@ -124,9 +123,9 @@ export async function generateType(type, name, pwd, attrs = []) {
 /**
  * @private
  */
-export default async function generate(type, name, pwd = PWD, attrs = []) {
+export default async function generate(type, name, cwd = CWD, attrs = []) {
   if (type === 'resource') {
-    const routes = (await fs.readFileAsync(`${pwd}/app/routes.js`, 'utf8'))
+    const routes = (await fs.readFileAsync(`${cwd}/app/routes.js`, 'utf8'))
       .split('\n')
       .reduce((str, line, index, array) => {
         const closeIndex = array.lastIndexOf('}');
@@ -142,17 +141,17 @@ export default async function generate(type, name, pwd = PWD, attrs = []) {
         return str;
       }, '');
 
-    await generateType('model', name, pwd, attrs);
-    await generateType('model-migration', name, pwd, attrs);
-    await generateType('serializer', name, pwd, attrs);
-    await generateType('controller', name, pwd, attrs);
+    await generateType('model', name, cwd, attrs);
+    await generateType('model-migration', name, cwd, attrs);
+    await generateType('serializer', name, cwd, attrs);
+    await generateType('controller', name, cwd, attrs);
 
-    await fs.writeFileAsync(`${pwd}/app/routes.js`, routes, 'utf8');
+    await fs.writeFileAsync(`${cwd}/app/routes.js`, routes, 'utf8');
     console.log(`${green('update')} app/routes.js`);
   } else if (type === 'model') {
-    await generateType(type, name, pwd, attrs);
-    await generateType('model-migration', name, pwd, attrs);
+    await generateType(type, name, cwd, attrs);
+    await generateType('model-migration', name, cwd, attrs);
   } else {
-    await generateType(type, name, pwd, attrs);
+    await generateType(type, name, cwd, attrs);
   }
 }

@@ -1,25 +1,18 @@
 // @flow
 import { cyan } from 'chalk';
 
+import { CWD, PORT } from '../../../constants';
 import Logger from '../../logger';
 import { createCluster } from '../../pm';
-
-const { env: { PWD, PORT } } = process;
 
 /**
  * @private
  */
-export default async function serve(
-  port: ?number | ?string = PORT
-): Promise<void> {
-  let path = PWD;
+export default async function serve(port: number = PORT): Promise<void> {
+  let path = CWD;
 
   if (typeof path !== 'string') {
     path = __dirname;
-  }
-
-  if (typeof port !== 'number') {
-    port = 4000;
   }
 
   const logger = await new Logger({

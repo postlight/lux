@@ -1,8 +1,7 @@
+import { CWD, NODE_ENV } from '../../../constants';
 import fs from '../../fs';
 import loader from '../../loader';
 import { connect } from '../../database';
-
-const { env: { PWD, NODE_ENV = 'development' } } = process;
 
 /**
  * @private
@@ -16,12 +15,12 @@ export default async function dbCreate() {
         ...config
       }
     }
-  } = loader(PWD, 'config');
+  } = loader(CWD, 'config');
 
   if (driver === 'sqlite3') {
-    await fs.writeFileAsync(`${PWD}/db/${database}_${NODE_ENV}.sqlite`, '');
+    await fs.writeFileAsync(`${CWD}/db/${database}_${NODE_ENV}.sqlite`, '');
   } else {
-    const { schema } = connect(PWD, { ...config, driver });
+    const { schema } = connect(CWD, { ...config, driver });
     const query = schema.raw(`CREATE DATABASE ${database}`);
 
     query.on('query', () => console.log(query.toString()));

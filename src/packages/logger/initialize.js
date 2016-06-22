@@ -3,12 +3,11 @@ import { PassThrough } from 'stream';
 import { createWriteStream } from 'fs';
 import { join as joinPath } from 'path';
 
+import { NODE_ENV } from '../../constants';
 import AnsiRemover from './ansi-remover';
 import fs, { exists } from '../fs';
 
 import type Logger from './index';
-
-const { env: { NODE_ENV = 'development' } } = process;
 
 /**
  * @private

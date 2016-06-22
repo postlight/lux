@@ -3,11 +3,10 @@ import moment from 'moment';
 import { dim, red, yellow } from 'chalk';
 import { isMaster, isWorker } from 'cluster';
 
+import { NODE_ENV } from '../../constants';
 import initialize from './initialize';
 
 import type { PassThrough } from 'stream';
-
-const { env: { NODE_ENV = 'development' } } = process;
 
 /**
  * The `Logger` class is responsible for logging messages from an application

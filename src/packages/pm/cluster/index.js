@@ -5,12 +5,11 @@ import { EventEmitter } from 'events';
 import { join as joinPath } from 'path';
 import { red, green } from 'chalk';
 
+import { NODE_ENV } from '../../../constants';
 import range from '../../../utils/range';
 
 import type { Worker } from 'cluster';
 import type Logger from '../../logger';
-
-const { env: { NODE_ENV = 'development' } } = process;
 
 /**
  * @private
@@ -82,7 +81,6 @@ class Cluster extends EventEmitter {
       if (this.workers.size < this.maxWorkers) {
         const worker = cluster.fork({
           NODE_ENV,
-          PWD: this.path,
           PORT: this.port
         });
 

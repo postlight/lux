@@ -1,8 +1,7 @@
+import { CWD, NODE_ENV } from '../../../constants';
 import { connect } from '../../database';
 import { rmrf } from '../../fs';
 import loader from '../../loader';
-
-const { env: { PWD, NODE_ENV = 'development' } } = process;
 
 /**
  * @private
@@ -16,12 +15,12 @@ export default async function dbDrop() {
         ...config
       }
     }
-  } = loader(PWD, 'config');
+  } = loader(CWD, 'config');
 
   if (driver === 'sqlite3') {
-    await rmrf(`${PWD}/db/${database}_${NODE_ENV}.sqlite`);
+    await rmrf(`${CWD}/db/${database}_${NODE_ENV}.sqlite`);
   } else {
-    const { schema } = connect(PWD, { ...config, driver });
+    const { schema } = connect(CWD, { ...config, driver });
     const query = schema.raw(`DROP DATABASE IF EXISTS ${database}`);
 
     query.on('query', () => console.log(query.toString()));

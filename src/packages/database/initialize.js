@@ -1,6 +1,8 @@
 // @flow
 import { worker, isMaster } from 'cluster';
 
+import { NODE_ENV } from '../../constants';
+
 import { MigrationsPendingError } from './errors';
 
 import connect from './utils/connect';
@@ -10,8 +12,6 @@ import pendingMigrations from './utils/pending-migrations';
 import type Database from './index';
 import type Logger from '../logger';
 import typeof Model from './model';
-
-const { env: { NODE_ENV = 'development' } } = process;
 
 /**
  * @private

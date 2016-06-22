@@ -13,13 +13,14 @@ export default async function createBootScript(dir: string, {
   useStrict: boolean;
 }): Promise<void> {
   let data = template`
-    const { env: { PWD, PORT } } = process;
+    const CWD = process.cwd();
+    const { env: { PORT } } = process;
     const { Application, config, database } = require('./bundle');
 
     module.exports = new Application(
       Object.assign(config, {
         database,
-        path: PWD,
+        path: CWD,
         port: PORT
       })
     );

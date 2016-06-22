@@ -1,12 +1,12 @@
 import { join as joinPath } from 'path';
 
-import { tryCatchSync } from '../../../utils/try-catch';
-import { ModuleMissingError } from '../../../errors';
-
+import { NODE_ENV } from '../../../constants';
 import { VALID_DRIVERS } from '../constants';
-import { InvalidDriverError } from '../errors';
 
-const { env: { NODE_ENV = 'development' } } = process;
+import { tryCatchSync } from '../../../utils/try-catch';
+
+import { ModuleMissingError } from '../../../errors';
+import { InvalidDriverError } from '../errors';
 
 export default function connect(path, config = {}) {
   let knex;

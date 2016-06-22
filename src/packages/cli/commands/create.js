@@ -1,6 +1,8 @@
 import Ora from 'ora';
 import { green } from 'chalk';
 
+import { CWD } from '../../../constants';
+
 import fs from '../../fs';
 import template from '../../template';
 
@@ -26,7 +28,7 @@ import gitignoreTemplate from '../templates/gitignore';
  */
 export default async function create(name, database) {
   const driver = driverFor(database);
-  const project = `${process.env.PWD}/${name}`;
+  const project = `${CWD}/${name}`;
 
   await fs.mkdirAsync(project);
 
