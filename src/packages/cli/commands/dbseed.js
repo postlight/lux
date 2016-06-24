@@ -6,7 +6,7 @@ import loader from '../../loader';
 /**
  * @private
  */
-export default async function dbSeed() {
+export async function dbseed() {
   const { database: config } = loader(CWD, 'config');
   const seed = loader(CWD, 'seed');
   const models = loader(CWD, 'models');

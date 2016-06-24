@@ -1,6 +1,5 @@
 // @flow
 import { PassThrough } from 'stream';
-import { createWriteStream } from 'fs';
 import { join as joinPath } from 'path';
 
 import { NODE_ENV } from '../../constants';
@@ -62,7 +61,7 @@ export default async function initialize(instance: Logger, isMaster: boolean, {
       await fs.mkdirAsync(logsDir);
     }
 
-    const writeStream = createWriteStream(logPath);
+    const writeStream = fs.createWriteStream(logPath);
 
     stdout
       .pipe(process.stdout, { end: false });

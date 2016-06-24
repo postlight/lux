@@ -2,6 +2,7 @@
 import { join as joinPath } from 'path';
 import { camelize, classify, pluralize } from 'inflection';
 
+import { BACKSLASH } from '../constants';
 import fs from '../../fs';
 
 import tryCatch from '../../../utils/try-catch';
@@ -10,17 +11,19 @@ import underscore from '../../../utils/underscore';
 /**
  * @private
  */
- function exportStatement(
-   name: string,
-   path: string,
-   isDefault: boolean = true
- ): string {
-   if (isDefault) {
-     return `export {\n  default as ${name}\n} from '../${path}';\n\n`;
-   } else {
-     return `export {\n  ${name}\n} from '../${path}';\n\n`;
-   }
- }
+function exportStatement(
+  name: string,
+  path: string,
+  isDefault: boolean = true
+): string {
+  path = path.replace(BACKSLASH, '/');
+
+  if (isDefault) {
+   return `export {\n  default as ${name}\n} from '../${path}';\n\n`;
+  } else {
+   return `export {\n  ${name}\n} from '../${path}';\n\n`;
+  }
+}
 
 /**
  * @private

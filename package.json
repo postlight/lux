@@ -17,15 +17,16 @@
     "lux": "bin/lux"
   },
   "scripts": {
-    "build": "npm run clean && npm run flow && npm run build-cli",
-    "build-cli": "rollup -c build/config.js --format=cjs --output=dist/cli.js -- src/packages/cli/index.js",
-    "build-test": "rollup -c build/config.test.js --format=cjs --output=test/dist/index.js",
-    "clean": "rm -rf dist test/dist test/test-app/dist",
-    "docs": "rm -rf docs && documentation build src -o docs -f html",
-    "flow": "flow check",
-    "lint": "eslint src/**/*.js",
+    "build": "npm run clean && npm run flow && npm run lint && npm run build:cli",
+    "build:cli": "node scripts/build/cli.js",
+    "build:docs": "documentation build src -o docs -f html",
+    "build:test": "node scripts/build/test.js",
+    "clean": "node scripts/clean.js",
+    "docs": "npm run clean && npm run build:docs",
+    "flow": "node scripts/flow.js",
+    "lint": "eslint .",
     "start": "lux serve",
-    "test": "npm run build && npm run build-test && mocha --timeout 60000 test/dist/index.js"
+    "test": "npm run build && npm run build:test && mocha --timeout 60000 test/dist/index.js"
   },
   "author": "Zachary Golba",
   "license": "MIT",
@@ -53,6 +54,7 @@
   },
   "devDependencies": {
     "babel-core": "6.10.4",
+    "babel-plugin-transform-es2015-modules-commonjs": "6.10.3",
     "babel-preset-lux": "1.1.0",
     "chai": "3.5.0",
     "documentation": "4.0.0-beta5",

@@ -9,7 +9,7 @@ import template from '../../template';
 import exec from '../../../utils/exec';
 import driverFor from '../utils/driver-for';
 
-import generate from './generate';
+import { generate } from './generate';
 
 import appTemplate from '../templates/application';
 import configTemplate from '../templates/config';
@@ -26,7 +26,7 @@ import gitignoreTemplate from '../templates/gitignore';
 /**
  * @private
  */
-export default async function create(name, database) {
+export async function create(name, database) {
   const driver = driverFor(database);
   const project = `${CWD}/${name}`;
 
@@ -147,8 +147,17 @@ export default async function create(name, database) {
   console.log(logOutput.substr(0, logOutput.length - 1));
 
   await Promise.all([
-    generate('serializer', 'application', project),
-    generate('controller', 'application', project)
+    generate({
+      cwd: project,
+      type: 'serializer',
+      name: 'application'
+    }),
+
+    generate({
+      cwd: project,
+      type: 'controller',
+      name: 'application'
+    })
   ]);
 
   await exec('git init && git add .', {

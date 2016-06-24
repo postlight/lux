@@ -7,7 +7,7 @@ import loader from '../../loader';
 /**
  * @private
  */
-export default async function dbRollback() {
+export async function dbrollback() {
   const { database: config } = loader(CWD, 'config');
   const models = loader(CWD, 'models');
   const migrations = loader(CWD, 'migrations');

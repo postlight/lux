@@ -40,7 +40,10 @@ export async function destroyType(type, name) {
 /**
  * @private
  */
-export default async function destroy(type, name) {
+export async function destroy({ type, name }: {
+  type: string;
+  name: string;
+}) {
   if (type === 'resource') {
     const routes = (await fs.readFileAsync(`${CWD}/app/routes.js`, 'utf8'))
       .split('\n')

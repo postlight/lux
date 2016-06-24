@@ -1,36 +1,43 @@
 // @flow
 import { cyan } from 'chalk';
 
-import { CWD, PORT } from '../../../constants';
+import { CWD, PORT, NODE_ENV } from '../../../constants';
+
 import Logger from '../../logger';
+import Watcher from '../../watcher';
 import { createCluster } from '../../pm';
+
+import { build } from './build';
 
 /**
  * @private
  */
-export default async function serve(port: number = PORT): Promise<void> {
-  let path = CWD;
-
-  if (typeof path !== 'string') {
-    path = __dirname;
-  }
-
+export async function serve({
+  hot = (NODE_ENV === 'development'),
+  useStrict = false
+}: {
+  hot: boolean,
+  useStrict: boolean
+}): Promise<void> {
   const logger = await new Logger({
-    path,
+    path: CWD,
     enabled: true
   });
 
-  const cluster = createCluster({
-    path,
-    port,
-    logger
-  });
+  if (hot) {
+    const watcher = await new Watcher(CWD);
 
-  const { maxWorkers: count } = cluster;
+    watcher.on('change', async function handleChange(changed) {
+      await build(useStrict);
+      process.emit('update', changed);
+    });
+  }
 
-  logger.info(`Starting Lux Server with ${cyan(`${count}`)} worker processes`);
-
-  cluster.once('ready', () => {
-    logger.info(`Lux Server listening on port: ${cyan(`${port}`)}`);
+  createCluster({
+    logger,
+    path: CWD,
+    port: PORT
+  }).once('ready', () => {
+    logger.info(`Lux Server listening on port: ${cyan(`${PORT}`)}`);
   });
 }

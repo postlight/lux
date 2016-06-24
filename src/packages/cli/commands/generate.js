@@ -123,7 +123,17 @@ export async function generateType(type, name, cwd, attrs = []) {
 /**
  * @private
  */
-export default async function generate(type, name, cwd = CWD, attrs = []) {
+export async function generate({
+  type,
+  name,
+  cwd = CWD,
+  attrs = []
+}: {
+  cwd: string;
+  type: string;
+  name: string;
+  attrs: Array<string>
+}) {
   if (type === 'resource') {
     const routes = (await fs.readFileAsync(`${cwd}/app/routes.js`, 'utf8'))
       .split('\n')

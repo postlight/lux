@@ -6,7 +6,7 @@ import loader from '../../loader';
 /**
  * @private
  */
-export default async function dbMigrate() {
+export async function dbmigrate() {
   const { database: config } = loader(CWD, 'config');
   const models = loader(CWD, 'models');
   const migrations = loader(CWD, 'migrations');

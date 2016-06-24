@@ -1,10 +1,176 @@
 #!/usr/bin/env node
 'use strict';
 
-const PWD = process.cwd();
+const VERSION = require('../package.json').version;
 
-try {
-  require(`${PWD}/node_modules/lux-framework/dist/cli`).call(null);
-} catch (err) {
-  require('../dist/cli').call(null);
+const cli = require('commander');
+const path = require('path');
+
+function exec(cmd, ...args) {
+  cmd = require(path.join(__dirname, '..', 'dist', cmd))[cmd];
+  return cmd.apply(null, args);
+}
+
+function exit(code) {
+  if (typeof code !== 'number') {
+    code = 0;
+  }
+
+  process.exit(code);
+}
+
+function rescue(err) {
+  console.error(err);
+  exit(1);
+}
+
+cli.version(VERSION);
+
+cli
+  .command('n <name>')
+  .alias('new')
+  .description('Create a new application')
+  .option(
+    '--database [database]',
+    'Database driver',
+    /^(postgres|sqlite|mysql|mariadb|oracle)$/i,
+    'sqlite'
+  )
+  .action((name, { database }) => {
+    exec('create', name, database)
+      .then(exit)
+      .catch(rescue);
+  });
+
+cli
+  .command('t')
+  .alias('test')
+  .description('Run your app\'s tests')
+  .action(() => {
+    exec('test')
+      .then(exit)
+      .catch(rescue);
+  });
+
+cli
+  .command('b')
+  .alias('build')
+  .description('Build your application')
+  .option('--use-weak', 'Use weak mode')
+  .action(({ useWeak }) => {
+    exec('build', !useWeak)
+      .then(exit)
+      .catch(rescue);
+  });
+
+cli
+  .command('s')
+  .alias('serve')
+  .description('Serve your application')
+  .option('-e, --environment [env]', '(Default: development)', 'development')
+  .option('-p, --port [port]', '(Default: 4000)', parseInt)
+  .option('--hot', 'Reload when a file change is detected')
+  .option('--use-weak', 'Use weak mode')
+  .action(({ hot, port, environment, useWeak }) => {
+    const useStrict = !useWeak;
+
+    process.env.PORT = port;
+    process.env.NODE_ENV = environment;
+
+    exec('build', useStrict)
+      .then(() => exec('serve', { hot, useStrict }))
+      .catch(rescue);
+  });
+
+cli
+  .command('g <type> <name> [attrs...]')
+  .alias('generate')
+  .description('Example: lux generate model user')
+  .action((type, name, attrs) => {
+    exec('generate', { type, name, attrs })
+      .then(exit)
+      .catch(rescue);
+  });
+
+cli
+  .command('d')
+  .alias('destroy <type> <name>')
+  .description('Example: lux destroy model user')
+  .action((type, name) => {
+    exec('destroy', { type, name })
+      .then(exit)
+      .catch(rescue);
+  });
+
+cli
+  .command('db:create')
+  .description('Create your database schema')
+  .option('--use-weak', 'Use weak mode')
+  .action(({ useWeak }) => {
+    exec('build', !useWeak)
+      .then(() => exec('dbcreate'))
+      .then(exit)
+      .catch(rescue);
+  });
+
+cli
+  .command('db:drop')
+  .description('Drop your database schema')
+  .option('--use-weak', 'Use weak mode')
+  .action(({ useWeak }) => {
+    exec('build', !useWeak)
+      .then(() => exec('dbdrop'))
+      .then(exit)
+      .catch(rescue);
+  });
+
+cli
+  .command('db:reset')
+  .description('Drop your database schema and create a new schema')
+  .option('--use-weak', 'Use weak mode')
+  .action(({ useWeak }) => {
+    exec('build', !useWeak)
+      .then(() => exec('dbdrop'))
+      .then(() => exec('dbcreate'))
+      .then(exit)
+      .catch(rescue);
+  });
+
+cli
+  .command('db:migrate')
+  .description('Run database migrations')
+  .option('--use-weak', 'Use weak mode')
+  .action(({ useWeak }) => {
+    exec('build', !useWeak)
+      .then(() => exec('dbmigrate'))
+      .then(exit)
+      .catch(rescue);
+  });
+
+cli
+  .command('db:rollback')
+  .description('Rollback the last database migration')
+  .option('--use-weak', 'Use weak mode')
+  .action(({ useWeak }) => {
+    exec('build', !useWeak)
+      .then(() => exec('dbrollback'))
+      .then(exit)
+      .catch(rescue);
+  });
+
+cli
+  .command('db:seed')
+  .description('Add fixtures to your db from the seed function')
+  .option('--use-weak', 'Use weak mode')
+  .action(({ useWeak }) => {
+    exec('build', !useWeak)
+      .then(() => exec('dbseed'))
+      .then(exit)
+      .catch(rescue);
+  });
+
+cli.parse(process.argv);
+
+if (!cli.args.length) {
+  cli.help();
 }

@@ -6,7 +6,7 @@ import loader from '../../loader';
 /**
  * @private
  */
-export default async function dbDrop() {
+export async function dbdrop() {
   const {
     database: {
       [NODE_ENV]: {

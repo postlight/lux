@@ -7,6 +7,7 @@ import eslint from 'rollup-plugin-eslint';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import { rollup } from 'rollup';
 
+import { BACKSLASH } from './constants';
 import fs, { rmrf } from '../fs';
 import template from '../template';
 
@@ -26,7 +27,7 @@ export async function compile(dir: string, env: string, {
 } = {}): Promise<void> {
   let banner;
 
-  const local = path.join(__dirname, '..', 'src', 'index');
+  const local = path.join(__dirname, '..', 'src', 'index.js');
   const entry = path.join(dir, 'dist', 'index.js');
 
   const nodeModules = path.join(dir, 'node_modules');
@@ -81,7 +82,7 @@ export async function compile(dir: string, env: string, {
 
     plugins: [
       alias({
-        LUX_LOCAL: local
+        LUX_LOCAL: local.replace(BACKSLASH, '/')
       }),
 
       json(),
@@ -108,7 +109,9 @@ export async function compile(dir: string, env: string, {
   await rmrf(entry);
 
   banner = template`
-    const srcmap = require('${sourceMapSupport}').install({
+    const srcmap = require('${
+      sourceMapSupport.replace(BACKSLASH, '/')
+    }').install({
       environment: 'node'
     });
   `;

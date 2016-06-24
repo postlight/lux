@@ -1,5 +1,6 @@
 // @flow
 import moment from 'moment';
+import { join as joinPath } from 'path';
 import { dim, red, yellow } from 'chalk';
 import { isMaster, isWorker } from 'cluster';
 
@@ -93,7 +94,7 @@ class Logger {
    * @private
    */
   get file(): string {
-    return `${this.path}/log/${NODE_ENV}.log`;
+    return joinPath(this.path, 'log', `${NODE_ENV}.log`);
   }
 
   /**

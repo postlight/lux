@@ -6,7 +6,7 @@ import { connect } from '../../database';
 /**
  * @private
  */
-export default async function dbCreate() {
+export async function dbcreate() {
   const {
     database: {
       [NODE_ENV]: {

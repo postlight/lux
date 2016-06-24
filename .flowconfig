@@ -2,11 +2,13 @@
 decl
 
 [ignore]
+.*/lib/.*
 .*/dist/.*
 .*/docs/.*
+.*/test/.*
+.*/scripts/.*
 .*/examples/.*
 .*/node_modules/.*
-.*/test/.*
 
 [options]
 esproposal.class_instance_fields=enable

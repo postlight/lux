@@ -1,10 +1,9 @@
-import fs from 'fs';
 import { Client } from 'fb-watchman';
 import { join as joinPath } from 'path';
 
 import exec from '../../utils/exec';
 import tryCatch from '../../utils/try-catch';
-import isJSFile from '../fs/utils/is-js-file';
+import fs, { isJSFile } from '../fs';
 
 import type Watcher from './';
 import type { FSWatcher } from 'fs';
