@@ -59,7 +59,7 @@ cli
 cli
   .command('t')
   .alias('test')
-  .description('Run your app\'s tests')
+  .description('Run your application\'s test suite')
   .action(() => {
     exec('test')
       .then(exit)
@@ -73,6 +73,23 @@ cli
   .option('-w, --use-weak', 'Use weak mode')
   .action(({ useWeak }) => {
     exec('build', !useWeak)
+      .then(exit)
+      .catch(rescue);
+  });
+
+cli
+  .command('c')
+  .alias('console')
+  .description('Load your application into a repl')
+  .option('-e, --environment [env]', '(Default: development)', 'development')
+  .option('-w, --use-weak', 'Use weak mode')
+  .action(({ environment, useWeak }) => {
+    process.env.PORT = 4000;
+    process.env.NODE_ENV = environment;
+    process.env.LUX_CONSOLE = true;
+
+    exec('build', !useWeak)
+      .then(() => exec('repl'))
       .then(exit)
       .catch(rescue);
   });

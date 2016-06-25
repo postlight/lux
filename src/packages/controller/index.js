@@ -140,14 +140,14 @@ class Controller {
       model: {
         value: model,
         writable: false,
-        enumerable: true,
+        enumerable: false,
         configurable: false
       },
 
       serializer: {
         value: serializer,
         writable: false,
-        enumerable: true,
+        enumerable: false,
         configurable: false
       },
 

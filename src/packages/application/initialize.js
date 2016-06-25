@@ -1,6 +1,8 @@
 // @flow
 import { pluralize, singularize } from 'inflection';
 
+import { LUX_CONSOLE } from '../../constants';
+
 import Database from '../database';
 import Logger from '../logger';
 import Router from '../router';
@@ -115,31 +117,19 @@ export default async function initialize(app: Application, {
     logger
   });
 
-  server.instance.listen(port).once('listening', () => {
-    if (typeof process.send === 'function') {
-      process.send({
-        message: 'ready'
-      });
-    } else {
-      process.emit('ready');
-    }
-  });
+  if (!LUX_CONSOLE) {
+    server.instance.listen(port).once('listening', () => {
+      if (typeof process.send === 'function') {
+        process.send({
+          message: 'ready'
+        });
+      } else {
+        process.emit('ready');
+      }
+    });
+  }
 
   Object.defineProperties(app, {
-    path: {
-      value: path,
-      writable: false,
-      enumerable: true,
-      configurable: false
-    },
-
-    port: {
-      value: port,
-      writable: false,
-      enumerable: true,
-      configurable: false
-    },
-
     models: {
       value: models,
       writable: false,
@@ -161,17 +151,31 @@ export default async function initialize(app: Application, {
       configurable: false
     },
 
-    store: {
-      value: store,
+    logger: {
+      value: logger,
+      writable: false,
+      enumerable: true,
+      configurable: false
+    },
+
+    path: {
+      value: path,
       writable: false,
       enumerable: false,
       configurable: false
     },
 
-    logger: {
-      value: logger,
+    port: {
+      value: port,
       writable: false,
-      enumerable: true,
+      enumerable: false,
+      configurable: false
+    },
+
+    store: {
+      value: store,
+      writable: false,
+      enumerable: false,
       configurable: false
     },
 
