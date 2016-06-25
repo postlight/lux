@@ -1,14 +1,28 @@
 #!/usr/bin/env node
 'use strict';
 
+const PWD = process.cwd();
 const VERSION = require('../package.json').version;
 
 const cli = require('commander');
 const path = require('path');
 
 function exec(cmd, ...args) {
-  cmd = require(path.join(__dirname, '..', 'dist', cmd))[cmd];
-  return cmd.apply(null, args);
+  let handler;
+
+  try {
+    handler = require(path.join(
+      PWD,
+      'node_modules',
+      'lux-framework',
+      'dist',
+      cmd
+    ))[cmd];
+  } catch (err) {
+    handler = require(path.join(__dirname, '..', 'dist', cmd))[cmd];
+  }
+
+  return handler.apply(null, args);
 }
 
 function exit(code) {
