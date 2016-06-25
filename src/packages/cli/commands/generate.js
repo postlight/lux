@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { red, green, yellow } from 'chalk';
-import { pluralize } from 'inflection';
+import { pluralize, singularize } from 'inflection';
 import { createInterface } from 'readline';
 
 import { CWD } from '../../../constants';
@@ -49,6 +49,10 @@ export async function generateType(type, name, cwd, attrs = []) {
     case 'controller':
       data = controllerTemplate(name, attrs);
       break;
+  }
+
+  if (type === 'model') {
+    name = singularize(name);
   }
 
   if (type !== 'model' && type !== 'migration' && name !== 'application') {

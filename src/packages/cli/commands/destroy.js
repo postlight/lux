@@ -1,6 +1,6 @@
 import { CWD } from '../../../constants';
 import { red, green } from 'chalk';
-import { pluralize } from 'inflection';
+import { pluralize, singularize } from 'inflection';
 
 import fs, { rmrf, exists } from '../../fs';
 
@@ -14,6 +14,7 @@ export async function destroyType(type, name) {
 
   switch (type) {
     case 'model':
+      name = singularize(name);
       path = `app/${pluralize(type)}/${name}.js`;
       break;
 
