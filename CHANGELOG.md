@@ -1,5 +1,172 @@
 # Lux Changelog
 
+### 1.0.0-rc (June 25, 2016)
+
+🔅🎊🎈 This is the final set of functionality that will be added in 1.0! The remainder of pull requests from now until the 1.0 release will just be bug fixes or adding polish (Dockerfile, Website, Quick Start Guide, API docs, etc.). These issues can be tracked in the [1.0 milestone](https://github.com/postlight/lux/issues?q=is%3Aopen+is%3Aissue+milestone%3A1.0).
+
+In addition to features, this release includes bug fixes and general performance improvements.
+
+##### Features
+
+###### Lux Console
+
+You can now debug your application rails style with a custom repl that has your application built and loaded as global variables.
+
+To start the repl, run `lux console` or `lux c` in your
+
+```javascript
+> User.find(1).then(user => {
+  console.log(`${user.name} is working as expected.`);
+});
+// => Promise
+// 'Stephen Curry is working as expected.'
+> PostsController.beforeAction
+// => [[Function], [Function], [Function]]
+> routes
+// => Router {...routes}
+```
+
+###### Intelligent Responses
+
+Lux now intelligently observes the return value (or resolved `Promise` value for async functions) of your applications middleware and controller actions to serialize and respond with the correct data and status codes. Throwing an error at any point in time will cause a `500` and will be caught and handled gracefully (stack traces included when running outside of production).
+
+These are a few example edge cases where returning a Model or an Array of Models may not be what you want to do.
+
+```javascript
+import { Controller } from 'lux-framework';
+
+class ApplicationController extends Controller {
+  beforeAction = [
+    /**
+     * If any request is sent to this application with `?bad=true` the server
+     * will respond with 400 (Bad Request) and the latter actions will not be
+     * called. Otherwise, the request will be handled normally.
+     */
+    function isGood(req) {
+      if (req.params.bad) {
+        return 400;
+      }
+    }
+  ];
+
+  /**
+   * This will return 204 (No Content) and is equivalent to `return 204`.
+   */
+  health() {
+    return true;
+  }
+
+  /**
+   * This will return 401 (Unauthorized) and is equivalent to `return 204`.
+   */
+  topSecret() {
+    return false;
+  }
+
+  /**
+   * This will return 200 (OK) with the string 'bar'.
+   */
+  foo() {
+    return 'bar';
+  }
+
+  /**
+   * This will return 200 (OK) with the following JSON.
+   *
+   * {
+   *   "foo": "bar"
+   * }
+   */
+  fooJSON() {
+    return {
+      foo: 'bar'
+    };
+  }
+
+  /**
+   * This will return 404 (Not Found). Returning undefined will also result in
+   * a 404 unless the function returning undefined is called from beforeAction.
+   */
+  notFound() {
+    return null;
+  }
+}
+
+export default ApplicationController;
+```
+
+
+###### Windows Support
+
+Lux now is 100% compatible with Windows!
+
+**NOTE:**
+Travis-CI does not enable us to run our test suite on Windows. This shouldn't be an issue for development but it is highly recommend that you run Lux in a Docker container if your a deploying to Windows in production.
+
+##### Notable Changes
+
+* `lux serve` does not start in cluster mode by default. To run your application as a cluster run `lux serve -c` or `lux serve --cluster`.
+
+* Commands that require an application build (`serve`, `db:*`, etc) now prefer strict mode and require you to specify `--use-weak` if you do not want to run in strict mode (you should pretty much always use strict mode).
+
+##### Upgrading
+
+The Lux CLI in 1.0 is not backwards compatible with previous beta versions so please perform a local upgrade before upgrading Lux globally.
+
+###### Routes
+
+Route definitions now must call `this.route` and `this.resource` rather than having `route` and `resource` as arguments to the function in `./app/routes.js`. This is the initial ground work for implementing [router namespaces](https://github.com/postlight/lux/blob/master/ROADMAP.md#router-namespaces).
+
+```javascript
+// ./app/routes.js
+
+export default function routes() {
+  this.resource('post');
+  this.resource('users');
+
+  this.route('users/login', {
+    action: 'login',
+    method: 'POST'
+  });
+
+  this.route('users/logout', {
+    action: 'logout',
+    method: 'DELETE'
+  });
+}
+```
+
+##### Commits
+
+* [[`81f52fc1c8`](https://github.com/postlight/lux/commit/81f52fc1c8)] - **feat**: add luxify function for converting traditional middleware (#183) (Zachary Golba)
+* [[`39ce152574`](https://github.com/postlight/lux/commit/39ce152574)] - **fix**: index names sometimes exceed max length in generated migrations (#182) (Zachary Golba)
+* [[`fb5a71a897`](https://github.com/postlight/lux/commit/fb5a71a897)] - **feat**: add custom repl for debugging (#180) (Zachary Golba)
+* [[`c2b0b30d01`](https://github.com/postlight/lux/commit/c2b0b30d01)] - **feat**: do not cluster by default use -c || --cluster (#179) (Zachary Golba)
+* [[`785ebf1c39`](https://github.com/postlight/lux/commit/785ebf1c39)] - **fix**: regression from #177 local lux not being used in cli (#178) (Zachary Golba)
+* [[`67b9940e5c`](https://github.com/postlight/lux/commit/67b9940e5c)] - **feat**: add windows support (#177) (Zachary Golba)
+* [[`c4ab5e0b3b`](https://github.com/postlight/lux/commit/c4ab5e0b3b)] - **deps**: update rollup to version 0.33.0 (#176) (Greenkeeper)
+* [[`a7e860dd97`](https://github.com/postlight/lux/commit/a7e860dd97)] - **deps**: update rollup-plugin-babel to version 2.6.1 (#172) (Greenkeeper)
+* [[`68e7d8fafe`](https://github.com/postlight/lux/commit/68e7d8fafe)] - **deps**: update rollup-plugin-json to version 2.0.1 (#173) (Greenkeeper)
+* [[`7abf664c99`](https://github.com/postlight/lux/commit/7abf664c99)] - **deps**: update rollup-plugin-eslint to version 2.0.2 (#175) (Greenkeeper)
+* [[`f4e17aabf9`](https://github.com/postlight/lux/commit/f4e17aabf9)] - **deps**: update rollup-plugin-node-resolve to version 1.7.1 (#174) (Greenkeeper)
+* [[`c2a77c68d5`](https://github.com/postlight/lux/commit/c2a77c68d5)] - **deps**: update rollup to version 0.32.4 (#171) (Greenkeeper)
+* [[`b23873109b`](https://github.com/postlight/lux/commit/b23873109b)] - **deps**: update rollup-plugin-babel to version 2.6.0 (#169) (Greenkeeper)
+* [[`7ed59ab595`](https://github.com/postlight/lux/commit/7ed59ab595)] - **deps**: update rollup to version 0.32.2 (#168) (Greenkeeper)
+* [[`b25237a647`](https://github.com/postlight/lux/commit/b25237a647)] - **refactor**: use process.cwd() instead of process.env.PWD (#167) (Zachary Golba)
+* [[`5bab51a38b`](https://github.com/postlight/lux/commit/5bab51a38b)] - **deps**: update babel-eslint to version 6.1.0 (#165) (Greenkeeper)
+* [[`53cb1e53e2`](https://github.com/postlight/lux/commit/53cb1e53e2)] - **deps**: update rollup to version 0.32.1 (#164) (Greenkeeper)
+* [[`022b2e954c`](https://github.com/postlight/lux/commit/022b2e954c)] - **deps**: upgrade pg version in test-app (#166) (Zachary Golba)
+* [[`ef3f9ce8d3`](https://github.com/postlight/lux/commit/ef3f9ce8d3)] - **fix**: ensure lux is not an external dependency (#163) (Zachary Golba)
+* [[`fba8654d2e`](https://github.com/postlight/lux/commit/fba8654d2e)] - **deps**: update test-app dependencies (#162) (Zachary Golba)
+* [[`84160c9149`](https://github.com/postlight/lux/commit/84160c9149)] - **deps**: update babel-core to version 6.10.4 (#161) (Greenkeeper)
+* [[`7ee935afa1`](https://github.com/postlight/lux/commit/7ee935afa1)] - **deps**: update babel-eslint to version 6.0.5 (#160) (Greenkeeper)
+* [[`cd53552aca`](https://github.com/postlight/lux/commit/cd53552aca)] - **deps**: update eslint to version 2.13.1 (#159) (Greenkeeper)
+* [[`8e6a23dad3`](https://github.com/postlight/lux/commit/8e6a23dad3)] - **refactor**: improve build process and stack traces (#158) (Zachary Golba)
+* [[`6748638ca6`](https://github.com/postlight/lux/commit/6748638ca6)] - **refactor**: rename serializer methods and return objects (#155) (Zachary Golba)
+* [[`7597031076`](https://github.com/postlight/lux/commit/7597031076)] - **feat**: ensure Application#port is a number (#156) (Zachary Golba)
+* [[`2d83f30df6`](https://github.com/postlight/lux/commit/2d83f30df6)] - **deps**: update rollup to version 0.32.0 (#154) (Greenkeeper)
+* [[`64250ebe5b`](https://github.com/postlight/lux/commit/64250ebe5b)] - **refactor**: separate responsibilities in req/res flow (#153) (Zachary Golba)
+
 ### 0.0.1-beta.13 (June 18, 2016)
 
 * [[`30a60c10ca`](https://github.com/postlight/lux/commit/30a60c10ca)] - **chore**: bump version to 0.0.1-beta.13 (Zachary Golba)
@@ -49,7 +216,7 @@ only contain a few more features geared towards application profiling.
 
 ##### Upgrading
 
-##### Models
+###### Application
 
 For the sake of proper namespacing, Lux no longer exports the `Application`
 class as a `default` export. To upgrade simply use a named import of
@@ -78,13 +245,13 @@ class MyApp extends Lux.Application {
 export default MyApp;
 ```
 
-##### Models
+###### Models
 
 Models now support scopes and have a chainable query interface. More docs will
 soon be available on this but for now it should be as simple as replacing calls
 to `Model.findAll` with `Model.where`.
 
-##### Controllers
+###### Controllers
 
 Decorators are no longer used to declare custom actions on your controller. For
 an easy upgrade simply remove the `@action` at the top of your custom actions.
@@ -103,7 +270,7 @@ class PostsController extends Controller {
 export default PostsController;
 ```
 
-##### Routes
+###### Routes
 
 Route declarations no longer support an arrow function export since arrow
 functions do not have a `name` property.
@@ -116,7 +283,7 @@ export default function routes(route, resource) {
 }
 ```
 
-##### Seed
+###### Seed
 
 The db seed function no longer support an arrow function export since arrow
 functions do not have a `name` property.
@@ -129,7 +296,7 @@ export default function seed() {
 }
 ```
 
-##### Config
+###### Config
 
 Config files found in `./config/environments` now only require a single option
 `log`.
@@ -142,7 +309,7 @@ export default {
 };
 ```
 
-##### .babelrc
+###### .babelrc
 
 Lux now uses a special babel [preset](https://github.com/zacharygolba/babel-preset-lux)
 to only transpile features that are missing from Node 6.X. That means that ~95%
@@ -155,7 +322,7 @@ performance boost in this release 🐇.
 }
 ```
 
-##### package.json
+###### package.json
 
 Update your `package.json` to only include the following base packages required
 for a Lux application (plus the ones you installed yourself).

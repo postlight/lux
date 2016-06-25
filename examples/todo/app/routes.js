@@ -1,4 +1,4 @@
-export default function routes(route, resource) {
-  resource('tasks');
-  resource('lists');
+export default function routes() {
+  this.resource('tasks');
+  this.resource('lists');
 }

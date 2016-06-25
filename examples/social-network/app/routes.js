@@ -1,26 +1,26 @@
-export default function routes(route, resource) {
-  resource('comments');
-  resource('posts');
-  resource('reactions');
-  resource('tags');
-  resource('users');
+export default function routes() {
+  this.resource('comments');
+  this.resource('posts');
+  this.resource('reactions');
+  this.resource('tags');
+  this.resource('users');
 
-  route('actions', {
+  this.route('actions', {
     method: 'GET',
     action: 'index'
   });
 
-  route('actions/:id', {
+  this.route('actions/:id', {
     method: 'GET',
     action: 'show'
   });
 
-  route('notifications', {
+  this.route('notifications', {
     method: 'GET',
     action: 'index'
   });
 
-  route('notifications/:id', {
+  this.route('notifications/:id', {
     method: 'GET',
     action: 'show'
   });
