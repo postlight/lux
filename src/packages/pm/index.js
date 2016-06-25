@@ -9,15 +9,18 @@ import type Logger from '../logger';
 export function createCluster({
   path,
   port,
-  logger
+  logger,
+  maxWorkers
 }: {
-  path: string,
-  port: number,
-  logger: Logger
+  path: string;
+  port: number;
+  logger: Logger;
+  maxWorkers?: number;
 }): Cluster {
   return new Cluster({
     path,
     port,
-    logger
+    logger,
+    maxWorkers
   });
 }

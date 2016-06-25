@@ -70,7 +70,7 @@ cli
   .command('b')
   .alias('build')
   .description('Build your application')
-  .option('--use-weak', 'Use weak mode')
+  .option('-w, --use-weak', 'Use weak mode')
   .action(({ useWeak }) => {
     exec('build', !useWeak)
       .then(exit)
@@ -83,16 +83,17 @@ cli
   .description('Serve your application')
   .option('-e, --environment [env]', '(Default: development)', 'development')
   .option('-p, --port [port]', '(Default: 4000)', parseInt)
-  .option('--hot', 'Reload when a file change is detected')
-  .option('--use-weak', 'Use weak mode')
-  .action(({ hot, port, environment, useWeak }) => {
+  .option('-c, --cluster', 'Run in cluster mode')
+  .option('-H, --hot', 'Reload when a file change is detected')
+  .option('-w, --use-weak', 'Use weak mode')
+  .action(({ hot, port, cluster, environment, useWeak }) => {
     const useStrict = !useWeak;
 
     process.env.PORT = port;
     process.env.NODE_ENV = environment;
 
     exec('build', useStrict)
-      .then(() => exec('serve', { hot, useStrict }))
+      .then(() => exec('serve', { hot, cluster, useStrict }))
       .catch(rescue);
   });
 
@@ -119,7 +120,7 @@ cli
 cli
   .command('db:create')
   .description('Create your database schema')
-  .option('--use-weak', 'Use weak mode')
+  .option('-w, --use-weak', 'Use weak mode')
   .action(({ useWeak }) => {
     exec('build', !useWeak)
       .then(() => exec('dbcreate'))
@@ -130,7 +131,7 @@ cli
 cli
   .command('db:drop')
   .description('Drop your database schema')
-  .option('--use-weak', 'Use weak mode')
+  .option('-w, --use-weak', 'Use weak mode')
   .action(({ useWeak }) => {
     exec('build', !useWeak)
       .then(() => exec('dbdrop'))
@@ -141,7 +142,7 @@ cli
 cli
   .command('db:reset')
   .description('Drop your database schema and create a new schema')
-  .option('--use-weak', 'Use weak mode')
+  .option('-w, --use-weak', 'Use weak mode')
   .action(({ useWeak }) => {
     exec('build', !useWeak)
       .then(() => exec('dbdrop'))
@@ -153,7 +154,7 @@ cli
 cli
   .command('db:migrate')
   .description('Run database migrations')
-  .option('--use-weak', 'Use weak mode')
+  .option('-w, --use-weak', 'Use weak mode')
   .action(({ useWeak }) => {
     exec('build', !useWeak)
       .then(() => exec('dbmigrate'))
@@ -164,7 +165,7 @@ cli
 cli
   .command('db:rollback')
   .description('Rollback the last database migration')
-  .option('--use-weak', 'Use weak mode')
+  .option('-w, --use-weak', 'Use weak mode')
   .action(({ useWeak }) => {
     exec('build', !useWeak)
       .then(() => exec('dbrollback'))
@@ -175,7 +176,7 @@ cli
 cli
   .command('db:seed')
   .description('Add fixtures to your db from the seed function')
-  .option('--use-weak', 'Use weak mode')
+  .option('-w, --use-weak', 'Use weak mode')
   .action(({ useWeak }) => {
     exec('build', !useWeak)
       .then(() => exec('dbseed'))

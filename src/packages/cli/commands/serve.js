@@ -14,10 +14,12 @@ import { build } from './build';
  */
 export async function serve({
   hot = (NODE_ENV === 'development'),
+  cluster = false,
   useStrict = false
 }: {
-  hot: boolean,
-  useStrict: boolean
+  hot: boolean;
+  cluster: boolean;
+  useStrict: boolean;
 }): Promise<void> {
   const logger = await new Logger({
     path: CWD,
@@ -36,7 +38,8 @@ export async function serve({
   createCluster({
     logger,
     path: CWD,
-    port: PORT
+    port: PORT,
+    maxWorkers: cluster ? undefined : 1
   }).once('ready', () => {
     logger.info(`Lux Server listening on port: ${cyan(`${PORT}`)}`);
   });

@@ -21,18 +21,20 @@ class Cluster extends EventEmitter {
 
   logger: Logger;
 
-  workers: Set<Worker> = new Set();
+  workers: Set<Worker>;
 
-  maxWorkers: number = os.cpus().length;
+  maxWorkers: number;
 
   constructor({
     path,
     port,
-    logger
+    logger,
+    maxWorkers
   }: {
-    path: string,
-    port: number,
-    logger: Logger
+    path: string;
+    port: number;
+    logger: Logger;
+    maxWorkers?: number;
   }): Cluster {
     super();
 
@@ -53,6 +55,20 @@ class Cluster extends EventEmitter {
 
       logger: {
         value: logger,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      },
+
+      workers: {
+        value: new Set(),
+        writable: false,
+        enumerable: true,
+        configurable: false
+      },
+
+      maxWorkers: {
+        value: maxWorkers || os.cpus().length,
         writable: false,
         enumerable: true,
         configurable: false
