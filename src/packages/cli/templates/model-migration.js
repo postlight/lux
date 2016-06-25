@@ -37,17 +37,12 @@ export default (name: string, attrs: Array<string> | string): string => {
         return [column, type];
       })
       .map(([column, type], index) => {
-        return `${indent(index > 0 ? 8 : 0)}table.${type}('${column}');`;
+        const shouldIndex = indices.indexOf(column) >= 0;
+
+        column = `${indent(index > 0 ? 8 : 0)}table.${type}('${column}')`;
+        return shouldIndex ? `${column}.index();` : `${column};`;
       })
       .join('\n');
-  }
-
-  if (Array.isArray(indices)) {
-    indices.push('created_at', 'updated_at');
-
-    indices = '\n' + indices
-      .map(column => indent(10) + `'${column}'`)
-      .join(',\n') + '\n' + indent(8);
   }
 
   return template`
@@ -57,7 +52,11 @@ export default (name: string, attrs: Array<string> | string): string => {
         ${attrs}
         table.timestamps();
 
-        table.index([${indices}]);
+        table.index([
+          'id',
+          'created_at',
+          'updated_at'
+        ]);
       });
     }
 
