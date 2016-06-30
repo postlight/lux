@@ -2,12 +2,13 @@
 import { classify } from 'inflection';
 
 import template from '../../template';
+import underscore from '../../../utils/underscore';
 
 /**
  * @private
  */
 export default (name: string): string => {
-  name = classify(name.replace('-', '_'));
+  name = classify(underscore(name));
 
   return template`
     import { Application } from 'lux-framework';
