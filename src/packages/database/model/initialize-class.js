@@ -2,6 +2,11 @@ import { camelize, dasherize, singularize } from 'inflection';
 
 import { line } from '../../logger';
 
+import {
+  get as getRelationship,
+  set as setRelationship
+} from '../relationship';
+
 import entries from '../../../utils/entries';
 import underscore from '../../../utils/underscore';
 
@@ -35,99 +40,78 @@ function refsFor(instance) {
 }
 
 function initializeProps(prototype, attributes, relationships) {
-  const props = Object.create(null);
+  Object.defineProperties(prototype, {
+    ...entries(attributes)
+      .reduce((hash, [key, { type, nullable, defaultValue }]) => {
+        if (/^(boolean|tinyint)$/.test(type)) {
+          defaultValue = Boolean(
+            typeof defaultValue === 'string' ?
+              parseInt(defaultValue, 10) : defaultValue
+          );
+        } else if (type === 'datetime' && typeof defaultValue === 'number') {
+          defaultValue = new Date(defaultValue);
+        }
 
-  entries(attributes)
-    .reduce((hash, [key, { type, nullable, defaultValue }]) => {
-      if (/^(boolean|tinyint)$/.test(type)) {
-        defaultValue = Boolean(
-          typeof defaultValue === 'string' ?
-            parseInt(defaultValue, 10) : defaultValue
-        );
-      } else if (type === 'datetime' && typeof defaultValue === 'number') {
-        defaultValue = new Date(defaultValue);
-      }
+        hash[key] = {
+          get() {
+            const refs = refsFor(this);
 
-      hash[key] = {
+            return refs[key] || defaultValue;
+          },
+
+          set(nextValue) {
+            const refs = refsFor(this);
+            const currentValue = refs[key] || defaultValue;
+
+            if (nextValue !== currentValue) {
+              const { initialized, initialValues } = this;
+
+              if (/^(boolean|tinyint)$/.test(type)) {
+                nextValue = Boolean(
+                  typeof nextValue === 'string' ?
+                    parseInt(nextValue, 10) : nextValue
+                );
+              } else if (type === 'datetime' && typeof nextValue === 'number') {
+                nextValue = new Date(nextValue);
+              } else if (!nextValue && !nullable) {
+                return;
+              }
+
+              refs[key] = nextValue;
+
+              if (initialized) {
+                const { dirtyAttributes } = this;
+                const initialValue = initialValues.get(key) || defaultValue;
+
+                if (nextValue !== initialValue) {
+                  dirtyAttributes.add(key);
+                } else {
+                  dirtyAttributes.delete(key);
+                }
+              } else {
+                initialValues.set(key, nextValue);
+              }
+            }
+          }
+        };
+
+        return hash;
+      }, {}),
+
+    ...Object.keys(relationships).reduce((hash, key) => ({
+      ...hash,
+
+      [key]: {
         get() {
-          const refs = refsFor(this);
-
-          return refs[key] || defaultValue;
+          return getRelationship(this, key);
         },
 
-        set(nextValue) {
-          const refs = refsFor(this);
-          const currentValue = refs[key] || defaultValue;
-
-          if (nextValue !== currentValue) {
-            const { initialized, initialValues } = this;
-
-            if (/^(boolean|tinyint)$/.test(type)) {
-              nextValue = Boolean(
-                typeof nextValue === 'string' ?
-                  parseInt(nextValue, 10) : nextValue
-              );
-            } else if (type === 'datetime' && typeof nextValue === 'number') {
-              nextValue = new Date(nextValue);
-            } else if (!nextValue && !nullable) {
-              return;
-            }
-
-            refs[key] = nextValue;
-
-            if (initialized) {
-              const { dirtyAttributes } = this;
-              const initialValue = initialValues.get(key) || defaultValue;
-
-              if (nextValue !== initialValue) {
-                dirtyAttributes.add(key);
-              } else {
-                dirtyAttributes.delete(key);
-              }
-            } else {
-              initialValues.set(key, nextValue);
-            }
-          }
+        set(val) {
+          setRelationship(this, key, val);
         }
-      };
-
-      return hash;
-    }, props);
-
-  entries(relationships)
-    .reduce((hash, [key, { type, model }]) => {
-      if (type === 'hasMany') {
-        hash[key] = {
-          get() {
-            const refs = refsFor(this);
-
-            return refs[key] || [];
-          },
-
-          set(value) {
-            const refs = refsFor(this);
-
-            if (Array.isArray(value)) {
-              refs[key] = value;
-            }
-          }
-        };
-      } else {
-        hash[key] = {
-          get() {
-            return refsFor(this)[key] || null;
-          },
-
-          set(record) {
-            refsFor(this)[key] = record ? new model(record) : undefined;
-          }
-        };
       }
-
-      return hash;
-    }, props);
-
-  Object.defineProperties(prototype, props);
+    }), {})
+  });
 }
 
 function initializeHooks({

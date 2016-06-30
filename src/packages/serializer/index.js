@@ -4,11 +4,13 @@ import { pluralize } from 'inflection';
 import { Model } from '../database';
 
 import pick from '../../utils/pick';
+import uniq from '../../utils/uniq';
 import insert from '../../utils/insert';
 import entries from '../../utils/entries';
+import promiseHash from '../../utils/promise-hash';
 import { dasherizeKeys } from '../../utils/transform-keys';
 
-const idRegExp = /^id$/;
+const ID_REGEXP = /^id$/;
 
 /**
  * The `Serializer` class is where you declare the specific attributes and
@@ -295,7 +297,7 @@ class Serializer {
   /**
    * @private
    */
-  format({
+  async format({
     data,
     links,
     fields,
@@ -307,14 +309,14 @@ class Serializer {
     fields: Array<string>,
     domain: string,
     include: Object
-  }): Object | Array<Object> {
+  }): Promise<Object | Array<Object>> {
     let serialized = {};
 
     if (data instanceof Model || Array.isArray(data)) {
       const included = [];
 
       if (Array.isArray(fields)) {
-        fields = fields.filter(field => !idRegExp.test(field));
+        fields = fields.filter(field => !ID_REGEXP.test(field));
       } else {
         fields = [];
       }
@@ -323,21 +325,23 @@ class Serializer {
         serialized = {
           ...serialized,
 
-          data: data.map(item => {
-            return this.formatOne({
-              item,
-              fields,
-              domain,
-              include,
-              included
-            });
-          })
+          data: await Promise.all(
+            data.map(item => {
+              return this.formatOne({
+                item,
+                fields,
+                domain,
+                include,
+                included
+              });
+            })
+          )
         };
       } else {
         serialized = {
           ...serialized,
 
-          data: this.formatOne({
+          data: await this.formatOne({
             fields,
             domain,
             include,
@@ -351,7 +355,7 @@ class Serializer {
       if (included.length) {
         serialized = {
           ...serialized,
-          included
+          included: uniq(included, 'id', 'type')
         };
       }
 
@@ -377,7 +381,7 @@ class Serializer {
   /**
    * @private
    */
-  formatOne({
+  async formatOne({
     item,
     links,
     fields,
@@ -415,43 +419,49 @@ class Serializer {
     };
 
     if (Object.keys(include).length) {
-      const relationships = entries(include).reduce((hash, [name, attrs]) => {
-        const related = item[name];
+      const relationships = await promiseHash(
+        entries(include).reduce((hash, [name, attrs]) => ({
+          ...hash,
 
-        attrs = attrs.filter(field => !idRegExp.test(field));
+          [name]: (async () => {
+            const related = await item[name];
 
-        if (related instanceof Model) {
-          hash[name] = this.formatRelationship({
-            domain,
-            included,
-            item: related,
-            links: true,
-            fields: attrs
-          });
-        } else if (Array.isArray(related) && related.length) {
-          hash[name] = {
-            data: related.map(relatedItem => {
-              const {
-                data: relatedData,
-                links: relatedLinks
-              } = this.formatRelationship({
+            attrs = attrs.filter(field => !ID_REGEXP.test(field));
+
+            if (related instanceof Model) {
+              return await this.formatRelationship({
                 domain,
                 included,
-                item: relatedItem,
+                item: related,
                 links: true,
                 fields: attrs
               });
-
+            } else if (Array.isArray(related) && related.length) {
               return {
-                ...relatedData,
-                links: relatedLinks
-              };
-            })
-          };
-        }
+                data: await Promise.all(
+                  related.map(async (relatedItem) => {
+                    const {
+                      data: relatedData,
+                      links: relatedLinks
+                    } = await this.formatRelationship({
+                      domain,
+                      included,
+                      item: relatedItem,
+                      links: true,
+                      fields: attrs
+                    });
 
-        return hash;
-      }, {});
+                    return {
+                      ...relatedData,
+                      links: relatedLinks
+                    };
+                  })
+                )
+              };
+            }
+          })()
+        }), {})
+      );
 
       if (Object.keys(relationships).length) {
         serialized = {
@@ -473,7 +483,7 @@ class Serializer {
   /**
    * @private
    */
-  formatRelationship({
+  async formatRelationship({
     item,
     fields,
     domain,
@@ -496,21 +506,15 @@ class Serializer {
     type = pluralize(type);
 
     if (fields.length) {
-      const shouldInclude = !included.some((incl) => {
-        return id === incl.id && type === incl.type;
-      });
-
-      if (shouldInclude) {
-        included.push(
-          serializer.formatOne({
-            item,
-            domain,
-            fields,
-            include: {},
-            included: []
-          })
-        );
-      }
+      included.push(
+        await serializer.formatOne({
+          item,
+          domain,
+          fields,
+          include: {},
+          included: []
+        })
+      );
     }
 
     return {

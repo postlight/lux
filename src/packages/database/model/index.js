@@ -12,6 +12,8 @@ import omit from '../../../utils/omit';
 import entries from '../../../utils/entries';
 import underscore from '../../../utils/underscore';
 
+import type { options as relationshipOptions } from '../related/interfaces';
+
 class Model {
   /**
    * @private
@@ -535,6 +537,13 @@ class Model {
     return Boolean(this.scopes[name]);
   }
 
+  /**
+   * Check if a value is an instance of a Model.
+   */
+  static isInstance(obj: mixed): boolean {
+    return obj instanceof this;
+  }
+
   static columnFor(key): Object {
     const {
       attributes: {
@@ -553,7 +562,7 @@ class Model {
     }
   }
 
-  static relationshipFor(key): Object {
+  static relationshipFor(key): relationshipOptions {
     const {
       relationships: {
         [key]: relationship
