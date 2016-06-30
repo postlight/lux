@@ -511,6 +511,14 @@ class Model {
     return new Query(this).not(conditions);
   }
 
+  static first(): Query {
+    return new Query(this).first();
+  }
+
+  static last(): Query {
+    return new Query(this).last();
+  }
+
   static select(...params: Array<string>): Query {
     return new Query(this).select(...params);
   }

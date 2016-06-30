@@ -132,10 +132,14 @@ class Query {
 
   order(attr: string, direction: string = 'ASC'): Query {
     if (!this.shouldCount) {
-      this.snapshots.push(['orderBy', [
-        `${this.model.tableName}.${this.model.columnNameFor(attr)}`,
-        direction
-      ]]);
+      this.snapshots = this.snapshots
+        .filter(([method]) => method !== 'orderBy')
+        .concat([
+          ['orderBy', [
+            `${this.model.tableName}.${this.model.columnNameFor(attr)}`,
+            direction
+          ]]
+        ]);
     }
 
     return this;
@@ -170,6 +174,38 @@ class Query {
 
     if (Object.keys(where).length) {
       this.snapshots.push([not ? 'whereNot' : 'where', where]);
+    }
+
+    return this;
+  }
+
+  first(): Query {
+    if (!this.shouldCount) {
+      const willSort = this.snapshots.some(([method]) => method === 'orderBy');
+
+      this.collection = false;
+
+      if (!willSort) {
+        this.order(this.model.primaryKey, 'ASC');
+      }
+
+      this.limit(1);
+    }
+
+    return this;
+  }
+
+  last(): Query {
+    if (!this.shouldCount) {
+      const willSort = this.snapshots.some(([method]) => method === 'orderBy');
+
+      this.collection = false;
+
+      if (!willSort) {
+        this.order(this.model.primaryKey, 'DESC');
+      }
+
+      this.limit(1);
     }
 
     return this;
