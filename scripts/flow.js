@@ -7,12 +7,7 @@ const platform = require('os').platform();
 
 if (!WINDOWS.test(platform)) {
   exec('flow check', (err, data) => {
-    if (err) {
-      console.error(err);
-      process.exit(1);
-    } else {
-      console.log(data);
-      process.exit(0);
-    }
+    console.log(data);
+    process.exit(err ? 1 : 0);
   });
 }
