@@ -1,5 +1,68 @@
 # Lux Changelog
 
+### 1.0.0-rc.1 (July 4, 2016)
+
+Happy Independence Day 🇺🇸
+
+This release brings a few bug fixes and some of the features tracked in the [1.0 milestone](https://github.com/postlight/lux/issues?q=is%3Aopen+is%3Aissue+milestone%3A1.0). Special thanks to @kev5873 for finding and fixing a bug related to generating a new project with more than one dash in the title!
+
+##### Features
+
+###### `Query#first` & `Query#last`
+
+You are now able to query for a single record similar to `Query#find` but with all chainable query methods rather than just `WHERE 'id' = ?`.
+
+*Async/Await*
+```javascript
+const post = await Post
+  .first()
+  .where({ isPublic: true });
+
+console.log(post);
+// => Post {}
+```
+
+*Promise*
+```javascript
+Post
+  .first()
+  .where({ isPublic: true })
+  .then(post => console.log(post));
+// => Post {}
+```
+
+
+###### `Model#relationship` => `Promise`
+
+Models now return a `Promise` when accessing a relationship. If the related record have been eager loaded with includes it will immediately resolve to the eager loaded value. Otherwise, it will load the related records from the database and resolve with the result.
+
+*Async/Await*
+```javascript
+const post = await Post.find(1);
+
+console.log(await post.author);
+// => Author {}
+```
+
+*Promise*
+```javascript
+Post.find(1)
+  .then(post => post.author)
+  .then(author => console.log(author));
+// => Author {}
+```
+
+##### Commits
+
+* [[`32c1b92d04`](https://github.com/postlight/lux/commit/32c1b92d04)] - **deps**: update moment to version 2.14.1 (#194) (Greenkeeper)
+* [[`e43e2e6c00`](https://github.com/postlight/lux/commit/e43e2e6c00)] - **deps**: update eslint to version 3.0.0 (#192) (Greenkeeper)
+* [[`40863b4fbd`](https://github.com/postlight/lux/commit/40863b4fbd)] - **fix**: display correct error messages from flow script (#191) (Zachary Golba)
+* [[`5aeb903196`](https://github.com/postlight/lux/commit/5aeb903196)] - **feat**: return a promise from relationships (#190) (Zachary Golba)
+* [[`38d7a9bcbf`](https://github.com/postlight/lux/commit/38d7a9bcbf)] - **feat**: add Query#first and Query#last (#189) (Zachary Golba)
+* [[`bceb825976`](https://github.com/postlight/lux/commit/bceb825976)] - **fix**: fixes #187 issue with class name generation with multiple dashes (#188) (kev5873)
+* [[`620ab46eae`](https://github.com/postlight/lux/commit/620ab46eae)] - **chore(package)**: update source-map-support to version 0.4.1 (#186) (Greenkeeper)
+* [[`22dfbaf03b`](https://github.com/postlight/lux/commit/22dfbaf03b)] - **release**: 1.0.0-rc (#185) (Zachary Golba)
+
 ### 1.0.0-rc (June 25, 2016)
 
 🔅🎊🎈 This is the final set of functionality that will be added in 1.0! The remainder of pull requests from now until the 1.0 release will just be bug fixes or adding polish (Dockerfile, Website, Quick Start Guide, API docs, etc.). These issues can be tracked in the [1.0 milestone](https://github.com/postlight/lux/issues?q=is%3Aopen+is%3Aissue+milestone%3A1.0).
