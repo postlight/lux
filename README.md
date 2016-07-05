@@ -159,9 +159,17 @@ npm install
 
 ```bash
 git clone https://github.com/postlight/lux
+
+# Install Lux dependencies
 cd lux
 npm install
-cat test/fixtures/data.sql | mysql -u root -p
+
+# Install test app dependencies
+cd test/test-app
+npm install
+
+# Run the test suite
+cd ../../
 npm test
 ```
 
