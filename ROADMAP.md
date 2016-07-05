@@ -1,12 +1,11 @@
 # Roadmap
 
-In this document you will find a proposed list of features that the stable
-release Lux `1.0` will include.
+In this document you will find a proposed list of features that will be released during the Lux `1.0` lifecycle.
 
 
 ## Router Namespaces
 
-Similar to [Rails](http://guides.rubyonrails.org/routing.html#controller-namespaces-and-routing), Lux should provide a simple API for defining a router namespace. There are a number of common use cases for router namespaces that make this feature a must for our `1.0` release. API versioning and a simple way to define "Admin Only" are two good examples.
+Similar to [Rails](http://guides.rubyonrails.org/routing.html#controller-namespaces-and-routing), Lux should provide a simple API for defining a router namespace. There are a number of common use cases for router namespaces that make this feature a must. API versioning and a simple way to define "Admin Only" are two good examples.
 
 #### API
 
@@ -14,32 +13,36 @@ Similar to [Rails](http://guides.rubyonrails.org/routing.html#controller-namespa
 
 Defining router namespaces will be done in the `routes.js` file where you currently define your applications resources and routes.
 
-To define a namespace, there will be a 3rd argument passed to the function exported from `routes.js`.
-
 Similar to the `resource` and `route` arguments, the `namespace` argument will also be a function.
 
 ```javascript
-export default (route, resource, namespace) => {
-  resource('posts');
+// ./app/routes.js
+export default function routes() {
+  this.resource('posts');
 
-  namespace('admin', (route, resource) => {
-    resource('posts');
+  this.namespace('admin', function admin(route, resource) {
+    this.resource('posts');
   });
-};
+}
 ```
 
 There will also be the ability to pass an options hash as the second argument to the `namespace` function with properties such as `mount` in case the name of a declared namespace is different from the intended mount point.
 
 ```javascript
-export default (route, resource, namespace) => {
-  namespace('legacy', { mount: 'v1' }, (route, resource) => {
-    resource('posts');
+// ./app/routes.js
+export default function routes() {
+  this.namespace('legacy', {
+    mount: 'v1'
+  }, function legacy() {
+    this.resource('posts');
   });
 
-  namespace('current', { mount: 'v2' }, (route, resource) => {
-    resource('posts');
+  this.namespace('current', {
+    mount: 'v2'
+  }, function current() {
+    this.resource('posts');
   });
-};
+}
 ```
 
 ##### Controllers
@@ -58,7 +61,7 @@ controllers
 This is the difference between a namespace and nested route. Namespaces have an `ApplicationController` unique to the namespace. This allows for middleware to be declared at the namespace level.
 
 ```javascript
-// controllers/application.js
+// ./app/controllers/application.js
 class ApplicationController extends Controller {
   beforeAction = [
     async function authorizeUser(req, res) {
@@ -67,7 +70,7 @@ class ApplicationController extends Controller {
   ];
 }
 
-// controllers/admin/application.js
+// ./app/controllers/admin/application.js
 class AdminController extends Controller {
   beforeAction = [
     async function authorizeAdmin(req, res) {
@@ -100,7 +103,7 @@ Here is the middleware that would be executed when a user visits `/admin/posts`
 ]
 ```
 
-[\* Middleware flattening already is implemented in the current release of Lux.](https://github.com/postlight/lux/blob/master/src/packages/controller/decorators/action.js)
+[\* Middleware flattening already is implemented in the current release of Lux.](https://github.com/postlight/lux/blob/master/src/packages/route/utils/create-action.js#L31)
 
 
 ## Polymorphic Relationships (#75)
