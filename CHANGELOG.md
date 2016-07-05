@@ -8,6 +8,13 @@ This release brings a few bug fixes and some of the features tracked in the [1.0
 
 ##### Features
 
+###### Docker Images
+
+🐳 We now have images on Docker Hub for seamless Lux development and deploying.
+
+* [Docker Hub](https://hub.docker.com/r/zacharygolba/lux-framework)
+* [GitHub](https://github.com/postlight/docker-lux)
+
 ###### `Query#first` & `Query#last`
 
 You are now able to query for a single record similar to `Query#find` but with all chainable query methods rather than just `WHERE 'id' = ?`.
