@@ -5,7 +5,7 @@ const rollup = require('rollup').rollup;
 
 // Plugins
 const babel = require('rollup-plugin-babel');
-const multiEntry = require('rollup-plugin-multi-entry').default;
+const multiEntry = require('rollup-plugin-multi-entry');
 const nodeResolve = require('rollup-plugin-node-resolve');
 
 let config = require('./config');
