@@ -6,7 +6,11 @@ export default function createResponseProxy(
   resolve: (result: mixed) => void
 ): ServerResponse {
   return new Proxy(res, {
-    get(target: ServerResponse, key: string, receiver: Proxy): ?mixed | void {
+    get(
+      target: ServerResponse,
+      key: string,
+      receiver: Proxy<ServerResponse>
+    ): ?mixed | void {
       switch (key) {
         case 'end':
         case 'send':

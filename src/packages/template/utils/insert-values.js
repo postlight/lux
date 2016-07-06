@@ -7,9 +7,19 @@ export default function insertValues(
   strings: Array<string>,
   ...values: Array<mixed>
 ): string {
- return values.length ? strings.reduce((result, part, idx) => {
-   const value = values[idx];
+  if (values.length) {
+    return strings.reduce((result, part, idx): string => {
+      let value = values[idx];
 
-   return result + part + (typeof value !== 'undefined' ? value : '');
- }, '') : strings.join('');
+      if (value && typeof value.toString === 'function') {
+        value = value.toString();
+      } else {
+        value = '';
+      }
+
+      return result + part + value;
+    }, '');
+  } else {
+    return strings.join('');
+  }
 }

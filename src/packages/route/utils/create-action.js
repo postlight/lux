@@ -17,7 +17,7 @@ import type { IncomingMessage, ServerResponse } from 'http';
  */
 export default function createAction(
   controller: Controller,
-  action: () => Promise
+  action: () => Promise<mixed>
 ): Array<Function> {
   const { middleware, serializer } = controller;
 
