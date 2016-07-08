@@ -19,7 +19,7 @@ describe('Integration: class Serializer', () => {
   it('serializes id', () => {
     const { data: { id } } = subject;
 
-    expect(id).to.equal(1);
+    expect(id).to.equal('1');
   });
 
   it('serializes attributes', () => {

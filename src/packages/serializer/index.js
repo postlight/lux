@@ -407,13 +407,13 @@ class Serializer {
     }
 
     let serialized: {
-      id: number,
+      id: string,
       type: string,
       links?: Object,
       attributes: Object,
       relationships?: Object
     } = {
-      id,
+      id: id.toString(),
       type,
       attributes
     };
@@ -519,7 +519,7 @@ class Serializer {
 
     return {
       data: {
-        id,
+        id: id.toString(),
         type
       },
 
