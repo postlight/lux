@@ -26,9 +26,7 @@ export default function dataFor(
     }
 
     return {
-      data: {
-        errors: [errData]
-      }
+      errors: [errData]
     };
   }
 }
