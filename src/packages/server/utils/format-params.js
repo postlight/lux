@@ -58,23 +58,15 @@ export default async function formatParams(req) {
 
   params = entries(params).reduce((result, [key, value]) => {
     if (pattern.test(key)) {
-      let parentKey, parentValue, childKey;
-
-      parentKey = key.replace(pattern, '$1');
-      parentValue = result[parentKey];
-
-      childKey = key.replace(pattern, '$2');
-
-      if (!parentValue) {
-        parentValue = {};
-      }
+      const parentKey = key.replace(pattern, '$1');
+      const parentValue = result[parentKey];
 
       return {
         ...result,
 
         [parentKey]: {
-          ...parentValue,
-          [childKey]: value
+          ...(parentValue || {}),
+          [key.replace(pattern, '$2')]: value
         }
       };
     } else {

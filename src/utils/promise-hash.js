@@ -10,7 +10,7 @@ export default function promiseHash(promises: {}): Promise<Object> {
       Promise.all(
         entries(promises).map(([key, value]) => {
           return new Promise((resolve, reject) => {
-            value.then(resolvedValue => {
+            value.then((resolvedValue) => {
               resolve({ [key]: resolvedValue });
             }, reject);
           });

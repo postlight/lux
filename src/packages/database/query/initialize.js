@@ -6,7 +6,7 @@ const TRAPS = {
       const scope = target.model.scopes[key];
 
       return (...args) => {
-        let { snapshots } = scope.apply(target.model, args);
+        let { snapshots } = Reflect.apply(scope, target.model, args);
         snapshots = snapshots.map(snapshot => [...snapshot, key]);
 
         target.snapshots.push(...snapshots);

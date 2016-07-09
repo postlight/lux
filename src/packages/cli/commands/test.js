@@ -3,6 +3,7 @@
 /**
  * @private
  */
-export async function test(): Promise<void> {
+export function test(): Promise<void> {
   console.log('Coming Soon!');
+  return Promise.resolve();
 }

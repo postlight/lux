@@ -1,6 +1,6 @@
 class ValidationError extends Error {
   constructor(key, value) {
-    return super(`Validation failed for ${key}: ${value}`);
+    super(`Validation failed for ${key}: ${value}`);
   }
 }
 

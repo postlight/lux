@@ -12,10 +12,8 @@ export function resolve(
 ): void {
   new Response()
     .once('ready', (stream: Response) => {
-      let {
-        normalized,
-        statusCode
-      } = normalize(data);
+      const { normalized, ...meta } = normalize(data);
+      let { statusCode } = meta;
 
       if (statusCode === 200 && req.method === 'POST') {
         statusCode++;

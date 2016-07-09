@@ -8,7 +8,7 @@ class InvalidDriverError extends Error {
   friendly = true;
 
   constructor(driver) {
-    return super(line`
+    super(line`
       Invalid database driver ${yellow(driver)} in ./config/database.js.
       Please use one of the following database drivers:
       ${VALID_DRIVERS.map(d => green(d)).join(', ')}.

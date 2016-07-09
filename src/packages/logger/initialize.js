@@ -55,7 +55,7 @@ export default async function initialize(instance: Logger, isMaster: boolean, {
     const logsDir = joinPath(path, 'log');
     const logPath = joinPath(logsDir, `${NODE_ENV}.log`);
     const ansiRemover = new AnsiRemover();
-    let doesExist = await exists(logsDir);
+    const doesExist = await exists(logsDir);
 
     if (!doesExist) {
       await fs.mkdirAsync(logsDir);

@@ -4,15 +4,12 @@ import { camelize } from 'inflection';
 import pick from '../../../utils/pick';
 import entries from '../../../utils/entries';
 
-import type { IncomingMessage, ServerResponse } from 'http';
+import type { IncomingMessage } from 'http';
 
 /**
  * @private
  */
-export default function sanitizeParams(
-  req: IncomingMessage,
-  res: ServerResponse
-): void {
+export default function sanitizeParams(req: IncomingMessage): void {
   const {
     modelName,
 
@@ -28,11 +25,11 @@ export default function sanitizeParams(
   } = this;
 
   const params = { ...req.params };
+  const { page } = params;
 
   let sortDirection;
 
   let {
-    page,
     sort,
     filter,
     include,
@@ -115,7 +112,7 @@ export default function sanitizeParams(
   };
 
   if (/^(POST|PATCH)$/g.test(req.method)) {
-    let {
+    const {
       data: {
         type,
         attributes = {}

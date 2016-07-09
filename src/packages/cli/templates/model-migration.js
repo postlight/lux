@@ -11,7 +11,7 @@ import underscore from '../../../utils/underscore';
  */
 export default (name: string, attrs: Array<string> | string): string => {
   const table = pluralize(underscore(name));
-  let indices: Array<string> | string = ['id'];
+  const indices = ['id'];
 
   if (!attrs) {
     attrs = [];

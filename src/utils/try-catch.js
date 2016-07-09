@@ -65,7 +65,7 @@ export default async function tryCatch(
  *
  * @private
  */
- export function tryCatchSync(fn: Function, rescue: Function = K): any {
+export function tryCatchSync(fn: Function, rescue: Function = K): any {
   try {
     return fn();
   } catch (err) {

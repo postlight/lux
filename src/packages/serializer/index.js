@@ -55,244 +55,242 @@ class Serializer {
    *
    * @private
    */
-   constructor({
-     model,
-     serializers
-   }: {
-     model: typeof Model,
-     serializers: Map<string, Serializer>
-   } = {}) {
-     Object.defineProperties(this, {
-       model: {
-         value: model,
-         writable: false,
-         enumerable: false,
-         configurable: false
-       },
+  constructor({
+    model,
+    serializers
+  }: {
+    model: typeof Model,
+    serializers: Map<string, Serializer>
+  } = {}) {
+    Reflect.defineProperty(this, 'model', {
+      value: model,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    });
 
-       serializers: {
-         value: serializers,
-         writable: false,
-         enumerable: false,
-         configurable: false
-       }
-     });
+    Reflect.defineProperty(this, 'serializers', {
+      value: serializers,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    });
 
-     return this;
-   }
+    return this;
+  }
 
-   /**
-    * An Array of the `hasOne` or `belongsTo` relationships on a `Serializer`
-    * instance's model to include in the `relationships` resource object of a
-    * serialized payload.
-    *
-    * @example
-    * class PostsSerializer extends Serializer {
-    *   hasOne = [
-    *     'author'
-    *   ];
-    * }
-    *
-    * // A request to `/posts` would result in the following payload:
-    *
-    * {
-    *   "data": [
-    *     {
-    *       "id": 1,
-    *       "type": "posts",
-    *       "attributes": {},
-    *       "relationships": [
-    *         {
-    *           "data": {
-    *             "id": 1,
-    *             "type": "authors"
-    *           },
-    *            "links": {
-    *              "self": "http://localhost:4000/authors/1"
-    *           }
-    *         }
-    *       ],
-    *       "links": {
-    *         "self": "http://localhost:4000/posts/1"
-    *       }
-    *     }
-    *   ],
-    *   "links": {
-    *     "self": "http://localhost:4000/posts",
-    *     "first": "http://localhost:4000/posts",
-    *     "last": "http://localhost:4000/posts",
-    *     "prev": null,
-    *     "next": null
-    *   }
-    *   "jsonapi": {
-    *     "version": "1.0"
-    *   }
-    * }
-    *
-    * @property hasOne
-    * @memberof Serializer
-    * @instance
-    */
-   get hasOne(): Array<string> {
-     return Object.freeze([]);
-   }
+  /**
+   * An Array of the `hasOne` or `belongsTo` relationships on a `Serializer`
+   * instance's model to include in the `relationships` resource object of a
+   * serialized payload.
+   *
+   * @example
+   * class PostsSerializer extends Serializer {
+   *   hasOne = [
+   *     'author'
+   *   ];
+   * }
+   *
+   * // A request to `/posts` would result in the following payload:
+   *
+   * {
+   *   "data": [
+   *     {
+   *       "id": 1,
+   *       "type": "posts",
+   *       "attributes": {},
+   *       "relationships": [
+   *         {
+   *           "data": {
+   *             "id": 1,
+   *             "type": "authors"
+   *           },
+   *            "links": {
+   *              "self": "http://localhost:4000/authors/1"
+   *           }
+   *         }
+   *       ],
+   *       "links": {
+   *         "self": "http://localhost:4000/posts/1"
+   *       }
+   *     }
+   *   ],
+   *   "links": {
+   *     "self": "http://localhost:4000/posts",
+   *     "first": "http://localhost:4000/posts",
+   *     "last": "http://localhost:4000/posts",
+   *     "prev": null,
+   *     "next": null
+   *   }
+   *   "jsonapi": {
+   *     "version": "1.0"
+   *   }
+   * }
+   *
+   * @property hasOne
+   * @memberof Serializer
+   * @instance
+   */
+  get hasOne(): Array<string> {
+    return Object.freeze([]);
+  }
 
-   set hasOne(value: Array<string>): void {
-     if (value && value.length) {
-       const hasOne = new Array(value.length);
+  set hasOne(value: Array<string>): void {
+    if (value && value.length) {
+      const hasOne = new Array(value.length);
 
-       insert(hasOne, value);
+      insert(hasOne, value);
 
-       Object.defineProperty(this, 'hasOne', {
-         value: Object.freeze(hasOne),
-         writable: false,
-         enumerable: true,
-         configurable: false
-       });
-     }
-   }
+      Reflect.defineProperty(this, 'hasOne', {
+        value: Object.freeze(hasOne),
+        writable: false,
+        enumerable: true,
+        configurable: false
+      });
+    }
+  }
 
-   /**
-    * An Array of the `hasMany` relationships on a `Serializer` instance's model
-    * to include in the `relationships` resource object of a serialized payload.
-    *
-    * @example
-    * class PostsSerializer extends Serializer {
-    *   hasMany = [
-    *     'comments'
-    *   ];
-    * }
-    *
-    * // A request to `/posts` would result in the following payload:
-    *
-    * {
-    *   "data": [
-    *     {
-    *       "id": 1,
-    *       "type": "posts",
-    *       "attributes": {},
-    *       "relationships": [
-    *         {
-    *           "data": {
-    *             "id": 1,
-    *             "type": "comments"
-    *           },
-    *            "links": {
-    *              "self": "http://localhost:4000/comments/1"
-    *           }
-    *         },
-    *         {
-    *           "data": {
-    *             "id": 2,
-    *             "type": "comments"
-    *           },
-    *            "links": {
-    *              "self": "http://localhost:4000/comments/2"
-    *           }
-    *         }
-    *       ],
-    *       "links": {
-    *         "self": "http://localhost:4000/posts/1"
-    *       }
-    *     }
-    *   ],
-    *   "links": {
-    *     "self": "http://localhost:4000/posts",
-    *     "first": "http://localhost:4000/posts",
-    *     "last": "http://localhost:4000/posts",
-    *     "prev": null,
-    *     "next": null
-    *   }
-    *   "jsonapi": {
-    *     "version": "1.0"
-    *   }
-    * }
-    *
-    * @property hasMany
-    * @memberof Serializer
-    * @instance
-    */
-   get hasMany(): Array<string> {
-     return Object.freeze([]);
-   }
+  /**
+   * An Array of the `hasMany` relationships on a `Serializer` instance's model
+   * to include in the `relationships` resource object of a serialized payload.
+   *
+   * @example
+   * class PostsSerializer extends Serializer {
+   *   hasMany = [
+   *     'comments'
+   *   ];
+   * }
+   *
+   * // A request to `/posts` would result in the following payload:
+   *
+   * {
+   *   "data": [
+   *     {
+   *       "id": 1,
+   *       "type": "posts",
+   *       "attributes": {},
+   *       "relationships": [
+   *         {
+   *           "data": {
+   *             "id": 1,
+   *             "type": "comments"
+   *           },
+   *            "links": {
+   *              "self": "http://localhost:4000/comments/1"
+   *           }
+   *         },
+   *         {
+   *           "data": {
+   *             "id": 2,
+   *             "type": "comments"
+   *           },
+   *            "links": {
+   *              "self": "http://localhost:4000/comments/2"
+   *           }
+   *         }
+   *       ],
+   *       "links": {
+   *         "self": "http://localhost:4000/posts/1"
+   *       }
+   *     }
+   *   ],
+   *   "links": {
+   *     "self": "http://localhost:4000/posts",
+   *     "first": "http://localhost:4000/posts",
+   *     "last": "http://localhost:4000/posts",
+   *     "prev": null,
+   *     "next": null
+   *   }
+   *   "jsonapi": {
+   *     "version": "1.0"
+   *   }
+   * }
+   *
+   * @property hasMany
+   * @memberof Serializer
+   * @instance
+   */
+  get hasMany(): Array<string> {
+    return Object.freeze([]);
+  }
 
-   set hasMany(value: Array<string>): void {
-     if (value && value.length) {
-       const hasMany = new Array(value.length);
+  set hasMany(value: Array<string>): void {
+    if (value && value.length) {
+      const hasMany = new Array(value.length);
 
-       insert(hasMany, value);
+      insert(hasMany, value);
 
-       Object.defineProperty(this, 'hasMany', {
-         value: Object.freeze(hasMany),
-         writable: false,
-         enumerable: true,
-         configurable: false
-       });
-     }
-   }
+      Reflect.defineProperty(this, 'hasMany', {
+        value: Object.freeze(hasMany),
+        writable: false,
+        enumerable: true,
+        configurable: false
+      });
+    }
+  }
 
-   /**
-    * An Array of the `attributes` on a `Serializer` instance's model to include
-    * in the `attributes` resource object of a serialized payload.
-    *
-    * @example
-    * class PostsSerializer extends Serializer {
-    *   attributes = [
-    *     'title',
-    *     'isPublic'
-    *   ];
-    * }
-    *
-    * // A request to `/posts` would result in the following payload:
-    *
-    * {
-    *   "data": [
-    *     {
-    *       "id": 1,
-    *       "type": "posts",
-    *       "attributes": {
-    *         "title": "Not another Node.js framework...",
-    *         "is-public": true
-    *       },
-    *       "links": {
-    *         "self": "http://localhost:4000/posts/1"
-    *       }
-    *     }
-    *   ],
-    *   "links": {
-    *     "self": "http://localhost:4000/posts",
-    *     "first": "http://localhost:4000/posts",
-    *     "last": "http://localhost:4000/posts",
-    *     "prev": null,
-    *     "next": null
-    *   }
-    *   "jsonapi": {
-    *     "version": "1.0"
-    *   }
-    * }
-    *
-    * @property attributes
-    * @memberof Serializer
-    * @instance
-    */
-   get attributes(): Array<string> {
-     return Object.freeze([]);
-   }
+  /**
+   * An Array of the `attributes` on a `Serializer` instance's model to include
+   * in the `attributes` resource object of a serialized payload.
+   *
+   * @example
+   * class PostsSerializer extends Serializer {
+   *   attributes = [
+   *     'title',
+   *     'isPublic'
+   *   ];
+   * }
+   *
+   * // A request to `/posts` would result in the following payload:
+   *
+   * {
+   *   "data": [
+   *     {
+   *       "id": 1,
+   *       "type": "posts",
+   *       "attributes": {
+   *         "title": "Not another Node.js framework...",
+   *         "is-public": true
+   *       },
+   *       "links": {
+   *         "self": "http://localhost:4000/posts/1"
+   *       }
+   *     }
+   *   ],
+   *   "links": {
+   *     "self": "http://localhost:4000/posts",
+   *     "first": "http://localhost:4000/posts",
+   *     "last": "http://localhost:4000/posts",
+   *     "prev": null,
+   *     "next": null
+   *   }
+   *   "jsonapi": {
+   *     "version": "1.0"
+   *   }
+   * }
+   *
+   * @property attributes
+   * @memberof Serializer
+   * @instance
+   */
+  get attributes(): Array<string> {
+    return Object.freeze([]);
+  }
 
-   set attributes(value: Array<string>): void {
-     if (value && value.length) {
-       const attributes = new Array(value.length);
+  set attributes(value: Array<string>): void {
+    if (value && value.length) {
+      const attributes = new Array(value.length);
 
-       insert(attributes, value);
+      insert(attributes, value);
 
-       Object.defineProperty(this, 'attributes', {
-         value: Object.freeze(attributes),
-         writable: false,
-         enumerable: true,
-         configurable: false
-       });
-     }
-   }
+      Reflect.defineProperty(this, 'attributes', {
+        value: Object.freeze(attributes),
+        writable: false,
+        enumerable: true,
+        configurable: false
+      });
+    }
+  }
 
   /**
    * @private

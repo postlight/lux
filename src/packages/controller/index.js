@@ -2,7 +2,7 @@ import Model from '../database/model';
 
 import insert from '../../utils/insert';
 
-import type { IncomingMessage, ServerResponse } from 'http';
+import type { IncomingMessage } from 'http';
 
 import type Database from '../database';
 import type Serializer from '../serializer';
@@ -228,7 +228,7 @@ class Controller {
 
       insert(params, value);
 
-      Object.defineProperty(this, 'params', {
+      Reflect.defineProperty(this, 'params', {
         value: Object.freeze(params),
         writable: false,
         enumerable: true,
@@ -257,7 +257,7 @@ class Controller {
 
       insert(beforeAction, value);
 
-      Object.defineProperty(this, 'beforeAction', {
+      Reflect.defineProperty(this, 'beforeAction', {
         value: Object.freeze(beforeAction),
         writable: false,
         enumerable: true,
@@ -286,7 +286,7 @@ class Controller {
 
       insert(sort, value);
 
-      Object.defineProperty(this, 'sort', {
+      Reflect.defineProperty(this, 'sort', {
         value: Object.freeze(sort),
         writable: false,
         enumerable: true,
@@ -315,7 +315,7 @@ class Controller {
 
       insert(filter, value);
 
-      Object.defineProperty(this, 'filter', {
+      Reflect.defineProperty(this, 'filter', {
         value: Object.freeze(filter),
         writable: false,
         enumerable: true,
@@ -359,8 +359,11 @@ class Controller {
    *
    * This method supports filtering, sorting, pagination, including
    * relationships, and sparse fieldsets via query parameters.
+   *
+   * @param  {IncomingMessage} request
+   * @param  {ServerResponse} response
    */
-  index(req: IncomingMessage, res: ServerResponse): Promise<Array<Model>> {
+  index(req: IncomingMessage): Promise<Array<Model>> {
     const {
       params: {
         sort,
@@ -384,8 +387,11 @@ class Controller {
    *
    * This method supports including relationships, and sparse fieldsets via
    * query parameters.
+   *
+   * @param  {IncomingMessage} request
+   * @param  {ServerResponse} response
    */
-  show(req: IncomingMessage, res: ServerResponse): Promise<?Model> {
+  show(req: IncomingMessage): Promise<?Model> {
     const {
       params: {
         id,
@@ -402,8 +408,11 @@ class Controller {
   /**
    * Create and return a single `Model` instance that the Controller instance
    * represents.
+   *
+   * @param  {IncomingMessage} request
+   * @param  {ServerResponse} response
    */
-  create(req: IncomingMessage, res: ServerResponse): Promise<Model> {
+  create(req: IncomingMessage): Promise<Model> {
     const {
       params: {
         data: {
@@ -418,10 +427,11 @@ class Controller {
   /**
    * Update and return a single `Model` instance that the Controller instance
    * represents.
+   *
+   * @param  {IncomingMessage} request
+   * @param  {ServerResponse} response
    */
-  async update(req: IncomingMessage, res: ServerResponse): Promise<?Model> {
-    let record;
-
+  async update(req: IncomingMessage): Promise<?Model> {
     const {
       params: {
         id,
@@ -432,7 +442,7 @@ class Controller {
       }
     } = req;
 
-    record = await this.model.find(id);
+    const record = await this.model.find(id);
 
     if (record) {
       await record.update(attributes);
@@ -443,8 +453,11 @@ class Controller {
 
   /**
    * Destroy a single `Model` instance that the Controller instance represents.
+   *
+   * @param  {IncomingMessage} request
+   * @param  {ServerResponse} response
    */
-  async destroy(req: IncomingMessage, res: ServerResponse): Promise<number> {
+  async destroy(req: IncomingMessage): Promise<number> {
     const record = await this.model.find(req.params.id);
 
     if (record) {
@@ -457,9 +470,11 @@ class Controller {
   /**
    * An action handler used for responding to HEAD or OPTIONS requests.
    *
+   * @param  {IncomingMessage} request
+   * @param  {ServerResponse} response
    * @private
    */
-  preflight(req: IncomingMessage, res: ServerResponse): number {
+  preflight(): number {
     return 204;
   }
 }

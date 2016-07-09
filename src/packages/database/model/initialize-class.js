@@ -132,12 +132,10 @@ function initializeHooks({
 
       return isValid;
     })
-    .reduce((hash, [key, hook]) => {
-      return {
-        ...hash,
-        [key]: async (...args) => await hook.apply(model, args)
-      };
-    }, Object.create(null));
+    .reduce((hash, [key, hook]) => ({
+      ...hash,
+      [key]: async (...args) => await Reflect.apply(hook, model, args)
+    }), {});
 
   return Object.freeze(hooks);
 }

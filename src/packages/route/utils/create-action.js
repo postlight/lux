@@ -60,7 +60,7 @@ export default function createAction(
 
       let total;
       let { params: { fields } } = req;
-      let data = action.call(controller, req, res);
+      let data = Reflect.apply(action, controller, [req, res]);
       let links = { self: domain + pathname };
 
       if (route && route.action === 'index') {
@@ -113,7 +113,7 @@ export default function createAction(
     }
   ].map((handler: Function): Function => {
     return (req: IncomingMessage, res: ServerResponse) => {
-      return handler.call(controller, req, res);
+      return Reflect.apply(handler, controller, [req, res]);
     };
   }));
 

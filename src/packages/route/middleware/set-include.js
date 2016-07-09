@@ -3,16 +3,13 @@ import { singularize } from 'inflection';
 
 import omit from '../../../utils/omit';
 
-import type { IncomingMessage, ServerResponse } from 'http';
+import type { IncomingMessage } from 'http';
 import typeof { Model } from '../../database';
 
 /**
  * @private
  */
-export default function setInclude(
-  req: IncomingMessage,
-  res: ServerResponse
-): void {
+export default function setInclude(req: IncomingMessage): void {
   const { route } = req;
 
   if (route && /^(index|show)$/g.test(route.action)) {

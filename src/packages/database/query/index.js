@@ -106,7 +106,7 @@ class Query {
     if (this.shouldCount) {
       return this;
     } else {
-      let limit = this.snapshots.find(([name, params]) => name === 'limit');
+      let limit = this.snapshots.find(([name]) => name === 'limit');
 
       if (limit) {
         [, limit] = limit;
@@ -118,7 +118,7 @@ class Query {
 
       this.limit(limit);
 
-      return this.offset(Math.max(parseInt(num, 10) - 1 , 0) * limit);
+      return this.offset(Math.max(parseInt(num, 10) - 1, 0) * limit);
     }
   }
 
@@ -307,8 +307,8 @@ class Query {
             ];
 
             this.relationships[name] = {
+              attrs,
               type: 'hasMany',
-              attrs: attrs,
               model: relationship.model,
               through: relationship.through,
               foreignKey: relationship.foreignKey
@@ -371,7 +371,6 @@ class Query {
    * @private
    */
   async run(): Promise<?Model|Array<Model>|number> {
-    let records;
     let results;
 
     const {
@@ -386,18 +385,18 @@ class Query {
       this.select(...this.model.attributeNames);
     }
 
-    records = snapshots.reduce((query, [name, params]) => {
+    const records = snapshots.reduce((query, [name, params]) => {
       if (!shouldCount && name === 'includeSelect') {
         name = 'select';
       }
 
-      const method = query[name];
+      const method = Reflect.get(query, name);
 
-      if (Array.isArray(params)) {
-        return method.apply(query, params);
-      } else {
-        return method.call(query, params);
+      if (!Array.isArray(params)) {
+        params = [params];
       }
+
+      return Reflect.apply(method, query, params);
     }, model.table());
 
     if (model.store.debug) {

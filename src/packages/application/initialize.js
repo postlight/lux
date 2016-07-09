@@ -71,7 +71,7 @@ export default async function initialize(app: Application, {
     });
 
     if (model) {
-      Object.defineProperty(model, 'serializer', {
+      Reflect.defineProperty(model, 'serializer', {
         value: serializer,
         writable: false,
         enumerable: false,

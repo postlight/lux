@@ -8,7 +8,7 @@ class MigrationsPendingError extends Error {
       .map(str => yellow(str.substr(0, str.length - 3)))
       .join(', ');
 
-    return super(line`
+    super(line`
       The following migrations are pending ${migrations}.
       Please run ${green('lux db:migrate')} before starting your application.
     `);

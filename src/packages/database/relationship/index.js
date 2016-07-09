@@ -25,6 +25,8 @@ export async function get(
     relationship = related.get(key);
 
     if (!relationship) {
+      let foreignVal;
+
       switch (type) {
         case 'hasOne':
         case 'hasMany':
@@ -40,7 +42,7 @@ export async function get(
           break;
 
         case 'belongsTo':
-          const foreignVal = owner[foreignKey];
+          foreignVal = owner[foreignKey];
 
           if (foreignVal) {
             relationship = await model.find(foreignVal);

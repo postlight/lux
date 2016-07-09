@@ -17,17 +17,17 @@ export default function luxify(
     return new Promise((resolve, reject) => {
       res = createResponseProxy(res, resolve);
 
-      middleware.call(null, req, res, (err) => {
+      Reflect.apply(middleware, null, [req, res, (err) => {
         if (err && err instanceof Error) {
           reject(err);
         } else {
           resolve();
         }
-      });
+      }]);
     });
   };
 
-  Object.defineProperty(result, 'name', {
+  Reflect.defineProperty(result, 'name', {
     value: middleware.name
   });
 

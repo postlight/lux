@@ -10,7 +10,7 @@ export default function createQueryString(
   source: Object,
   property?: string
 ): string {
-  return entries(source).reduce((result, [key, value], index, arr) => {
+  return entries(source).reduce((result, [key, value], index) => {
     if (index > 0) {
       result += '&';
     }

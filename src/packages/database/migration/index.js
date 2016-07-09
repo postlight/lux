@@ -4,23 +4,21 @@
  * @private
  */
 class Migration {
-  fn: () => Promise<void>;
+  fn: (schema: Object) => Promise<void>;
 
-  constructor(fn: () => Promise<void>): Migration {
-    Object.defineProperties(this, {
-      fn: {
-        value: fn,
-        writeable: false,
-        enumerable: false,
-        configurable: false
-      }
+  constructor(fn: (schema: Object) => Promise<void>): Migration {
+    Reflect.defineProperty(this, 'fn', {
+      value: fn,
+      writeable: false,
+      enumerable: false,
+      configurable: false
     });
 
     return this;
   }
 
   run(schema: Object): Promise<void> {
-    return this.fn.call(null, schema);
+    return Reflect.apply(this.fn, null, [schema]);
   }
 }
 

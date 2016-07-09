@@ -9,6 +9,7 @@ import fs, { rmrf, exists } from '../../fs';
  */
 export async function destroyType(type, name) {
   let path;
+  let migrations;
 
   type = type.toLowerCase();
 
@@ -19,8 +20,7 @@ export async function destroyType(type, name) {
       break;
 
     case 'migration':
-      const migrations = await fs.readdirAsync(`${CWD}/db/migrate`);
-
+      migrations = await fs.readdirAsync(`${CWD}/db/migrate`);
       name = migrations.find(file => `${name}.js` === file.substr(17));
       path = `db/migrate/${name}`;
       break;

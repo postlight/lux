@@ -31,7 +31,7 @@ function setupWatchmen(instance: Watcher, path: string): Promise<Client> {
 
       client.command(['watch-project', path], (watchErr, {
         watch,
-        relative_path
+        relative_path: relativePath
       } = {}) => {
         if (watchErr) {
           return reject(watchErr);
@@ -44,7 +44,7 @@ function setupWatchmen(instance: Watcher, path: string): Promise<Client> {
 
           client.command(['subscribe', watch, SUBSCRIPTION_NAME, {
             since,
-            relative_root: relative_path,
+            relative_root: relativePath, // eslint-disable-line camelcase
 
             fields: [
               'name',

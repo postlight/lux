@@ -129,11 +129,13 @@ class Server {
         statusColor = 'red';
       }
 
+      const colorString = Reflect.get(chalk, statusColor);
+
       this.logger.info(line`
         ${cyan(`${method}`)} ${url.pathname} -> Finished after
         ${new Date().getTime() - startTime.getTime()} ms with
-        ${chalk[statusColor].call(null, `${statusCode}`)}
-        ${chalk[statusColor].call(null, `${statusMessage}`)}
+        ${Reflect.apply(colorString, null, [`${statusCode}`])}
+        ${Reflect.apply(colorString, null, [`${statusMessage}`])}
       `);
     });
   }

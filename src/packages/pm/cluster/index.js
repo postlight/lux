@@ -112,11 +112,17 @@ class Cluster extends EventEmitter {
         }, 30000);
 
         const handleExit = (code: ?number) => {
+          const { process: { pid } } = worker;
+
           worker.removeListener('message', handleMessage);
 
-          this.logger.info(
-            `Removing worker process: ${red(`${worker.process.pid}`)}`
-          );
+          if (typeof code === 'number') {
+            this.logger.info(
+              `Worker process: ${red(`${pid}`)} exited with code ${code}`
+            );
+          }
+
+          this.logger.info(`Removing worker process: ${red(`${pid}`)}`);
 
           this.workers.delete(worker);
           this.fork();

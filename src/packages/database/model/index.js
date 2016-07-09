@@ -114,7 +114,7 @@ class Model {
 
   static set hasOne(value: Object): void {
     if (value && Object.keys(value).length) {
-      Object.defineProperty(this, 'hasOne', {
+      Reflect.defineProperty(this, 'hasOne', {
         value,
         writable: true,
         enumerable: false,
@@ -129,7 +129,7 @@ class Model {
 
   static set hasMany(value: Object): void {
     if (value && Object.keys(value).length) {
-      Object.defineProperty(this, 'hasMany', {
+      Reflect.defineProperty(this, 'hasMany', {
         value,
         writable: true,
         enumerable: false,
@@ -144,7 +144,7 @@ class Model {
 
   static set belongsTo(value: Object): void {
     if (value && Object.keys(value).length) {
-      Object.defineProperty(this, 'belongsTo', {
+      Reflect.defineProperty(this, 'belongsTo', {
         value,
         writable: true,
         enumerable: false,
@@ -159,7 +159,7 @@ class Model {
 
   static set hooks(value: Object): void {
     if (value && Object.keys(value).length) {
-      Object.defineProperty(this, 'hooks', {
+      Reflect.defineProperty(this, 'hooks', {
         value,
         writable: true,
         enumerable: false,
@@ -174,7 +174,7 @@ class Model {
 
   static set scopes(value: Object): void {
     if (value && Object.keys(value).length) {
-      Object.defineProperty(this, 'scopes', {
+      Reflect.defineProperty(this, 'scopes', {
         value,
         writable: true,
         enumerable: false,
@@ -189,7 +189,7 @@ class Model {
 
   static set validates(value: Object): void {
     if (value && Object.keys(value).length) {
-      Object.defineProperty(this, 'validates', {
+      Reflect.defineProperty(this, 'validates', {
         value,
         writable: true,
         enumerable: false,
@@ -208,7 +208,7 @@ class Model {
 
   static set tableName(value: string): void {
     if (value && value.length) {
-      Object.defineProperty(this, 'tableName', {
+      Reflect.defineProperty(this, 'tableName', {
         value,
         writable: false,
         enumerable: false,
@@ -457,7 +457,7 @@ class Model {
       [primaryKey]: (await query)[0]
     });
 
-    Object.defineProperty(instance, 'initialized', {
+    Reflect.defineProperty(instance, 'initialized', {
       value: true,
       writable: false,
       enumerable: false,

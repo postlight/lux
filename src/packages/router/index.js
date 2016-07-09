@@ -24,7 +24,7 @@ class Router extends Map<string, Route> {
   }): Router {
     super();
 
-    routes.call({
+    Reflect.apply(routes, {
       route: (path: string, opts: options) => define.route({
         ...opts,
         path,
@@ -37,9 +37,9 @@ class Router extends Map<string, Route> {
         controllers,
         router: this
       })
-    });
+    }, []);
 
-    Object.defineProperty(this, 'initialized', {
+    Reflect.defineProperty(this, 'initialized', {
       value: true,
       writable: false,
       enumerable: false,

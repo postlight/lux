@@ -19,9 +19,9 @@ function exportStatement(
   path = path.replace(BACKSLASH, '/');
 
   if (isDefault) {
-   return `export {\n  default as ${name}\n} from '../${path}';\n\n`;
+    return `export {\n  default as ${name}\n} from '../${path}';\n\n`;
   } else {
-   return `export {\n  ${name}\n} from '../${path}';\n\n`;
+    return `export {\n  ${name}\n} from '../${path}';\n\n`;
   }
 }
 

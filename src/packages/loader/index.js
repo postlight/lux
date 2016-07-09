@@ -38,7 +38,7 @@ export default function loader(appPath: string, type: string): ?mixed {
                     break;
 
                   case 'Serializer':
-                  key = formatKey(key, k => k.replace(match, ''));
+                    key = formatKey(key, k => k.replace(match, ''));
                     hash.serializers.set(key, value);
                     break;
                 }

@@ -23,7 +23,7 @@ export default (name: string, attrs: Array<string>): string => {
 
   const body = entries(
     attrs
-      .filter(attr => /^(\w|-)+:(\w|-)+$/g)
+      .filter(attr => /^(\w|-)+:(\w|-)+$/g.test(attr))
       .map(attr => attr.split(':'))
       .reduce(({ attributes, hasOne, hasMany }, [attr, type]) => {
         attr = `${indent(8)}'${camelize(underscore(attr), true)}'`;

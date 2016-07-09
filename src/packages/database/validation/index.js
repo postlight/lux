@@ -61,7 +61,7 @@ class Validation {
       validator
     } = this;
 
-    return validator.call(model, value);
+    return Reflect.apply(validator, model, [value]);
   }
 }
 

@@ -1,13 +1,10 @@
 // @flow
-import type { IncomingMessage, ServerResponse } from 'http';
+import type { IncomingMessage } from 'http';
 
 /**
  * @private
  */
-export default function setFields(
-  req: IncomingMessage,
-  res: ServerResponse
-): void {
+export default function setFields(req: IncomingMessage): void {
   const { route } = req;
 
   if (route && /^(index|show)$/g.test(route.action)) {

@@ -16,10 +16,9 @@ export default async function buildResults({
   records: Promise<Array<Object>>,
   relationships: Object
 }): Promise<Array<Object>> {
-  let related;
-
+  const results = await records;
   const pkPattern = new RegExp(`^.+\.${model.primaryKey}$`);
-  let results = await records;
+  let related;
 
   if (Object.keys(relationships).length) {
     related = entries(relationships)

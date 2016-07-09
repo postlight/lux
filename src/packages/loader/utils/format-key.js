@@ -11,7 +11,7 @@ export default function formatKey(
   formatter: ?(k: string) => string
 ): string {
   if (formatter) {
-    key = formatter.call(null, key);
+    key = Reflect.apply(formatter, null, [key]);
   }
 
   return dasherize(underscore(key));
