@@ -1,8 +1,5 @@
 // @flow
-import { blue } from 'chalk';
-
 import { Model, Query } from '../../database';
-import { line } from '../../logger';
 
 import sanitizeParams from '../middleware/sanitize-params';
 import setInclude from '../middleware/set-include';
@@ -31,7 +28,14 @@ export default function createAction(
   controller: Controller,
   action: () => Promise<mixed>
 ): Array<Function> {
-  const { middleware, serializer } = controller;
+  const {
+    middleware,
+    serializer,
+
+    constructor: {
+      name: controllerName
+    }
+  } = controller;
 
   const handlers = new Array(BUILT_INS_LENGTH + middleware.length + 1);
 
@@ -137,9 +141,12 @@ export default function createAction(
           actionName = 'anonymous';
         }
 
-        controller.store.logger.debug(line`
-          Executed ${actionType} ${blue(actionName)} in ${Date.now() - start} ms
-        `);
+        res.stats.push({
+          type: actionType,
+          name: actionName,
+          duration: Date.now() - start,
+          controller: controllerName
+        });
       }
 
       return result;

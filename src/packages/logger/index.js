@@ -6,6 +6,7 @@ import { LUX_CONSOLE } from '../../constants';
 import { DEBUG, INFO, WARN, ERROR, LEVELS } from './constants';
 
 import { createWriter } from './writer';
+import { createRequestLogger } from './request-logger';
 
 import K from '../../utils/k';
 
@@ -16,6 +17,8 @@ import type {
   Logger$level,
   Logger$logFn
 } from './interfaces';
+
+import type { Logger$RequestLogger } from './request-logger/interfaces';
 
 /**
  * The `Logger` class is responsible for logging messages from an application
@@ -141,13 +144,29 @@ class Logger {
   error: Logger$logFn;
 
   /**
+   * Internal method used for logging requests.
+   *
+   * @method request
+   * @memberof Logger
+   * @instance
+   * @private
+   */
+  request: Logger$RequestLogger;
+
+  /**
    * Create an instance of `Logger`.
    *
    * WARNING:
    * It is highly reccomended that you do not override this method.
    */
-  constructor({ level, format, enabled }: Logger$config): Logger {
-    const write = !LUX_CONSOLE && enabled ? createWriter(format) : K;
+  constructor({ level, format, filter, enabled }: Logger$config): Logger {
+    let write = K;
+    let request = K;
+
+    if (!LUX_CONSOLE && enabled) {
+      write = createWriter(format);
+      request = createRequestLogger(format, filter);
+    }
 
     Object.defineProperties(this, {
       level: {
@@ -168,6 +187,13 @@ class Logger {
         value: Boolean(enabled),
         writable: false,
         enumerable: true,
+        configurable: false
+      },
+
+      request: {
+        value: request,
+        writable: false,
+        enumerable: false,
         configurable: false
       }
     });

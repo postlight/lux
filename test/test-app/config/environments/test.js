@@ -2,6 +2,10 @@ export default {
   logging: {
     level: 'DEBUG',
     format: 'text',
-    enabled: false
+    enabled: false,
+
+    filter: {
+      params: []
+    }
   }
 };

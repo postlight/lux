@@ -13,4 +13,7 @@ export type Logger$config = {
   level: Logger$level;
   format: Logger$format;
   enabled: boolean;
+  filter: {
+    params: Array<string>;
+  };
 };

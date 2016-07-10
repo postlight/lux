@@ -1,16 +1,18 @@
 // @flow
+import { WriteStream } from 'tty';
 import { dim, red, yellow } from 'chalk';
 import { isMaster, isWorker } from 'cluster';
 
 import { ANSI, STDOUT, STDERR } from './constants';
+import { DEBUG, INFO, WARN, ERROR } from '../constants';
 
-import type { Writer } from './interfaces';
+import type { Logger$Writer } from './interfaces';
 import type { Logger$format, Logger$data } from '../interfaces';
 
 /**
  * @private
  */
-export function createWriter(format: Logger$format): Writer {
+export function createWriter(format: Logger$format): Logger$Writer {
   return function write(data: Logger$data): void {
     if (isWorker && typeof process.send === 'function') {
       process.send({
@@ -26,28 +28,34 @@ export function createWriter(format: Logger$format): Writer {
       if (format === 'json') {
         message = message.replace(ANSI, '');
         output = JSON.stringify({
-          ...etc,
+          timestamp,
           level,
           message,
-          timestamp
+          ...etc
         });
       } else {
+        let columns = 0;
+
+        if (process.stdout instanceof WriteStream) {
+          columns = process.stdout.columns;
+        }
+
         switch (level) {
-          case 'DEBUG':
-          case 'INFO':
+          case DEBUG:
+          case INFO:
             timestamp = dim(`[${timestamp}]`);
             break;
 
-          case 'WARN':
+          case WARN:
             timestamp = yellow(`[${timestamp}]`);
             break;
 
-          case 'ERROR':
+          case ERROR:
             timestamp = red(`[${timestamp}]`);
             break;
         }
 
-        output = `${timestamp} ${message}\n`;
+        output = `${timestamp} ${message}\n\n${dim('-').repeat(columns)}\n`;
       }
 
       if (STDOUT.test(level)) {

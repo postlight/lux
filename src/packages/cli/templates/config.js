@@ -13,7 +13,11 @@ export default (name: string, env: string): string => {
       logging: {
         level: ${isProdENV ? 'INFO' : 'DEBUG'},
         format: ${isProdENV ? 'json' : 'text'},
-        enabled: ${!isTestENV}
+        enabled: ${(!isTestENV).toString()},
+
+        filter: {
+          params: []
+        }
       }
     };
   `;
