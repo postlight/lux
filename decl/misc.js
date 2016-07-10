@@ -1,3 +1,4 @@
+// @flow
 import type { Model } from '../src/packages/database';
 import type Controller from '../src/packages/controller';
 import type Serializer from '../src/packages/serializer';

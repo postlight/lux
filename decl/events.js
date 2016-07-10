@@ -1,3 +1,4 @@
+// @flow
 declare module 'events' {
   declare class EventEmitter {
     static listenerCount(emitter: EventEmitter, event: string): number;

@@ -1,3 +1,4 @@
+// @flow
 type rollupOptions = {
   entry: string;
   onwarn?: Function;

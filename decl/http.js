@@ -1,3 +1,4 @@
+// @flow
 import {
   Server as http$Server,
   IncomingMessage as http$IncomingMessage,

@@ -1,3 +1,4 @@
+// @flow
 declare module 'fb-watchman' {
   declare class Client {
     on(event: string, listener: Function): Client;

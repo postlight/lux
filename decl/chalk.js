@@ -1,3 +1,4 @@
+// @flow
 declare module 'chalk' {
   declare function cyan(source: string): string;
   declare function dim(source: string): string;

@@ -1,3 +1,4 @@
+// @flow
 declare module 'moment' {
   declare class Moment {
     format(format: string): string;

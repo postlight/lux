@@ -1,3 +1,4 @@
+// @flow
 declare module 'inflection' {
   declare function camelize(source: string, lower: boolean): string;
   declare function classify(source: string): string;
