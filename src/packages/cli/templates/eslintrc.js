@@ -6,29 +6,20 @@ import template from '../../template';
  */
 export default (): string => template`
   {
+    "parser": "babel-eslint",
+    "extends": "eslint:recommended",
     "env": {
       "node": true
     },
-    "extends": "eslint:recommended",
     "globals": {
-      "after": true,
-      "before": true,
-      "describe": true,
-      "it": true,
       "Map": true,
-      "Promise": true,
-      "Proxy": true,
       "Set": true,
-      "Symbol": true,
-      "WeakMap": true
-    },
-    "parser": "babel-eslint",
-    "parserOptions": {
-      "ecmaVersion": 6,
-      "sourceType": "module"
-    },
-    "rules": {
-      "no-unused-vars": 1
+      "Proxy": true,
+      "Promise": true,
+      "Reflect": true,
+      "WeakMap": true,
+      "WeakSet": true,
+      "Iterable": true
     }
   }
 `;
