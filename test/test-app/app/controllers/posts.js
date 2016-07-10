@@ -8,7 +8,7 @@ class PostsController extends Controller {
   ];
 
   beforeAction = [
-    function (req, res) {
+    function setControllerHeader(req, res) {
       res.setHeader('X-Controller', 'Posts');
     }
   ];

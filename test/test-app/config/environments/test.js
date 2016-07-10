@@ -1,3 +1,7 @@
 export default {
-  log: false
+  logging: {
+    level: 'DEBUG',
+    format: 'text',
+    enabled: false
+  }
 };

@@ -245,10 +245,6 @@ class Model {
         primaryKey,
         table,
 
-        store: {
-          debug
-        },
-
         hooks: {
           afterUpdate,
           afterSave,
@@ -263,6 +259,8 @@ class Model {
     Object.assign(this, attributes);
 
     if (this.isDirty) {
+      const { constructor: { logger } } = this;
+
       if (typeof beforeValidation === 'function') {
         await beforeValidation(this);
       }
@@ -285,15 +283,10 @@ class Model {
 
       const query = table()
         .where({ [primaryKey]: this[primaryKey] })
-        .update(this.format('database', ...this.dirtyAttributes));
-
-      if (debug) {
-        const { constructor: { logger } } = this;
-
-        query.on('query', () => {
-          setImmediate(() => logger.info(sql`${query.toString()}`));
+        .update(this.format('database', ...this.dirtyAttributes))
+        .on('query', () => {
+          setImmediate(() => logger.debug(sql`${query.toString()}`));
         });
-      }
 
       await query;
 
@@ -315,11 +308,8 @@ class Model {
     const {
       constructor: {
         primaryKey,
+        logger,
         table,
-
-        store: {
-          debug
-        },
 
         hooks: {
           afterDestroy,
@@ -334,19 +324,10 @@ class Model {
 
     const query = table()
       .where({ [primaryKey]: this[primaryKey] })
-      .del();
-
-    if (debug) {
-      const {
-        constructor: {
-          logger
-        }
-      } = this;
-
-      query.on('query', () => {
-        setImmediate(() => logger.info(sql`${query.toString()}`));
+      .del()
+      .on('query', () => {
+        setImmediate(() => logger.debug(sql`${query.toString()}`));
       });
-    }
 
     await query;
 
@@ -400,11 +381,8 @@ class Model {
   static async create(props = {}): Model {
     const {
       primaryKey,
+      logger,
       table,
-
-      store: {
-        debug
-      },
 
       hooks: {
         afterCreate,
@@ -443,15 +421,10 @@ class Model {
 
     const query = table()
       .returning(primaryKey)
-      .insert(omit(instance.format('database'), primaryKey));
-
-    if (debug) {
-      const { logger } = this;
-
-      query.on('query', () => {
-        setImmediate(() => logger.info(sql`${query.toString()}`));
+      .insert(omit(instance.format('database'), primaryKey))
+      .on('query', () => {
+        setImmediate(() => logger.debug(sql`${query.toString()}`));
       });
-    }
 
     Object.assign(instance, {
       [primaryKey]: (await query)[0]

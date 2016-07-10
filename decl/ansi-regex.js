@@ -1,5 +1,5 @@
 // @flow
 declare module 'ansi-regex' {
-  declare function ansiregex(): RegExp;
-  declare var exports: ansiregex;
+  declare function ansiRegex(): RegExp;
+  declare var exports: typeof ansiRegex;
 }

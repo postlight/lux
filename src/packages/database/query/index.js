@@ -401,7 +401,7 @@ class Query {
 
     if (model.store.debug) {
       records.on('query', () => {
-        setImmediate(() => model.logger.info(sql`${records.toString()}`));
+        setImmediate(() => model.logger.debug(sql`${records.toString()}`));
       });
     }
 

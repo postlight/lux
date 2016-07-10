@@ -9,6 +9,6 @@
  *
  * @private
  */
-export default function K(): mixed {
+export default function K(): any {
   return this;
 }

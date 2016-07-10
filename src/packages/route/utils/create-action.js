@@ -1,5 +1,8 @@
 // @flow
+import { blue } from 'chalk';
+
 import { Model, Query } from '../../database';
+import { line } from '../../logger';
 
 import sanitizeParams from '../middleware/sanitize-params';
 import setInclude from '../middleware/set-include';
@@ -12,6 +15,15 @@ import createPageLinks from './create-page-links';
 import type Controller from '../../controller';
 import type { IncomingMessage, ServerResponse } from 'http';
 
+const BUILT_INS = [
+  sanitizeParams,
+  setInclude,
+  setFields,
+  setPage
+];
+
+const { length: BUILT_INS_LENGTH } = BUILT_INS;
+
 /**
  * @private
  */
@@ -21,17 +33,10 @@ export default function createAction(
 ): Array<Function> {
   const { middleware, serializer } = controller;
 
-  const builtIns = [
-    sanitizeParams,
-    setInclude,
-    setFields,
-    setPage
-  ];
-
-  const handlers = new Array(builtIns.length + middleware.length + 1);
+  const handlers = new Array(BUILT_INS_LENGTH + middleware.length + 1);
 
   insert(handlers, [
-    ...builtIns,
+    ...BUILT_INS,
     ...middleware,
 
     async function actionHandler(
@@ -111,9 +116,33 @@ export default function createAction(
 
       return data;
     }
-  ].map((handler: Function): Function => {
-    return (req: IncomingMessage, res: ServerResponse) => {
-      return Reflect.apply(handler, controller, [req, res]);
+  ].map((handler: Function, idx, arr): Function => {
+    return async (req: IncomingMessage, res: ServerResponse) => {
+      const start = Date.now();
+      const result = await Reflect.apply(handler, controller, [req, res]);
+
+      if (idx > BUILT_INS_LENGTH - 1) {
+        let { name: actionName } = handler;
+        let actionType = 'middleware';
+
+        if (idx === arr.length - 1) {
+          actionType = 'action';
+
+          if (req.route) {
+            actionName = req.route.action;
+          }
+        }
+
+        if (!actionName) {
+          actionName = 'anonymous';
+        }
+
+        controller.store.logger.debug(line`
+          Executed ${actionType} ${blue(actionName)} in ${Date.now() - start} ms
+        `);
+      }
+
+      return result;
     };
   }));
 

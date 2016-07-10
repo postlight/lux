@@ -8,6 +8,7 @@ import type Server from '../server';
 import type Controller from '../controller';
 import type Serializer from '../serializer';
 import typeof { Model } from '../database';
+import type { Logger$config } from '../logger/interfaces';
 
 /**
  * The `Application` class is responsible for constructing an application and
@@ -117,20 +118,20 @@ class Application {
    * It is highly reccomended that you do not override this method.
    */
   constructor({
-    log = true,
     path,
     port,
+    logging,
     database
   }: {
-    log: boolean,
-    path: string,
-    port: number,
-    database: {}
+    path: string;
+    port: number;
+    logging: Logger$config;
+    database: {};
   } = {}): Promise<Application> {
     return initialize(this, {
-      log,
       path,
       port,
+      logging,
       database
     });
   }
