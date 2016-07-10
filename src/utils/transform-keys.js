@@ -37,7 +37,7 @@ export default function transformKeys(
  */
 export function camelizeKeys(
   obj: Object | Array<mixed>,
-  deep: boolean = false
+  deep?: boolean
 ): Object | Array<mixed> {
   return transformKeys(obj, (key) => camelize(underscore(key), true), deep);
 }
@@ -47,7 +47,7 @@ export function camelizeKeys(
  */
 export function dasherizeKeys(
   obj: Object | Array<mixed>,
-  deep: boolean = false
+  deep?: boolean
 ): Object | Array<mixed> {
   return transformKeys(obj, (key) => dasherize(underscore(key), true), deep);
 }
@@ -57,7 +57,7 @@ export function dasherizeKeys(
  */
 export function underscoreKeys(
   obj: Object | Array<mixed>,
-  deep: boolean = false
+  deep?: boolean
 ): Object | Array<mixed> {
   return transformKeys(obj, (key) => underscore(key), deep);
 }

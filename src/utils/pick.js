@@ -3,9 +3,9 @@
 /**
  * @private
  */
-export default function pick(source: {}, ...keys: Array<string>): Object {
+export default function pick(src: Object, ...keys: Array<string>): Object {
   return keys
-    .map((key): [string, mixed] => [key, source[key]])
+    .map((key): [string, mixed] => [key, Reflect.get(src, key)])
     .filter(([, value]) => typeof value !== 'undefined')
     .reduce((result, [key, value]) => ({
       ...result,

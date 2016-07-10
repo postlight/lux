@@ -70,23 +70,25 @@ export default async function buildResults({
   }
 
   return results.map((record) => {
-    entries(related)
-      .forEach(([name, relatedResults]: [string, Array<Model>]) => {
-        const relationship = model.relationshipFor(name);
+    if (related) {
+      entries(related)
+        .forEach(([name, relatedResults]: [string, Array<Model>]) => {
+          const relationship = model.relationshipFor(name);
 
-        if (relationship) {
-          let { foreignKey } = relationship;
-          foreignKey = camelize(foreignKey, true);
+          if (relationship) {
+            let { foreignKey } = relationship;
+            foreignKey = camelize(foreignKey, true);
 
-          const match = relatedResults.filter(({ rawColumnData }): boolean => {
-            return rawColumnData[foreignKey] === record[model.primaryKey];
-          });
+            const match = relatedResults.filter(({ rawColumnData }) => {
+              return rawColumnData[foreignKey] === record[model.primaryKey];
+            });
 
-          if (match.length) {
-            record[name] = match;
+            if (match.length) {
+              record[name] = match;
+            }
           }
-        }
-      });
+        });
+    }
 
     record = entries(record)
       .reduce((r, [key, value]) => {

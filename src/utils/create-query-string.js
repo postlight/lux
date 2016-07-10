@@ -6,18 +6,15 @@ import entries from './entries';
  *
  * @private
  */
-export default function createQueryString(
-  source: Object,
-  property?: string
-): string {
-  return entries(source).reduce((result, [key, value], index) => {
+export default function createQueryString(src: Object, prop?: string): string {
+  return entries(src).reduce((result, [key, value], index) => {
     if (index > 0) {
       result += '&';
     }
 
-    if (property) {
+    if (prop) {
       result += (
-        property
+        prop
         + encodeURIComponent('[')
         + key
         + encodeURIComponent(']')

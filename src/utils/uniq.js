@@ -4,12 +4,12 @@
  * @private
  */
 export default function uniq(
-  source: Array<any>,
+  src: Array<any>,
   ...keys: Array<string>
 ): Array<any> {
   const hasKeys = Boolean(keys.length);
 
-  return source.filter((x, xIdx, arr) => {
+  return src.filter((x, xIdx, arr) => {
     let lastIdx;
 
     if (hasKeys) {
@@ -17,7 +17,7 @@ export default function uniq(
         return yIdx > xIdx || keys.every(key => x[key] === y[key]);
       });
     } else {
-      lastIdx = source.lastIndexOf(x);
+      lastIdx = src.lastIndexOf(x);
     }
 
     return xIdx === lastIdx;

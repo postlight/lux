@@ -4,24 +4,26 @@ import entries from './entries';
 /**
  * @private
  */
-export default function promiseHash(promises: {}): Promise<Object> {
-  return new Promise((resolveHash, rejectHash) => {
-    if (Object.keys(promises).length) {
-      Promise.all(
-        entries(promises).map(([key, value]) => {
+export default function promiseHash(promises: Object): Promise<Object> {
+  if (Object.keys(promises).length) {
+    return Promise.all(
+      entries(promises)
+        .map(([key, promise]: [string, Promise<mixed>]) => {
           return new Promise((resolve, reject) => {
-            value.then((resolvedValue) => {
-              resolve({ [key]: resolvedValue });
-            }, reject);
+            if (promise && typeof promise.then === 'function') {
+              promise
+                .then((value) => resolve({ [key]: value }))
+                .catch(reject);
+            } else {
+              resolve(promise);
+            }
           });
         })
-      ).then((objects) => {
-        resolveHash(
-          objects.reduce((hash, object) => Object.assign(hash, object))
-        );
-      }, rejectHash);
-    } else {
-      resolveHash({});
-    }
-  });
+    ).then((objects) => objects.reduce((hash, object) => ({
+      ...hash,
+      ...object
+    }), {}));
+  } else {
+    return Promise.resolve({});
+  }
 }

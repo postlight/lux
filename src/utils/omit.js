@@ -4,8 +4,8 @@ import entries from './entries';
 /**
  * @private
  */
-export default function omit(source: {}, ...omitted: Array<string>): Object {
-  return entries(source)
+export default function omit(src: Object, ...omitted: Array<string>): Object {
+  return entries(src)
     .filter(([key]) => omitted.indexOf(key) < 0)
     .reduce((result, [key, value]: [string, mixed]): {} => ({
       ...result,
