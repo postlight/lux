@@ -30,9 +30,9 @@ export async function build(useStrict: boolean = false): Promise<void> {
   });
 
   await compile(CWD, NODE_ENV, {
-      useStrict
-    });
-  
+    useStrict
+  });
+
   spinner.stop();
 
 }
