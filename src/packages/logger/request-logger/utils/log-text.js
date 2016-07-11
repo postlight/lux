@@ -7,13 +7,13 @@ import filterParams from './filter-params';
 
 import { infoTemplate, debugTemplate } from '../templates';
 
+import type Logger from '../../index';
 import type { IncomingMessage, ServerResponse } from 'http';
-import type { Logger$config } from '../../interfaces';
 
 export default function logText(
+  logger: Logger,
   req: IncomingMessage,
-  res: ServerResponse,
-  filter: Logger$config.filter
+  res: ServerResponse
 ): void {
   const startTime = Date.now();
 
@@ -31,12 +31,12 @@ export default function logText(
       }
     } = req;
 
-    const { statusCode, statusMessage } = res;
+    const { stats, statusCode, statusMessage } = res;
 
     let { params } = req;
     let statusColor;
 
-    params = filterParams(params, ...filter.params);
+    params = filterParams(params, ...logger.filter.params);
 
     if (statusCode >= 200 && statusCode < 400) {
       statusColor = 'green';
@@ -44,35 +44,29 @@ export default function logText(
       statusColor = 'red';
     }
 
-    const colorStr = Reflect.get(chalk, statusColor);
+    let colorStr = Reflect.get(chalk, statusColor);
 
-    if (this.level === DEBUG) {
-      const { stats } = res;
+    if (typeof colorStr === 'undefined') {
+      colorStr = (str: string) => str;
+    }
 
-      this.debug(debugTemplate({
-        path,
-        stats,
-        route,
-        method,
-        params,
-        colorStr,
-        startTime,
-        statusCode,
-        statusMessage,
-        remoteAddress
-      }));
+    const templateData = {
+      path,
+      stats,
+      route,
+      method,
+      params,
+      colorStr,
+      startTime,
+      statusCode,
+      statusMessage,
+      remoteAddress
+    };
+
+    if (logger.level === DEBUG) {
+      logger.debug(debugTemplate(templateData));
     } else {
-      this.info(infoTemplate({
-        path,
-        route,
-        method,
-        params,
-        colorStr,
-        startTime,
-        statusCode,
-        statusMessage,
-        remoteAddress
-      }));
+      logger.info(infoTemplate(templateData));
     }
   });
 }

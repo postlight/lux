@@ -5,7 +5,7 @@ export default {
     enabled: true,
 
     filter: {
-      params: ['name']
+      params: []
     }
   }
 };

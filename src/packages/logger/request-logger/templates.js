@@ -1,6 +1,9 @@
+// @flow
 import { blue, cyan, magenta, yellow } from 'chalk';
 
 import line from '../utils/line';
+
+import type { RequestLogger$templateData } from './interfaces';
 
 export const debugTemplate = ({
   path,
@@ -13,7 +16,7 @@ export const debugTemplate = ({
   statusCode,
   statusMessage,
   remoteAddress
-}) => `\
+}: RequestLogger$templateData) => `\
 ${line`
   Processed ${cyan(`${method}`)} "${path}" from ${remoteAddress}
   with ${Reflect.apply(colorStr, null, [`${statusCode}`])}
@@ -53,7 +56,7 @@ export const infoTemplate = ({
   statusCode,
   statusMessage,
   remoteAddress
-}) => line`
+}: RequestLogger$templateData) => line`
 Processed ${cyan(`${method}`)} "${path}" ${magenta('Params')} ${
   JSON.stringify(params)} from ${remoteAddress
 } in ${(Date.now() - startTime).toString()} ms with ${

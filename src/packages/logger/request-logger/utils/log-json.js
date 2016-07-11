@@ -1,15 +1,15 @@
 // @flow
 import filterParams from './filter-params';
 
+import type Logger from '../../index';
 import type { IncomingMessage, ServerResponse } from 'http';
-import type { Logger$config } from '../../interfaces';
 
 const MESSAGE = 'Processed Request';
 
 export default function logJSON(
+  logger: Logger,
   req: IncomingMessage,
-  res: ServerResponse,
-  filter: Logger$config.filter
+  res: ServerResponse
 ): void {
   res.once('finish', () => {
     const {
@@ -31,9 +31,9 @@ export default function logJSON(
     const protocol = `HTTP/${httpVersion}`;
 
     let { params } = req;
-    params = filterParams(params, ...filter.params);
+    params = filterParams(params, ...logger.filter.params);
 
-    this.info({
+    logger.info({
       message: MESSAGE,
 
       method,

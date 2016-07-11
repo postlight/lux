@@ -1,7 +1,7 @@
 // @flow
 export type Logger$level = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
+export type Logger$logFn = (data: string | Object) => void;
 export type Logger$format = 'text' | 'json';
-export type Logger$logFn = (data: Logger$data | string) => void;
 
 export type Logger$data = {
   level: Logger$level;

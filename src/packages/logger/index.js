@@ -26,24 +26,31 @@ import type { Logger$RequestLogger } from './request-logger/interfaces';
  */
 class Logger {
   /**
-   * The output format of log data.
-   *
-   * @property format
-   * @memberof Logger
-   * @instance
-   * @readonly
-   */
-  format: Logger$format;
-
-  /**
    * The level your application should log.
    *
    * @property level
    * @memberof Logger
    * @instance
-   * @readonly
    */
   level: Logger$level;
+
+  /**
+   * The output format of log data.
+   *
+   * @property format
+   * @memberof Logger
+   * @instance
+   */
+  format: Logger$format;
+
+  /**
+   * An object containing key value pairs of data to filter before logging.
+   *
+   * @property filter
+   * @memberof Logger
+   * @instance
+   */
+  filter: Logger$config.filter;
 
   /**
    * Wether on not logging is enabled for an instance of `Logger`.
@@ -51,7 +58,6 @@ class Logger {
    * @property enabled
    * @memberof Logger
    * @instance
-   * @readonly
    */
   enabled: boolean;
 
@@ -165,7 +171,7 @@ class Logger {
 
     if (!LUX_CONSOLE && enabled) {
       write = createWriter(format);
-      request = createRequestLogger(format, filter);
+      request = createRequestLogger(this);
     }
 
     Object.defineProperties(this, {
@@ -178,6 +184,13 @@ class Logger {
 
       format: {
         value: format,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      },
+
+      filter: {
+        value: filter,
         writable: false,
         enumerable: true,
         configurable: false
