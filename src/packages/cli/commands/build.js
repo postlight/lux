@@ -16,5 +16,4 @@ export async function build(useStrict: boolean = false): Promise<void> {
   });
 
   spinner.stop();
-
 }
