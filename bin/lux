@@ -20,7 +20,7 @@ const cli = require('commander');
 const path = require('path');
 
 function inLuxProject() {
-  if (PWD.startsWith(__dirname)) {
+  if (PWD.indexOf(path.join('lux', 'test', 'test-app')) >= 0) {
     return true;
   } else {
     try {
