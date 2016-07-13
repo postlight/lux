@@ -62,10 +62,15 @@ export default function createAction(
         params: {
           page,
           include
+        },
+
+        connection: {
+          encrypted
         }
       } = req;
 
-      const domain = `http://${headers.get('host')}`;
+      const protocol = encrypted ? 'https' : 'http';
+      const domain = `${protocol}://${headers.get('host')}`;
 
       let total;
       let { params: { fields } } = req;
