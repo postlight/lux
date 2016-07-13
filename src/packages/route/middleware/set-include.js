@@ -50,11 +50,12 @@ export default function setInclude(req: IncomingMessage): void {
             model: {
               serializer: {
                 attributes: relatedAttrs
-              }
+              },
+              modelName: relatedName
             }
           } = relationship;
 
-          let fieldsForRelationship = fields[value];
+          let fieldsForRelationship = fields[pluralize(relatedName)];
 
           if (fieldsForRelationship) {
             fieldsForRelationship = fieldsForRelationship.filter(attr => {
