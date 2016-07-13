@@ -4,11 +4,42 @@
 const PWD = process.cwd();
 const VERSION = require('../package.json').version;
 
+const PROJECT_REQUIRED = [
+  'test',
+  'build',
+  'serve',
+  'console',
+  'generate',
+  'destroy',
+  'db:seed',
+  'db:reset',
+  'db:migrate'
+];
+
 const cli = require('commander');
 const path = require('path');
 
+function inLuxProject() {
+  if (PWD.indexOf(path.join('lux', 'test', 'test-app')) >= 0) {
+    return true;
+  } else {
+    try {
+      const { dependencies } = require(path.join(PWD, 'package.json'));
+      return Reflect.has(dependencies, 'lux-framework');
+    } catch (err) {
+      return false;
+    }
+  }
+}
+
 function exec(cmd, ...args) {
   let handler;
+
+  if (PROJECT_REQUIRED.indexOf(cmd) >= 0 && !inLuxProject()) {
+    return Promise.reject(
+      'Error: Directory does not contain a valid Lux application.'
+    );
+  }
 
   try {
     handler = require(path.join(
