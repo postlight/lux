@@ -10,14 +10,18 @@ import { infoTemplate, debugTemplate } from '../templates';
 import type Logger from '../../index';
 import type { IncomingMessage, ServerResponse } from 'http';
 
-export default function logText(
-  logger: Logger,
-  req: IncomingMessage,
-  res: ServerResponse
-): void {
-  const startTime = Date.now();
-
+export default function logText(logger: Logger, {
+  startTime,
+  request: req,
+  response: res
+}: {
+  request: IncomingMessage;
+  response: ServerResponse;
+  startTime: number;
+}): void {
   res.once('finish', () => {
+    const endTime = Date.now();
+
     const {
       route,
       method,
@@ -58,6 +62,7 @@ export default function logText(
       params,
       colorStr,
       startTime,
+      endTime,
       statusCode,
       statusMessage,
       remoteAddress

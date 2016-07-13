@@ -4,7 +4,11 @@ import type { IncomingMessage, ServerResponse } from 'http';
 
 export type Logger$RequestLogger = (
   req: IncomingMessage,
-  res: ServerResponse
+  res: ServerResponse,
+
+  opts: {
+    startTime: number
+  }
 ) => void;
 
 export type RequestLogger$templateData = {
@@ -14,6 +18,7 @@ export type RequestLogger$templateData = {
   method: string;
   params: Object;
   startTime: number;
+  endTime: number;
   statusCode: string;
   statusMessage: string;
   remoteAddress: string;

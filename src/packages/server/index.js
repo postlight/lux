@@ -31,8 +31,8 @@ class Server {
     logger,
     router
   }: {
-    logger: Logger,
-    router: Router
+    logger: Logger;
+    router: Router;
   } = {}): Server {
     const instance = http.createServer((req, res) => {
       this.receiveRequest(req, res);
@@ -69,6 +69,8 @@ class Server {
   }
 
   receiveRequest(req: IncomingMessage, res: ServerResponse): void {
+    const startTime = Date.now();
+
     tryCatch(async () => {
       const { logger } = this;
 
@@ -102,7 +104,9 @@ class Server {
         };
       }
 
-      logger.request(req, res);
+      logger.request(req, res, {
+        startTime
+      });
 
       this.sendResponse(req, res, await this.router.visit(req, res));
     }, err => {

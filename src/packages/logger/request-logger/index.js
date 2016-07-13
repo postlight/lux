@@ -8,11 +8,23 @@ import type { IncomingMessage, ServerResponse } from 'http';
 import type { Logger$RequestLogger } from './interfaces';
 
 export function createRequestLogger(logger: Logger): Logger$RequestLogger {
-  return function request(req: IncomingMessage, res: ServerResponse): void {
+  return function request(req: IncomingMessage, res: ServerResponse, {
+    startTime
+  }: {
+    startTime: number
+  }): void {
     if (logger.format === 'json') {
-      logJSON(logger, req, res);
+      logJSON(logger, {
+        startTime,
+        request: req,
+        response: res
+      });
     } else {
-      logText(logger, req, res);
+      logText(logger, {
+        startTime,
+        request: req,
+        response: res
+      });
     }
   };
 }

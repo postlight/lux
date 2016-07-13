@@ -13,6 +13,7 @@ export const debugTemplate = ({
   params,
   colorStr,
   startTime,
+  endTime,
   statusCode,
   statusMessage,
   remoteAddress
@@ -43,7 +44,7 @@ ${stats.map(({ type, name, duration, controller }) => {
   return `${duration >= 10 ? duration : ` ${duration}`} ms ${name}`;
 }).join('\n')}
 ${stats.reduce((total, { duration }) => total + duration, 0)} ms Total
-${(Date.now() - startTime).toString()} ms Actual\
+${(endTime - startTime).toString()} ms Actual\
 `;
 
 export const infoTemplate = ({
@@ -53,13 +54,14 @@ export const infoTemplate = ({
   params,
   colorStr,
   startTime,
+  endTime,
   statusCode,
   statusMessage,
   remoteAddress
 }: RequestLogger$templateData) => line`
 Processed ${cyan(`${method}`)} "${path}" ${magenta('Params')} ${
   JSON.stringify(params)} from ${remoteAddress
-} in ${(Date.now() - startTime).toString()} ms with ${
+} in ${(endTime - startTime).toString()} ms with ${
   Reflect.apply(colorStr, null, [`${statusCode}`])
 } ${
   Reflect.apply(colorStr, null, [`${statusMessage}`])

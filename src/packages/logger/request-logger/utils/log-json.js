@@ -6,11 +6,13 @@ import type { IncomingMessage, ServerResponse } from 'http';
 
 const MESSAGE = 'Processed Request';
 
-export default function logJSON(
-  logger: Logger,
-  req: IncomingMessage,
-  res: ServerResponse
-): void {
+export default function logJSON(logger: Logger, {
+  request: req,
+  response: res
+}: {
+  request: IncomingMessage;
+  response: ServerResponse;
+}): void {
   res.once('finish', () => {
     const {
       method,
