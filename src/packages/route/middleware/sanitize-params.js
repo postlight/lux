@@ -1,5 +1,5 @@
 // @flow
-import { camelize } from 'inflection';
+import { camelize, pluralize } from 'inflection';
 
 import pick from '../../../utils/pick';
 import entries from '../../../utils/entries';
@@ -84,7 +84,7 @@ export default function sanitizeParams(req: IncomingMessage): void {
         value = [value];
       }
 
-      if (key === modelName) {
+      if (key === pluralize(modelName)) {
         const { attributes } = this;
 
         if (value.length) {
