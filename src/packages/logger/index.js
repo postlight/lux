@@ -211,6 +211,7 @@ class Logger {
     });
 
     const levelNum = LEVELS.get(level) || 0;
+
     LEVELS.forEach((val, key: Logger$level) => {
       Reflect.defineProperty(this, key.toLowerCase(), {
         writable: false,
