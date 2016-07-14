@@ -5,6 +5,7 @@ import { parse as parseURL } from 'url';
 import chalk, { cyan } from 'chalk';
 
 import responder from './responder';
+import processError from './responder/utils/process-error';
 import { line } from '../logger';
 
 import entries from '../../utils/entries';
@@ -99,7 +100,9 @@ class Server {
 
       this.sendResponse(req, res, await this.router.visit(req, res));
     }, err => {
-      this.sendResponse(req, res, err);
+      this.sendResponse(req, res, processError(err));
+      this.logRequest(req, res);
+      console.log(err.stack);
     });
   }
 
@@ -137,6 +140,7 @@ class Server {
         ${Reflect.apply(colorString, null, [`${statusCode}`])}
         ${Reflect.apply(colorString, null, [`${statusMessage}`])}
       `);
+
     });
   }
 }
