@@ -140,7 +140,6 @@ class Server {
         ${Reflect.apply(colorString, null, [`${statusCode}`])}
         ${Reflect.apply(colorString, null, [`${statusMessage}`])}
       `);
-
     });
   }
 }
