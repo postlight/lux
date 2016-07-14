@@ -1,5 +1,4 @@
 // @flow
-import moment from 'moment';
 import { isMaster } from 'cluster';
 
 import { LUX_CONSOLE } from '../../constants';
@@ -219,7 +218,7 @@ class Logger {
         configurable: false,
 
         value: val >= levelNum ? (data: Logger$data | string) => {
-          const { timestamp } = this;
+          const timestamp = this.getTimestamp();
 
           if (typeof data === 'string') {
             write({
@@ -246,8 +245,8 @@ class Logger {
    *
    * @private
    */
-  get timestamp(): string {
-    return moment().format('M/D/YY h:m:ss A');
+  getTimestamp(): string {
+    return new Date().toISOString();
   }
 
   /**
