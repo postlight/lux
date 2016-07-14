@@ -108,22 +108,10 @@ class Server {
         startTime
       });
 
-      this.sendResponse(req, res, await this.router.visit(req, res));
+      responder.resolve(req, res, await this.router.visit(req, res));
     }, err => {
-      this.sendResponse(req, res, err);
+      responder.resolve(req, res, err);
     });
-  }
-
-  sendResponse(
-    req: IncomingMessage,
-    res: ServerResponse,
-    data: void | ?mixed
-  ): void {
-    if (data && typeof data.pipe === 'function') {
-      data.pipe(res);
-    } else {
-      responder.resolve(req, res, data);
-    }
   }
 }
 
