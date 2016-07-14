@@ -103,7 +103,7 @@ class Logger {
    * @private
    */
   get timestamp(): string {
-    return moment().format('M/D/YY h:m:ss A');
+    return moment().format('M/D/YY h:mm:ss A');
   }
 
   /**
