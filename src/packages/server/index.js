@@ -2,11 +2,9 @@
 import http from 'http';
 import { parse as parseURL } from 'url';
 
-import responder from './responder';
-import processError from './responder/utils/process-error';
+import { createResponder } from './responder';
 
 import entries from '../../utils/entries';
-import tryCatch from '../../utils/try-catch';
 import formatParams from './utils/format-params';
 
 import type {
@@ -71,32 +69,33 @@ class Server {
 
   receiveRequest(req: IncomingMessage, res: ServerResponse): void {
     const startTime = Date.now();
+    const respond = createResponder(req, res);
 
-    tryCatch(async () => {
-      const { logger } = this;
+    const { logger } = this;
 
-      req.setEncoding('utf8');
-      res.setHeader('Content-Type', 'application/vnd.api+json');
+    req.setEncoding('utf8');
+    res.setHeader('Content-Type', 'application/vnd.api+json');
 
-      Object.assign(res, {
-        logger,
-        stats: []
-      });
+    Object.assign(res, {
+      logger,
+      stats: []
+    });
 
+    Object.assign(req, {
+      logger,
+      url: parseURL(req.url, true),
+      headers: new Map(entries(req.headers)),
+    });
+
+    if (req.headers.has('X-HTTP-Method-Override')) {
+      req.method = req.headers.get('X-HTTP-Method-Override');
+    }
+
+    formatParams(req).then( params => {
       Object.assign(req, {
-        logger,
-        url: parseURL(req.url, true)
-      });
-
-      Object.assign(req, {
+        params,
         route: this.router.match(req),
-        params: await formatParams(req),
-        headers: new Map(entries(req.headers)),
       });
-
-      if (req.headers.has('X-HTTP-Method-Override')) {
-        req.method = req.headers.get('X-HTTP-Method-Override');
-      }
 
       if (req.route) {
         req.params = {
@@ -109,22 +108,11 @@ class Server {
         startTime
       });
 
-      this.sendResponse(req, res, await this.router.visit(req, res));
-    }, err => {
-      this.sendResponse(req, res, processError(err));
-    });
-  }
+      return this.router.visit(req, res).catch(err => err);
+    })
+    .then(respond)
+    .catch( () => respond(400));
 
-  sendResponse(
-    req: IncomingMessage,
-    res: ServerResponse,
-    data: void | ?mixed
-  ): void {
-    if (data && typeof data.pipe === 'function') {
-      data.pipe(res);
-    } else {
-      responder.resolve(req, res, data);
-    }
   }
 }
 

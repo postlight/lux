@@ -20,7 +20,6 @@ This isn't another wrapper around [Express](http://expressjs.com/) or a framewor
 * Automatic pagination, sorting, filtering via query params in controllers
 * CLI for eliminating boiler plate
 * [JSON API](http://jsonapi.org/) 1.0 compliant out of the box
-* Chunked/Streamed JSON responses to client over http
 * Optimized database queries based on serialized attributes and associations
 * Highly extensible - just write reusable JavaScript functions
 * Pairs nicely with client-side JavaScript applications 🍷
