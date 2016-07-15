@@ -112,7 +112,6 @@ class Server {
       this.sendResponse(req, res, await this.router.visit(req, res));
     }, err => {
       this.sendResponse(req, res, processError(err));
-      console.log(err.stack);
     });
   }
 
