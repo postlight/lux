@@ -54,7 +54,9 @@ declare module 'http' {
     };
   }
 
-  declare class ServerResponse extends http$ServerResponse {}
+  declare class ServerResponse extends http$ServerResponse {
+    stats: Array<Object>;
+  }
 
   declare function createServer(
     handler: (req: IncomingMessage, res: ServerResponse) => void

@@ -1,3 +1,11 @@
 export default {
-  log: true
+  logging: {
+    level: 'DEBUG',
+    format: 'text',
+    enabled: true,
+
+    filter: {
+      params: []
+    }
+  }
 };

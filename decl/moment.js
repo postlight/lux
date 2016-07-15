@@ -6,5 +6,5 @@ declare module 'moment' {
   }
 
   declare function moment(source: Date | number | string | void): Moment;
-  declare var exports: moment;
+  declare var exports: typeof moment;
 }

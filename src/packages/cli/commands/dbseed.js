@@ -16,8 +16,7 @@ export async function dbseed() {
     models,
     path: CWD,
 
-    logger: await new Logger({
-      path: CWD,
+    logger: new Logger({
       enabled: false
     })
   });

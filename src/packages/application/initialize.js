@@ -15,30 +15,28 @@ import {
 } from './errors';
 
 import type Application from './index';
+import type { Logger$config } from '../logger/interfaces';
 
 /**
  * @private
  */
 export default async function initialize(app: Application, {
-  log,
   path,
   port,
+  logging,
   database
 }: {
-  log: boolean,
-  path: string,
-  port: number,
-  database: {}
+  path: string;
+  port: number;
+  logging: Logger$config;
+  database: {};
 } = {}): Promise<Application> {
   const routes = loader(path, 'routes');
   const models = loader(path, 'models');
   const controllers = loader(path, 'controllers');
   const serializers = loader(path, 'serializers');
 
-  const logger = await new Logger({
-    path,
-    enabled: log
-  });
+  const logger = new Logger(logging);
 
   const store = await new Database({
     path,

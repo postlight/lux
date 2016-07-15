@@ -2,7 +2,7 @@ import { Controller } from 'LUX_LOCAL';
 
 class ApplicationController extends Controller {
   beforeAction = [
-    function (req, res) {
+    function setPoweredByHeader(req, res) {
       res.setHeader('X-Powered-By', 'Lux');
     }
   ];

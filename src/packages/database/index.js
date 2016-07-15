@@ -1,10 +1,11 @@
 // @flow
 import { ModelMissingError } from './errors';
 
-import Logger from '../logger';
 import Model from './model';
 
 import initialize from './initialize';
+
+import type Logger from '../logger';
 
 /**
  * @private

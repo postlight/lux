@@ -17,8 +17,7 @@ export async function dbmigrate() {
     path: CWD,
     checkMigrations: false,
 
-    logger: await new Logger({
-      path: CWD,
+    logger: new Logger({
       enabled: false
     })
   });
