@@ -2,7 +2,7 @@
 import http from 'http';
 import { parse as parseURL } from 'url';
 
-import responder from './responder';
+import { createResponder } from './responder';
 
 import entries from '../../utils/entries';
 import tryCatch from '../../utils/try-catch';
@@ -70,6 +70,7 @@ class Server {
 
   receiveRequest(req: IncomingMessage, res: ServerResponse): void {
     const startTime = Date.now();
+    const respond = createResponder(req, res);
 
     tryCatch(async () => {
       const { logger } = this;
@@ -108,10 +109,8 @@ class Server {
         startTime
       });
 
-      responder.resolve(req, res, await this.router.visit(req, res));
-    }, err => {
-      responder.resolve(req, res, err);
-    });
+      respond(await this.router.visit(req, res));
+    }, respond);
   }
 }
 
