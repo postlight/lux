@@ -1,12 +1,12 @@
 // @flow
-import type { ServerResponse } from 'http';
+import type { Response } from '../../server';
 
 /**
  * Create a Proxy that will trap typical node middleware callback invocations
  * and route them to the appropriate Promise callback (resolve or reject).
  */
 export default function createResponseProxy(
-  res: ServerResponse,
+  res: Response,
   resolve: (result: mixed) => void
 ) {
   return new Proxy(res, {

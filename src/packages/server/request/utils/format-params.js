@@ -1,14 +1,12 @@
 import moment from 'moment';
 import { camelize } from 'inflection';
 
+import { INT, BOOL, DATE, DASH, TRUE, HAS_BODY } from '../constants';
+
 import bodyParser from './body-parser';
 
-import entries from '../../../utils/entries';
-import { camelizeKeys } from '../../../utils/transform-keys';
-
-const int = /^\d+$/g;
-const bool = /^(true|false)$/i;
-const isoDate = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}(Z|\+\d{4})$/ig;
+import entries from '../../../../utils/entries';
+import { camelizeKeys } from '../../../../utils/transform-keys';
 
 function format(params, method = 'GET') {
   params = entries(params).reduce((result, [key, value]) => {
@@ -18,7 +16,7 @@ function format(params, method = 'GET') {
       switch (typeof value) {
         case 'object':
           if (Array.isArray(value)) {
-            value = value.map(v => int.test(v) ? parseInt(v, 10) : v);
+            value = value.map(v => INT.test(v) ? parseInt(v, 10) : v);
           } else {
             value = format(value, method);
           }
@@ -27,14 +25,14 @@ function format(params, method = 'GET') {
         case 'string':
           if (method === 'GET' && value.indexOf(',') >= 0) {
             value = value.split(',').map(v => {
-              return camelize(v.replace(/\-/g, '_'), true);
+              return camelize(v.replace(DASH, '_'), true);
             });
           } else {
-            if (int.test(value)) {
+            if (INT.test(value)) {
               value = parseInt(value, 10);
-            } else if (bool.test(value)) {
-              value = /^true$/i.test(value);
-            } else if (isoDate.test(value)) {
+            } else if (BOOL.test(value)) {
+              value = TRUE.test(value);
+            } else if (DATE.test(value)) {
               value = moment(value).toDate();
             }
           }
@@ -77,7 +75,7 @@ export default async function formatParams(req) {
     }
   }, {});
 
-  if (/(PATCH|POST)/g.test(method)) {
+  if (HAS_BODY.test(method)) {
     params = {
       ...params,
       ...(await bodyParser(req))

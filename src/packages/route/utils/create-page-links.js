@@ -2,8 +2,6 @@
 import omit from '../../../utils/omit';
 import createQueryString from '../../../utils/create-query-string';
 
-import type { IncomingMessage } from 'http';
-
 export default function createPageLinks({
   page,
   total,
@@ -12,12 +10,16 @@ export default function createPageLinks({
   pathname,
   defaultPerPage
 }: {
-  page: IncomingMessage.params.page,
-  total: number,
-  query: Object,
-  domain: string,
-  pathname: string,
-  defaultPerPage: number
+  total: number;
+  query: Object;
+  domain: string;
+  pathname: string;
+  defaultPerPage: number;
+
+  page: {
+    size: number;
+    number: number;
+  };
 }): {
   first: string,
   last: string,

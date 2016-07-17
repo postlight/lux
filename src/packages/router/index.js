@@ -3,10 +3,9 @@ import { ID_PATTERN } from '../route';
 
 import define from './define';
 
-import type { IncomingMessage, ServerResponse } from 'http';
-
 import type Controller from '../controller';
 import type Route from '../route';
+import type { Request, Response } from '../server';
 import type { options } from '../route/interfaces';
 
 /**
@@ -57,27 +56,22 @@ class Router extends Map<string, Route> {
     return this;
   }
 
-  match({ method, url: { pathname } }: IncomingMessage): void | Route {
+  match({ method, url: { pathname } }: Request): void | Route {
     const staticPath = pathname.replace(ID_PATTERN, ':dynamic');
 
     return this.get(`${method}:${staticPath}`);
   }
 
-  async visit(req: IncomingMessage, res: ServerResponse): void | ?mixed {
-    if (req.route) {
-      let i, data, handler;
-      const { route: { handlers } } = req;
+  async visit(req: Request, res: Response): void | ?mixed {
+    const { route: { handlers } } = req;
 
-      for (i = 0; i < handlers.length; i++) {
-        handler = handlers[i];
-        data = await handler(req, res);
+    for (let i = 0; i < handlers.length; i++) {
+      const handler = handlers[i];
+      const data = await handler(req, res);
 
-        if (typeof data !== 'undefined') {
-          return data;
-        }
+      if (typeof data !== 'undefined') {
+        return data;
       }
-
-      return data;
     }
   }
 }

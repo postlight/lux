@@ -1,6 +1,9 @@
+// @flow
 import { parse as parseQueryString } from 'querystring';
 
-export default function bodyParser(req) {
+import type { Request } from '../interfaces';
+
+export default function bodyParser(req: Request): Promise<Object> {
   return new Promise((resolve, reject) => {
     let body = '';
 
@@ -9,7 +12,7 @@ export default function bodyParser(req) {
     };
 
     const onEnd = () => {
-      body = (req.headers['content-type'] || '').includes('json') ?
+      body = (req.headers.get('content-type') || '').includes('json') ?
         JSON.parse(body) : parseQueryString(body);
 
       cleanUp();

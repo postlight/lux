@@ -1,13 +1,16 @@
 // @flow
-import insert from '../../../utils/insert';
+import { DYNAMIC_PATTERN } from '../constants';
 
-const pattern = /(:\w+)/g;
+import insert from '../../../utils/insert';
 
 /**
  * @private
  */
 export default function getDynamicSegments(path: string): Array<string> {
-  const matches = (path.match(pattern) || []).map(part => part.substr(1));
+  const matches = (path.match(DYNAMIC_PATTERN) || []).map(part => {
+    return part.substr(1);
+  });
+
   const dynamicSegments = new Array(matches.length);
 
   insert(dynamicSegments, matches);

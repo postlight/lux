@@ -6,7 +6,7 @@ import getStaticPath from './utils/get-static-path';
 import getDynamicSegments from './utils/get-dynamic-segments';
 
 import type Controller from '../controller';
-import type { options } from './interfaces';
+import type { Route$handler, options } from './interfaces';
 
 /**
  * @private
@@ -20,7 +20,7 @@ class Route {
 
   resource: string;
 
-  handlers: Array<Function>;
+  handlers: Array<Route$handler>;
 
   controller: Controller;
 
@@ -40,7 +40,7 @@ class Route {
     let handlers;
 
     if (action && controller) {
-      const handler: ?Function = controller[action];
+      const handler: void | Route$handler = Reflect.get(controller, action);
 
       if (typeof handler === 'function') {
         handlers = createAction(controller, handler);
@@ -103,8 +103,14 @@ class Route {
           }
         });
       } else {
+        const {
+          constructor: {
+            name: controllerName
+          }
+        } = controller;
+
         throw new TypeError(
-          `Handler for ${controller.name}#${action} is not a function.`
+          `Handler for ${controllerName}#${action} is not a function.`
         );
       }
     } else {
@@ -134,5 +140,7 @@ class Route {
   }
 }
 
-export { ID_PATTERN, RESOURCE_PATTERN } from './constants';
 export default Route;
+export { ID_PATTERN, RESOURCE_PATTERN } from './constants';
+
+export type { Route$handler } from './interfaces';

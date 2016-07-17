@@ -1,33 +1,23 @@
 // @flow
 import { Model, Query } from '../../database';
 
-import sanitizeParams from '../middleware/sanitize-params';
-import setInclude from '../middleware/set-include';
-import setFields from '../middleware/set-fields';
-import setPage from '../middleware/set-page';
+import { sanitizeParams } from '../../controller';
 
+import merge from '../../../utils/merge';
 import insert from '../../../utils/insert';
 import createPageLinks from './create-page-links';
 
 import type Controller from '../../controller';
-import type { IncomingMessage, ServerResponse } from 'http';
-
-const BUILT_INS = [
-  sanitizeParams,
-  setInclude,
-  setFields,
-  setPage
-];
-
-const { length: BUILT_INS_LENGTH } = BUILT_INS;
+import type { Request, Response } from '../../server';
+import type { Route$handler } from '../index';
 
 /**
  * @private
  */
 export default function createAction(
   controller: Controller,
-  action: () => Promise<mixed>
-): Array<Function> {
+  action: (req: Request, res: Response) => Promise<void | ?mixed>
+): Array<Route$handler> {
   const {
     middleware,
     serializer,
@@ -37,17 +27,15 @@ export default function createAction(
     }
   } = controller;
 
-  const handlers = new Array(BUILT_INS_LENGTH + middleware.length + 1);
+  const handlers = new Array(middleware.length + 2);
 
   insert(handlers, [
-    ...BUILT_INS,
+    sanitizeParams,
     ...middleware,
 
-    async function actionHandler(
-      req: IncomingMessage,
-      res: ServerResponse
-    ): mixed {
+    async function actionHandler(req: Request, res: Response): Promise<mixed> {
       const { defaultPerPage } = controller;
+      let { params } = req;
 
       const {
         route,
@@ -59,21 +47,20 @@ export default function createAction(
           pathname
         },
 
-        params: {
-          page,
-          include
-        },
-
         connection: {
           encrypted
         }
       } = req;
 
+      params = merge(req.defaultParams, params);
+
+      const { page, include } = params;
+      let { fields } = params;
+
       const protocol = encrypted ? 'https' : 'http';
-      const domain = `${protocol}://${headers.get('host')}`;
+      const domain = `${protocol}://${headers.get('host') || 'localhost'}`;
 
       let total;
-      let { params: { fields } } = req;
       let data = Reflect.apply(action, controller, [req, res]);
       let links = { self: domain + pathname };
 
@@ -125,12 +112,12 @@ export default function createAction(
 
       return data;
     }
-  ].map((handler: Function, idx, arr): Function => {
-    return async (req: IncomingMessage, res: ServerResponse) => {
+  ].map((handler: Route$handler, idx, arr): Route$handler => {
+    return async (req: Request, res: Response): Promise<void | ?mixed> => {
       const start = Date.now();
       const result = await Reflect.apply(handler, controller, [req, res]);
 
-      if (idx > BUILT_INS_LENGTH - 1) {
+      if (idx > 0) {
         let { name: actionName } = handler;
         let actionType = 'middleware';
 

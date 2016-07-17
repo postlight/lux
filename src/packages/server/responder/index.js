@@ -1,11 +1,11 @@
 // @flow
 import normalize from './utils/normalize';
 
-import type { IncomingMessage, ServerResponse } from 'http';
+import type { Request, Response } from '../index';
 
 export function createResponder(
-  req: IncomingMessage,
-  res: ServerResponse
+  req: Request,
+  res: Response
 ): (data: ?mixed | void) => void {
   return function respond(data: ?mixed | void): void {
     const { normalized, ...meta } = normalize(data);

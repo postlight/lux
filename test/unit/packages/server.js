@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import fetch from 'isomorphic-fetch';
 
-import formatParams from '../../../src/packages/server/utils/format-params';
+import { formatParams } from '../../../src/packages/server/request';
 
 const host = 'http://localhost:4000';
 

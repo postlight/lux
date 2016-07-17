@@ -2,7 +2,7 @@
 import filterParams from './filter-params';
 
 import type Logger from '../../index';
-import type { IncomingMessage, ServerResponse } from 'http';
+import type { Request, Response } from '../../../server';
 
 const MESSAGE = 'Processed Request';
 
@@ -10,8 +10,8 @@ export default function logJSON(logger: Logger, {
   request: req,
   response: res
 }: {
-  request: IncomingMessage;
-  response: ServerResponse;
+  request: Request;
+  response: Response;
 }): void {
   res.once('finish', () => {
     const {

@@ -1,11 +1,12 @@
+// @flow
 import Model from '../database/model';
 
+import merge from '../../utils/merge';
 import insert from '../../utils/insert';
-
-import type { IncomingMessage } from 'http';
 
 import type Database from '../database';
 import type Serializer from '../serializer';
+import type { Request } from '../server';
 
 /**
  * The `Controller` class is responsible for taking in requests from the outside
@@ -107,7 +108,7 @@ class Controller {
     parentController
   }: {
     store: Database,
-    model: ?Model<T>,
+    model: typeof Model,
     serializer: Serializer,
     serializers: Map<string, Serializer>,
     parentController: ?Controller
@@ -159,7 +160,7 @@ class Controller {
       },
 
       modelName: {
-        value: model ? model.modelName : null,
+        value: model ? model.modelName : '',
         writable: false,
         enumerable: false,
         configurable: false
@@ -363,16 +364,17 @@ class Controller {
    * @param  {IncomingMessage} request
    * @param  {ServerResponse} response
    */
-  index(req: IncomingMessage): Promise<Array<Model>> {
+  index({
+    params,
+    defaultParams
+  }: Request): Promise<Array<Model>> {
     const {
-      params: {
-        sort,
-        page,
-        filter,
-        fields,
-        include
-      }
-    } = req;
+      sort,
+      page,
+      filter,
+      fields,
+      include
+    } = merge(defaultParams, params);
 
     return this.model.select(...fields)
       .include(include)
@@ -388,17 +390,18 @@ class Controller {
    * This method supports including relationships, and sparse fieldsets via
    * query parameters.
    *
-   * @param  {IncomingMessage} request
-   * @param  {ServerResponse} response
+   * @param  {Request} request
+   * @param  {Response} response
    */
-  show(req: IncomingMessage): Promise<?Model> {
+  show({
+    params,
+    defaultParams
+  }: Request): Promise<?Model> {
     const {
-      params: {
-        id,
-        fields,
-        include
-      }
-    } = req;
+      id,
+      fields,
+      include
+    } = merge(defaultParams, params);
 
     return this.model.find(id)
       .select(...fields)
@@ -409,18 +412,16 @@ class Controller {
    * Create and return a single `Model` instance that the Controller instance
    * represents.
    *
-   * @param  {IncomingMessage} request
-   * @param  {ServerResponse} response
+   * @param  {Request} request
+   * @param  {Response} response
    */
-  create(req: IncomingMessage): Promise<Model> {
-    const {
-      params: {
-        data: {
-          attributes
-        }
-      }
-    } = req;
-
+  create({
+    params: {
+      data: {
+        attributes
+      } = {}
+    }
+  }: Request): Promise<Model> {
     return this.model.create(attributes);
   }
 
@@ -428,20 +429,18 @@ class Controller {
    * Update and return a single `Model` instance that the Controller instance
    * represents.
    *
-   * @param  {IncomingMessage} request
-   * @param  {ServerResponse} response
+   * @param  {Request} request
+   * @param  {Response} response
    */
-  async update(req: IncomingMessage): Promise<?Model> {
-    const {
-      params: {
-        id,
+  async update({
+    params: {
+      id,
 
-        data: {
-          attributes
-        }
-      }
-    } = req;
-
+      data: {
+        attributes
+      } = {}
+    }
+  }: Request): Promise<?Model> {
     const record = await this.model.find(id);
 
     if (record) {
@@ -454,11 +453,15 @@ class Controller {
   /**
    * Destroy a single `Model` instance that the Controller instance represents.
    *
-   * @param  {IncomingMessage} request
-   * @param  {ServerResponse} response
+   * @param  {Request} request
+   * @param  {Response} response
    */
-  async destroy(req: IncomingMessage): Promise<number> {
-    const record = await this.model.find(req.params.id);
+  async destroy({
+    params: {
+      id
+    }
+  }: Request): Promise<number> {
+    const record = await this.model.find(id);
 
     if (record) {
       await record.destroy();
@@ -470,8 +473,8 @@ class Controller {
   /**
    * An action handler used for responding to HEAD or OPTIONS requests.
    *
-   * @param  {IncomingMessage} request
-   * @param  {ServerResponse} response
+   * @param  {Request} request
+   * @param  {Response} response
    * @private
    */
   preflight(): number {
@@ -480,3 +483,5 @@ class Controller {
 }
 
 export default Controller;
+export { sanitize as sanitizeParams } from './sanitizer';
+export { default as defaultParamsFor } from './utils/default-params-for';

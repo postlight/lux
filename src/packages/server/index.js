@@ -1,40 +1,28 @@
 // @flow
-import http from 'http';
-import { parse as parseURL } from 'url';
+import { createServer, IncomingMessage, Server as HTTPServer } from 'http';
 
+import { createRequest, formatParams } from './request';
+import { createResponse } from './response';
 import { createResponder } from './responder';
 
-import entries from '../../utils/entries';
 import tryCatch from '../../utils/try-catch';
-import formatParams from './utils/format-params';
 
-import type {
-  Server as HTTPServer,
-  IncomingMessage,
-  ServerResponse
-} from 'http';
+import type { Writable } from 'stream';
 
-import type Logger from '../logger';
-import type Router from '../router';
+import type { Server$opts } from './interfaces';
 
 /**
  * @private
  */
 class Server {
-  router: Router;
+  logger: Server$opts.logger;
 
-  logger: Logger;
+  router: Server$opts.router;
 
   instance: HTTPServer;
 
-  constructor({
-    logger,
-    router
-  }: {
-    logger: Logger;
-    router: Router;
-  } = {}): Server {
-    const instance = http.createServer((req, res) => {
+  constructor({ logger, router }: Server$opts): Server {
+    const instance = createServer((req: IncomingMessage, res: Writable) => {
       this.receiveRequest(req, res);
     });
 
@@ -68,50 +56,46 @@ class Server {
     this.instance.listen(port);
   }
 
-  receiveRequest(req: IncomingMessage, res: ServerResponse): void {
+  receiveRequest(req: IncomingMessage, res: Writable): void {
     const startTime = Date.now();
-    const respond = createResponder(req, res);
+    const { logger, router } = this;
 
-    tryCatch(async () => {
-      const { logger } = this;
+    const request = createRequest(req, {
+      logger,
+      router
+    });
 
-      req.setEncoding('utf8');
-      res.setHeader('Content-Type', 'application/vnd.api+json');
+    const response = createResponse(res, {
+      logger
+    });
 
-      Object.assign(res, {
-        logger,
-        stats: []
-      });
+    request.setEncoding('utf8');
+    response.setHeader('Content-Type', 'application/vnd.api+json');
 
-      Object.assign(req, {
-        logger,
-        url: parseURL(req.url, true)
-      });
+    logger.request(request, response, {
+      startTime
+    });
 
-      Object.assign(req, {
-        route: this.router.match(req),
-        params: await formatParams(req),
-        headers: new Map(entries(req.headers)),
-      });
+    const respond = createResponder(request, response);
 
-      if (req.headers.has('X-HTTP-Method-Override')) {
-        req.method = req.headers.get('X-HTTP-Method-Override');
-      }
+    if (request.route) {
+      tryCatch(async () => {
+        Object.assign(request, {
+          params: {
+            ...request.params,
+            ...(await formatParams(req))
+          }
+        });
 
-      if (req.route) {
-        req.params = {
-          ...req.params,
-          ...req.route.parseParams(req.url.pathname)
-        };
-      }
-
-      logger.request(req, res, {
-        startTime
-      });
-
-      respond(await this.router.visit(req, res));
-    }, respond);
+        respond(await router.visit(request, response));
+      }, respond);
+    } else {
+      respond(404);
+    }
   }
 }
 
 export default Server;
+
+export type { Request, Request$params } from './request/interfaces';
+export type { Response } from './response/interfaces';

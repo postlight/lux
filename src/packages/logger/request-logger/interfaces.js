@@ -1,10 +1,10 @@
 // @flow
 import type Route from '../../route';
-import type { IncomingMessage, ServerResponse } from 'http';
+import type { Request, Response } from '../../server';
 
 export type Logger$RequestLogger = (
-  req: IncomingMessage,
-  res: ServerResponse,
+  req: Request,
+  res: Response,
 
   opts: {
     startTime: number
