@@ -219,8 +219,8 @@ describe('Integration: class Controller', () => {
       before(async () => {
         [included, excluded] = await Promise.all([
           ...[
-            fetch(`${host}/posts?include=author&${encodeURIComponent('fields[post]')}=title&${encodeURIComponent('fields[author]')}=name`),
-            fetch(`${host}/posts?${encodeURIComponent('fields[post]')}=title`)
+            fetch(`${host}/posts?include=author&${encodeURIComponent('fields[posts]')}=title&${encodeURIComponent('fields[authors]')}=name`),
+            fetch(`${host}/posts?${encodeURIComponent('fields[posts]')}=title`)
           ].map(async (req) => {
             const res = await req;
 
@@ -327,8 +327,8 @@ describe('Integration: class Controller', () => {
       before(async () => {
         [included, excluded] = await Promise.all([
           ...[
-            fetch(`${host}/posts/1?include=author&${encodeURIComponent('fields[post]')}=title&${encodeURIComponent('fields[author]')}=name`),
-            fetch(`${host}/posts/1?${encodeURIComponent('fields[post]')}=title`)
+            fetch(`${host}/posts/1?include=author&${encodeURIComponent('fields[posts]')}=title&${encodeURIComponent('fields[authors]')}=name`),
+            fetch(`${host}/posts/1?${encodeURIComponent('fields[posts]')}=title`)
           ].map(async (req) => {
             const res = await req;
 
