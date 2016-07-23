@@ -7,7 +7,7 @@ import { createRequest, formatParams } from './request';
 import { createResponse } from './response';
 import { createResponder } from './responder';
 
-import tryCatch, { tryCatchSync } from '../../utils/try-catch';
+import { tryCatchSync } from '../../utils/try-catch';
 import validateAccept from './utils/validate-accept';
 import validateContentType from './utils/validate-content-type';
 
@@ -96,20 +96,20 @@ class Server {
     isValid = tryCatchSync(() => this.validateRequest(request), respond);
 
     if (isValid) {
-      if (request.route) {
-        tryCatch(async () => {
+      formatParams(request)
+        .then(params => {
+          const { route } = request;
+
           Object.assign(request, {
-            params: {
-              ...request.params,
-              ...(await formatParams(req))
-            }
+            params
           });
 
-          respond(await request.route.visit(request, response));
-        }, respond);
-      } else {
-        respond(404);
-      }
+          if (route) {
+            return route.visit(request, response);
+          }
+        })
+        .then(respond)
+        .catch(respond);
     }
   }
 }

@@ -1,4 +1,8 @@
 // @flow
+import { MalformedRequestError } from '../errors';
+
+import { tryCatchSync } from '../../../../utils/try-catch';
+
 import type { Request } from '../interfaces';
 
 export default function bodyParser(req: Request): Promise<Object> {
@@ -10,10 +14,15 @@ export default function bodyParser(req: Request): Promise<Object> {
     };
 
     const onEnd = () => {
-      body = JSON.parse(body);
+      const parsed = tryCatchSync(() => JSON.parse(body));
 
       cleanUp();
-      resolve(body);
+
+      if (parsed) {
+        resolve(parsed);
+      } else {
+        reject(new MalformedRequestError());
+      }
     };
 
     const onError = err => {
