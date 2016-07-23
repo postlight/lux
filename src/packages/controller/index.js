@@ -483,5 +483,3 @@ class Controller {
 }
 
 export default Controller;
-export { sanitize as sanitizeParams } from './sanitizer';
-export { default as defaultParamsFor } from './utils/default-params-for';

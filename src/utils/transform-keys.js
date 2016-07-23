@@ -8,25 +8,24 @@ import underscore from './underscore';
  * @private
  */
 export default function transformKeys(
-  obj: Object | Array<mixed>,
+  source: Object | Array<mixed>,
   transformer: (key: string) => string,
   deep: boolean = false
-): Object | Array<mixed> {
-  if (Array.isArray(obj)) {
-    return obj.slice(0);
-  } else if (obj && typeof obj === 'object') {
-    return entries(obj)
-      .reduce((result, [key, value]) => {
-        if (deep && value && typeof value === 'object'
-            && !Array.isArray(value)) {
-          value = transformKeys(value, transformer, true);
-        }
+): any {
+  if (Array.isArray(source)) {
+    return source.slice(0);
+  } else if (source && typeof source === 'object') {
+    return entries(source).reduce((result, [key, value]) => {
+      if (deep && value && typeof value === 'object'
+          && !Array.isArray(value)) {
+        value = transformKeys(value, transformer, true);
+      }
 
-        return {
-          ...result,
-          [transformer(key)]: value
-        };
-      }, {});
+      return {
+        ...result,
+        [transformer(key)]: value
+      };
+    }, {});
   } else {
     return {};
   }
@@ -35,29 +34,29 @@ export default function transformKeys(
 /**
  * @private
  */
-export function camelizeKeys(
-  obj: Object | Array<mixed>,
+export function camelizeKeys<T: Object | Array<mixed>>(
+  source: T,
   deep?: boolean
-): Object | Array<mixed> {
-  return transformKeys(obj, (key) => camelize(underscore(key), true), deep);
+): T {
+  return transformKeys(source, key => camelize(underscore(key), true), deep);
 }
 
 /**
  * @private
  */
-export function dasherizeKeys(
-  obj: Object | Array<mixed>,
+export function dasherizeKeys<T: Object | Array<mixed>>(
+  source: T,
   deep?: boolean
-): Object | Array<mixed> {
-  return transformKeys(obj, (key) => dasherize(underscore(key), true), deep);
+): T {
+  return transformKeys(source, key => dasherize(underscore(key), true), deep);
 }
 
 /**
  * @private
  */
-export function underscoreKeys(
-  obj: Object | Array<mixed>,
+export function underscoreKeys<T: Object | Array<mixed>>(
+  source: T,
   deep?: boolean
-): Object | Array<mixed> {
-  return transformKeys(obj, (key) => underscore(key), deep);
+): T {
+  return transformKeys(source, key => underscore(key), deep);
 }

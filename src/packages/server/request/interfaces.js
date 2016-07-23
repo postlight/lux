@@ -3,6 +3,11 @@ import type Logger from '../../logger';
 import type Router from '../../router';
 import type Route from '../../route';
 
+export type Request$opts = {
+  logger: Logger;
+  router: Router;
+};
+
 type Request$url = {
   protocol?: string;
   slashes?: boolean;
@@ -18,10 +23,13 @@ type Request$url = {
   href: string;
 };
 
-export type Request$opts = {
-  logger: Logger;
-  router: Router;
-};
+export type Request$method =
+  | 'GET'
+  | 'HEAD'
+  | 'OPTIONS'
+  | 'PATCH'
+  | 'POST'
+  | 'DELETE';
 
 export type Request$params = {
   data: {
@@ -46,7 +54,7 @@ export type Request$params = {
 declare export class Request extends stream$Readable {
   headers: Map<string, string>;
   httpVersion: string;
-  method: string;
+  method: Request$method;
   trailers: Object;
   socket: net$Socket;
   logger: Logger;

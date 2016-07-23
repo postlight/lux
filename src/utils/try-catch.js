@@ -32,10 +32,10 @@ import K from './k';
  *
  * @private
  */
-export default async function tryCatch(
-  fn: Function,
+export default async function tryCatch<T, F: () => Promise<T>>(
+  fn: F,
   rescue: Function = K
-): Promise<any> {
+): Promise<void | T> {
   try {
     return await fn();
   } catch (err) {
@@ -65,7 +65,10 @@ export default async function tryCatch(
  *
  * @private
  */
-export function tryCatchSync(fn: Function, rescue: Function = K): any {
+export function tryCatchSync<T, F: () => T>(
+  fn: F,
+  rescue: Function = K
+): void | T {
   try {
     return fn();
   } catch (err) {

@@ -1,30 +1,25 @@
 // @flow
 import { ID_PATTERN } from '../route';
 
+import { FreezeableMap } from '../freezeable';
+
 import define from './define';
 
-import type Controller from '../controller';
-import type Route from '../route';
-import type { Request, Response } from '../server';
-import type { options } from '../route/interfaces';
+import type { Router$opts } from './interfaces';
+import type Route, { Route$opts } from '../route';
+import type { Request } from '../server';
 
 /**
  * @private
  */
-class Router extends Map<string, Route> {
+class Router extends FreezeableMap<string, Route> {
   initialized: boolean;
 
-  constructor({
-    routes,
-    controllers
-  }: {
-    routes: () => void,
-    controllers: Map<string, Controller>
-  }): Router {
+  constructor({ routes, controllers }: Router$opts): Router {
     super();
 
     Reflect.apply(routes, {
-      route: (path: string, opts: options) => define.route({
+      route: (path: string, opts: Route$opts) => define.route({
         ...opts,
         path,
         controllers,
@@ -45,34 +40,13 @@ class Router extends Map<string, Route> {
       configurable: false
     });
 
-    return this;
-  }
-
-  set(key: string, value: Route): Router {
-    if (!this.initialized) {
-      super.set(key, value);
-    }
-
-    return this;
+    return this.freeze();
   }
 
   match({ method, url: { pathname } }: Request): void | Route {
     const staticPath = pathname.replace(ID_PATTERN, ':dynamic');
 
     return this.get(`${method}:${staticPath}`);
-  }
-
-  async visit(req: Request, res: Response): void | ?mixed {
-    const { route: { handlers } } = req;
-
-    for (let i = 0; i < handlers.length; i++) {
-      const handler = handlers[i];
-      const data = await handler(req, res);
-
-      if (typeof data !== 'undefined') {
-        return data;
-      }
-    }
   }
 }
 

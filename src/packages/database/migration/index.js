@@ -18,7 +18,7 @@ class Migration {
   }
 
   run(schema: Object): Promise<void> {
-    return Reflect.apply(this.fn, null, [schema]);
+    return this.fn(schema);
   }
 }
 

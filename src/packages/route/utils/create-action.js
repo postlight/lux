@@ -1,10 +1,7 @@
 // @flow
 import { Model, Query } from '../../database';
 
-import { sanitizeParams } from '../../controller';
-
 import merge from '../../../utils/merge';
-import insert from '../../../utils/insert';
 import createPageLinks from './create-page-links';
 
 import type Controller from '../../controller';
@@ -27,10 +24,7 @@ export default function createAction(
     }
   } = controller;
 
-  const handlers = new Array(middleware.length + 2);
-
-  insert(handlers, [
-    sanitizeParams,
+  return [
     ...middleware,
 
     async function actionHandler(req: Request, res: Response): Promise<mixed> {
@@ -143,9 +137,5 @@ export default function createAction(
 
       return result;
     };
-  }));
-
-  Object.freeze(handlers);
-
-  return handlers;
+  });
 }

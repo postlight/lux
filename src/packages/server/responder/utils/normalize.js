@@ -1,5 +1,6 @@
 // @flow
-import { STATUS_CODES } from '../constants';
+import { STATUS_CODES } from '../../constants';
+
 import dataFor from './data-for';
 
 export default function normalize(data: ?mixed | void): {
@@ -33,7 +34,7 @@ export default function normalize(data: ?mixed | void): {
         statusCode = 404;
         normalized = dataFor(statusCode);
       } else if (data instanceof Error) {
-        statusCode = 500;
+        statusCode = data.statusCode || 500;
         normalized = dataFor(statusCode, data);
       } else {
         normalized = data;

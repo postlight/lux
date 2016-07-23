@@ -1,26 +1,32 @@
 // @flow
 import { ID_PATTERN, RESOURCE_PATTERN } from './constants';
 
+import { FreezeableSet } from '../freezeable';
+
+import { paramsFor, defaultParamsFor } from './params';
+
 import createAction from './utils/create-action';
 import getStaticPath from './utils/get-static-path';
 import getDynamicSegments from './utils/get-dynamic-segments';
 
 import type Controller from '../controller';
-import type { Route$handler, options } from './interfaces';
+import type { Request, Response, Request$method } from '../server';
+import type { Route$handler, Route$opts } from './interfaces';
+import type { ParameterGroup } from './params';
 
 /**
  * @private
  */
-class Route {
+class Route extends FreezeableSet<Route$handler> {
   path: string;
+
+  params: ParameterGroup;
 
   action: string;
 
-  method: string;
+  method: Request$method;
 
   resource: string;
-
-  handlers: Array<Route$handler>;
 
   controller: Controller;
 
@@ -31,25 +37,37 @@ class Route {
   constructor({
     path,
     action,
-    controllers,
-    method
-  }: options) {
+    method,
+    controllers
+  }: Route$opts) {
     const [resource] = path.match(RESOURCE_PATTERN) || [path];
     const controller: ?Controller = controllers.get(resource);
     const dynamicSegments = getDynamicSegments(path);
-    let handlers;
 
     if (action && controller) {
       const handler: void | Route$handler = Reflect.get(controller, action);
 
       if (typeof handler === 'function') {
-        handlers = createAction(controller, handler);
+        const params = paramsFor({
+          method,
+          controller,
+          dynamicSegments
+        });
+
+        super(createAction(controller, handler));
 
         Object.defineProperties(this, {
           path: {
             value: path,
             writable: false,
             enumerable: true,
+            configurable: false
+          },
+
+          params: {
+            value: params,
+            writable: false,
+            enumerable: false,
             configurable: false
           },
 
@@ -61,7 +79,7 @@ class Route {
           },
 
           method: {
-            value: method.toUpperCase(),
+            value: method,
             writable: false,
             enumerable: true,
             configurable: false
@@ -69,13 +87,6 @@ class Route {
 
           resource: {
             value: resource,
-            writable: false,
-            enumerable: false,
-            configurable: false
-          },
-
-          handlers: {
-            value: handlers,
             writable: false,
             enumerable: false,
             configurable: false
@@ -119,7 +130,7 @@ class Route {
       );
     }
 
-    return this;
+    return this.freeze();
   }
 
   parseParams(pathname: string): Object {
@@ -138,9 +149,43 @@ class Route {
       return params;
     }, {});
   }
+
+  getDefaultParams(): Object {
+    const { action, controller } = this;
+
+    return defaultParamsFor({
+      action,
+      controller
+    });
+  }
+
+  async execHandlers(req: Request, res: Response): void | ?mixed {
+    for (const handler of this) {
+      const data = await handler(req, res);
+
+      if (typeof data !== 'undefined') {
+        return data;
+      }
+    }
+  }
+
+  async visit(req: Request, res: Response): void | ?mixed {
+    Object.assign(req, {
+      defaultParams: this.getDefaultParams(),
+
+      params: {
+        ...req.params,
+        ...this.parseParams(req.url.pathname)
+      }
+    });
+
+    this.params.validate(req.params);
+
+    return await this.execHandlers(req, res);
+  }
 }
 
 export default Route;
 export { ID_PATTERN, RESOURCE_PATTERN } from './constants';
 
-export type { Route$handler } from './interfaces';
+export type { Route$handler, Route$opts } from './interfaces';

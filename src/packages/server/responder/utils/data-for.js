@@ -1,5 +1,5 @@
 // @flow
-import { STATUS_CODES } from '../constants.js';
+import { STATUS_CODES } from '../../constants.js';
 
 /**
  * @private

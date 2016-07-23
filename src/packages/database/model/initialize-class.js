@@ -1,4 +1,4 @@
-import { camelize, dasherize, singularize } from 'inflection';
+import { camelize, dasherize, pluralize, singularize } from 'inflection';
 
 import { line } from '../../logger';
 
@@ -423,6 +423,13 @@ export default async function initializeClass({
       }),
       writable: false,
       enumerable: Boolean(Object.keys(validates).length),
+      configurable: false
+    },
+
+    resourceName: {
+      value: pluralize(dasherize(underscore(model.name))),
+      writable: false,
+      enumerable: true,
       configurable: false
     },
 

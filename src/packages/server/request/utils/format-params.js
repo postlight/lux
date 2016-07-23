@@ -1,14 +1,17 @@
-import moment from 'moment';
+// @flow
 import { camelize } from 'inflection';
 
 import { INT, BOOL, DATE, DASH, TRUE, HAS_BODY } from '../constants';
 
 import bodyParser from './body-parser';
+import isJSONAPI from './is-jsonapi';
 
 import entries from '../../../../utils/entries';
 import { camelizeKeys } from '../../../../utils/transform-keys';
 
-function format(params, method = 'GET') {
+import type { Request$params } from '../interfaces';
+
+function format(params: Object, method: string = 'GET'): Object {
   params = entries(params).reduce((result, [key, value]) => {
     key = key.replace(/(\[\])/g, '');
 
@@ -33,7 +36,7 @@ function format(params, method = 'GET') {
             } else if (BOOL.test(value)) {
               value = TRUE.test(value);
             } else if (DATE.test(value)) {
-              value = moment(value).toDate();
+              value = new Date(value);
             }
           }
           break;
@@ -49,10 +52,12 @@ function format(params, method = 'GET') {
   return camelizeKeys(params, true);
 }
 
-export default async function formatParams(req) {
+export default async function formatParams(
+  req: Object
+): Promise<Request$params> {
   const { method, url: { query } } = req;
   const pattern = /^(.+)\[(.+)\]$/g;
-  let params = Object.assign({ data: { attributes: {} } }, query);
+  let params = { ...query };
 
   params = entries(params).reduce((result, [key, value]) => {
     if (pattern.test(key)) {
@@ -75,7 +80,7 @@ export default async function formatParams(req) {
     }
   }, {});
 
-  if (HAS_BODY.test(method)) {
+  if (HAS_BODY.test(method) && isJSONAPI(req)) {
     params = {
       ...params,
       ...(await bodyParser(req))

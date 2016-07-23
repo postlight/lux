@@ -59,6 +59,7 @@ class Database {
 }
 
 export { default as connect } from './utils/connect';
+export { default as typeForColumn } from './utils/type-for-column';
 export { default as createMigrations } from './utils/create-migrations';
 export { default as pendingMigrations } from './utils/pending-migrations';
 

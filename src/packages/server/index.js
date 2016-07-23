@@ -1,14 +1,21 @@
 // @flow
-import { createServer, IncomingMessage, Server as HTTPServer } from 'http';
+import { createServer } from 'http';
+
+import { JSONAPI } from '../../constants';
 
 import { createRequest, formatParams } from './request';
 import { createResponse } from './response';
 import { createResponder } from './responder';
 
-import tryCatch from '../../utils/try-catch';
+import tryCatch, { tryCatchSync } from '../../utils/try-catch';
+import validateAccept from './utils/validate-accept';
+import validateContentType from './utils/validate-content-type';
 
 import type { Writable } from 'stream';
+import type { IncomingMessage, Server as HTTPServer } from 'http';
 
+import type { Request } from './request/interfaces';
+import type { Response } from './response/interfaces';
 import type { Server$opts } from './interfaces';
 
 /**
@@ -22,10 +29,6 @@ class Server {
   instance: HTTPServer;
 
   constructor({ logger, router }: Server$opts): Server {
-    const instance = createServer((req: IncomingMessage, res: Writable) => {
-      this.receiveRequest(req, res);
-    });
-
     Object.defineProperties(this, {
       router: {
         value: router,
@@ -42,7 +45,7 @@ class Server {
       },
 
       instance: {
-        value: instance,
+        value: createServer(this.receiveRequest),
         writable: false,
         enumerable: false,
         configurable: false
@@ -56,46 +59,68 @@ class Server {
     this.instance.listen(port);
   }
 
-  receiveRequest(req: IncomingMessage, res: Writable): void {
-    const startTime = Date.now();
+  initializeRequest(req: IncomingMessage, res: Writable): [Request, Response] {
     const { logger, router } = this;
 
-    const request = createRequest(req, {
-      logger,
-      router
-    });
+    req.setEncoding('utf8');
 
-    const response = createResponse(res, {
-      logger
-    });
+    return [
+      createRequest(req, {
+        logger,
+        router
+      }),
+      createResponse(res, {
+        logger
+      })
+    ];
+  }
 
-    request.setEncoding('utf8');
-    response.setHeader('Content-Type', 'application/vnd.api+json');
+  validateRequest({ headers }: Request): true {
+    const accept = headers.get('accept');
+    const contentType = headers.get('content-type');
 
-    logger.request(request, response, {
-      startTime
-    });
+    return validateAccept(accept) && validateContentType(contentType);
+  }
 
+  receiveRequest = (req: IncomingMessage, res: Writable): void => {
+    const [request, response] = this.initializeRequest(req, res);
     const respond = createResponder(request, response);
+    let isValid = false;
 
-    if (request.route) {
-      tryCatch(async () => {
-        Object.assign(request, {
-          params: {
-            ...request.params,
-            ...(await formatParams(req))
-          }
-        });
+    this.logger.request(request, response, {
+      startTime: Date.now()
+    });
 
-        respond(await router.visit(request, response));
-      }, respond);
-    } else {
-      respond(404);
+    response.setHeader('Content-Type', JSONAPI);
+
+    isValid = tryCatchSync(() => this.validateRequest(request), respond);
+
+    if (isValid) {
+      if (request.route) {
+        tryCatch(async () => {
+          Object.assign(request, {
+            params: {
+              ...request.params,
+              ...(await formatParams(req))
+            }
+          });
+
+          respond(await request.route.visit(request, response));
+        }, respond);
+      } else {
+        respond(404);
+      }
     }
   }
 }
 
 export default Server;
+export { default as createServerError } from './utils/create-server-error';
 
-export type { Request, Request$params } from './request/interfaces';
+export type {
+  Request,
+  Request$params,
+  Request$method
+} from './request/interfaces';
+
 export type { Response } from './response/interfaces';

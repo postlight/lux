@@ -1,5 +1,5 @@
 // @flow
 import type Router from '../index';
-import type { options as routeOptions } from '../../route/interfaces';
+import type { Route$opts } from '../../route';
 
-export type options = routeOptions & { router: Router };
+export type options = Route$opts & { router: Router };
