@@ -5,16 +5,14 @@ import { FreezeableMap } from '../freezeable';
 
 import define from './define';
 
+import type { Request } from '../server';
 import type { Router$opts } from './interfaces';
 import type Route, { Route$opts } from '../route';
-import type { Request } from '../server';
 
 /**
  * @private
  */
 class Router extends FreezeableMap<string, Route> {
-  initialized: boolean;
-
   constructor({ routes, controllers }: Router$opts): Router {
     super();
 
@@ -32,13 +30,6 @@ class Router extends FreezeableMap<string, Route> {
         router: this
       })
     }, []);
-
-    Reflect.defineProperty(this, 'initialized', {
-      value: true,
-      writable: false,
-      enumerable: false,
-      configurable: false
-    });
 
     return this.freeze();
   }
