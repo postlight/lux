@@ -1,4 +1,6 @@
 // @flow
+export const HAS_BODY = /^(POST|PATCH)$/;
+
 export const STATUS_CODES = new Map([
   [100, 'Continue'],
   [101, 'Switching Protocols'],

@@ -25,4 +25,4 @@ export function createRequest(req: any, {
   return req;
 }
 
-export { default as formatParams } from './utils/format-params';
+export { parseRequest } from './parser';

@@ -3,6 +3,7 @@ import Model from '../database/model';
 
 import merge from '../../utils/merge';
 import insert from '../../utils/insert';
+import paramsToQuery from './utils/params-to-query';
 
 import type Database from '../database';
 import type Serializer from '../serializer';
@@ -366,20 +367,27 @@ class Controller {
    */
   index({
     params,
-    defaultParams
+    defaultParams,
+
+    route: {
+      controller: {
+        model
+      }
+    }
   }: Request): Promise<Array<Model>> {
     const {
       sort,
       page,
+      limit,
+      select,
       filter,
-      fields,
       include
-    } = merge(defaultParams, params);
+    } = paramsToQuery(model, merge(defaultParams, params));
 
-    return this.model.select(...fields)
+    return model.select(...select)
       .include(include)
-      .limit(page.size)
-      .page(page.number)
+      .limit(limit)
+      .page(page)
       .where(filter)
       .order(...sort);
   }
@@ -395,16 +403,22 @@ class Controller {
    */
   show({
     params,
-    defaultParams
+    defaultParams,
+
+    route: {
+      controller: {
+        model
+      }
+    }
   }: Request): Promise<?Model> {
     const {
       id,
-      fields,
+      select,
       include
-    } = merge(defaultParams, params);
+    } = paramsToQuery(model, merge(defaultParams, params));
 
-    return this.model.find(id)
-      .select(...fields)
+    return model.find(id)
+      .select(...select)
       .include(include);
   }
 
@@ -420,9 +434,15 @@ class Controller {
       data: {
         attributes
       } = {}
+    },
+
+    route: {
+      controller: {
+        model
+      }
     }
   }: Request): Promise<Model> {
-    return this.model.create(attributes);
+    return model.create(attributes);
   }
 
   /**
@@ -439,9 +459,15 @@ class Controller {
       data: {
         attributes
       } = {}
+    },
+
+    route: {
+      controller: {
+        model
+      }
     }
   }: Request): Promise<?Model> {
-    const record = await this.model.find(id);
+    const record = await model.find(id);
 
     if (record) {
       await record.update(attributes);
@@ -459,9 +485,15 @@ class Controller {
   async destroy({
     params: {
       id
+    },
+
+    route: {
+      controller: {
+        model
+      }
     }
   }: Request): Promise<number> {
-    const record = await this.model.find(id);
+    const record = await model.find(id);
 
     if (record) {
       await record.destroy();

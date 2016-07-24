@@ -1,16 +1,14 @@
 // @flow
 import { pluralize } from 'inflection';
 
+import { VERSION } from '../jsonapi';
 import { Model } from '../database';
 
 import pick from '../../utils/pick';
 import uniq from '../../utils/uniq';
 import insert from '../../utils/insert';
-import entries from '../../utils/entries';
 import promiseHash from '../../utils/promise-hash';
 import { dasherizeKeys } from '../../utils/transform-keys';
-
-const ID_REGEXP = /^id$/;
 
 /**
  * The `Serializer` class is where you declare the specific attributes and
@@ -298,41 +296,30 @@ class Serializer {
   async format({
     data,
     links,
-    fields,
     domain,
     include
   }: {
     data: ?(Object | Array<Object> | Model),
     links: Object,
-    fields: Array<string>,
     domain: string,
-    include: Object
+    include: Array<string>
   }): Promise<Object | Array<Object>> {
     let serialized = {};
 
     if (data instanceof Model || Array.isArray(data)) {
       const included = [];
 
-      if (Array.isArray(fields)) {
-        fields = fields.filter(field => !ID_REGEXP.test(field));
-      } else {
-        fields = [];
-      }
-
       if (Array.isArray(data)) {
         serialized = {
           ...serialized,
 
           data: await Promise.all(
-            data.map(item => {
-              return this.formatOne({
-                item,
-                fields,
-                domain,
-                include,
-                included
-              });
-            })
+            data.map(item => this.formatOne({
+              item,
+              domain,
+              include,
+              included
+            }))
           )
         };
       } else {
@@ -340,7 +327,6 @@ class Serializer {
           ...serialized,
 
           data: await this.formatOne({
-            fields,
             domain,
             include,
             included,
@@ -371,7 +357,7 @@ class Serializer {
       ...serialized,
 
       jsonapi: {
-        version: '1.0'
+        version: VERSION
       }
     };
   }
@@ -382,20 +368,22 @@ class Serializer {
   async formatOne({
     item,
     links,
-    fields,
     domain,
     include,
     included
   }: {
     item: Model,
     links?: boolean,
-    fields: Array<string>,
     domain: string,
-    include: Object,
+    include: Array<string>,
     included: Array<Object>
   }): Object {
     const { id } = item;
-    const attributes = dasherizeKeys(pick(item, ...fields));
+    const attributes = dasherizeKeys(
+      pick(item, ...Object.keys(item.rawColumnData).filter(key => {
+        return this.attributes.includes(key);
+      }))
+    );
 
     let { modelName: type } = item;
     type = pluralize(type);
@@ -416,57 +404,52 @@ class Serializer {
       attributes
     };
 
-    if (Object.keys(include).length) {
-      const relationships = await promiseHash(
-        entries(include).reduce((hash, [name, attrs]) => ({
-          ...hash,
+    const relationships = await promiseHash(
+      [...this.hasOne, ...this.hasMany].reduce((hash, name) => ({
+        ...hash,
+        [name]: (async () => {
+          const related = await item[name];
 
-          [name]: (async () => {
-            const related = await item[name];
+          if (related instanceof Model) {
+            return await this.formatRelationship({
+              domain,
+              included,
+              item: related,
+              links: true,
+              include: include.includes(name)
+            });
+          } else if (Array.isArray(related) && related.length) {
+            return {
+              data: await Promise.all(
+                related.map(async (relatedItem) => {
+                  const {
+                    data: relatedData,
+                    links: relatedLinks
+                  } = await this.formatRelationship({
+                    domain,
+                    included,
+                    item: relatedItem,
+                    links: true,
+                    include: include.includes(name)
+                  });
 
-            attrs = attrs.filter(field => !ID_REGEXP.test(field));
+                  return {
+                    ...relatedData,
+                    links: relatedLinks
+                  };
+                })
+              )
+            };
+          }
+        })()
+      }), {})
+    );
 
-            if (related instanceof Model) {
-              return await this.formatRelationship({
-                domain,
-                included,
-                item: related,
-                links: true,
-                fields: attrs
-              });
-            } else if (Array.isArray(related) && related.length) {
-              return {
-                data: await Promise.all(
-                  related.map(async (relatedItem) => {
-                    const {
-                      data: relatedData,
-                      links: relatedLinks
-                    } = await this.formatRelationship({
-                      domain,
-                      included,
-                      item: relatedItem,
-                      links: true,
-                      fields: attrs
-                    });
-
-                    return {
-                      ...relatedData,
-                      links: relatedLinks
-                    };
-                  })
-                )
-              };
-            }
-          })()
-        }), {})
-      );
-
-      if (Object.keys(relationships).length) {
-        serialized = {
-          ...serialized,
-          relationships
-        };
-      }
+    if (Object.keys(relationships).length) {
+      serialized = {
+        ...serialized,
+        relationships
+      };
     }
 
     if (links || typeof links !== 'boolean') {
@@ -483,36 +466,22 @@ class Serializer {
    */
   async formatRelationship({
     item,
-    fields,
     domain,
-    included
+    include,
+    // included
   }: {
-    item: Model,
-    fields: Array<string>,
-    domain: string,
-    included: Array<Object>
+    item: Model;
+    domain: string;
+    include: boolean;
+    // included: Array<Object>;
   }): Object {
-    const {
-      id,
-
-      constructor: {
-        serializer
-      }
-    } = item;
-
+    const { id } = item;
     let { modelName: type } = item;
+
     type = pluralize(type);
 
-    if (fields.length) {
-      included.push(
-        await serializer.formatOne({
-          item,
-          domain,
-          fields,
-          include: {},
-          included: []
-        })
-      );
+    if (include) {
+      console.log('\n\nINCLUDE\n\n');
     }
 
     return {

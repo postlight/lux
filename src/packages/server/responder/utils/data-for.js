@@ -1,5 +1,6 @@
 // @flow
-import { STATUS_CODES } from '../../constants.js';
+import { VERSION } from '../../../jsonapi';
+import { STATUS_CODES } from '../../constants';
 
 /**
  * @private
@@ -26,7 +27,10 @@ export default function dataFor(
     }
 
     return {
-      errors: [errData]
+      errors: [errData],
+      jsonapi: {
+        version: VERSION
+      }
     };
   }
 }

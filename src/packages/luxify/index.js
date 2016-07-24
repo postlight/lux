@@ -1,6 +1,7 @@
 // @flow
 import createResponseProxy from './utils/create-response-proxy';
 
+import type { Action } from '../route';
 import type { Request, Response } from '../server';
 
 /**
@@ -13,7 +14,7 @@ export default function luxify(
     res: Response,
     next: (err?: Error) => void
   ) => void
-): (req: Request, res: Response) => Promise<void|?mixed> {
+): Action<void|?mixed>{
   const result = function (req, res) {
     return new Promise((resolve, reject) => {
       res = createResponseProxy(res, resolve);

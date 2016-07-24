@@ -8,22 +8,25 @@ export default function getDefaultIndexParams({
   defaultPerPage
 }: Controller): Object {
   return {
+    sort: 'createdAt',
     filter: {},
-    fields: attributes,
 
-    sort: [
-      'createdAt',
-      'ASC'
-    ],
+    fields: {
+      [model.resourceName]: attributes,
+
+      ...relationships.reduce((include, key) => {
+        const { model: related } = model.relationshipFor(key);
+
+        return {
+          ...include,
+          [related.resourceName]: [related.primaryKey]
+        };
+      }, {})
+    },
 
     page: {
       size: defaultPerPage,
       number: 1
-    },
-
-    include: relationships.reduce((include, key) => ({
-      ...include,
-      [key]: [model.relationshipFor(key).model.primaryKey]
-    }), {})
+    }
   };
 }

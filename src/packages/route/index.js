@@ -3,21 +3,22 @@ import { ID_PATTERN, RESOURCE_PATTERN } from './constants';
 
 import { FreezeableSet } from '../freezeable';
 
+import { createAction } from './action';
 import { paramsFor, defaultParamsFor } from './params';
 
-import createAction from './utils/create-action';
 import getStaticPath from './utils/get-static-path';
 import getDynamicSegments from './utils/get-dynamic-segments';
 
 import type Controller from '../controller';
 import type { Request, Response, Request$method } from '../server';
-import type { Route$handler, Route$opts } from './interfaces';
+import type { Route$opts } from './interfaces';
+import type { Action } from './action';
 import type { ParameterGroup } from './params';
 
 /**
  * @private
  */
-class Route extends FreezeableSet<Route$handler> {
+class Route extends FreezeableSet<Action<any>> {
   path: string;
 
   params: ParameterGroup;
@@ -45,7 +46,7 @@ class Route extends FreezeableSet<Route$handler> {
     const dynamicSegments = getDynamicSegments(path);
 
     if (action && controller) {
-      const handler: void | Route$handler = Reflect.get(controller, action);
+      const handler = Reflect.get(controller, action);
 
       if (typeof handler === 'function') {
         const params = paramsFor({
@@ -54,7 +55,7 @@ class Route extends FreezeableSet<Route$handler> {
           dynamicSegments
         });
 
-        super(createAction(controller, handler));
+        super(createAction(action, controller, handler));
 
         Object.defineProperties(this, {
           path: {
@@ -159,7 +160,7 @@ class Route extends FreezeableSet<Route$handler> {
     });
   }
 
-  async execHandlers(req: Request, res: Response): void | ?mixed {
+  async execHandlers(req: Request, res: Response): Promise<any> {
     for (const handler of this) {
       const data = await handler(req, res);
 
@@ -169,7 +170,7 @@ class Route extends FreezeableSet<Route$handler> {
     }
   }
 
-  async visit(req: Request, res: Response): void | ?mixed {
+  visit(req: Request, res: Response): Promise<any> {
     Object.assign(req, {
       defaultParams: this.getDefaultParams(),
 
@@ -181,11 +182,12 @@ class Route extends FreezeableSet<Route$handler> {
 
     this.params.validate(req.params);
 
-    return await this.execHandlers(req, res);
+    return this.execHandlers(req, res);
   }
 }
 
 export default Route;
 export { ID_PATTERN, RESOURCE_PATTERN } from './constants';
 
-export type { Route$handler, Route$opts } from './interfaces';
+export type { Action } from './action';
+export type { Route$opts } from './interfaces';

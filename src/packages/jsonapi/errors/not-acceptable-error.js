@@ -1,13 +1,14 @@
 // @flow
-import { JSONAPI } from '../../../constants';
+import { MIME_TYPE } from '../constants';
 
-import createServerError from '../utils/create-server-error';
 import { line } from '../../logger';
+import { createServerError } from '../../server';
 
 class NotAcceptableError extends TypeError {
   constructor(contentType: string): NotAcceptableError {
     super(line`
-      Accept: '${contentType}' is not supported. Please use ${JSONAPI} instead.
+      Media type parameters is not supported. Try your request again
+      without specifying '${contentType.replace(MIME_TYPE, '')}'.
     `);
 
     return this;

@@ -1,9 +1,10 @@
 // @flow
 import { createServer } from 'http';
 
-import { JSONAPI } from '../../constants';
+import { HAS_BODY } from './constants';
+import { MIME_TYPE } from '../jsonapi';
 
-import { createRequest, formatParams } from './request';
+import { createRequest, parseRequest } from './request';
 import { createResponse } from './response';
 import { createResponder } from './responder';
 
@@ -75,28 +76,32 @@ class Server {
     ];
   }
 
-  validateRequest({ headers }: Request): true {
-    const accept = headers.get('accept');
-    const contentType = headers.get('content-type');
+  validateRequest({ method, headers }: Request): true {
+    let isValid = validateAccept(headers.get('accept'));
 
-    return validateAccept(accept) && validateContentType(contentType);
+    if (HAS_BODY.test(method)) {
+      isValid = validateContentType(headers.get('content-type'));
+    }
+
+    return isValid;
   }
 
   receiveRequest = (req: IncomingMessage, res: Writable): void => {
     const [request, response] = this.initializeRequest(req, res);
     const respond = createResponder(request, response);
-    let isValid = false;
 
     this.logger.request(request, response, {
       startTime: Date.now()
     });
 
-    response.setHeader('Content-Type', JSONAPI);
+    response.setHeader('Content-Type', MIME_TYPE);
 
-    isValid = tryCatchSync(() => this.validateRequest(request), respond);
+    const isValid = tryCatchSync(() => {
+      return this.validateRequest(request);
+    }, respond);
 
     if (isValid) {
-      formatParams(request)
+      parseRequest(request)
         .then(params => {
           const { route } = request;
 

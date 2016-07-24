@@ -8,5 +8,3 @@ export type Route$opts = {
   method: Request$method;
   controllers: Map<string, Controller>;
 };
-
-export type Route$handler = (req: Request, res: Response) => any;

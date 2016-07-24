@@ -1,26 +1,9 @@
 import { expect } from 'chai';
 import fetch from 'isomorphic-fetch';
 
-import { formatParams } from '../../../src/packages/server/request';
-
 const host = 'http://localhost:4000';
 
 describe('Unit: class Server ', () => {
-  describe('Unit: util formatParams', () => {
-    it('parses comma seperated strings as an Array for GET requests', async () => {
-      const { include } = await formatParams({
-        method: 'GET',
-        url: {
-          query: {
-            include: 'author,comments'
-          }
-        }
-      });
-
-      expect(include).to.be.an.instanceOf(Array);
-    });
-  });
-
   describe('Regression: util formatParams (https://github.com/postlight/lux/issues/42)', () => {
     let createdId;
 

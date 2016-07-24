@@ -1,6 +1,6 @@
 // @flow
-import omit from '../../../utils/omit';
-import createQueryString from '../../../utils/create-query-string';
+import omit from '../../../../utils/omit';
+import createQueryString from '../../../../utils/create-query-string';
 
 export default function createPageLinks({
   page,

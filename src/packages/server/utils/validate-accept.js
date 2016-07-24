@@ -1,11 +1,12 @@
 // @flow
-import { JSONAPI } from '../../../constants';
+import { hasMediaType, NotAcceptableError } from '../../jsonapi';
 
-import { NotAcceptableError } from '../errors';
-
+/**
+ * @private
+ */
 export default function validateAccept(contentType?: string): true {
-  if (contentType !== JSONAPI) {
-    throw new NotAcceptableError(contentType || 'undefined');
+  if (contentType && hasMediaType(contentType)) {
+    throw new NotAcceptableError(contentType);
   }
 
   return true;

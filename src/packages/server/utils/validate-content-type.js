@@ -1,11 +1,16 @@
 // @flow
-import { JSONAPI } from '../../../constants';
-
-import { UnsupportedMediaTypeError } from '../errors';
+import {
+  isJSONAPI,
+  hasMediaType,
+  InvalidContentTypeError,
+  UnsupportedMediaTypeError
+} from '../../jsonapi';
 
 export default function validateContentType(contentType?: string): true {
-  if (contentType !== JSONAPI) {
-    throw new UnsupportedMediaTypeError(contentType || 'undefined');
+  if (!contentType || !isJSONAPI(contentType)) {
+    throw new InvalidContentTypeError(contentType);
+  } else if (hasMediaType(contentType)) {
+    throw new UnsupportedMediaTypeError(contentType);
   }
 
   return true;

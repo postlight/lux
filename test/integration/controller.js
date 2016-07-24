@@ -1,7 +1,17 @@
 import { expect } from 'chai';
-import fetch from 'isomorphic-fetch';
+import isomorphicFetch from 'isomorphic-fetch';
+
+import { JSONAPI } from '../../src/constants';
 
 const host = 'http://localhost:4000';
+
+const fetch = (url, opts = {}) => isomorphicFetch(url, {
+  ...opts,
+  headers: new Headers([
+    ['Accept', JSONAPI.MIME_TYPE],
+    ['Content-Type', JSONAPI.MIME_TYPE]
+  ])
+});
 
 describe('Integration: class Controller', () => {
   let createdId;

@@ -7,11 +7,17 @@ export default function getDefaultShowParams({
   relationships
 }: Controller): Object {
   return {
-    fields: attributes,
+    fields: {
+      [model.resourceName]: attributes,
 
-    include: relationships.reduce((include, key) => ({
-      ...include,
-      [key]: [model.relationshipFor(key).model.primaryKey]
-    }), {})
+      ...relationships.reduce((include, key) => {
+        const { model: related } = model.relationshipFor(key);
+
+        return {
+          ...include,
+          [related.resourceName]: [related.primaryKey]
+        };
+      }, {})
+    }
   };
 }

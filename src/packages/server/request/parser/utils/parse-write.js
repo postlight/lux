@@ -1,11 +1,12 @@
 // @flow
 import { MalformedRequestError } from '../errors';
 
-import { tryCatchSync } from '../../../../utils/try-catch';
+import { tryCatchSync } from '../../../../../utils/try-catch';
+import format from './format';
 
-import type { Request } from '../interfaces';
+import type { Request } from '../../interfaces';
 
-export default function bodyParser(req: Request): Promise<Object> {
+export default function parseWrite(req: Request): Promise<Object> {
   return new Promise((resolve, reject) => {
     let body = '';
 
@@ -19,7 +20,7 @@ export default function bodyParser(req: Request): Promise<Object> {
       cleanUp();
 
       if (parsed) {
-        resolve(parsed);
+        resolve(format(parsed, req.method));
       } else {
         reject(new MalformedRequestError());
       }

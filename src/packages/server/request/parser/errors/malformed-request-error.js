@@ -1,6 +1,6 @@
 // @flow
-import createServerError from '../../utils/create-server-error';
-import { line } from '../../../logger';
+import createServerError from '../../../utils/create-server-error';
+import { line } from '../../../../logger';
 
 class MalformedRequestError extends TypeError {
   constructor(): MalformedRequestError {

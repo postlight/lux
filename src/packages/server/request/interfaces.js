@@ -32,23 +32,23 @@ export type Request$method =
   | 'DELETE';
 
 export type Request$params = {
-  data: {
-    id: number | string | Buffer;
-    type: string;
-    attributes?: Object;
-    relationships?: Object;
-  };
+  id: number | string | Buffer;
+  sort: string;
+  filter: Object;
+  fields: Object;
+  include: Array<string>;
 
   page: {
     size: number;
     number: number;
   };
 
-  fields: Array<string>;
-  filter: Object;
-  id: number | string | Buffer;
-  include: Object;
-  sort: [string, ('ASC' | 'DESC')];
+  data: {
+    id: number | string | Buffer;
+    type: string;
+    attributes?: Object;
+    relationships?: Object;
+  };
 };
 
 declare export class Request extends stream$Readable {
