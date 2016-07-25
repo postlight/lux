@@ -1,15 +1,15 @@
 import { expect } from 'chai';
 import isomorphicFetch from 'isomorphic-fetch';
 
-import { JSONAPI } from '../../src/constants';
+import { MIME_TYPE } from '../../src/packages/jsonapi';
 
 const host = 'http://localhost:4000';
 
 const fetch = (url, opts = {}) => isomorphicFetch(url, {
   ...opts,
   headers: new Headers([
-    ['Accept', JSONAPI.MIME_TYPE],
-    ['Content-Type', JSONAPI.MIME_TYPE]
+    ['Accept', MIME_TYPE],
+    ['Content-Type', MIME_TYPE]
   ])
 });
 

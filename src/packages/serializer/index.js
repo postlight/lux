@@ -468,20 +468,27 @@ class Serializer {
     item,
     domain,
     include,
-    // included
+    included
   }: {
     item: Model;
     domain: string;
     include: boolean;
-    // included: Array<Object>;
+    included: Array<Object>;
   }): Object {
-    const { id } = item;
+    const { id, constructor: { serializer } } = item;
     let { modelName: type } = item;
 
     type = pluralize(type);
 
     if (include) {
-      console.log('\n\nINCLUDE\n\n');
+      included.push(
+        await serializer.formatOne({
+          item,
+          domain,
+          include: [],
+          included: []
+        })
+      );
     }
 
     return {
