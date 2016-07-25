@@ -370,13 +370,15 @@ class Serializer {
     links,
     domain,
     include,
-    included
+    included,
+    formatRelationships = true
   }: {
-    item: Model,
-    links?: boolean,
-    domain: string,
-    include: Array<string>,
-    included: Array<Object>
+    item: Model;
+    links?: boolean;
+    domain: string;
+    include: Array<string>;
+    included: Array<Object>;
+    formatRelationships?: boolean
   }): Object {
     const { id } = item;
     const attributes = dasherizeKeys(
@@ -404,52 +406,54 @@ class Serializer {
       attributes
     };
 
-    const relationships = await promiseHash(
-      [...this.hasOne, ...this.hasMany].reduce((hash, name) => ({
-        ...hash,
-        [name]: (async () => {
-          const related = await item[name];
+    if (formatRelationships) {
+      const relationships = await promiseHash(
+        [...this.hasOne, ...this.hasMany].reduce((hash, name) => ({
+          ...hash,
+          [name]: (async () => {
+            const related = await item[name];
 
-          if (related instanceof Model) {
-            return await this.formatRelationship({
-              domain,
-              included,
-              item: related,
-              links: true,
-              include: include.includes(name)
-            });
-          } else if (Array.isArray(related) && related.length) {
-            return {
-              data: await Promise.all(
-                related.map(async (relatedItem) => {
-                  const {
-                    data: relatedData,
-                    links: relatedLinks
-                  } = await this.formatRelationship({
-                    domain,
-                    included,
-                    item: relatedItem,
-                    links: true,
-                    include: include.includes(name)
-                  });
+            if (related instanceof Model) {
+              return await this.formatRelationship({
+                domain,
+                included,
+                item: related,
+                links: true,
+                include: include.includes(name)
+              });
+            } else if (Array.isArray(related) && related.length) {
+              return {
+                data: await Promise.all(
+                  related.map(async (relatedItem) => {
+                    const {
+                      data: relatedData,
+                      links: relatedLinks
+                    } = await this.formatRelationship({
+                      domain,
+                      included,
+                      item: relatedItem,
+                      links: true,
+                      include: include.includes(name)
+                    });
 
-                  return {
-                    ...relatedData,
-                    links: relatedLinks
-                  };
-                })
-              )
-            };
-          }
-        })()
-      }), {})
-    );
+                    return {
+                      ...relatedData,
+                      links: relatedLinks
+                    };
+                  })
+                )
+              };
+            }
+          })()
+        }), {})
+      );
 
-    if (Object.keys(relationships).length) {
-      serialized = {
-        ...serialized,
-        relationships
-      };
+      if (Object.keys(relationships).length) {
+        serialized = {
+          ...serialized,
+          relationships
+        };
+      }
     }
 
     if (links || typeof links !== 'boolean') {
@@ -486,7 +490,8 @@ class Serializer {
           item,
           domain,
           include: [],
-          included: []
+          included: [],
+          formatRelationships: false
         })
       );
     }
