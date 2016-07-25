@@ -1,5 +1,6 @@
 import { expect } from 'chai';
-import fetch from 'isomorphic-fetch';
+
+import fetch from '../../utils/fetch';
 
 const host = 'http://localhost:4000';
 
@@ -12,17 +13,12 @@ describe('Unit: class Server ', () => {
         await fetch(`${host}/posts`, {
           method: 'POST',
           body: JSON.stringify({
-            'data': {
-              'id': createdId,
-              'type': 'posts',
-              'attributes': {
-                'title': 'Hello, world!'
+            data: {
+              type: 'posts',
+              attributes: {
+                title: 'Hello, world!'
               }
             }
-          }),
-          headers: new Headers({
-            'Accept': 'application/vnd.api+json',
-            'Content-Type': 'application/vnd.api+json'
           })
         })
       ).json();
@@ -37,17 +33,13 @@ describe('Unit: class Server ', () => {
         await fetch(`${host}/posts/${createdId}`, {
           method: 'PATCH',
           body: JSON.stringify({
-            'data': {
-              'id': createdId,
-              'type': 'posts',
-              'attributes': {
-                'title': 'It, works!'
+            data: {
+              id: createdId,
+              type: 'posts',
+              attributes: {
+                title: 'It, works!'
               }
             }
-          }),
-          headers: new Headers({
-            'Accept': 'application/vnd.api+json',
-            'Content-Type': 'application/vnd.api+json'
           })
         })
       ).json();

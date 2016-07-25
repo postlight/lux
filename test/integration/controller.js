@@ -1,17 +1,8 @@
 import { expect } from 'chai';
-import isomorphicFetch from 'isomorphic-fetch';
 
-import { MIME_TYPE } from '../../src/packages/jsonapi';
+import fetch from '../utils/fetch';
 
 const host = 'http://localhost:4000';
-
-const fetch = (url, opts = {}) => isomorphicFetch(url, {
-  ...opts,
-  headers: new Headers([
-    ['Accept', MIME_TYPE],
-    ['Content-Type', MIME_TYPE]
-  ])
-});
 
 describe('Integration: class Controller', () => {
   let createdId;
@@ -373,24 +364,22 @@ describe('Integration: class Controller', () => {
   });
 
   describe('#create()', () => {
-    let subject, payload;
+    let subject
+    let payload;
 
     before(async () => {
       subject = await fetch(`${host}/posts`, {
         method: 'POST',
         body: JSON.stringify({
-          'data': {
-            'type': 'posts',
-            'attributes': {
-              'title': 'Not another Node.js framework…',
-              'body': 'A few years ago I was working for a very lean web start up...',
+          data: {
+            type: 'posts',
+            attributes: {
+              title: 'Not another Node.js framework…',
+              body: 'A few years ago I was working for a very lean web start up...',
               'is-public': false
             }
           }
-        }),
-        headers: new Headers([
-          ['Content-Type', 'application/vnd.api+json']
-        ])
+        })
       });
 
       payload = await subject.json();
@@ -408,7 +397,12 @@ describe('Integration: class Controller', () => {
     });
 
     it('returns a JSON API resource object', () => {
-      expect(payload.data).to.have.all.keys('type', 'id', 'attributes');
+      expect(payload.data).to.have.all.keys(
+        'type',
+        'id',
+        'attributes',
+        'relationships'
+      );
     });
   });
 
@@ -419,17 +413,14 @@ describe('Integration: class Controller', () => {
       subject = await fetch(`${host}/posts/${createdId}`, {
         method: 'PATCH',
         body: JSON.stringify({
-          'data': {
-            'id': 51,
-            'type': 'posts',
-            'attributes': {
+          data: {
+            id: 51,
+            type: 'posts',
+            attributes: {
               'is-public': true
             }
           }
-        }),
-        headers: new Headers([
-          ['Content-Type', 'application/vnd.api+json']
-        ])
+        })
       });
 
       payload = await subject.json();
@@ -446,7 +437,12 @@ describe('Integration: class Controller', () => {
     });
 
     it('returns a JSON API resource object', () => {
-      expect(payload.data).to.have.all.keys('type', 'id', 'attributes');
+      expect(payload.data).to.have.all.keys(
+        'type',
+        'id',
+        'attributes',
+        'relationships'
+      );
     });
   });
 

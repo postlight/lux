@@ -388,6 +388,8 @@ class Serializer {
     );
 
     let { modelName: type } = item;
+    let relationships = {};
+
     type = pluralize(type);
 
     if (Array.isArray(attributes)) {
@@ -407,7 +409,7 @@ class Serializer {
     };
 
     if (formatRelationships) {
-      const relationships = await promiseHash(
+      relationships = await promiseHash(
         [...this.hasOne, ...this.hasMany].reduce((hash, name) => ({
           ...hash,
           [name]: (async () => {
@@ -443,17 +445,19 @@ class Serializer {
                   })
                 )
               };
+            } else {
+              return null;
             }
           })()
         }), {})
       );
+    }
 
-      if (Object.keys(relationships).length) {
-        serialized = {
-          ...serialized,
-          relationships
-        };
-      }
+    if (Object.keys(relationships).length) {
+      serialized = {
+        ...serialized,
+        relationships
+      };
     }
 
     if (links || typeof links !== 'boolean') {
