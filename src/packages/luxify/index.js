@@ -14,7 +14,7 @@ export default function luxify(
     res: Response,
     next: (err?: Error) => void
   ) => void
-): Action<void|?mixed>{
+): Action<void|?mixed> {
   const result = function (req, res) {
     return new Promise((resolve, reject) => {
       res = createResponseProxy(res, resolve);
