@@ -1,6 +1,9 @@
 // @flow
 import typeof Model from '../model';
 
+/**
+ * @private
+ */
 class Validation {
   key: string;
 

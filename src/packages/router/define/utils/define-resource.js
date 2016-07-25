@@ -2,6 +2,9 @@
 import defineRoute from './define-route';
 import type { options } from '../interfaces';
 
+/**
+ * @private
+ */
 export default function defineResource({
   path,
   router,

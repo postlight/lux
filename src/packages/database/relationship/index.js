@@ -5,6 +5,9 @@ import relatedFor from './utils/related-for';
 
 import type Model from '../model';
 
+/**
+ * @private
+ */
 export async function get(
   owner: Model,
   key: string
@@ -57,6 +60,9 @@ export async function get(
   return relationship;
 }
 
+/**
+ * @private
+ */
 export function set(
   owner: Model,
   key: string,

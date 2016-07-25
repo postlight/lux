@@ -11,6 +11,9 @@ import type {
   ParameterGroup$contents
 } from './interfaces';
 
+/**
+ * @private
+ */
 class ParameterGroup extends FreezeableMap<string, ParameterGroup$contents> {
   path: string;
 

@@ -8,6 +8,9 @@ import { tryCatchSync } from '../../../utils/try-catch';
 import { ModuleMissingError } from '../../../errors';
 import { InvalidDriverError } from '../errors';
 
+/**
+ * @private
+ */
 export default function connect(path, config = {}) {
   let knex;
   let { pool } = config;

@@ -2,6 +2,9 @@
 import freeze from '../utils/freeze';
 import isFrozen from '../utils/is-frozen';
 
+/**
+ * @private
+ */
 class FreezeableMap<K, V> extends Map<K, V> {
   set(key: K, value: V): this {
     if (!isFrozen(this)) {

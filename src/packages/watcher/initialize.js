@@ -10,6 +10,9 @@ import type { FSWatcher } from 'fs';
 
 const SUBSCRIPTION_NAME = 'lux-watcher';
 
+/**
+ * @private
+ */
 function fallback(instance: Watcher, path: string): FSWatcher  {
   return fs.watch(path, {
     recursive: true
@@ -20,6 +23,9 @@ function fallback(instance: Watcher, path: string): FSWatcher  {
   });
 }
 
+/**
+ * @private
+ */
 function setupWatchmen(instance: Watcher, path: string): Promise<Client> {
   return new Promise((resolve, reject) => {
     const client = new Client();
@@ -84,6 +90,9 @@ function setupWatchmen(instance: Watcher, path: string): Promise<Client> {
   });
 }
 
+/**
+ * @private
+ */
 export default async function initialize(
   instance: Watcher,
   path: string

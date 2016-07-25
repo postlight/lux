@@ -6,6 +6,9 @@ import type { Request, Response } from '../../../server';
 
 const MESSAGE = 'Processed Request';
 
+/**
+ * @private
+ */
 export default function logJSON(logger: Logger, {
   request: req,
   response: res

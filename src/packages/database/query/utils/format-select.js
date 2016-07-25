@@ -1,6 +1,9 @@
 // @flow
 import typeof Model from '../../model';
 
+/**
+ * @private
+ */
 export default function formatSelect(
   model: Model,
   attrs: Array<string> = [],

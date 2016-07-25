@@ -4,6 +4,9 @@ import entries from '../../../../../utils/entries';
 
 import type { Request } from '../../interfaces';
 
+/**
+ * @private
+ */
 export default function parseRead({ method, url: { query } }: Request): Object {
   const pattern = /^(.+)\[(.+)\]$/g;
 

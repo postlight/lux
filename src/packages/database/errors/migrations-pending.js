@@ -3,6 +3,9 @@ import { green, yellow } from 'chalk';
 
 import { line } from '../../logger';
 
+/**
+ * @private
+ */
 class MigrationsPendingError extends Error {
   constructor(migrations?: Array<string> = []): MigrationsPendingError {
     const pending = migrations

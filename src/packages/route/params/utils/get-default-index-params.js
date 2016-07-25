@@ -1,6 +1,9 @@
 // @flow
 import type Controller from '../../../controller';
 
+/**
+ * @private
+ */
 export default function getDefaultIndexParams({
   model,
   attributes,

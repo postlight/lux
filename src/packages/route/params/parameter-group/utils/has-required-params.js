@@ -3,6 +3,9 @@ import { ParameterRequiredError } from '../errors';
 
 import type ParameterGroup from '../index.js';
 
+/**
+ * @private
+ */
 export default function hasRequiredParams(
   group: ParameterGroup,
   params: Object

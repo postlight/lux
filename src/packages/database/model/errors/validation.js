@@ -1,6 +1,12 @@
+// @flow
+
+/**
+ * @private
+ */
 class ValidationError extends Error {
-  constructor(key, value) {
+  constructor(key: string, value: string): ValidationError {
     super(`Validation failed for ${key}: ${value}`);
+    return this;
   }
 }
 

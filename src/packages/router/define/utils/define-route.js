@@ -3,6 +3,9 @@ import Route from '../../../route';
 
 import type { options } from '../interfaces';
 
+/**
+ * @private
+ */
 export default function defineRoute({ router, ...opts }: options): void {
   const route = new Route(opts);
 

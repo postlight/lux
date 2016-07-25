@@ -6,6 +6,9 @@ import getControllerName from '../utils/get-controller-name';
 
 import type { Action } from '../interfaces';
 
+/**
+ * @private
+ */
 export default function trackPerf<T, U: Action<T>>(action: U): Action<T> {
   return async function trackedAction(req, res): Promise<T> {
     const start = Date.now();

@@ -10,6 +10,9 @@ import { infoTemplate, debugTemplate } from '../templates';
 import type Logger from '../../index';
 import type { Request, Response } from '../../../server';
 
+/**
+ * @private
+ */
 export default function logText(logger: Logger, {
   startTime,
   request: req,

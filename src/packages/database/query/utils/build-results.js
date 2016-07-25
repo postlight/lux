@@ -7,6 +7,9 @@ import entries from '../../../../utils/entries';
 import underscore from '../../../../utils/underscore';
 import promiseHash from '../../../../utils/promise-hash';
 
+/**
+ * @private
+ */
 export default async function buildResults({
   model,
   records,

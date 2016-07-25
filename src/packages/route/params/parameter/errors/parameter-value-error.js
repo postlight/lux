@@ -4,6 +4,9 @@ import { createServerError } from '../../../../server';
 
 import type Parameter from '../index';
 
+/**
+ * @private
+ */
 class ParameterValueError extends TypeError {
   constructor(param: Parameter, actual: mixed): ParameterValueError {
     super(line`

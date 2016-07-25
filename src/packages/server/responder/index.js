@@ -3,6 +3,9 @@ import normalize from './utils/normalize';
 
 import type { Request, Response } from '../index';
 
+/**
+ * @private
+ */
 export function createResponder(
   req: Request,
   res: Response

@@ -28,6 +28,9 @@ const VALID_HOOKS = [
   'beforeValidation'
 ];
 
+/**
+ * @private
+ */
 function refsFor(instance) {
   let table = REFS.get(instance);
 
@@ -39,6 +42,9 @@ function refsFor(instance) {
   return table;
 }
 
+/**
+ * @private
+ */
 function initializeProps(prototype, attributes, relationships) {
   Object.defineProperties(prototype, {
     ...entries(attributes)
@@ -114,6 +120,9 @@ function initializeProps(prototype, attributes, relationships) {
   });
 }
 
+/**
+ * @private
+ */
 function initializeHooks({
   model,
   hooks,
@@ -140,6 +149,9 @@ function initializeHooks({
   return Object.freeze(hooks);
 }
 
+/**
+ * @private
+ */
 function initializeValidations({
   model,
   logger,
@@ -180,6 +192,9 @@ function initializeValidations({
   return Object.freeze(validates);
 }
 
+/**
+ * @private
+ */
 export default async function initializeClass({
   store,
   table,

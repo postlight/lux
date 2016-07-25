@@ -1,4 +1,8 @@
 // @flow
+
+/**
+ * @private
+ */
 class ModelMissingError extends Error {
   constructor(name: string): ModelMissingError {
     super(`Could not resolve model by name '${name}'`);

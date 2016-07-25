@@ -2,6 +2,9 @@
 import omit from '../../../../utils/omit';
 import createQueryString from '../../../../utils/create-query-string';
 
+/**
+ * @private
+ */
 export default function createPageLinks({
   page,
   total,

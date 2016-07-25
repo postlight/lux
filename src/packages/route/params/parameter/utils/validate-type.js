@@ -3,6 +3,9 @@ import { ParameterTypeError } from '../errors';
 
 import type Parameter from '../index';
 
+/**
+ * @private
+ */
 export default function validateType(param: Parameter, value: mixed): true {
   const { type } = param;
 

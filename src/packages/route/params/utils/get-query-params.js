@@ -5,6 +5,9 @@ import ParameterGroup from '../parameter-group';
 import type Controller from '../../../controller';
 import type { ParameterGroup$contents } from '../parameter-group/interfaces';
 
+/**
+ * @private
+ */
 function getPageParam(): [string, ParameterGroup$contents] {
   return ['page', new ParameterGroup([
     ['size', new Parameter({ path: 'page.size', type: 'number' })],
@@ -14,6 +17,9 @@ function getPageParam(): [string, ParameterGroup$contents] {
   })];
 }
 
+/**
+ * @private
+ */
 function getSortParam({
   sort
 }: Controller): [string, ParameterGroup$contents] {
@@ -28,6 +34,9 @@ function getSortParam({
   })];
 }
 
+/**
+ * @private
+ */
 function getFilterParam({
   filter
 }: Controller): [string, ParameterGroup$contents] {
@@ -41,6 +50,9 @@ function getFilterParam({
   })];
 }
 
+/**
+ * @private
+ */
 function getFieldsParam({
   model,
   attributes,
@@ -71,6 +83,9 @@ function getFieldsParam({
   })];
 }
 
+/**
+ * @private
+ */
 function getIncludeParam({
   relationships
 }: Controller): [string, ParameterGroup$contents] {
@@ -81,6 +96,9 @@ function getIncludeParam({
   })];
 }
 
+/**
+ * @private
+ */
 export default function getQueryParams(
   controller: Controller
 ): Array<[string, ParameterGroup$contents]> {

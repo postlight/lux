@@ -5,6 +5,9 @@ import { VALID_DRIVERS } from '../constants';
 
 import { line } from '../../logger';
 
+/**
+ * @private
+ */
 class InvalidDriverError extends Error {
   friendly: boolean = true;
 

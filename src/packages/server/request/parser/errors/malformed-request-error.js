@@ -2,6 +2,9 @@
 import createServerError from '../../../utils/create-server-error';
 import { line } from '../../../../logger';
 
+/**
+ * @private
+ */
 class MalformedRequestError extends TypeError {
   constructor(): MalformedRequestError {
     super(line`

@@ -6,6 +6,9 @@ import format from './format';
 
 import type { Request } from '../../interfaces';
 
+/**
+ * @private
+ */
 export default function parseWrite(req: Request): Promise<Object> {
   return new Promise((resolve, reject) => {
     let body = '';

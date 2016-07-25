@@ -3,6 +3,9 @@ import entries from './entries';
 import isNull from './is-null';
 import isUndefined from './is-undefined';
 
+/**
+ * @private
+ */
 export default function compact<T: Object | Array<mixed>>(
   source: T
 ): T | Object {

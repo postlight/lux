@@ -5,6 +5,9 @@ import entries from '../../../utils/entries';
 import typeof { Model } from '../../database';
 import type { Request$params } from '../../server';
 
+/**
+ * @private
+ */
 export default function paramsToQuery(model: Model, {
   id,
   page,

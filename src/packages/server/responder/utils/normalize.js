@@ -3,6 +3,9 @@ import { STATUS_CODES } from '../../constants';
 
 import dataFor from './data-for';
 
+/**
+ * @private
+ */
 export default function normalize(data: ?mixed | void): {
   normalized: mixed;
   statusCode: number;

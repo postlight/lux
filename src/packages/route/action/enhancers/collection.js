@@ -7,6 +7,9 @@ import createPageLinks from '../utils/create-page-links';
 import type { Model } from '../../../database';
 import type { Action } from '../interfaces';
 
+/**
+ * @private
+ */
 export default function collection(
   action: Action<Array<Model>>
 ): Action<Array<Object>> {

@@ -9,6 +9,9 @@ import { camelizeKeys } from '../../../../../utils/transform-keys';
 
 import type { Request$method } from '../../interfaces';
 
+/**
+ * @private
+ */
 function makeArray(source: string | Array<string>): Array<string> {
   if (!Array.isArray(source)) {
     return source.includes(',') ? source.split(',') : [source];
@@ -17,6 +20,9 @@ function makeArray(source: string | Array<string>): Array<string> {
   return source;
 }
 
+/**
+ * @private
+ */
 function formatString(source: string, method: Request$method): mixed {
   let result = source;
 
@@ -35,6 +41,9 @@ function formatString(source: string, method: Request$method): mixed {
   return result;
 }
 
+/**
+ * @private
+ */
 function formatObject(
   source: Object | Array<any>,
   method: Request$method
@@ -46,6 +55,9 @@ function formatObject(
   }
 }
 
+/**
+ * @private
+ */
 export function formatSort(sort: string): string {
   let result = '';
 
@@ -59,6 +71,9 @@ export function formatSort(sort: string): string {
   return result;
 }
 
+/**
+ * @private
+ */
 export function formatFields(fields: Object): Object {
   return entries(fields).reduce((result, [key, value]) => ({
     ...result,
@@ -66,10 +81,16 @@ export function formatFields(fields: Object): Object {
   }), {});
 }
 
+/**
+ * @private
+ */
 export function formatInclude(include: string | Array<string>): Array<string> {
   return makeArray(include);
 }
 
+/**
+ * @private
+ */
 export default function format(params: Object, method: Request$method): Object {
   const result = entries(params).reduce((obj, [key, value]) => {
     key = key.replace(BRACKETS, '');

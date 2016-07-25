@@ -5,6 +5,9 @@ import line from '../utils/line';
 
 import type { RequestLogger$templateData } from './interfaces';
 
+/**
+ * @private
+ */
 export const debugTemplate = ({
   path,
   stats,
@@ -47,6 +50,9 @@ ${stats.reduce((total, { duration }) => total + duration, 0)} ms Total
 ${(endTime - startTime).toString()} ms Actual\
 `;
 
+/**
+ * @private
+ */
 export const infoTemplate = ({
   path,
   route,

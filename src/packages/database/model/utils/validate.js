@@ -4,6 +4,9 @@ import { ValidationError } from '../errors';
 import pick from '../../../../utils/pick';
 import entries from '../../../../utils/entries';
 
+/**
+ * @private
+ */
 export default function validate(instance) {
   const { initialized, constructor: model } = instance;
   let { validates } = model;

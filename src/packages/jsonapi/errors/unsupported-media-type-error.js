@@ -4,6 +4,9 @@ import { MIME_TYPE } from '../constants';
 import { line } from '../../logger';
 import { createServerError } from '../../server';
 
+/**
+ * @private
+ */
 class UnsupportedMediaTypeError extends TypeError {
   constructor(contentType: string): UnsupportedMediaTypeError {
     super(line`

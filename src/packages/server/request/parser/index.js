@@ -4,6 +4,9 @@ import parseWrite from './utils/parse-write';
 
 import type { Request } from '../interfaces';
 
+/**
+ * @private
+ */
 export function parseRequest(req: Request): Promise<Object> {
   switch (req.method) {
     case 'GET':

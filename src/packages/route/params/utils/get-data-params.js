@@ -8,6 +8,9 @@ import { typeForColumn } from '../../../database';
 import type Controller from '../../../controller';
 import type { ParameterGroup$contents } from '../parameter-group/interfaces';
 
+/**
+ * @private
+ */
 function getIDParam({ model }: Controller): [string, ParameterGroup$contents] {
   return ['id', new Parameter({
     type: typeForColumn(model.columnFor(model.primaryKey)),
@@ -16,6 +19,9 @@ function getIDParam({ model }: Controller): [string, ParameterGroup$contents] {
   })];
 }
 
+/**
+ * @private
+ */
 function getTypeParam(): [string, ParameterGroup$contents] {
   return ['type', new Parameter({
     type: 'string',
@@ -24,6 +30,9 @@ function getTypeParam(): [string, ParameterGroup$contents] {
   })];
 }
 
+/**
+ * @private
+ */
 function getAttributesParam({
   model,
   params
@@ -41,6 +50,9 @@ function getAttributesParam({
   })];
 }
 
+/**
+ * @private
+ */
 export default function getDataParams(
   controller: Controller,
   includeID: boolean

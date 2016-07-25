@@ -1,6 +1,9 @@
 // @flow
 import entries from '../../../../utils/entries';
 
+/**
+ * @private
+ */
 export default function filterParams(
   params: Object,
   ...filtered: Array<string>

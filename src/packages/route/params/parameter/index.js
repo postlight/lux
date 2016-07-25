@@ -6,6 +6,9 @@ import validateValue from './utils/validate-value';
 
 import type { Parameter$opts } from './interfaces';
 
+/**
+ * @private
+ */
 class Parameter extends FreezeableSet<mixed> {
   path: string;
 

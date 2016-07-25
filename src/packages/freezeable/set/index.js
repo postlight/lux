@@ -2,6 +2,9 @@
 import freeze from '../utils/freeze';
 import isFrozen from '../utils/is-frozen';
 
+/**
+ * @private
+ */
 class FreezeableSet<T> extends Set<T> {
   add(value: T): this {
     if (!isFrozen(this)) {

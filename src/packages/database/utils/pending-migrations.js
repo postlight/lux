@@ -1,5 +1,8 @@
 import fs from '../../fs';
 
+/**
+ * @private
+ */
 export default async function pendingMigrations(appPath, table) {
   const migrations = await fs.readdirAsync(`${appPath}/db/migrate`);
   const versions = await table().select().map(({ version }) => version);
