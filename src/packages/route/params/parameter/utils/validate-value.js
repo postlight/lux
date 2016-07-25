@@ -3,8 +3,8 @@ import { ParameterValueError } from '../errors';
 
 import type Parameter from '../index';
 
-function validateOne(param: Parameter, values: Set<mixed>, value: mixed): true {
-  if (!values.has(value)) {
+function validateOne(param: Parameter, value: mixed): true {
+  if (!param.has(value)) {
     throw new ParameterValueError(param, value);
   }
 
@@ -12,15 +12,13 @@ function validateOne(param: Parameter, values: Set<mixed>, value: mixed): true {
 }
 
 export default function validateValue(param: Parameter, value: mixed): true {
-  const { values } = param;
-
-  if (values) {
+  if (param.size > 0) {
     if (Array.isArray(value)) {
       for (const item of value) {
-        validateOne(param, values, item);
+        validateOne(param, item);
       }
     } else {
-      validateOne(param, values, value);
+      validateOne(param, value);
     }
   }
 

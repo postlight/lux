@@ -5,13 +5,10 @@ import { createServerError } from '../../../../server';
 import type Parameter from '../index';
 
 class ParameterValueError extends TypeError {
-  constructor(
-    { values, path }: Parameter,
-    actual: mixed
-  ): ParameterValueError {
+  constructor(param: Parameter, actual: mixed): ParameterValueError {
     super(line`
-      Expected value for parameter '${path}' to be one of
-      [${values ? Array.from(values).join(', ') : ''}] but got ${actual}.
+      Expected value for parameter '${param.path}' to be one of
+      [${param.size ? Array.from(param).join(', ') : ''}] but got ${actual}.
     `);
 
     return this;

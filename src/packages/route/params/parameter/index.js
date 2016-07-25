@@ -1,30 +1,28 @@
 // @flow
+import { FreezeableSet } from '../../../freezeable';
+
 import validateType from './utils/validate-type';
 import validateValue from './utils/validate-value';
 
 import type { Parameter$opts } from './interfaces';
 
-class Parameter {
+class Parameter extends FreezeableSet<mixed> {
   path: string;
 
   type: void | string;
 
-  values: void | Set<mixed>;
-
   required: boolean;
 
   constructor({ path, type, values, required }: Parameter$opts): Parameter {
+    super(values);
+
     Object.assign(this, {
       path,
       type,
       required: Boolean(required)
     });
 
-    if (values) {
-      this.values = new Set(values);
-    }
-
-    return this;
+    return this.freeze();
   }
 
   validate(value: mixed): boolean {
