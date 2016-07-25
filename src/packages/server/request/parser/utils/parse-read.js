@@ -1,6 +1,7 @@
 // @flow
+import isObject from '../../../../../utils/is-object';
+import parseNestedObject from './parse-nested-object';
 import format, { formatSort, formatFields, formatInclude } from './format';
-import entries from '../../../../../utils/entries';
 
 import type { Request } from '../../interfaces';
 
@@ -8,40 +9,19 @@ import type { Request } from '../../interfaces';
  * @private
  */
 export default function parseRead({ method, url: { query } }: Request): Object {
-  const pattern = /^(.+)\[(.+)\]$/g;
-
   const {
     sort,
     fields,
     include,
     ...params
-  } = entries(query).reduce((result, [key, value]) => {
-    if (pattern.test(key)) {
-      const parentKey = key.replace(pattern, '$1');
-      const parentValue = result[parentKey];
-
-      return {
-        ...result,
-
-        [parentKey]: {
-          ...(parentValue || {}),
-          [key.replace(pattern, '$2')]: value
-        }
-      };
-    } else {
-      return {
-        ...result,
-        [key]: value
-      };
-    }
-  }, {});
+  } = parseNestedObject(query);
 
   if (sort) {
-    params.sort = formatSort(sort);
+    params.sort = typeof sort === 'string' ? formatSort(sort) : sort;
   }
 
   if (fields) {
-    params.fields = formatFields(fields);
+    params.fields = isObject(fields) ? formatFields(fields) : fields;
   }
 
   if (include) {

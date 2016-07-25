@@ -1,5 +1,5 @@
 // @flow
-import { ParameterValueError } from '../errors';
+import { ParameterValueError } from '../../errors';
 
 import type Parameter from '../index';
 

@@ -1,9 +1,10 @@
 // @flow
 import { FreezeableMap } from '../../../freezeable';
 
-import { InvalidParameterError } from './errors';
+import { InvalidParameterError } from '../errors';
 
 import entries from '../../../../utils/entries';
+import validateType from '../utils/validate-type';
 import hasRequiredParams from './utils/has-required-params';
 
 import type {
@@ -15,6 +16,8 @@ import type {
  * @private
  */
 class ParameterGroup extends FreezeableMap<string, ParameterGroup$contents> {
+  type: string;
+
   path: string;
 
   required: boolean;
@@ -27,14 +30,15 @@ class ParameterGroup extends FreezeableMap<string, ParameterGroup$contents> {
 
     Object.assign(this, {
       path,
+      type: 'object',
       required: Boolean(required)
     });
 
     return this.freeze();
   }
 
-  validate(params: Object): void {
-    if (hasRequiredParams(this, params)) {
+  validate(params: Object): true {
+    if (validateType(this, params) && hasRequiredParams(this, params)) {
       const { path } = this;
 
       for (const [key, value] of entries(params)) {
@@ -47,6 +51,8 @@ class ParameterGroup extends FreezeableMap<string, ParameterGroup$contents> {
         match.validate(value);
       }
     }
+
+    return true;
   }
 }
 

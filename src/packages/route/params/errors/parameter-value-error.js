@@ -1,8 +1,8 @@
 // @flow
-import { line } from '../../../../logger';
-import { createServerError } from '../../../../server';
+import { line } from '../../../logger';
+import { createServerError } from '../../../server';
 
-import type Parameter from '../index';
+import type { Parameter } from '../index';
 
 /**
  * @private

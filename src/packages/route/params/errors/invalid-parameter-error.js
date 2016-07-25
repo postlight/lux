@@ -1,5 +1,5 @@
 // @flow
-import { createServerError } from '../../../../server';
+import { createServerError } from '../../../server';
 
 /**
  * @private

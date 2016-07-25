@@ -1,7 +1,7 @@
 // @flow
 import { FreezeableSet } from '../../../freezeable';
 
-import validateType from './utils/validate-type';
+import validateType from '../utils/validate-type';
 import validateValue from './utils/validate-value';
 
 import type { Parameter$opts } from './interfaces';
