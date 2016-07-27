@@ -6,3 +6,7 @@ export type Server$opts = {
   logger: Logger;
   router: Router;
 };
+
+export interface Server$Error extends Error {
+  statusCode: number;
+}

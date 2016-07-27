@@ -164,7 +164,7 @@ class Logger {
    * WARNING:
    * It is highly reccomended that you do not override this method.
    */
-  constructor({ level, format, filter, enabled }: Logger$config): Logger {
+  constructor({ level, format, filter, enabled }: Logger$config) {
     let write = K;
     let request = K;
 
@@ -237,8 +237,6 @@ class Logger {
         } : K
       });
     });
-
-    return this;
   }
 
   /**
@@ -246,7 +244,7 @@ class Logger {
    *
    * @private
    */
-  getTimestamp(): string {
+  getTimestamp() {
     return new Date().toISOString();
   }
 
@@ -261,7 +259,7 @@ class Logger {
    *
    * @private
    */
-  logFromMessage({ data, type }: { data: string, type: string }): void {
+  logFromMessage({ data, type }: { data: string, type: string }) {
     if (isMaster) {
       switch (type) {
         case DEBUG:

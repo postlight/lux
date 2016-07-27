@@ -4,9 +4,8 @@
  * @private
  */
 class SerializerMissingError extends Error {
-  constructor(resource: string): SerializerMissingError {
+  constructor(resource: string) {
     super(`Could not resolve serializer by name '${resource}'`);
-    return this;
   }
 }
 

@@ -5,9 +5,8 @@ import { createServerError } from '../../../server';
  * @private
  */
 class ParameterRequiredError extends TypeError {
-  constructor(path: string): ParameterRequiredError {
+  constructor(path: string) {
     super(`Missing required parameter '${path}'.`);
-    return this;
   }
 }
 

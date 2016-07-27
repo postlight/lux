@@ -29,3 +29,4 @@ export function createRequest(req: any, {
 }
 
 export { parseRequest } from './parser';
+export { default as getDomain } from './utils/get-domain';

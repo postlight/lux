@@ -1,26 +1,24 @@
 // @flow
-import getDomain from '../utils/get-domain';
+import { Model } from '../../../database';
+import { getDomain } from '../../../server';
 
-import type { Model } from '../../../database';
 import type { Action } from '../interfaces';
 
 /**
  * @private
  */
-export default function member(action: Action<?Model>): Action<?Object> {
-  return async function memberAction(req, res): Promise<?Object> {
+export default function member(action: Action<mixed>): Action<mixed> {
+  return async function memberAction(req, res) {
     const data = await action(req, res);
 
-    if (data) {
+    if (data && data instanceof Model) {
       const domain = getDomain(req);
 
       const {
+        params,
+
         url: {
           path
-        },
-
-        params: {
-          include = []
         },
 
         route: {
@@ -33,12 +31,14 @@ export default function member(action: Action<?Model>): Action<?Object> {
       return await serializer.format({
         data,
         domain,
-        include,
+        include: params.include || [],
 
         links: {
           self: `${domain}${path}`
         }
       });
     }
+
+    return data;
   };
 }

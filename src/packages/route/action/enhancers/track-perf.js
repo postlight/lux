@@ -10,7 +10,7 @@ import type { Action } from '../interfaces';
  * @private
  */
 export default function trackPerf<T, U: Action<T>>(action: U): Action<T> {
-  return async function trackedAction(req, res): Promise<T> {
+  return async function trackedAction(req, res) {
     const start = Date.now();
     const result = await action(req, res);
     let { name } = action;

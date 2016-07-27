@@ -1,17 +1,15 @@
 // @flow
 import { STATUS_CODES } from '../../constants';
 
+import stringify from '../../../../utils/stringify';
 import dataFor from './data-for';
 
 /**
  * @private
  */
-export default function normalize(data: ?mixed | void): {
-  normalized: mixed;
-  statusCode: number;
-} {
+export default function normalize(data?: ?mixed) {
   let normalized;
-  let statusCode = 200;
+  let statusCode;
 
   switch (typeof data) {
     case 'boolean':
@@ -37,7 +35,7 @@ export default function normalize(data: ?mixed | void): {
         statusCode = 404;
         normalized = dataFor(statusCode);
       } else if (data instanceof Error) {
-        statusCode = data.statusCode || 500;
+        statusCode = parseInt(data.statusCode, 10) || 500;
         normalized = dataFor(statusCode, data);
       } else {
         normalized = data;
@@ -54,7 +52,7 @@ export default function normalize(data: ?mixed | void): {
   }
 
   return {
-    normalized,
-    statusCode
+    statusCode,
+    data: stringify(normalized)
   };
 }

@@ -3,10 +3,10 @@
 /**
  * @private
  */
-export default function uniq(
-  src: Array<any>,
+export default function uniq<T: any, U: Array<T>>(
+  src: U,
   ...keys: Array<string>
-): Array<any> {
+): Array<T> {
   const hasKeys = Boolean(keys.length);
 
   return src.filter((x, xIdx, arr) => {

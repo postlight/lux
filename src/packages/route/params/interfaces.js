@@ -1,14 +1,27 @@
 // @flow
 import type Controller from '../../controller';
 import type { Request$method } from '../../server';
-
-export type Params$group =
-  | string
-  | Set<string>
-  | Map<string, string | Set<string>>;
+import type { Lux$Collection } from '../../../interfaces';
 
 export type Params$opts = {
   method: Request$method;
   controller: Controller;
   dynamicSegments: Array<string>;
 };
+
+export type ParameterLike$opts = {
+  path: string;
+  type?: string;
+  values?: Array<any>;
+  required?: boolean;
+  sanitize?: boolean;
+};
+
+export interface ParameterLike extends Lux$Collection<any> {
+  path: string;
+  type: string;
+  required: boolean;
+  sanitize: boolean;
+
+  validate<V: any>(value: V): V;
+}

@@ -1,97 +1,86 @@
 // @flow
 import omit from '../../../../utils/omit';
+import merge from '../../../../utils/merge';
 import createQueryString from '../../../../utils/create-query-string';
 
-/**
- * @private
- */
-export default function createPageLinks({
-  page,
+import type { Request } from '../../../server';
+import type { JSONAPI$DocumentLinks } from '../../../jsonapi';
+
+function createLinkTemplate({
   total,
-  query,
+  params,
   domain,
   pathname,
   defaultPerPage
 }: {
-  total: number;
-  query: Object;
+  total: number,
+  params: Request.params;
   domain: string;
   pathname: string;
   defaultPerPage: number;
+}) {
+  const { page: { size = defaultPerPage } = {} } = params;
+  const baseURL = `${domain}${pathname}`;
+  const queryURL = `${baseURL}?`;
+  const baseParams = omit(params, 'page');
+  const lastPageNum = total > 0 ? Math.ceil(total / size) : 1;
 
-  page: {
-    size: number;
-    number: number;
-  };
-}): {
-  first: string,
-  last: string,
-  prev: ?string,
-  next: ?string
-} {
-  const params = omit(query, 'page', 'page[size]', 'page[number]');
-  const lastPageNum = total > 0 ? Math.ceil(total / page.size) : 1;
-  let base = domain + pathname;
-  let prev = null;
-  let next = null;
-  let last = null;
-  let first = null;
-
-  params.page = page.size !== defaultPerPage ? {
-    size: page.size
-  } : {};
-
-  if (Object.keys(params).length > 1) {
-    base += '?';
-    first = base + createQueryString(params);
-  } else {
-    first = base;
-    base += '?';
+  if (size && size !== defaultPerPage) {
+    baseParams.page = { size };
   }
 
-  if (lastPageNum > 1) {
-    last = base + createQueryString({
-      ...params,
+  const hasParams = Object.keys(baseParams).length;
 
-      page: {
-        ...params.page,
-        number: lastPageNum
-      }
-    });
-  } else {
-    last = first;
-  }
+  return function linkTemplate(pageNum: number | 'first' | 'last'): ?string {
+    let normalized: number;
 
-  if (page.number > 1) {
-    if (page.number === 2) {
-      prev = first;
-    } else {
-      prev = base + createQueryString({
-        ...params,
+    switch (pageNum) {
+      case 'first':
+        normalized = 1;
+        break;
 
+      case 'last':
+        normalized = lastPageNum;
+        break;
+
+      default:
+        normalized = pageNum;
+    }
+
+    if (normalized < 1 || normalized > lastPageNum) {
+      return null;
+    } else if (normalized > 1) {
+      const paramsForPage = merge(baseParams, {
         page: {
-          ...params.page,
-          number: page.number - 1
+          number: normalized
         }
       });
+
+      return queryURL + createQueryString(paramsForPage);
+    } else {
+      return hasParams ? queryURL + createQueryString(baseParams) : baseURL;
     }
-  }
+  };
+}
 
-  if (page.number < lastPageNum) {
-    next = base + createQueryString({
-      ...params,
-
-      page: {
-        ...params.page,
-        number: page.number + 1
-      }
-    });
-  }
+/**
+ * @private
+ */
+export default function createPageLinks(opts: {
+  total: number;
+  params: Request.params;
+  domain: string;
+  pathname: string;
+  defaultPerPage: number;
+}): JSONAPI$DocumentLinks {
+  const { page: { number = 1 } = {} } = opts.params;
+  const linkForPage = createLinkTemplate(opts);
 
   return {
-    first,
-    last,
-    prev,
-    next
+    self: linkForPage(number),
+    first: linkForPage('first'),
+    last: linkForPage('last'),
+    prev: linkForPage(number - 1),
+    next: linkForPage(number + 1)
   };
 }

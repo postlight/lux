@@ -36,7 +36,7 @@ class Cluster extends EventEmitter {
     port: number;
     logger: Logger;
     maxWorkers?: number;
-  }): Cluster {
+  }) {
     super();
 
     Object.defineProperties(this, {
@@ -89,8 +89,6 @@ class Cluster extends EventEmitter {
     });
 
     this.forkAll().then(() => this.emit('ready'));
-
-    return this;
   }
 
   fork(retry: boolean = true): Promise<Worker> {

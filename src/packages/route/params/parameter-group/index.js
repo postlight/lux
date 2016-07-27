@@ -4,55 +4,66 @@ import { FreezeableMap } from '../../../freezeable';
 import { InvalidParameterError } from '../errors';
 
 import entries from '../../../../utils/entries';
+import setType from '../../../../utils/set-type';
 import validateType from '../utils/validate-type';
 import hasRequiredParams from './utils/has-required-params';
 
-import type {
-  ParameterGroup$opts,
-  ParameterGroup$contents
-} from './interfaces';
+import type { ParameterLike, ParameterLike$opts } from '../index';
 
 /**
  * @private
  */
-class ParameterGroup extends FreezeableMap<string, ParameterGroup$contents> {
+class ParameterGroup extends FreezeableMap<string, ParameterLike> {
   type: string;
 
   path: string;
 
   required: boolean;
 
-  constructor(contents: Array<[string, ParameterGroup$contents]>, {
+  sanitize: boolean;
+
+  constructor(contents: Array<[string, ParameterLike]>, {
     path,
-    required
-  }: ParameterGroup$opts): ParameterGroup {
+    required,
+    sanitize
+  }: ParameterLike$opts) {
     super(contents);
 
     Object.assign(this, {
       path,
       type: 'object',
-      required: Boolean(required)
+      required: Boolean(required),
+      sanitize: Boolean(sanitize)
     });
 
-    return this.freeze();
+    this.freeze();
   }
 
-  validate(params: Object): true {
-    if (validateType(this, params) && hasRequiredParams(this, params)) {
-      const { path } = this;
+  validate<V: Object>(params: V): V  {
+    return setType(() => {
+      const validated = {};
 
-      for (const [key, value] of entries(params)) {
-        const match = this.get(key);
+      if (validateType(this, params) && hasRequiredParams(this, params)) {
+        const { sanitize } = this;
+        let { path } = this;
 
-        if (!match) {
-          throw new InvalidParameterError(path.length ? `${path}.${key}` : key);
+        if (path.length) {
+          path = `${path}.`;
         }
 
-        match.validate(value);
-      }
-    }
+        for (const [key, value] of entries(params)) {
+          const match = this.get(key);
 
-    return true;
+          if (match) {
+            validated[key] = match.validate(value);
+          } else if (!match && !sanitize) {
+            throw new InvalidParameterError(`${path}${key}`);
+          }
+        }
+      }
+
+      return validated;
+    });
   }
 }
 

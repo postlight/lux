@@ -7,7 +7,7 @@ import { line } from '../../logger';
  * @private
  */
 class MigrationsPendingError extends Error {
-  constructor(migrations?: Array<string> = []): MigrationsPendingError {
+  constructor(migrations?: Array<string> = []) {
     const pending = migrations
       .map(str => yellow(str.substr(0, str.length - 3)))
       .join(', ');
@@ -16,8 +16,6 @@ class MigrationsPendingError extends Error {
       The following migrations are pending ${pending}.
       Please run ${green('lux db:migrate')} before starting your application.
     `);
-
-    return this;
   }
 }
 

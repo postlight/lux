@@ -12,27 +12,39 @@ import type { Parameter$opts } from './interfaces';
 class Parameter extends FreezeableSet<mixed> {
   path: string;
 
-  type: void | string;
+  type: string;
 
   required: boolean;
 
-  constructor({ path, type, values, required }: Parameter$opts): Parameter {
+  sanitize: boolean;
+
+  constructor({
+    path,
+    type,
+    values,
+    required,
+    sanitize
+  }: Parameter$opts) {
     super(values);
 
     Object.assign(this, {
       path,
       type,
-      required: Boolean(required)
+      required: Boolean(required),
+      sanitize: Boolean(sanitize)
     });
 
-    return this.freeze();
+    this.freeze();
   }
 
-  validate(value: mixed): boolean {
+  validate<V>(value: V): V {
     validateType(this, value);
-    validateValue(this, value);
 
-    return true;
+    if (this.size > 0) {
+      value = validateValue(this, value);
+    }
+
+    return value;
   }
 }
 

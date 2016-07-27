@@ -1,15 +1,17 @@
 import { dasherize, pluralize } from 'inflection';
 
 import Query from '../query';
-import { sql } from '../../logger';
 
 import initializeClass from './initialize-class';
 
 import validate from './utils/validate';
+import processWriteError from './utils/process-write-error';
+import { sql } from '../../logger';
 
 import pick from '../../../utils/pick';
 import omit from '../../../utils/omit';
 import entries from '../../../utils/entries';
+import tryCatch from '../../../utils/try-catch';
 import underscore from '../../../utils/underscore';
 
 import type { options as relationshipOptions } from '../related/interfaces';
@@ -51,51 +53,21 @@ class Model {
   static initialized: boolean;
 
   constructor(attrs: {} = {}, initialize: boolean = true): Model {
-    const {
-      constructor: {
-        attributeNames,
-        relationshipNames
-      }
-    } = this;
+    const { constructor: { attributeNames, relationshipNames } } = this;
 
-    Object.defineProperties(this, {
-      initialized: {
-        value: initialize,
-        writable: !initialize,
-        enumerable: false,
-        configurable: !initialize
-      },
-
-      rawColumnData: {
-        value: attrs,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      initialValues: {
-        value: new Map(),
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      dirtyAttributes: {
-        value: new Set(),
-        writable: false,
-        enumerable: false,
-        configurable: false
-      }
+    Object.assign(this, {
+      rawColumnData: attrs,
+      initialValues: new Map(),
+      dirtyAttributes: new Set()
     });
 
+    attrs = pick(attrs, ...attributeNames, ...relationshipNames);
+    Object.assign(this, attrs);
+
     if (initialize) {
+      this.initialized = true;
       Object.freeze(this);
     }
-
-    Object.assign(
-      this,
-      pick(attrs, ...attributeNames, ...relationshipNames)
-    );
 
     return this;
   }
@@ -239,27 +211,24 @@ class Model {
     return Object.keys(this.relationships);
   }
 
-  async update(attributes: Object = {}): Model {
-    const {
-      constructor: {
-        primaryKey,
-        table,
+  save(): Promise<Model> {
+    return tryCatch(async () => {
+      const {
+        constructor: {
+          table,
+          logger,
+          primaryKey,
 
-        hooks: {
-          afterUpdate,
-          afterSave,
-          afterValidation,
-          beforeUpdate,
-          beforeSave,
-          beforeValidation
+          hooks: {
+            afterUpdate,
+            afterSave,
+            afterValidation,
+            beforeUpdate,
+            beforeSave,
+            beforeValidation
+          }
         }
-      }
-    } = this;
-
-    Object.assign(this, attributes);
-
-    if (this.isDirty) {
-      const { constructor: { logger } } = this;
+      } = this;
 
       if (typeof beforeValidation === 'function') {
         await beforeValidation(this);
@@ -299,9 +268,16 @@ class Model {
       if (typeof afterSave === 'function') {
         await afterSave(this);
       }
-    }
 
-    return this;
+      return this;
+    }, err => {
+      throw processWriteError(err);
+    });
+  }
+
+  async update(attributes: Object = {}): Model {
+    Object.assign(this, attributes);
+    return this.isDirty ? await this.save() : this;
   }
 
   async destroy(): Model {
@@ -378,76 +354,80 @@ class Model {
     }
   }
 
-  static async create(props = {}): Model {
-    const {
-      primaryKey,
-      logger,
-      table,
+  static create(props = {}): Model {
+    return tryCatch(async () => {
+      const {
+        primaryKey,
+        logger,
+        table,
 
-      hooks: {
-        afterCreate,
-        afterSave,
-        afterValidation,
-        beforeCreate,
-        beforeSave,
-        beforeValidation
+        hooks: {
+          afterCreate,
+          afterSave,
+          afterValidation,
+          beforeCreate,
+          beforeSave,
+          beforeValidation
+        }
+      } = this;
+
+      const datetime = new Date();
+      const instance = new this({
+        ...props,
+        createdAt: datetime,
+        updatedAt: datetime
+      }, false);
+
+      if (typeof beforeValidation === 'function') {
+        await beforeValidation(instance);
       }
-    } = this;
 
-    const datetime = new Date();
-    const instance = new this({
-      ...props,
-      createdAt: datetime,
-      updatedAt: datetime
-    }, false);
+      validate(instance);
 
-    if (typeof beforeValidation === 'function') {
-      await beforeValidation(instance);
-    }
+      if (typeof afterValidation === 'function') {
+        await afterValidation(instance);
+      }
 
-    validate(instance);
+      if (typeof beforeCreate === 'function') {
+        await beforeCreate(instance);
+      }
 
-    if (typeof afterValidation === 'function') {
-      await afterValidation(instance);
-    }
+      if (typeof beforeSave === 'function') {
+        await beforeSave(instance);
+      }
 
-    if (typeof beforeCreate === 'function') {
-      await beforeCreate(instance);
-    }
+      const query = table()
+        .returning(primaryKey)
+        .insert(omit(instance.format('database'), primaryKey))
+        .on('query', () => {
+          setImmediate(() => logger.debug(sql`${query.toString()}`));
+        });
 
-    if (typeof beforeSave === 'function') {
-      await beforeSave(instance);
-    }
-
-    const query = table()
-      .returning(primaryKey)
-      .insert(omit(instance.format('database'), primaryKey))
-      .on('query', () => {
-        setImmediate(() => logger.debug(sql`${query.toString()}`));
+      Object.assign(instance, {
+        [primaryKey]: (await query)[0]
       });
 
-    Object.assign(instance, {
-      [primaryKey]: (await query)[0]
+      Reflect.defineProperty(instance, 'initialized', {
+        value: true,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      });
+
+      Object.freeze(instance);
+
+      if (typeof afterCreate === 'function') {
+        await afterCreate(instance);
+      }
+
+      if (typeof afterSave === 'function') {
+        await afterSave(instance);
+      }
+
+      return instance;
+    }, err => {
+      throw processWriteError(err);
     });
-
-    Reflect.defineProperty(instance, 'initialized', {
-      value: true,
-      writable: false,
-      enumerable: false,
-      configurable: false
-    });
-
-    Object.freeze(instance);
-
-    if (typeof afterCreate === 'function') {
-      await afterCreate(instance);
-    }
-
-    if (typeof afterSave === 'function') {
-      await afterSave(instance);
-    }
-
-    return instance;
   }
 
   static all(): Query {

@@ -7,13 +7,13 @@ import { ANSI, STDOUT, STDERR } from './constants';
 import { DEBUG, INFO, WARN, ERROR } from '../constants';
 
 import type { Logger$Writer } from './interfaces';
-import type { Logger$format, Logger$data } from '../interfaces';
+import type { Logger$format } from '../interfaces';
 
 /**
  * @private
  */
 export function createWriter(format: Logger$format): Logger$Writer {
-  return function write(data: Logger$data): void {
+  return function write(data) {
     if (isWorker && typeof process.send === 'function') {
       process.send({
         data,

@@ -1,5 +1,6 @@
 // @flow
-import Model from '../database/model';
+import { Model } from '../database';
+import { getDomain } from '../server';
 
 import merge from '../../utils/merge';
 import insert from '../../utils/insert';
@@ -7,7 +8,8 @@ import paramsToQuery from './utils/params-to-query';
 
 import type Database from '../database';
 import type Serializer from '../serializer';
-import type { Request } from '../server';
+import type { Request, Response } from '../server';
+import type { Controller$opts } from './interfaces';
 
 /**
  * The `Controller` class is responsible for taking in requests from the outside
@@ -105,15 +107,9 @@ class Controller {
     store,
     model,
     serializer,
-    serializers = new Map(),
+    serializers,
     parentController
-  }: {
-    store: Database,
-    model: typeof Model,
-    serializer: Serializer,
-    serializers: Map<string, Serializer>,
-    parentController: ?Controller
-  }): Controller {
+  }: Controller$opts) {
     let attributes = [];
     let relationships = [];
 
@@ -195,8 +191,6 @@ class Controller {
         configurable: false
       }
     });
-
-    return this;
   }
 
   /**
@@ -429,20 +423,32 @@ class Controller {
    * @param  {Request} request
    * @param  {Response} response
    */
-  create({
-    params: {
-      data: {
-        attributes
-      } = {}
-    },
+  async create(req: Request, res: Response): Promise<Model> {
+    const {
+      url: {
+        pathname
+      },
 
-    route: {
-      controller: {
-        model
+      params: {
+        data: {
+          attributes
+        } = {}
+      },
+
+      route: {
+        controller: {
+          model
+        }
       }
-    }
-  }: Request): Promise<Model> {
-    return model.create(attributes);
+    } = req;
+
+    const record = await model.create(attributes);
+    const id = Reflect.get(record, model.primaryKey);
+
+    res.statusCode = 201;
+    res.setHeader('Location', `${getDomain(req) + pathname}/${id}`);
+
+    return record;
   }
 
   /**
@@ -466,14 +472,15 @@ class Controller {
         model
       }
     }
-  }: Request): Promise<?Model> {
+  }: Request): Promise<number|Model> {
     const record = await model.find(id);
 
     if (record) {
-      await record.update(attributes);
+      Object.assign(record, attributes);
+      return record.isDirty ? await record.save() : 204;
     }
 
-    return record;
+    return 404;
   }
 
   /**
@@ -492,14 +499,13 @@ class Controller {
         model
       }
     }
-  }: Request): Promise<number> {
+  }: Request): Promise<void|number> {
     const record = await model.find(id);
 
     if (record) {
       await record.destroy();
+      return 204;
     }
-
-    return 204;
   }
 
   /**

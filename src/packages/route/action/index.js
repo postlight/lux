@@ -26,7 +26,7 @@ export function createAction(
       break;
   }
 
-  function __FINAL__HANDLER__(req, res): Promise<any> {
+  function __FINAL__HANDLER__(req, res) {
     return action(req, res);
   }
 

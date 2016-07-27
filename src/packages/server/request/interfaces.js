@@ -39,8 +39,8 @@ export type Request$params = {
   include: Array<string>;
 
   page: {
-    size: number;
-    number: number;
+    size?: number;
+    number?: number;
   };
 
   data: {

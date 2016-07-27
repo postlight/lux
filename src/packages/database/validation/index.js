@@ -1,28 +1,23 @@
 // @flow
-import typeof Model from '../model';
 
 /**
  * @private
  */
-class Validation {
+class Validation<T: () => boolean> {
   key: string;
 
   value: mixed;
 
-  model: Model;
-
-  validator: () => boolean;
+  validator: T;
 
   constructor({
     key,
     value,
-    model,
-    validator = () => true
+    validator
   }: {
     key: string,
     value: mixed,
-    model: Model,
-    validator: () => boolean
+    validator: T
   } = {}) {
     Object.defineProperties(this, {
       key: {
@@ -39,13 +34,6 @@ class Validation {
         configurable: false
       },
 
-      model: {
-        value: model,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
       validator: {
         value: validator,
         writable: false,
@@ -53,18 +41,10 @@ class Validation {
         configurable: false
       }
     });
-
-    return this;
   }
 
-  get isValid(): boolean {
-    const {
-      model,
-      value,
-      validator
-    } = this;
-
-    return Reflect.apply(validator, model, [value]);
+  isValid() {
+    return this.validator(this.value);
   }
 }
 

@@ -8,17 +8,17 @@ import initialize from './initialize';
 /**
  * @private
  */
-class Watcher extends EventEmitter {
+class Watcher<T: Client | FSWatcher> extends EventEmitter {
   path: string;
 
-  client: Client | FSWatcher;
+  client: T;
 
-  constructor(path: string): Promise<Watcher> {
+  constructor(path: string): Promise<Watcher<T>> {
     super();
     return initialize(this, path);
   }
 
-  destroy(): void {
+  destroy() {
     const { client } = this;
 
     if (client instanceof FSWatcher) {

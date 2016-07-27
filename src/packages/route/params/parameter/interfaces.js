@@ -1,7 +1,6 @@
 // @flow
-export type Parameter$opts = {
-  path: string;
-  type?: string;
+import type { ParameterLike$opts } from '../index';
+
+export type Parameter$opts = ParameterLike$opts & {
   values?: Array<any>;
-  required?: boolean;
 };

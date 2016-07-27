@@ -4,28 +4,28 @@ import { ID_PATTERN, RESOURCE_PATTERN } from './constants';
 import { FreezeableSet } from '../freezeable';
 
 import { createAction } from './action';
-import { paramsFor, defaultParamsFor } from './params';
+import { paramsFor, defaultParamsFor, validateResourceId } from './params';
 
 import getStaticPath from './utils/get-static-path';
 import getDynamicSegments from './utils/get-dynamic-segments';
 
 import type Controller from '../controller';
-import type { Request, Response, Request$method } from '../server';
-import type { Route$opts } from './interfaces';
+import type { Request, Response } from '../server';
 import type { Action } from './action';
 import type { ParameterGroup } from './params';
+import type { Route$opts } from './interfaces';
 
 /**
  * @private
  */
 class Route extends FreezeableSet<Action<any>> {
-  path: string;
+  path: Route$opts.path;
 
   params: ParameterGroup;
 
-  action: string;
+  action: Route$opts.action;
 
-  method: Request$method;
+  method: Route$opts.method;
 
   resource: string;
 
@@ -131,10 +131,10 @@ class Route extends FreezeableSet<Action<any>> {
       );
     }
 
-    return this.freeze();
+    this.freeze();
   }
 
-  parseParams(pathname: string): Object {
+  parseParams(pathname: string) {
     const parts = pathname.match(ID_PATTERN) || [];
 
     return parts.reduce((params, val, index) => {
@@ -151,7 +151,7 @@ class Route extends FreezeableSet<Action<any>> {
     }, {});
   }
 
-  getDefaultParams(): Object {
+  getDefaultParams() {
     const { action, controller } = this;
 
     return defaultParamsFor({
@@ -160,7 +160,7 @@ class Route extends FreezeableSet<Action<any>> {
     });
   }
 
-  async execHandlers(req: Request, res: Response): Promise<any> {
+  async execHandlers(req: Request, res: Response) {
     for (const handler of this) {
       const data = await handler(req, res);
 
@@ -170,24 +170,26 @@ class Route extends FreezeableSet<Action<any>> {
     }
   }
 
-  visit(req: Request, res: Response): Promise<any> {
+  async visit(req: Request, res: Response) {
     Object.assign(req, {
       defaultParams: this.getDefaultParams(),
 
-      params: {
+      params: this.params.validate({
         ...req.params,
         ...this.parseParams(req.url.pathname)
-      }
+      })
     });
 
-    this.params.validate(req.params);
+    if (req.method === 'PATCH') {
+      validateResourceId(req);
+    }
 
-    return this.execHandlers(req, res);
+    return await this.execHandlers(req, res);
   }
 }
 
 export default Route;
-export { ID_PATTERN, RESOURCE_PATTERN } from './constants';
+export * from './constants';
 
 export type { Action } from './action';
 export type { Route$opts } from './interfaces';

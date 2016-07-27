@@ -13,7 +13,7 @@ import type Route, { Route$opts } from '../route';
  * @private
  */
 class Router extends FreezeableMap<string, Route> {
-  constructor({ routes, controllers }: Router$opts): Router {
+  constructor({ routes, controllers }: Router$opts) {
     super();
 
     Reflect.apply(routes, {
@@ -31,10 +31,10 @@ class Router extends FreezeableMap<string, Route> {
       })
     }, []);
 
-    return this.freeze();
+    this.freeze();
   }
 
-  match({ method, url: { pathname } }: Request): void | Route {
+  match({ method, url: { pathname } }: Request) {
     const staticPath = pathname.replace(ID_PATTERN, ':dynamic');
 
     return this.get(`${method}:${staticPath}`);

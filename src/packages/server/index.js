@@ -2,7 +2,6 @@
 import { createServer } from 'http';
 
 import { HAS_BODY } from './constants';
-import { MIME_TYPE } from '../jsonapi';
 
 import { createRequest, parseRequest } from './request';
 import { createResponse } from './response';
@@ -29,7 +28,7 @@ class Server {
 
   instance: HTTPServer;
 
-  constructor({ logger, router }: Server$opts): Server {
+  constructor({ logger, router }: Server$opts) {
     Object.defineProperties(this, {
       router: {
         value: router,
@@ -52,8 +51,6 @@ class Server {
         configurable: false
       }
     });
-
-    return this;
   }
 
   listen(port: number): void {
@@ -94,8 +91,6 @@ class Server {
       startTime: Date.now()
     });
 
-    response.setHeader('Content-Type', MIME_TYPE);
-
     const isValid = tryCatchSync(() => {
       return this.validateRequest(request);
     }, respond);
@@ -120,6 +115,7 @@ class Server {
 }
 
 export default Server;
+export { getDomain } from './request';
 export { default as createServerError } from './utils/create-server-error';
 
 export type {

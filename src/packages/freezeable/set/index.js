@@ -6,7 +6,7 @@ import isFrozen from '../utils/is-frozen';
  * @private
  */
 class FreezeableSet<T> extends Set<T> {
-  add(value: T): this {
+  add(value: T): FreezeableSet<T> {
     if (!isFrozen(this)) {
       super.add(value);
     }
@@ -14,21 +14,17 @@ class FreezeableSet<T> extends Set<T> {
     return this;
   }
 
-  clear(): void {
+  clear() {
     if (!isFrozen(this)) {
       super.clear();
     }
   }
 
-  delete(value: T): boolean {
-    if (!isFrozen(this)) {
-      return super.delete(value);
-    }
-
-    return false;
+  delete(value: T) {
+    return isFrozen(this) ? false : super.delete(value);
   }
 
-  freeze(): this {
+  freeze() {
     return freeze(this);
   }
 }

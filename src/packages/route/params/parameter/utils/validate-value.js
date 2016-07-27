@@ -1,32 +1,43 @@
 // @flow
-import { ParameterValueError } from '../../errors';
+import { ParameterValueError, ResourceMismatchError } from '../../errors';
 
 import type Parameter from '../index';
 
 /**
  * @private
  */
-function validateOne(param: Parameter, value: mixed): true {
+function validateOne<V>(param: Parameter, value: V): V {
   if (!param.has(value)) {
-    throw new ParameterValueError(param, value);
+    let expected;
+
+    switch (param.path) {
+      case 'data.type':
+        [expected] = Array.from(param.values());
+        throw new ResourceMismatchError(param.path, expected, value);
+
+      default:
+        throw new ParameterValueError(param, value);
+    }
   }
 
-  return true;
+  return value;
 }
 
 /**
  * @private
  */
-export default function validateValue(param: Parameter, value: mixed): true {
-  if (param.size > 0) {
-    if (Array.isArray(value)) {
+export default function validateValue<V>(param: Parameter, value: V): V {
+  if (Array.isArray(value)) {
+    if (param.sanitize) {
+      return value.filter(item => param.has(item));
+    } else {
       for (const item of value) {
         validateOne(param, item);
       }
-    } else {
-      validateOne(param, value);
     }
+  } else {
+    validateOne(param, value);
   }
 
-  return true;
+  return value;
 }

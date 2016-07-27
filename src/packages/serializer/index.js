@@ -2,13 +2,22 @@
 import { pluralize } from 'inflection';
 
 import { VERSION } from '../jsonapi';
-import { Model } from '../database';
 
 import pick from '../../utils/pick';
 import uniq from '../../utils/uniq';
 import insert from '../../utils/insert';
 import promiseHash from '../../utils/promise-hash';
 import { dasherizeKeys } from '../../utils/transform-keys';
+
+import type { Model } from '../database';
+import type { Serializer$opts } from './interfaces';
+
+import type {
+  JSONAPI$Document,
+  JSONAPI$DocumentLinks,
+  JSONAPI$ResourceObject,
+  JSONAPI$RelationshipObject
+} from '../jsonapi';
 
 /**
  * The `Serializer` class is where you declare the specific attributes and
@@ -28,7 +37,7 @@ class Serializer {
    * @readonly
    * @private
    */
-  model: typeof Model;
+  model: Serializer$opts.model;
 
   /**
    * A Map of all resolved serializers in a an `Application` instance. This is
@@ -41,7 +50,7 @@ class Serializer {
    * @readonly
    * @private
    */
-  serializers: Map<string, Serializer>;
+  serializers: Serializer$opts.serializers;
 
   /**
    * Create an instance of `Serializer`.
@@ -53,28 +62,11 @@ class Serializer {
    *
    * @private
    */
-  constructor({
-    model,
-    serializers
-  }: {
-    model: typeof Model,
-    serializers: Map<string, Serializer>
-  } = {}) {
-    Reflect.defineProperty(this, 'model', {
-      value: model,
-      writable: false,
-      enumerable: false,
-      configurable: false
+  constructor({ model, serializers }: Serializer$opts) {
+    Object.assign(this, {
+      model,
+      serializers
     });
-
-    Reflect.defineProperty(this, 'serializers', {
-      value: serializers,
-      writable: false,
-      enumerable: false,
-      configurable: false
-    });
-
-    return this;
   }
 
   /**
@@ -299,62 +291,47 @@ class Serializer {
     domain,
     include
   }: {
-    data: ?(Object | Array<Object> | Model),
-    links: Object,
-    domain: string,
-    include: Array<string>
-  }): Promise<Object | Array<Object>> {
+    data: Model | Array<Model>;
+    links: JSONAPI$DocumentLinks;
+    domain: string;
+    include: Array<string>;
+  }): Promise<JSONAPI$Document> {
     let serialized = {};
+    const included: Array<JSONAPI$ResourceObject> = [];
 
-    if (data instanceof Model || Array.isArray(data)) {
-      const included = [];
-
-      if (Array.isArray(data)) {
-        serialized = {
-          ...serialized,
-
-          data: await Promise.all(
-            data.map(item => this.formatOne({
-              item,
-              domain,
-              include,
-              included
-            }))
-          )
-        };
-      } else {
-        serialized = {
-          ...serialized,
-
-          data: await this.formatOne({
+    if (Array.isArray(data)) {
+      serialized = {
+        data: await Promise.all(
+          data.map(item => this.formatOne({
+            item,
             domain,
             include,
-            included,
-            item: data,
-            links: false
-          })
-        };
-      }
+            included
+          }))
+        )
+      };
+    } else {
+      serialized = {
+        data: await this.formatOne({
+          domain,
+          include,
+          included,
+          item: data,
+          links: false
+        })
+      };
+    }
 
-      if (included.length) {
-        serialized = {
-          ...serialized,
-          included: uniq(included, 'id', 'type')
-        };
-      }
-
-      if (links) {
-        serialized = {
-          ...serialized,
-          links
-        };
-      }
-    } else if (data instanceof Object) {
-      serialized = data;
+    if (included.length) {
+      serialized = {
+        ...serialized,
+        included: uniq(included, 'id', 'type')
+      };
     }
 
     return {
       ...serialized,
+      links,
 
       jsonapi: {
         version: VERSION
@@ -377,9 +354,9 @@ class Serializer {
     links?: boolean;
     domain: string;
     include: Array<string>;
-    included: Array<Object>;
+    included: Array<JSONAPI$ResourceObject>;
     formatRelationships?: boolean
-  }): Object {
+  }): Promise<JSONAPI$ResourceObject> {
     const { id } = item;
     const attributes = dasherizeKeys(
       pick(item, ...Object.keys(item.rawColumnData).filter(key => {
@@ -392,17 +369,7 @@ class Serializer {
 
     type = pluralize(type);
 
-    if (Array.isArray(attributes)) {
-      return {};
-    }
-
-    let serialized: {
-      id: string,
-      type: string,
-      links?: Object,
-      attributes: Object,
-      relationships?: Object
-    } = {
+    const serialized: JSONAPI$ResourceObject = {
       id: id.toString(),
       type,
       attributes
@@ -412,41 +379,36 @@ class Serializer {
       relationships = await promiseHash(
         [...this.hasOne, ...this.hasMany].reduce((hash, name) => ({
           ...hash,
+
           [name]: (async () => {
             const related = await item[name];
 
-            if (related instanceof Model) {
-              return await this.formatRelationship({
-                domain,
-                included,
-                item: related,
-                links: true,
-                include: include.includes(name)
-              });
+            if (!related) {
+              return null;
             } else if (Array.isArray(related) && related.length) {
               return {
                 data: await Promise.all(
                   related.map(async (relatedItem) => {
                     const {
-                      data: relatedData,
-                      links: relatedLinks
+                      data: relatedData
                     } = await this.formatRelationship({
                       domain,
                       included,
                       item: relatedItem,
-                      links: true,
                       include: include.includes(name)
                     });
 
-                    return {
-                      ...relatedData,
-                      links: relatedLinks
-                    };
+                    return relatedData;
                   })
                 )
               };
             } else {
-              return null;
+              return await this.formatRelationship({
+                domain,
+                included,
+                item: related,
+                include: include.includes(name)
+              });
             }
           })()
         }), {})
@@ -454,10 +416,7 @@ class Serializer {
     }
 
     if (Object.keys(relationships).length) {
-      serialized = {
-        ...serialized,
-        relationships
-      };
+      serialized.relationships = relationships;
     }
 
     if (links || typeof links !== 'boolean') {
@@ -481,8 +440,8 @@ class Serializer {
     item: Model;
     domain: string;
     include: boolean;
-    included: Array<Object>;
-  }): Object {
+    included: Array<JSONAPI$ResourceObject>;
+  }): Promise<JSONAPI$RelationshipObject> {
     const { id, constructor: { serializer } } = item;
     let { modelName: type } = item;
 
@@ -512,5 +471,17 @@ class Serializer {
     };
   }
 }
+
+Reflect.defineProperty(Serializer.prototype, 'model', {
+  writable: true,
+  enumerable: false,
+  configurable: false
+});
+
+Reflect.defineProperty(Serializer.prototype, 'serializers', {
+  writable: true,
+  enumerable: false,
+  configurable: false
+});
 
 export default Serializer;

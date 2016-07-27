@@ -414,7 +414,7 @@ describe('Integration: class Controller', () => {
         method: 'PATCH',
         body: JSON.stringify({
           data: {
-            id: 51,
+            id: `${createdId}`,
             type: 'posts',
             attributes: {
               'is-public': true

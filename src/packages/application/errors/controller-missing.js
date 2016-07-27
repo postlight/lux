@@ -4,9 +4,8 @@
  * @private
  */
 class ControllerMissingError extends Error {
-  constructor(resource: string): ControllerMissingError {
+  constructor(resource: string) {
     super(`Could not resolve controller by name '${resource}'`);
-    return this;
   }
 }
 

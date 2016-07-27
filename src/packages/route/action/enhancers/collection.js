@@ -1,10 +1,11 @@
 // @flow
 import { Query } from '../../../database';
+import { getDomain } from '../../../server';
 
-import getDomain from '../utils/get-domain';
 import createPageLinks from '../utils/create-page-links';
 
 import type { Model } from '../../../database';
+import type { JSONAPI$Document } from '../../../jsonapi';
 import type { Action } from '../interfaces';
 
 /**
@@ -12,50 +13,48 @@ import type { Action } from '../interfaces';
  */
 export default function collection(
   action: Action<Array<Model>>
-): Action<Array<Object>> {
-  return async function collectionAction(req, res): Promise<Array<Object>> {
-    const { route: { controller } } = req;
+): Action<JSONAPI$Document> {
+  return async function collectionAction(req, res) {
+    const {
+      params,
+
+      url: {
+        pathname
+      },
+
+      route: {
+        controller: {
+          serializer,
+          defaultPerPage
+        }
+      }
+    } = req;
+
     const result = action(req, res);
+    const domain = getDomain(req);
+    let { page } = params;
+
+    if (!page) {
+      page = req.defaultParams.page;
+    }
 
     const [data, total] = await Promise.all([
       result,
       Query.from(result).count()
     ]);
 
-    const domain = getDomain(req);
-    const { serializer, defaultPerPage } = controller;
+    return await serializer.format({
+      data,
+      domain,
+      include: params.include || [],
 
-    const {
-      params: {
-        page = req.defaultParams.page,
-        include = []
-      },
-
-      url: {
-        path,
-        query,
-        pathname
-      }
-    } = req;
-
-    const links = {
-      self: domain + path,
-
-      ...createPageLinks({
-        page,
+      links: createPageLinks({
         total,
-        query,
+        params,
         domain,
         pathname,
         defaultPerPage
       })
-    };
-
-    return await serializer.format({
-      data,
-      links,
-      domain,
-      include
     });
   };
 }

@@ -3,12 +3,12 @@ import Parameter from '../parameter';
 import ParameterGroup from '../parameter-group';
 
 import type Controller from '../../../controller';
-import type { ParameterGroup$contents } from '../parameter-group/interfaces';
+import type { ParameterLike } from '../interfaces';
 
 /**
  * @private
  */
-function getPageParam(): [string, ParameterGroup$contents] {
+function getPageParam(): [string, ParameterLike] {
   return ['page', new ParameterGroup([
     ['size', new Parameter({ path: 'page.size', type: 'number' })],
     ['number', new Parameter({ path: 'page.number', type: 'number' })]
@@ -22,7 +22,7 @@ function getPageParam(): [string, ParameterGroup$contents] {
  */
 function getSortParam({
   sort
-}: Controller): [string, ParameterGroup$contents] {
+}: Controller): [string, ParameterLike] {
   return ['sort', new Parameter({
     path: 'sort',
     type: 'string',
@@ -39,7 +39,7 @@ function getSortParam({
  */
 function getFilterParam({
   filter
-}: Controller): [string, ParameterGroup$contents] {
+}: Controller): [string, ParameterLike] {
   return ['filter', new ParameterGroup(filter.map(param => [
     param,
     new Parameter({
@@ -57,12 +57,13 @@ function getFieldsParam({
   model,
   attributes,
   relationships
-}: Controller): [string, ParameterGroup$contents] {
+}: Controller): [string, ParameterLike] {
   return ['fields', new ParameterGroup([
     [model.resourceName, new Parameter({
       path: `fields.${model.resourceName}`,
       type: 'array',
-      values: attributes
+      values: attributes,
+      sanitize: true
     })],
 
     ...relationships.map(relationship => {
@@ -71,6 +72,7 @@ function getFieldsParam({
       return [relatedModel.resourceName, new Parameter({
         path: `fields.${relatedModel.resourceName}`,
         type: 'array',
+        sanitize: true,
 
         values: [
           relatedModel.primaryKey,
@@ -79,7 +81,8 @@ function getFieldsParam({
       })];
     })
   ], {
-    path: 'fields'
+    path: 'fields',
+    sanitize: true
   })];
 }
 
@@ -88,7 +91,7 @@ function getFieldsParam({
  */
 function getIncludeParam({
   relationships
-}: Controller): [string, ParameterGroup$contents] {
+}: Controller): [string, ParameterLike] {
   return ['include', new Parameter({
     path: 'include',
     type: 'array',
@@ -101,7 +104,7 @@ function getIncludeParam({
  */
 export default function getQueryParams(
   controller: Controller
-): Array<[string, ParameterGroup$contents]> {
+): Array<[string, ParameterLike]> {
   return [
     getPageParam(),
     getSortParam(controller),

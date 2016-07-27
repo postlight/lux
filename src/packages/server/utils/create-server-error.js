@@ -1,18 +1,29 @@
 // @flow
+import setType from '../../../utils/set-type';
+
+import type { Server$Error } from '../interfaces';
 
 /**
  * @private
  */
-export default function createServerError<T: typeof Error | typeof TypeError>(
-  target: T,
+export default function createServerError<T: any>(
+  Target: Class<T>,
   statusCode: number
-): T {
-  Reflect.defineProperty(target.prototype, 'statusCode', {
-    value: statusCode,
-    writable: false,
-    enumerable: true,
-    configurable: false
-  });
+): Class<T> & Class<Server$Error> {
+  return setType(() => {
+    const ServerError = class extends Target {
+      statusCode: number;
 
-  return target;
+      constructor(...args: Array<mixed>) {
+        super(...args);
+        this.statusCode = statusCode;
+      }
+    };
+
+    Reflect.defineProperty(ServerError, 'name', {
+      value: Target.name
+    });
+
+    return ServerError;
+  });
 }

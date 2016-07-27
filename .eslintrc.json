@@ -9,6 +9,7 @@
     "T": true,
     "Map": true,
     "Set": true,
+    "Class": true,
     "Proxy": true,
     "Promise": true,
     "Reflect": true,

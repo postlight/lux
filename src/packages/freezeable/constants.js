@@ -1,2 +1,2 @@
 // @flow
-export const FREEZER: WeakSet<Object> = new WeakSet();
+export const FREEZER = new WeakSet();

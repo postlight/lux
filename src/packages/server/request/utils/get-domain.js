@@ -1,5 +1,5 @@
 // @flow
-import type { Request } from '../../../server';
+import type { Request } from '../interfaces';
 
 /**
  * @private

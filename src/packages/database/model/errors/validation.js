@@ -4,9 +4,8 @@
  * @private
  */
 class ValidationError extends Error {
-  constructor(key: string, value: string): ValidationError {
+  constructor(key: string, value: string) {
     super(`Validation failed for ${key}: ${value}`);
-    return this;
   }
 }
 

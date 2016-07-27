@@ -71,5 +71,8 @@ export function defaultParamsFor({
   }
 }
 
+export { default as validateResourceId } from './utils/validate-resource-id';
+
+export type { ParameterLike, ParameterLike$opts } from './interfaces';
 export type { default as Parameter } from './parameter';
 export type { default as ParameterGroup } from './parameter-group';

@@ -16,7 +16,7 @@ export function createCluster({
   port: number;
   logger: Logger;
   maxWorkers?: number;
-}): Cluster {
+}) {
   return new Cluster({
     path,
     port,

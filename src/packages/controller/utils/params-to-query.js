@@ -65,7 +65,7 @@ export default function paramsToQuery(model: Model, {
 
     if (include && value.length === 1 && include.includes(name)) {
       value = [...value, ...relationship.model.serializer.attributes];
-    } else if (!include && value.length > 1 && !include.includes(name)) {
+    } else if (!include && value.length > 1) {
       value = value.slice(0, 1);
     }
 

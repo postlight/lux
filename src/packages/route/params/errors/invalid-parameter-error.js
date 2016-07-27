@@ -5,9 +5,8 @@ import { createServerError } from '../../../server';
  * @private
  */
 class InvalidParameterError extends TypeError {
-  constructor(path: string): InvalidParameterError {
+  constructor(path: string) {
     super(`'${path}' is not a valid parameter for this resource.`);
-    return this;
   }
 }
 

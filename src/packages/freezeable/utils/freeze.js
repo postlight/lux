@@ -4,7 +4,7 @@ import { FREEZER } from '../constants';
 /**
  * @private
  */
-export default function freeze<T: Object>(value: T): T {
+export default function freeze<T>(value: T) {
   FREEZER.add(value);
   return value;
 }

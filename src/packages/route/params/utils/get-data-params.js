@@ -6,12 +6,12 @@ import isNull from '../../../../utils/is-null';
 import { typeForColumn } from '../../../database';
 
 import type Controller from '../../../controller';
-import type { ParameterGroup$contents } from '../parameter-group/interfaces';
+import type { ParameterLike } from '../interfaces';
 
 /**
  * @private
  */
-function getIDParam({ model }: Controller): [string, ParameterGroup$contents] {
+function getIDParam({ model }: Controller): [string, ParameterLike] {
   return ['id', new Parameter({
     type: typeForColumn(model.columnFor(model.primaryKey)),
     path: 'data.id',
@@ -22,10 +22,13 @@ function getIDParam({ model }: Controller): [string, ParameterGroup$contents] {
 /**
  * @private
  */
-function getTypeParam(): [string, ParameterGroup$contents] {
+function getTypeParam({
+  model
+}: Controller): [string, ParameterLike] {
   return ['type', new Parameter({
     type: 'string',
     path: 'data.type',
+    values: [model.resourceName],
     required: true
   })];
 }
@@ -36,7 +39,7 @@ function getTypeParam(): [string, ParameterGroup$contents] {
 function getAttributesParam({
   model,
   params
-}: Controller): [string, ParameterGroup$contents] {
+}: Controller): [string, ParameterLike] {
   return ['attributes', new ParameterGroup(params.map(param => {
     const col = model.columnFor(param);
     const type = typeForColumn(col);
@@ -46,7 +49,8 @@ function getAttributesParam({
     return [param, new Parameter({ type, path, required })];
   }), {
     path: 'data.attributes',
-    required: true
+    required: true,
+    sanitize: true
   })];
 }
 
@@ -56,9 +60,9 @@ function getAttributesParam({
 export default function getDataParams(
   controller: Controller,
   includeID: boolean
-): [string, ParameterGroup$contents] {
+): [string, ParameterLike] {
   let params = [
-    getTypeParam(),
+    getTypeParam(controller),
     getAttributesParam(controller)
   ];
 

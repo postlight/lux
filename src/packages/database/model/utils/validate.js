@@ -17,14 +17,13 @@ export default function validate(instance) {
 
   for (const [key, validator] of entries(validates)) {
     const value = instance[key];
-    const { isValid } = new Validation({
+    const validation = new Validation({
       key,
       value,
-      model,
       validator
     });
 
-    if (!isValid) {
+    if (!validation.isValid()) {
       throw new ValidationError(key, value);
     }
   }

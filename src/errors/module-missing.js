@@ -7,16 +7,12 @@ import { line } from '../packages/logger';
  * @private
  */
 class ModuleMissingError extends Error {
-  friendly: boolean = true;
-
-  constructor(name: string): ModuleMissingError {
+  constructor(name: string) {
     super(line`
       ${red(`Could not find required module '${name}'.`)}
       Please make sure '${name}' is listed as a dependency in your package.json
       file and run ${green('npm install')}.
     `);
-
-    return this;
   }
 }
 

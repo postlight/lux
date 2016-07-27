@@ -6,7 +6,7 @@
 export default function getStaticPath(
   path: string,
   dynamicSegments: Array<string>
-): string {
+) {
   let staticPath = path;
 
   if (dynamicSegments.length) {
