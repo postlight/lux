@@ -63,7 +63,10 @@ class Router extends Map<string, Route> {
     return this.get(`${method}:${staticPath}`);
   }
 
-  async visit(req: IncomingMessage, res: ServerResponse): void | ?mixed {
+  async visit(
+    req: IncomingMessage,
+    res: ServerResponse
+  ): Promise<void | ?mixed> {
     if (req.route) {
       let i, data, handler;
       const { route: { handlers } } = req;

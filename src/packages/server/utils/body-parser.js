@@ -1,4 +1,5 @@
 import { parse as parseQueryString } from 'querystring';
+import { tryCatchSync } from '../../../utils/try-catch';
 
 export default function bodyParser(req) {
   return new Promise((resolve, reject) => {
@@ -9,11 +10,13 @@ export default function bodyParser(req) {
     };
 
     const onEnd = () => {
-      body = (req.headers['content-type'] || '').includes('json') ?
-        JSON.parse(body) : parseQueryString(body);
+      tryCatchSync(() => {
+        body = (req.headers['content-type'] || '').includes('json') ?
+          JSON.parse(body) : parseQueryString(body);
 
-      cleanUp();
-      resolve(body);
+        cleanUp();
+        resolve(body);
+      }, onError);
     };
 
     const onError = err => {

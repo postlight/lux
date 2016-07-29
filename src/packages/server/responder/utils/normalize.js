@@ -33,7 +33,11 @@ export default function normalize(data: ?mixed | void): {
         statusCode = 404;
         normalized = dataFor(statusCode);
       } else if (data instanceof Error) {
-        statusCode = 500;
+        if (typeof data.number != 'undefined') {
+          statusCode = data.number;
+        } else {
+          statusCode = 500;
+        }
         normalized = dataFor(statusCode, data);
       } else {
         normalized = data;
