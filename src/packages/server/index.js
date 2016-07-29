@@ -84,10 +84,11 @@ class Server {
   }
 
   receiveRequest = (req: IncomingMessage, res: Writable): void => {
+    const { logger } = this;
     const [request, response] = this.initializeRequest(req, res);
     const respond = createResponder(request, response);
 
-    this.logger.request(request, response, {
+    logger.request(request, response, {
       startTime: Date.now()
     });
 
@@ -109,7 +110,10 @@ class Server {
           }
         })
         .then(respond)
-        .catch(respond);
+        .catch(err => {
+          logger.error(err);
+          respond(err);
+        });
     }
   }
 }

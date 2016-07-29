@@ -10,5 +10,6 @@ export type {
   JSONAPI$ErrorObject,
   JSONAPI$DocumentLinks,
   JSONAPI$ResourceObject,
+  JSONAPI$IdentifierObject,
   JSONAPI$RelationshipObject
 } from './interfaces';

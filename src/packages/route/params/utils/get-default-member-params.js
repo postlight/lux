@@ -4,7 +4,7 @@ import type Controller from '../../../controller';
 /**
  * @private
  */
-export default function getDefaultShowParams({
+export default function getDefaultMemberParams({
   model,
   attributes,
   relationships

@@ -63,9 +63,20 @@ class Serializer {
    * @private
    */
   constructor({ model, serializers }: Serializer$opts) {
-    Object.assign(this, {
-      model,
-      serializers
+    Object.defineProperties(this, {
+      model: {
+        value: model,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
+
+      serializers: {
+        value: serializers,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      }
     });
   }
 
@@ -383,9 +394,7 @@ class Serializer {
           [name]: (async () => {
             const related = await item[name];
 
-            if (!related) {
-              return null;
-            } else if (Array.isArray(related) && related.length) {
+            if (Array.isArray(related)) {
               return {
                 data: await Promise.all(
                   related.map(async (relatedItem) => {
@@ -402,13 +411,15 @@ class Serializer {
                   })
                 )
               };
-            } else {
+            } else if (related && related.id) {
               return await this.formatRelationship({
                 domain,
                 included,
                 item: related,
                 include: include.includes(name)
               });
+            } else {
+              return null;
             }
           })()
         }), {})
@@ -471,17 +482,5 @@ class Serializer {
     };
   }
 }
-
-Reflect.defineProperty(Serializer.prototype, 'model', {
-  writable: true,
-  enumerable: false,
-  configurable: false
-});
-
-Reflect.defineProperty(Serializer.prototype, 'serializers', {
-  writable: true,
-  enumerable: false,
-  configurable: false
-});
 
 export default Serializer;

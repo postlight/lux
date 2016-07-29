@@ -4,15 +4,15 @@ import Query from '../query';
 
 import initializeClass from './initialize-class';
 
-import validate from './utils/validate';
-import processWriteError from './utils/process-write-error';
-import { sql } from '../../logger';
-
 import pick from '../../../utils/pick';
 import omit from '../../../utils/omit';
 import entries from '../../../utils/entries';
 import tryCatch from '../../../utils/try-catch';
 import underscore from '../../../utils/underscore';
+import validate from './utils/validate';
+import processWriteError from './utils/process-write-error';
+import { sql } from '../../logger';
+import { saveRelationships } from '../relationship';
 
 import type { options as relationshipOptions } from '../related/interfaces';
 
@@ -55,17 +55,40 @@ class Model {
   constructor(attrs: {} = {}, initialize: boolean = true): Model {
     const { constructor: { attributeNames, relationshipNames } } = this;
 
-    Object.assign(this, {
-      rawColumnData: attrs,
-      initialValues: new Map(),
-      dirtyAttributes: new Set()
+    Object.defineProperties(this, {
+      rawColumnData: {
+        value: attrs,
+        writable: true,
+        enumerable: false,
+        configurable: false
+      },
+
+      initialValues: {
+        value: new Map(),
+        writable: true,
+        enumerable: false,
+        configurable: false
+      },
+
+      dirtyAttributes: {
+        value: new Set(),
+        writable: true,
+        enumerable: false,
+        configurable: false
+      }
     });
 
     attrs = pick(attrs, ...attributeNames, ...relationshipNames);
     Object.assign(this, attrs);
 
     if (initialize) {
-      this.initialized = true;
+      Reflect.defineProperty(this, 'initialized', {
+        value: true,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      });
+
       Object.freeze(this);
     }
 
@@ -211,7 +234,7 @@ class Model {
     return Object.keys(this.relationships);
   }
 
-  save(): Promise<Model> {
+  save(deep?: boolean): Promise<Model> {
     return tryCatch(async () => {
       const {
         constructor: {
@@ -257,7 +280,14 @@ class Model {
           setImmediate(() => logger.debug(sql`${query.toString()}`));
         });
 
-      await query;
+      if (deep) {
+        await Promise.all([
+          query,
+          saveRelationships(this)
+        ]);
+      } else {
+        await query;
+      }
 
       this.dirtyAttributes.clear();
 

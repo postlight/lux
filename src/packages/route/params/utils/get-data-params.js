@@ -40,6 +40,8 @@ function getAttributesParam({
   model,
   params
 }: Controller): [string, ParameterLike] {
+  params = params.filter(param => Boolean(model.columnFor(param)));
+
   return ['attributes', new ParameterGroup(params.map(param => {
     const col = model.columnFor(param);
     const type = typeForColumn(col);
@@ -57,13 +59,68 @@ function getAttributesParam({
 /**
  * @private
  */
+function getRelationshipsParam({
+  model,
+  params
+}: Controller): [string, ParameterLike] {
+  params = params.filter(param => Boolean(model.relationshipFor(param)));
+
+  return ['relationships', new ParameterGroup(params.map(param => {
+    const path = `data.relationships.${param}`;
+    const related = model.relationshipFor(param);
+
+    if (related.type === 'hasMany') {
+      return [param, new ParameterGroup([
+        ['data', new Parameter({
+          type: 'array',
+          path: `${path}.data`,
+          required: true
+        })]
+      ], {
+        path
+      })];
+    } else {
+      const { model: { primaryKey } } = related;
+
+      return [param, new ParameterGroup([
+        ['data', new ParameterGroup([
+          ['id', new Parameter({
+            type: typeForColumn(related.model.columnFor(primaryKey)),
+            path: `${path}.data.id`,
+            required: true
+          })],
+
+          ['type', new Parameter({
+            type: 'string',
+            path: `${path}.data.type`,
+            values: [related.model.resourceName],
+            required: true
+          })]
+        ], {
+          type: 'array',
+          path: `${path}.data`,
+          required: true
+        })]
+      ], {
+        path
+      })];
+    }
+  }), {
+    path: 'data.relationships'
+  })];
+}
+
+/**
+ * @private
+ */
 export default function getDataParams(
   controller: Controller,
   includeID: boolean
 ): [string, ParameterLike] {
   let params = [
     getTypeParam(controller),
-    getAttributesParam(controller)
+    getAttributesParam(controller),
+    getRelationshipsParam(controller)
   ];
 
   if (includeID) {

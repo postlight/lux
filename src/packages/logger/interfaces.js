@@ -5,7 +5,7 @@ export type Logger$format = 'text' | 'json';
 
 export type Logger$data = {
   level: Logger$level;
-  message: string;
+  message?: mixed;
   timestamp: string;
 };
 
@@ -13,6 +13,7 @@ export type Logger$config = {
   level: Logger$level;
   format: Logger$format;
   enabled: boolean;
+
   filter: {
     params: Array<string>;
   };

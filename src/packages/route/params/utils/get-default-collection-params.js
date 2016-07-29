@@ -4,7 +4,7 @@ import type Controller from '../../../controller';
 /**
  * @private
  */
-export default function getDefaultIndexParams({
+export default function getDefaultCollectionParams({
   model,
   attributes,
   relationships,

@@ -1,11 +1,12 @@
 import path from 'path';
 
 import { Migration } from '../database';
+import { FreezeableMap } from '../freezeable';
 
 import entries from '../../utils/entries';
 import formatKey from './utils/format-key';
 
-let bundle: Map<string, any>;
+let bundle: FreezeableMap<string, any>;
 
 /**
  * @private
@@ -16,7 +17,7 @@ export default function loader(appPath: string, type: string): ?mixed {
     const manifest = require(path.join(appPath, 'dist', 'bundle'));
 
     if (typeof manifest === 'object') {
-      bundle = new Map(
+      bundle = new FreezeableMap(
         entries(
           entries(manifest).reduce((hash, [key, value]) => {
             if (pattern.test(key)) {
@@ -71,13 +72,15 @@ export default function loader(appPath: string, type: string): ?mixed {
             return hash;
           }, {
             config: {},
-            controllers: new Map(),
-            migrations: new Map(),
-            models: new Map(),
-            serializers: new Map()
+            controllers: new FreezeableMap(),
+            migrations: new FreezeableMap(),
+            models: new FreezeableMap(),
+            serializers: new FreezeableMap()
           })
         )
       );
+
+      bundle.freeze();
     }
   }
 

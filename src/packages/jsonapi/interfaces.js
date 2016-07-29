@@ -18,18 +18,18 @@ interface JSONAPI$LinkObject {
 
 type JSONAPI$Link = ?(string | JSONAPI$LinkObject);
 
-interface JSONAPI$IdentifierObject {
-  id: string;
-  type: string;
-  meta?: JSONAPI$BaseObject;
-}
-
 interface JSONAPI$ResourceLinksObject {
   self?: JSONAPI$Link;
   related?: JSONAPI$Link;
 }
 
 export type JSONAPI$versions = '1.0';
+
+export interface JSONAPI$IdentifierObject {
+  id: string;
+  type: string;
+  meta?: JSONAPI$BaseObject;
+}
 
 export interface JSONAPI$ResourceObject {
   id: string;

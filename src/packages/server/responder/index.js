@@ -2,6 +2,7 @@
 import { MIME_TYPE } from '../../jsonapi';
 
 import normalize from './utils/normalize';
+import hasContentType from './utils/has-content-type';
 
 import type { Request, Response } from '../index';
 
@@ -16,7 +17,7 @@ export function createResponder(req: Request, res: Response) {
       res.statusCode = normalized.statusCode;
     }
 
-    if (res.statusCode !== 204) {
+    if (res.statusCode !== 204 && !hasContentType(res)) {
       res.setHeader('Content-Type', MIME_TYPE);
     }
 

@@ -3,9 +3,13 @@ import ParameterGroup from './parameter-group';
 
 import getURLParams from './utils/get-url-params';
 import getDataParams from './utils/get-data-params';
-import getQueryParams from './utils/get-query-params';
-import getDefaultShowParams from './utils/get-default-show-params';
-import getDefaultIndexParams from './utils/get-default-index-params';
+import getDefaultMemberParams from './utils/get-default-member-params';
+import getDefaultCollectionParams from './utils/get-default-collection-params';
+
+import {
+  getMemberQueryParams,
+  getCollectionQueryParams
+} from './utils/get-query-params';
 
 import type Controller from '../../controller';
 import type { Params$opts } from './interfaces';
@@ -14,6 +18,7 @@ import type { Params$opts } from './interfaces';
  * @private
  */
 export function paramsFor({
+  action,
   method,
   controller,
   dynamicSegments
@@ -22,15 +27,23 @@ export function paramsFor({
 
   switch (method) {
     case 'GET':
-      params = [
-        ...params,
-        ...getQueryParams(controller)
-      ];
+      if (action === 'show') {
+        params = [
+          ...params,
+          ...getMemberQueryParams(controller)
+        ];
+      } else {
+        params = [
+          ...params,
+          ...getCollectionQueryParams(controller)
+        ];
+      }
       break;
 
     case 'POST':
       params = [
         ...params,
+        ...getMemberQueryParams(controller),
         getDataParams(controller, false)
       ];
       break;
@@ -38,6 +51,7 @@ export function paramsFor({
     case 'PATCH':
       params = [
         ...params,
+        ...getMemberQueryParams(controller),
         getDataParams(controller, true)
       ];
       break;
@@ -61,10 +75,13 @@ export function defaultParamsFor({
 }): Object {
   switch (action) {
     case 'index':
-      return getDefaultIndexParams(controller);
+      return getDefaultCollectionParams(controller);
 
     case 'show':
-      return getDefaultShowParams(controller);
+    case 'create':
+    case 'update':
+    case 'destroy':
+      return getDefaultMemberParams(controller);
 
     default:
       return {};

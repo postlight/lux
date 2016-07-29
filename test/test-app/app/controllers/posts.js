@@ -2,8 +2,9 @@ import { Controller } from 'LUX_LOCAL';
 
 class PostsController extends Controller {
   params = [
-    'title',
     'body',
+    'title',
+    'author',
     'isPublic'
   ];
 

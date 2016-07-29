@@ -102,7 +102,31 @@ function getIncludeParam({
 /**
  * @private
  */
-export default function getQueryParams(
+function getCustomParams({
+  query
+}: Controller): Array<[string, ParameterLike]> {
+  return query.map(param => [param, new Parameter({
+    path: param
+  })]);
+}
+
+/**
+ * @private
+ */
+export function getMemberQueryParams(
+  controller: Controller
+): Array<[string, ParameterLike]> {
+  return [
+    getFieldsParam(controller),
+    getIncludeParam(controller),
+    ...getCustomParams(controller)
+  ];
+}
+
+/**
+ * @private
+ */
+export function getCollectionQueryParams(
   controller: Controller
 ): Array<[string, ParameterLike]> {
   return [
@@ -110,6 +134,7 @@ export default function getQueryParams(
     getSortParam(controller),
     getFilterParam(controller),
     getFieldsParam(controller),
-    getIncludeParam(controller)
+    getIncludeParam(controller),
+    ...getCustomParams(controller)
   ];
 }

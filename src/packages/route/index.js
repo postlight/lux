@@ -50,6 +50,7 @@ class Route extends FreezeableSet<Action<any>> {
 
       if (typeof handler === 'function') {
         const params = paramsFor({
+          action,
           method,
           controller,
           dynamicSegments

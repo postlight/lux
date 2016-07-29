@@ -6,7 +6,7 @@ const REFS: WeakMap<Model, Map<string, Model>> = new WeakMap();
 /**
  * @private
  */
-export default function relatedFor(owner: Model): Map<string, Model> {
+export default function relatedFor(owner: Model) {
   let related = REFS.get(owner);
 
   if (!related) {

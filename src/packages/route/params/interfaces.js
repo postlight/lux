@@ -4,6 +4,7 @@ import type { Request$method } from '../../server';
 import type { Lux$Collection } from '../../../interfaces';
 
 export type Params$opts = {
+  action: string;
   method: Request$method;
   controller: Controller;
   dynamicSegments: Array<string>;

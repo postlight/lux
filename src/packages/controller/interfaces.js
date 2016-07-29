@@ -7,6 +7,6 @@ export type Controller$opts = {
   store: Database;
   model: Class<Model>;
   serializer: Serializer;
-  serializers: Map<string, Serializer>;
+  controllers: Map<string, Controller>;
   parentController: ?Controller;
 };

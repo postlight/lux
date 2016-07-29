@@ -1,7 +1,7 @@
 // @flow
 import Cluster from './cluster';
 
-import type Logger from '../logger';
+import type { Cluster$opts } from './cluster';
 
 /**
  * @private
@@ -11,12 +11,7 @@ export function createCluster({
   port,
   logger,
   maxWorkers
-}: {
-  path: string;
-  port: number;
-  logger: Logger;
-  maxWorkers?: number;
-}) {
+}: Cluster$opts) {
   return new Cluster({
     path,
     port,

@@ -9,16 +9,14 @@ import type { Request } from '../interfaces';
  */
 export function parseRequest(req: Request): Promise<Object> {
   switch (req.method) {
-    case 'GET':
-    case 'HEAD':
-    case 'OPTIONS':
-      return Promise.resolve(parseRead(req));
-
     case 'POST':
     case 'PATCH':
-      return parseWrite(req);
+      return parseWrite(req).then(params => ({
+        ...parseRead(req),
+        ...params
+      }));
 
     default:
-      return Promise.resolve({});
+      return Promise.resolve(parseRead(req));
   }
 }

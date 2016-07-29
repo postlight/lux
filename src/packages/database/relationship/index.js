@@ -2,6 +2,8 @@
 import { camelize } from 'inflection';
 
 import relatedFor from './utils/related-for';
+import setInverse from './utils/set-inverse';
+import validateType from './utils/validate-type';
 
 import type Model from '../model';
 
@@ -66,25 +68,52 @@ export async function get(
 export function set(
   owner: Model,
   key: string,
-  val: Array<Model> | ?Model
+  value: Array<Model> | ?Model
 ): void {
-  const { type, model } = owner.constructor.relationshipFor(key);
+  const relationship = owner.constructor.relationshipFor(key);
+  const { type, model, inverse } = relationship;
+  let { foreignKey } = relationship;
+
   const related = relatedFor(owner);
+
+  foreignKey = camelize(foreignKey, true);
 
   switch (type) {
     case 'hasMany':
-      if (Array.isArray(val)) {
-        related.set(key, val);
+      if (Array.isArray(value) && validateType(model, value)) {
+        related.set(key, value);
+
+        setInverse(owner, value, {
+          type,
+          inverse,
+          foreignKey,
+          inverseModel: model
+        });
       }
       break;
 
     case 'hasOne':
     case 'belongsTo':
-      if (val && typeof val === 'object' && !model.isInstance(val)) {
-        val = new model(val);
+      if (value && typeof value === 'object' && !model.isInstance(value)) {
+        value = new model(value);
       }
 
-      related.set(key, val);
+      if (validateType(model, value)) {
+        related.set(key, value);
+
+        setInverse(owner, value, {
+          type,
+          inverse,
+          foreignKey,
+          inverseModel: model
+        });
+
+        if (type === 'belongsTo') {
+          Reflect.set(owner, foreignKey, Reflect.get(value, model.primaryKey));
+        }
+      }
       break;
   }
 }
+
+export { default as saveRelationships } from './utils/save-relationships';

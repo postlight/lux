@@ -444,7 +444,7 @@ export default async function initializeClass({
     resourceName: {
       value: pluralize(dasherize(underscore(model.name))),
       writable: false,
-      enumerable: true,
+      enumerable: false,
       configurable: false
     },
 
@@ -473,33 +473,6 @@ export default async function initializeClass({
     ...hasOne,
     ...hasMany,
     ...belongsTo
-  });
-
-  Object.defineProperties(model.prototype, {
-    initialized: {
-      value: false,
-      writable: true,
-      enumerable: false,
-      configurable: false
-    },
-
-    rawColumnData: {
-      writable: true,
-      enumerable: false,
-      configurable: false
-    },
-
-    initialValues: {
-      writable: true,
-      enumerable: false,
-      configurable: false
-    },
-
-    dirtyAttributes: {
-      writable: true,
-      enumerable: false,
-      configurable: false
-    }
   });
 
   return model;

@@ -96,7 +96,7 @@ export default async function initialize(app: Application, {
       controller = new controller({
         store,
         model,
-        serializers,
+        controllers,
         serializer: serializers.get(key),
         parentController: appController
       });
@@ -118,9 +118,7 @@ export default async function initialize(app: Application, {
   if (!LUX_CONSOLE) {
     server.instance.listen(port).once('listening', () => {
       if (typeof process.send === 'function') {
-        process.send({
-          message: 'ready'
-        });
+        process.send('ready');
       } else {
         process.emit('ready');
       }
@@ -201,6 +199,10 @@ export default async function initialize(app: Application, {
   models.forEach(Object.freeze);
   controllers.forEach(Object.freeze);
   serializers.forEach(Object.freeze);
+
+  models.freeze();
+  controllers.freeze();
+  serializers.freeze();
 
   return app;
 }
