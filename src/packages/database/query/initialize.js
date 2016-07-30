@@ -1,9 +1,10 @@
+// @flow
 import type Query from './index';
 
 const TRAPS = {
-  get(target: Query, key: string, receiver: Proxy): ?mixed | void {
+  get(target: Query, key: string, receiver: Proxy<Query>): ?mixed | void {
     if (target.model.hasScope(key)) {
-      const scope = target.model.scopes[key];
+      const scope = Reflect.get(target.model.scopes, key);
 
       return (...args) => {
         let { snapshots } = Reflect.apply(scope, target.model, args);
@@ -13,7 +14,7 @@ const TRAPS = {
         return receiver;
       };
     } else {
-      return target[key];
+      return Reflect.get(target, key);
     }
   }
 };
