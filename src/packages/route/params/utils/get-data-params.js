@@ -12,8 +12,15 @@ import type { ParameterLike } from '../interfaces';
  * @private
  */
 function getIDParam({ model }: Controller): [string, ParameterLike] {
+  const primaryKeyColumn = model.columnFor(model.primaryKey);
+  let primaryKeyType = 'number';
+
+  if (primaryKeyColumn) {
+    primaryKeyType = typeForColumn(primaryKeyColumn);
+  }
+
   return ['id', new Parameter({
-    type: typeForColumn(model.columnFor(model.primaryKey)),
+    type: primaryKeyType,
     path: 'data.id',
     required: true
   })];
@@ -40,18 +47,23 @@ function getAttributesParam({
   model,
   params
 }: Controller): [string, ParameterLike] {
-  params = params.filter(param => Boolean(model.columnFor(param)));
-
-  return ['attributes', new ParameterGroup(params.map(param => {
+  return ['attributes', new ParameterGroup(params.reduce((group, param) => {
     const col = model.columnFor(param);
-    const type = typeForColumn(col);
-    const path = `data.attributes.${param}`;
-    const required = !col.nullable && isNull(col.defaultValue);
 
-    return [param, new Parameter({ type, path, required })];
-  }), {
+    if (col) {
+      const type = typeForColumn(col);
+      const path = `data.attributes.${param}`;
+      const required = !col.nullable && isNull(col.defaultValue);
+
+      return [
+        ...group,
+        [param, new Parameter({ type, path, required })]
+      ];
+    } else {
+      return group;
+    }
+  }, []), {
     path: 'data.attributes',
-    required: true,
     sanitize: true
   })];
 }
@@ -63,49 +75,64 @@ function getRelationshipsParam({
   model,
   params
 }: Controller): [string, ParameterLike] {
-  params = params.filter(param => Boolean(model.relationshipFor(param)));
-
-  return ['relationships', new ParameterGroup(params.map(param => {
+  return ['relationships', new ParameterGroup(params.reduce((group, param) => {
     const path = `data.relationships.${param}`;
-    const related = model.relationshipFor(param);
+    const opts = model.relationshipFor(param);
 
-    if (related.type === 'hasMany') {
-      return [param, new ParameterGroup([
-        ['data', new Parameter({
-          type: 'array',
-          path: `${path}.data`,
-          required: true
-        })]
-      ], {
-        path
-      })];
-    } else {
-      const { model: { primaryKey } } = related;
+    if (!opts) {
+      return group;
+    }
 
-      return [param, new ParameterGroup([
-        ['data', new ParameterGroup([
-          ['id', new Parameter({
-            type: typeForColumn(related.model.columnFor(primaryKey)),
-            path: `${path}.data.id`,
-            required: true
-          })],
+    if (opts.type === 'hasMany') {
+      return [
+        ...group,
 
-          ['type', new Parameter({
-            type: 'string',
-            path: `${path}.data.type`,
-            values: [related.model.resourceName],
+        [param, new ParameterGroup([
+          ['data', new Parameter({
+            type: 'array',
+            path: `${path}.data`,
             required: true
           })]
         ], {
-          type: 'array',
-          path: `${path}.data`,
-          required: true
+          path
         })]
-      ], {
-        path
-      })];
+      ];
+    } else {
+      const primaryKeyColumn = opts.model.columnFor(opts.model.primaryKey);
+      let primaryKeyType = 'number';
+
+      if (primaryKeyColumn) {
+        primaryKeyType = typeForColumn(primaryKeyColumn);
+      }
+
+      return [
+        ...group,
+
+        [param, new ParameterGroup([
+          ['data', new ParameterGroup([
+            ['id', new Parameter({
+              type: primaryKeyType,
+              path: `${path}.data.id`,
+              required: true
+            })],
+
+            ['type', new Parameter({
+              type: 'string',
+              path: `${path}.data.type`,
+              values: [opts.model.resourceName],
+              required: true
+            })]
+          ], {
+            type: 'array',
+            path: `${path}.data`,
+            required: true
+          })]
+        ], {
+          path
+        })]
+      ];
     }
-  }), {
+  }, []), {
     path: 'data.relationships'
   })];
 }

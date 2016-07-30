@@ -1,9 +1,6 @@
 // @flow
-import { pluralize } from 'inflection';
-
 import { VERSION } from '../jsonapi';
 
-import pick from '../../utils/pick';
 import uniq from '../../utils/uniq';
 import insert from '../../utils/insert';
 import promiseHash from '../../utils/promise-hash';
@@ -368,20 +365,18 @@ class Serializer {
     included: Array<JSONAPI$ResourceObject>;
     formatRelationships?: boolean
   }): Promise<JSONAPI$ResourceObject> {
-    const id = Reflect.get(item, item.constructor.primaryKey);
+    const { resourceName: type } = item;
+    const id = item.getPrimaryKey().toString();
+    let relationships = {};
+
     const attributes = dasherizeKeys(
-      pick(item, ...Object.keys(item.rawColumnData).filter(key => {
+      item.getAttributes(...Object.keys(item.rawColumnData).filter(key => {
         return this.attributes.includes(key);
       }))
     );
 
-    let { modelName: type } = item;
-    let relationships = {};
-
-    type = pluralize(type);
-
     const serialized: JSONAPI$ResourceObject = {
-      id: id.toString(),
+      id,
       type,
       attributes
     };
@@ -453,8 +448,8 @@ class Serializer {
     include: boolean;
     included: Array<JSONAPI$ResourceObject>;
   }): Promise<JSONAPI$RelationshipObject> {
-    const { constructor: { serializer, primaryKey, resourceName } } = item;
-    const id = Reflect.get(item, primaryKey);
+    const { resourceName: type, constructor: { serializer } } = item;
+    const id = item.getPrimaryKey().toString();
 
     if (include) {
       included.push(
@@ -470,12 +465,12 @@ class Serializer {
 
     return {
       data: {
-        id: id.toString(),
-        type: resourceName
+        id,
+        type
       },
 
       links: {
-        self: `${domain}/${resourceName}/${id}`
+        self: `${domain}/${type}/${id}`
       }
     };
   }

@@ -1,13 +1,13 @@
 // @flow
 import { camelize } from 'inflection';
 
-import typeof Model from '../../model';
+import Model from '../../model';
 
 /**
  * @private
  */
 export default function formatSelect(
-  model: Model,
+  model: Class<Model>,
   attrs: Array<string> = [],
   prefix: string = ''
 ) {

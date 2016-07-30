@@ -1,3 +1,4 @@
+// @flow
 import { camelize, dasherize, pluralize, singularize } from 'inflection';
 
 import { line } from '../../logger';
@@ -10,8 +11,7 @@ import {
 import entries from '../../../utils/entries';
 import underscore from '../../../utils/underscore';
 
-import type Database from '../index';
-import typeof Model from './index';
+import type Database, { Model } from '../index'; // eslint-disable-line no-unused-vars, max-len
 
 const REFS = new WeakMap();
 
@@ -195,17 +195,19 @@ function initializeValidations({
 /**
  * @private
  */
-export default async function initializeClass({
+export default async function initializeClass<T: Class<Model>>({
   store,
   table,
   model
 }: {
   store: Database,
   table: Function,
-  model: Model
-}): Model {
+  model: T
+}): Promise<T> {
   const { hooks, scopes, validates } = model;
   const { logger } = store;
+  const modelName = dasherize(underscore(model.name));
+  const resourceName = pluralize(modelName);
 
   const attributes = entries(await table().columnInfo())
     .reduce((hash, [columnName, value]) => {
@@ -309,7 +311,11 @@ export default async function initializeClass({
       const relationship = {};
       let foreignKey;
 
-      relatedModel = store.modelFor(relatedModel || singularize(relatedName));
+      if (typeof relatedModel === 'string') {
+        relatedModel = store.modelFor(relatedModel);
+      } else {
+        relatedModel = store.modelFor(singularize(relatedName));
+      }
 
       if (typeof through === 'string') {
         through = store.modelFor(through);
@@ -361,6 +367,16 @@ export default async function initializeClass({
       };
     }, {});
 
+  Object.freeze(hasOne);
+  Object.freeze(hasMany);
+  Object.freeze(belongsTo);
+
+  const relationships = Object.freeze({
+    ...hasOne,
+    ...hasMany,
+    ...belongsTo
+  });
+
   Object.defineProperties(model, {
     store: {
       value: store,
@@ -390,24 +406,45 @@ export default async function initializeClass({
       configurable: false
     },
 
+    attributeNames: {
+      value: Object.freeze(Object.keys(attributes)),
+      writable: false,
+      enumerable: false,
+      configurable: false
+    },
+
     hasOne: {
-      value: Object.freeze(hasOne),
+      value: hasOne,
       writable: false,
       enumerable: Boolean(Object.keys(hasOne).length),
       configurable: false
     },
 
     hasMany: {
-      value: Object.freeze(hasMany),
+      value: hasMany,
       writable: false,
       enumerable: Boolean(Object.keys(hasMany).length),
       configurable: false
     },
 
     belongsTo: {
-      value: Object.freeze(belongsTo),
+      value: belongsTo,
       writable: false,
       enumerable: Boolean(Object.keys(belongsTo).length),
+      configurable: false
+    },
+
+    relationships: {
+      value: relationships,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    },
+
+    relationshipNames: {
+      value: Object.freeze(Object.keys(relationships)),
+      writable: false,
+      enumerable: false,
       configurable: false
     },
 
@@ -441,10 +478,17 @@ export default async function initializeClass({
       configurable: false
     },
 
-    resourceName: {
-      value: pluralize(dasherize(underscore(model.name))),
+    modelName: {
+      value: modelName,
       writable: false,
-      enumerable: false,
+      enumerable: true,
+      configurable: false
+    },
+
+    resourceName: {
+      value: resourceName,
+      writable: false,
+      enumerable: true,
       configurable: false
     },
 
@@ -473,6 +517,22 @@ export default async function initializeClass({
     ...hasOne,
     ...hasMany,
     ...belongsTo
+  });
+
+  Object.defineProperties(model.prototype, {
+    modelName: {
+      value: modelName,
+      writable: false,
+      enumerable: true,
+      configurable: false
+    },
+
+    resourceName: {
+      value: resourceName,
+      writable: false,
+      enumerable: true,
+      configurable: false
+    }
   });
 
   return model;

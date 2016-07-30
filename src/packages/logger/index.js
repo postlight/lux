@@ -239,3 +239,5 @@ class Logger {
 export default Logger;
 export { default as line } from './utils/line';
 export { default as sql } from './utils/sql';
+
+export type { Logger$config } from './interfaces';

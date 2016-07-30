@@ -9,28 +9,19 @@ import Router from '../router';
 import Server from '../server';
 import loader from '../loader';
 
-import {
-  ControllerMissingError,
-  SerializerMissingError
-} from './errors';
+import { ControllerMissingError, SerializerMissingError } from './errors';
 
-import type Application from './index';
-import type { Logger$config } from '../logger/interfaces';
+import type Application, { Application$opts } from './index'; // eslint-disable-line no-unused-vars, max-len
 
 /**
  * @private
  */
-export default async function initialize(app: Application, {
+export default async function initialize<T: Application>(app: T, {
   path,
   port,
   logging,
   database
-}: {
-  path: string;
-  port: number;
-  logging: Logger$config;
-  database: {};
-} = {}): Promise<Application> {
+}: Application$opts) {
   const routes = loader(path, 'routes');
   const models = loader(path, 'models');
   const controllers = loader(path, 'controllers');

@@ -13,7 +13,7 @@ import type { Model } from '../index';
 export async function get(
   owner: Model,
   key: string
-): Array<Model> | ?Model {
+): Promise<Array<Model> | ?Model> {
   const opts = owner.constructor.relationshipFor(key);
 
   if (!opts) {

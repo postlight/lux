@@ -66,20 +66,28 @@ function getFieldsParam({
       sanitize: true
     })],
 
-    ...relationships.map(relationship => {
-      const { model: relatedModel } = model.relationshipFor(relationship);
+    ...relationships.reduce((result, relationship) => {
+      const opts = model.relationshipFor(relationship);
 
-      return [relatedModel.resourceName, new Parameter({
-        path: `fields.${relatedModel.resourceName}`,
-        type: 'array',
-        sanitize: true,
+      if (opts) {
+        return [
+          ...result,
 
-        values: [
-          relatedModel.primaryKey,
-          ...relatedModel.serializer.attributes
-        ]
-      })];
-    })
+          [opts.model.resourceName, new Parameter({
+            path: `fields.${opts.model.resourceName}`,
+            type: 'array',
+            sanitize: true,
+
+            values: [
+              opts.model.primaryKey,
+              ...opts.model.serializer.attributes
+            ]
+          })]
+        ];
+      } else {
+        return result;
+      }
+    }, [])
   ], {
     path: 'fields',
     sanitize: true

@@ -40,7 +40,9 @@ export default function collection(
 
     const [data, total] = await Promise.all([
       result,
-      Query.from(result).count()
+      new Promise((resolve, reject) => {
+        Query.from(result).count().then(resolve, reject);
+      })
     ]);
 
     return await serializer.format({

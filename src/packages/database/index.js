@@ -6,6 +6,7 @@ import Model from './model';
 import initialize from './initialize';
 
 import type Logger from '../logger';
+import type { Database$opts } from './interfaces';
 
 /**
  * @private
@@ -23,7 +24,7 @@ class Database {
 
   connection: any;
 
-  models: Map<string, typeof Model>;
+  models: Map<string, Class<Model>>;
 
   constructor({
     path,
@@ -31,13 +32,7 @@ class Database {
     config,
     logger,
     checkMigrations
-  }: {
-    path: string,
-    models: Map<string, typeof Model>,
-    config: Object,
-    logger: Logger,
-    checkMigrations: boolean
-  } = {}): Promise<Database> {
+  }: Database$opts): Promise<Database> {
     return initialize(this, {
       path,
       models,
@@ -58,12 +53,13 @@ class Database {
   }
 }
 
+export default Database;
+export { default as Model } from './model';
+export { default as Query } from './query';
+export { default as Migration } from './migration';
 export { default as connect } from './utils/connect';
 export { default as typeForColumn } from './utils/type-for-column';
 export { default as createMigrations } from './utils/create-migrations';
 export { default as pendingMigrations } from './utils/pending-migrations';
 
-export { default as Model } from './model';
-export { default as Query } from './query';
-export { default as Migration } from './migration';
-export default Database;
+export type { Database$opts, Database$config } from './interfaces';

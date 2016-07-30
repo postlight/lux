@@ -6,6 +6,6 @@ import type { Database$column } from '../interfaces';
 /**
  * @private
  */
-export default function typeForColumn(column: Database$column): void | string {
+export default function typeForColumn(column: Database$column) {
   return TYPE_ALIASES.get(column.type);
 }

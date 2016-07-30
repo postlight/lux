@@ -414,7 +414,7 @@ class Controller {
    * @param  {Request} request
    * @param  {Response} response
    */
-  show(req: Request): Promise<number|Model> {
+  show(req: Request) {
     return findOne(req);
   }
 
@@ -425,7 +425,7 @@ class Controller {
    * @param  {Request} request
    * @param  {Response} response
    */
-  async create(req: Request, res: Response): Promise<Model> {
+  async create(req: Request, res: Response) {
     const {
       url: {
         pathname
@@ -471,7 +471,7 @@ class Controller {
    * @param  {Request} request
    * @param  {Response} response
    */
-  async update(req: Request): Promise<number|Model> {
+  async update(req: Request) {
     const record = await findOne(req);
 
     const {
@@ -514,7 +514,7 @@ class Controller {
    * @param  {Request} request
    * @param  {Response} response
    */
-  async destroy(req: Request): Promise<void|number> {
+  async destroy(req: Request) {
     const record = await findOne(req);
 
     if (record) {
@@ -530,7 +530,7 @@ class Controller {
    * @param  {Response} response
    * @private
    */
-  preflight(): number {
+  preflight() {
     return 204;
   }
 }

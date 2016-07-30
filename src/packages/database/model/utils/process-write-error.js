@@ -3,6 +3,9 @@ import { UNIQUE_CONSTRAINT } from '../../constants';
 
 import { UniqueConstraintError } from '../../errors';
 
+/**
+ * @private
+ */
 export default function resolveWriteError(err: Error) {
   const { message } = err;
 

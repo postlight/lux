@@ -19,14 +19,18 @@ export function setHasMany(owner: Model, key: string, value: Array<Model>, {
   const related = relatedFor(owner);
 
   if (validateType(model, value)) {
-    const prevValue = unassociate(related.get(key), foreignKey);
+    let prevValue = related.get(key);
 
-    if (prevValue) {
-      prevValue
-        .filter(prev => !value.find(next => prev.id === next.id))
-        .forEach(record => {
-          owner.prevAssociations.add(record);
-        });
+    if (Array.isArray(prevValue)) {
+      prevValue = unassociate(prevValue, foreignKey);
+
+      if (Array.isArray(prevValue)) {
+        prevValue
+          .filter(prev => !value.find(next => {
+            return prev.getPrimaryKey() === next.getPrimaryKey();
+          }))
+          .forEach(record => owner.prevAssociations.add(record));
+      }
     }
 
     related.set(key, value);
@@ -53,20 +57,25 @@ export function setHasOne(owner: Model, key: string, value?: ?Model, {
   const related = relatedFor(owner);
 
   if (value && typeof value === 'object' && !model.isInstance(value)) {
-    value = new model(value);
+    value = Reflect.construct(model, [value]);
   }
 
-  if (validateType(model, value)) {
-    related.set(key, value);
-
-    setHasOneInverse(owner, value, {
-      type,
-      model,
-      inverse,
-      foreignKey,
-      inverseModel: model
-    });
+  if (value) {
+    if (validateType(model, value)) {
+      related.set(key, value);
+    }
+  } else {
+    value = null;
+    related.delete(key);
   }
+
+  setHasOneInverse(owner, value, {
+    type,
+    model,
+    inverse,
+    foreignKey,
+    inverseModel: model
+  });
 }
 
 /**

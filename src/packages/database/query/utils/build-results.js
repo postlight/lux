@@ -10,21 +10,21 @@ import promiseHash from '../../../../utils/promise-hash';
 /**
  * @private
  */
-export default async function buildResults({
+export default async function buildResults<T: Model>({
   model,
   records,
   relationships
 }: {
-  model: Class<Model>,
+  model: Class<T>,
   records: Promise<Array<Object>>,
   relationships: Object
-}): Promise<Array<Model>> {
+}): Promise<Array<T>> {
   const results = await records;
   const pkPattern = new RegExp(`^.+\.${model.primaryKey}$`);
   let related;
 
   if (!results.length) {
-    return results;
+    return [];
   }
 
   if (Object.keys(relationships).length) {

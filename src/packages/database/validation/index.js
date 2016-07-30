@@ -1,41 +1,34 @@
 // @flow
+import type { Validation$Validator, Validation$opts } from './interfaces';
 
 /**
  * @private
  */
-class Validation<T: () => boolean> {
+class Validation<T: Validation$Validator> {
   key: string;
 
   value: mixed;
 
-  validator: T;
+  validator: Validation$Validator;
 
-  constructor({
-    key,
-    value,
-    validator
-  }: {
-    key: string,
-    value: mixed,
-    validator: T
-  } = {}) {
+  constructor(opts: Validation$opts<T>) {
     Object.defineProperties(this, {
       key: {
-        value: key,
+        value: opts.key,
         writable: false,
         enumerable: true,
         configurable: false
       },
 
       value: {
-        value,
+        value: opts.value,
         writable: false,
         enumerable: true,
         configurable: false
       },
 
       validator: {
-        value: validator,
+        value: opts.validator,
         writable: false,
         enumerable: false,
         configurable: false

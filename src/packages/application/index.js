@@ -1,14 +1,13 @@
 // @flow
 import initialize from './initialize';
 
-import type Database from '../database';
 import type Logger from '../logger';
 import type Router from '../router';
 import type Server from '../server';
 import type Controller from '../controller';
 import type Serializer from '../serializer';
-import typeof { Model } from '../database';
-import type { Logger$config } from '../logger/interfaces';
+import type Database, { Model } from '../database';
+import type { Application$opts } from './interfaces';
 
 /**
  * The `Application` class is responsible for constructing an application and
@@ -57,7 +56,7 @@ class Application {
    * @instance
    * @readonly
    */
-  models: Map<string, Model>;
+  models: Map<string, Class<Model>>;
 
   /**
    * A reference to the instance of `Logger`.
@@ -117,24 +116,11 @@ class Application {
    * WARNING:
    * It is highly reccomended that you do not override this method.
    */
-  constructor({
-    path,
-    port,
-    logging,
-    database
-  }: {
-    path: string;
-    port: number;
-    logging: Logger$config;
-    database: {};
-  } = {}): Promise<Application> {
-    return initialize(this, {
-      path,
-      port,
-      logging,
-      database
-    });
+  constructor(opts: Application$opts): Promise<Application> {
+    return initialize(this, opts);
   }
 }
 
 export default Application;
+
+export type { Application$opts } from './interfaces';

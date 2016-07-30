@@ -14,12 +14,16 @@ export default function getDefaultMemberParams({
       [model.resourceName]: attributes,
 
       ...relationships.reduce((include, key) => {
-        const { model: related } = model.relationshipFor(key);
+        const opts = model.relationshipFor(key);
 
-        return {
-          ...include,
-          [related.resourceName]: [related.primaryKey]
-        };
+        if (opts) {
+          return {
+            ...include,
+            [opts.model.resourceName]: [opts.model.primaryKey]
+          };
+        } else {
+          return include;
+        }
       }, {})
     }
   };

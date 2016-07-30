@@ -1,4 +1,5 @@
 // @flow
+import setType from '../../../../utils/set-type';
 import relatedFor from './related-for';
 
 import type { Model } from '../../index';
@@ -47,11 +48,11 @@ export function setHasOneInverse(owner: Model, value?: ?Model, {
 
     if (inverseType === 'hasMany') {
       if (!Array.isArray(inverseValue)) {
-        inverseValue = [];
+        inverseValue = setType(() => []);
       }
 
       if (!inverseValue.includes(owner)) {
-        inverseValue = [...inverseValue, owner];
+        inverseValue.push(owner);
       }
     } else {
       if (owner !== inverseValue) {
@@ -65,6 +66,10 @@ export function setHasOneInverse(owner: Model, value?: ?Model, {
       }
     }
 
-    related.set(inverse, inverseValue);
+    if (inverseValue) {
+      related.set(inverse, inverseValue);
+    } else {
+      related.delete(inverse);
+    }
   }
 }

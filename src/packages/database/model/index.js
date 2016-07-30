@@ -1,4 +1,5 @@
-import { dasherize, pluralize } from 'inflection';
+// @flow
+import { pluralize } from 'inflection';
 
 import Query from '../query';
 import { sql } from '../../logger';
@@ -8,16 +9,37 @@ import initializeClass from './initialize-class';
 
 import pick from '../../../utils/pick';
 import omit from '../../../utils/omit';
-import entries from '../../../utils/entries';
+import setType from '../../../utils/set-type';
 import tryCatch from '../../../utils/try-catch';
 import underscore from '../../../utils/underscore';
 import validate from './utils/validate';
+import getColumns from './utils/get-columns';
 import processWriteError from './utils/process-write-error';
 
 import type Logger from '../../logger';
+import type Database from '../../database';
+import type Serializer from '../../serializer';
 import type { Relationship$opts } from '../relationship';
 
 class Model {
+  /**
+   * The canonical name of a `Model`'s constructor.
+   *
+   * @property modelName
+   * @memberof Model
+   * @instance
+   */
+  modelName: string;
+
+  /**
+   * The name of the API resource a `Model` instance's constructor represents.
+   *
+   * @property resourceName
+   * @memberof Model
+   * @instance
+   */
+  resourceName: string;
+
   /**
    * @private
    */
@@ -60,6 +82,13 @@ class Model {
    */
   static primaryKey: string = 'id';
 
+  /**
+   * The canonical name of a `Model`.
+   *
+   * @property modelName
+   * @memberof Model
+   */
+  static modelName: string;
 
   /**
    * The name of the API resource a `Model` represents.
@@ -77,17 +106,37 @@ class Model {
   /**
    * @private
    */
-  static store;
+  static store: Database;
 
   /**
    * @private
    */
-  static serializer;
+  static initialized: boolean;
+
+  /**
+   * @private
+   */
+  static serializer: Serializer;
 
   /**
    * @private
    */
   static attributes: Object;
+
+  /**
+   * @private
+   */
+  static attributeNames: Array<string>;
+
+  /**
+   * @private
+   */
+  static relationships: Object;
+
+  /**
+   * @private
+   */
+  static relationshipNames: Array<string>;
 
   constructor(attrs: {} = {}, initialize: boolean = true) {
     const { constructor: { attributeNames, relationshipNames } } = this;
@@ -141,10 +190,6 @@ class Model {
 
   get isDirty(): boolean {
     return Boolean(this.dirtyAttributes.size);
-  }
-
-  get modelName(): string {
-    return this.constructor.modelName;
   }
 
   static get hasOne(): Object {
@@ -237,10 +282,6 @@ class Model {
     }
   }
 
-  static get modelName(): string {
-    return dasherize(underscore(this.name));
-  }
-
   static get tableName(): string {
     return pluralize(underscore(this.name));
   }
@@ -254,28 +295,6 @@ class Model {
         configurable: false
       });
     }
-  }
-
-  static get relationships(): Object {
-    const {
-      belongsTo,
-      hasOne,
-      hasMany
-    } = this;
-
-    return {
-      ...belongsTo,
-      ...hasOne,
-      ...hasMany
-    };
-  }
-
-  static get attributeNames(): Array<string> {
-    return Object.keys(this.attributes);
-  }
-
-  static get relationshipNames(): Array<string> {
-    return Object.keys(this.relationships);
   }
 
   save(deep?: boolean): Promise<void | Model> {
@@ -319,7 +338,7 @@ class Model {
 
       const query = table()
         .where({ [primaryKey]: Reflect.get(this, primaryKey) })
-        .update(this.format('database', ...Array.from(this.dirtyAttributes)))
+        .update(getColumns(this, Array.from(this.dirtyAttributes)))
         .on('query', () => {
           setImmediate(() => logger.debug(sql`${query.toString()}`));
         });
@@ -390,35 +409,19 @@ class Model {
     return this;
   }
 
-  format(dest: string, ...only: Array<string>): Object {
-    const {
-      constructor: {
-        attributes
-      }
-    } = this;
-
-    switch (dest) {
-      case 'database':
-        return entries(only.length ? pick(attributes, ...only) : attributes)
-          .reduce((hash, [key, { columnName }]) => {
-            return {
-              ...hash,
-              [columnName]: Reflect.get(this, key)
-            };
-          }, {});
-
-      case 'jsonapi':
-        return entries(only.length ? pick(attributes, ...only) : attributes)
-          .reduce((hash, [key, { docName }]) => {
-            return {
-              ...hash,
-              [docName]: Reflect.get(this, key)
-            };
-          }, {});
-
-      default:
-        return {};
+  getAttributes(...keys: Array<string>): Object {
+    if (!keys.length) {
+      keys = this.constructor.attributeNames;
     }
+
+    return setType(() => pick(this, ...keys));
+  }
+
+  /**
+   * @private
+   */
+  getPrimaryKey(): any {
+    return Reflect.get(this, this.constructor.primaryKey);
   }
 
   static initialize(store, table): Promise<Class<this>> {
@@ -433,7 +436,7 @@ class Model {
     }
   }
 
-  static create(props = {}): Promise<void | Model> {
+  static create(props = {}) {
     return tryCatch(async () => {
       const {
         primaryKey,
@@ -477,7 +480,7 @@ class Model {
 
       const query = table()
         .returning(primaryKey)
-        .insert(omit(instance.format('database'), primaryKey))
+        .insert(omit(getColumns(instance)), primaryKey)
         .on('query', () => {
           setImmediate(() => logger.debug(sql`${query.toString()}`));
         });
@@ -509,59 +512,59 @@ class Model {
     });
   }
 
-  static all(): Query {
+  static all() {
     return new Query(this).all();
   }
 
-  static find(primaryKey: string | number): Query {
+  static find(primaryKey: string | number) {
     return new Query(this).find(primaryKey);
   }
 
-  static page(num: number): Query {
+  static page(num: number) {
     return new Query(this).page(num);
   }
 
-  static limit(amount: number): Query {
+  static limit(amount: number) {
     return new Query(this).limit(amount);
   }
 
-  static offset(amount: number): Query {
+  static offset(amount: number) {
     return new Query(this).offset(amount);
   }
 
-  static count(): Query {
+  static count() {
     return new Query(this).count();
   }
 
-  static order(attr: string, direction?: string): Query {
+  static order(attr: string, direction?: string) {
     return new Query(this).order(attr, direction);
   }
 
-  static where(conditions: Object): Query {
+  static where(conditions: Object) {
     return new Query(this).where(conditions);
   }
 
-  static not(conditions: Object): Query {
+  static not(conditions: Object) {
     return new Query(this).not(conditions);
   }
 
-  static first(): Query {
+  static first() {
     return new Query(this).first();
   }
 
-  static last(): Query {
+  static last() {
     return new Query(this).last();
   }
 
-  static select(...params: Array<string>): Query {
+  static select(...params: Array<string>) {
     return new Query(this).select(...params);
   }
 
-  static include(...relationships: Array<Object|string>): Query {
+  static include(...relationships: Array<Object|string>) {
     return new Query(this).include(...relationships);
   }
 
-  static unscope(...scopes: Array<string>): Query {
+  static unscope(...scopes: Array<string>) {
     return new Query(this).unscope(...scopes);
   }
 

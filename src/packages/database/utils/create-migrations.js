@@ -1,7 +1,9 @@
+// @flow
+
 /**
  * @private
  */
-export default async function createMigrations(schema) {
+export default async function createMigrations(schema: Function) {
   const hasTable = await schema().hasTable('migrations');
 
   if (!hasTable) {
