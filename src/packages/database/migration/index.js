@@ -16,3 +16,4 @@ class Migration<T: (schema: Object) => Promise<void>> {
 }
 
 export default Migration;
+export { default as generateTimestamp } from './utils/generate-timestamp';

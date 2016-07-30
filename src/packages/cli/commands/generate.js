@@ -1,10 +1,10 @@
-import moment from 'moment';
 import { red, green, yellow } from 'chalk';
 import { pluralize, singularize } from 'inflection';
 import { createInterface } from 'readline';
 
 import { CWD } from '../../../constants';
 import fs, { rmrf, exists } from '../../fs';
+import { generateTimestamp } from '../../database';
 
 import modelTemplate from '../templates/model';
 import serializerTemplate from '../templates/serializer';
@@ -60,11 +60,11 @@ export async function generateType(type, name, cwd, attrs = []) {
   }
 
   if (type === 'migration') {
-    const timestamp = moment().format('YYYYMMDDHHmmssSS');
+    const timestamp = generateTimestamp();
 
     path = `db/migrate/${timestamp}-${name}.js`;
   } else if (type === 'model-migration') {
-    const timestamp = moment().format('YYYYMMDDHHmmssSS');
+    const timestamp = generateTimestamp();
 
     path = `db/migrate/${timestamp}-create-${pluralize(name)}.js`;
   } else {
