@@ -480,7 +480,7 @@ class Model {
 
       const query = table()
         .returning(primaryKey)
-        .insert(omit(getColumns(instance)), primaryKey)
+        .insert(omit(getColumns(instance), primaryKey))
         .on('query', () => {
           setImmediate(() => logger.debug(sql`${query.toString()}`));
         });
