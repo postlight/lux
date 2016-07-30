@@ -47,8 +47,8 @@ class Database {
     });
   }
 
-  modelFor(type: string): typeof Model  {
-    const model: typeof Model = this.models.get(type);
+  modelFor(type: string): Class<Model> {
+    const model = this.models.get(type);
 
     if (!model) {
       throw new ModelMissingError(type);

@@ -3,6 +3,7 @@ import { FreezeableMap } from '../../../freezeable';
 
 import { InvalidParameterError } from '../errors';
 
+import isNull from '../../../../utils/is-null';
 import entries from '../../../../utils/entries';
 import setType from '../../../../utils/set-type';
 import validateType from '../utils/validate-type';
@@ -42,6 +43,10 @@ class ParameterGroup extends FreezeableMap<string, ParameterLike> {
   validate<V: Object>(params: V): V  {
     return setType(() => {
       const validated = {};
+
+      if (isNull(params)) {
+        return params;
+      }
 
       if (validateType(this, params) && hasRequiredParams(this, params)) {
         const { sanitize } = this;

@@ -1,7 +1,8 @@
 // @flow
-import type Model from '../../model';
+import type { Model } from '../../index';
+import type { Relationship$refs } from '../interfaces';
 
-const REFS: WeakMap<Model, Map<string, Model>> = new WeakMap();
+const REFS: Relationship$refs = new WeakMap();
 
 /**
  * @private

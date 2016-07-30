@@ -1,8 +1,9 @@
 // @flow
 import { ParameterTypeError } from '../errors';
 
-import isBuffer from '../../../../utils/is-buffer';
+import isNull from '../../../../utils/is-null';
 import isObject from '../../../../utils/is-object';
+import isBuffer from '../../../../utils/is-buffer';
 
 import type { Parameter, ParameterGroup } from '../index';
 
@@ -29,7 +30,7 @@ export default function validateType(
         break;
 
       case 'object':
-        isValid = isObject(value);
+        isValid = isObject(value) || isNull(value);
         break;
 
       default:

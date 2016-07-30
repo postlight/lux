@@ -1,6 +1,8 @@
 import { dasherize, pluralize } from 'inflection';
 
 import Query from '../query';
+import { sql } from '../../logger';
+import { saveRelationships } from '../relationship';
 
 import initializeClass from './initialize-class';
 
@@ -11,12 +13,62 @@ import tryCatch from '../../../utils/try-catch';
 import underscore from '../../../utils/underscore';
 import validate from './utils/validate';
 import processWriteError from './utils/process-write-error';
-import { sql } from '../../logger';
-import { saveRelationships } from '../relationship';
 
-import type { options as relationshipOptions } from '../related/interfaces';
+import type Logger from '../../logger';
+import type { Relationship$opts } from '../relationship';
 
 class Model {
+  /**
+   * @private
+   */
+  initialized: boolean;
+
+  /**
+   * @private
+   */
+  rawColumnData: Object;
+
+  /**
+   * @private
+   */
+  initialValues: Map<string, mixed>;
+
+  /**
+   * @private
+   */
+  dirtyAttributes: Set<string>;
+
+  /**
+   * @private
+   */
+  prevAssociations: Set<Model>;
+
+  /**
+   * A reference to the instance of the `Logger` used for the `Application` the
+   * `Model` is a part of.
+   *
+   * @property logger
+   * @memberof Model
+   */
+  static logger: Logger;
+
+  /**
+   * The column name to use for a `Model`'s primaryKey.
+   *
+   * @property primaryKey
+   * @memberof Model
+   */
+  static primaryKey: string = 'id';
+
+
+  /**
+   * The name of the API resource a `Model` represents.
+   *
+   * @property resourceName
+   * @memberof Model
+   */
+  static resourceName: string;
+
   /**
    * @private
    */
@@ -28,11 +80,6 @@ class Model {
   static store;
 
   /**
-   *
-   */
-  static logger;
-
-  /**
    * @private
    */
   static serializer;
@@ -42,43 +89,40 @@ class Model {
    */
   static attributes: Object;
 
-  /**
-   *
-   */
-  static primaryKey: string = 'id';
-
-  /**
-   * @private
-   */
-  static initialized: boolean;
-
-  constructor(attrs: {} = {}, initialize: boolean = true): Model {
+  constructor(attrs: {} = {}, initialize: boolean = true) {
     const { constructor: { attributeNames, relationshipNames } } = this;
 
     Object.defineProperties(this, {
       rawColumnData: {
         value: attrs,
-        writable: true,
+        writable: false,
         enumerable: false,
         configurable: false
       },
 
       initialValues: {
         value: new Map(),
-        writable: true,
+        writable: false,
         enumerable: false,
         configurable: false
       },
 
       dirtyAttributes: {
         value: new Set(),
-        writable: true,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
+
+      prevAssociations: {
+        value: new Set(),
+        writable: false,
         enumerable: false,
         configurable: false
       }
     });
 
-    attrs = pick(attrs, ...attributeNames, ...relationshipNames);
+    attrs = pick(attrs, ...attributeNames.concat(relationshipNames));
     Object.assign(this, attrs);
 
     if (initialize) {
@@ -234,7 +278,7 @@ class Model {
     return Object.keys(this.relationships);
   }
 
-  save(deep?: boolean): Promise<Model> {
+  save(deep?: boolean): Promise<void | Model> {
     return tryCatch(async () => {
       const {
         constructor: {
@@ -271,11 +315,11 @@ class Model {
         await beforeSave(this);
       }
 
-      this.updatedAt = new Date();
+      Reflect.set(this, 'updatedAt', new Date());
 
       const query = table()
-        .where({ [primaryKey]: this[primaryKey] })
-        .update(this.format('database', ...this.dirtyAttributes))
+        .where({ [primaryKey]: Reflect.get(this, primaryKey) })
+        .update(this.format('database', ...Array.from(this.dirtyAttributes)))
         .on('query', () => {
           setImmediate(() => logger.debug(sql`${query.toString()}`));
         });
@@ -285,6 +329,8 @@ class Model {
           query,
           saveRelationships(this)
         ]);
+
+        this.prevAssociations.clear();
       } else {
         await query;
       }
@@ -305,12 +351,12 @@ class Model {
     });
   }
 
-  async update(attributes: Object = {}): Model {
+  async update(attributes: Object = {}): Promise<Model> {
     Object.assign(this, attributes);
-    return this.isDirty ? await this.save() : this;
+    return this.isDirty ? await this.save(true) : this;
   }
 
-  async destroy(): Model {
+  async destroy(): Promise<Model> {
     const {
       constructor: {
         primaryKey,
@@ -329,7 +375,7 @@ class Model {
     }
 
     const query = table()
-      .where({ [primaryKey]: this[primaryKey] })
+      .where({ [primaryKey]: Reflect.get(this, primaryKey) })
       .del()
       .on('query', () => {
         setImmediate(() => logger.debug(sql`${query.toString()}`));
@@ -344,7 +390,7 @@ class Model {
     return this;
   }
 
-  format(dest: string, ...only: Array<string>): {} {
+  format(dest: string, ...only: Array<string>): Object {
     const {
       constructor: {
         attributes
@@ -357,7 +403,7 @@ class Model {
           .reduce((hash, [key, { columnName }]) => {
             return {
               ...hash,
-              [columnName]: this[key]
+              [columnName]: Reflect.get(this, key)
             };
           }, {});
 
@@ -366,15 +412,18 @@ class Model {
           .reduce((hash, [key, { docName }]) => {
             return {
               ...hash,
-              [docName]: this[key]
+              [docName]: Reflect.get(this, key)
             };
           }, {});
+
+      default:
+        return {};
     }
   }
 
-  static initialize(store, table): Promise<typeof Model> {
+  static initialize(store, table): Promise<Class<this>> {
     if (this.initialized) {
-      return this;
+      return Promise.resolve(this);
     } else {
       return initializeClass({
         store,
@@ -384,7 +433,7 @@ class Model {
     }
   }
 
-  static create(props = {}): Model {
+  static create(props = {}): Promise<void | Model> {
     return tryCatch(async () => {
       const {
         primaryKey,
@@ -402,11 +451,11 @@ class Model {
       } = this;
 
       const datetime = new Date();
-      const instance = new this({
+      const instance = Reflect.construct(this, [{
         ...props,
         createdAt: datetime,
         updatedAt: datetime
-      }, false);
+      }, false]);
 
       if (typeof beforeValidation === 'function') {
         await beforeValidation(instance);
@@ -516,8 +565,8 @@ class Model {
     return new Query(this).unscope(...scopes);
   }
 
-  static hasScope(name: string): boolean {
-    return Boolean(this.scopes[name]);
+  static hasScope(name: string) {
+    return Boolean(Reflect.get(this.scopes, name));
   }
 
   /**
@@ -527,17 +576,11 @@ class Model {
     return obj instanceof this;
   }
 
-  static columnFor(key): Object {
-    const {
-      attributes: {
-        [key]: column
-      }
-    } = this;
-
-    return column;
+  static columnFor(key: string): void | Object {
+    return Reflect.get(this.attributes, key);
   }
 
-  static columnNameFor(key): string {
+  static columnNameFor(key: string): void | string {
     const column = this.columnFor(key);
 
     if (column) {
@@ -545,14 +588,8 @@ class Model {
     }
   }
 
-  static relationshipFor(key): relationshipOptions {
-    const {
-      relationships: {
-        [key]: relationship
-      }
-    } = this;
-
-    return relationship;
+  static relationshipFor(key: string): void | Relationship$opts {
+    return Reflect.get(this.relationships, key);
   }
 }
 

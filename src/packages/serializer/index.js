@@ -368,7 +368,7 @@ class Serializer {
     included: Array<JSONAPI$ResourceObject>;
     formatRelationships?: boolean
   }): Promise<JSONAPI$ResourceObject> {
-    const { id } = item;
+    const id = Reflect.get(item, item.constructor.primaryKey);
     const attributes = dasherizeKeys(
       pick(item, ...Object.keys(item.rawColumnData).filter(key => {
         return this.attributes.includes(key);
@@ -392,7 +392,7 @@ class Serializer {
           ...hash,
 
           [name]: (async () => {
-            const related = await item[name];
+            const related = await Reflect.get(item, name);
 
             if (Array.isArray(related)) {
               return {
@@ -453,10 +453,8 @@ class Serializer {
     include: boolean;
     included: Array<JSONAPI$ResourceObject>;
   }): Promise<JSONAPI$RelationshipObject> {
-    const { id, constructor: { serializer } } = item;
-    let { modelName: type } = item;
-
-    type = pluralize(type);
+    const { constructor: { serializer, primaryKey, resourceName } } = item;
+    const id = Reflect.get(item, primaryKey);
 
     if (include) {
       included.push(
@@ -473,11 +471,11 @@ class Serializer {
     return {
       data: {
         id: id.toString(),
-        type
+        type: resourceName
       },
 
       links: {
-        self: `${domain}/${type}/${id}`
+        self: `${domain}/${resourceName}/${id}`
       }
     };
   }

@@ -15,7 +15,7 @@ export default function promiseHash(promises: Object): Promise<Object> {
                 .then((value) => resolve({ [key]: value }))
                 .catch(reject);
             } else {
-              resolve(promise);
+              resolve({ [key]: promise });
             }
           });
         })

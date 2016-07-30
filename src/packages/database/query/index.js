@@ -370,7 +370,7 @@ class Query {
   /**
    * @private
    */
-  async run(): Promise<?Model|Array<Model>|number> {
+  async run(): Promise<number | ?Model | Array<Model>> {
     let results;
 
     const {
@@ -424,7 +424,7 @@ class Query {
   then(
     onData: ?(data: ?(Model | Array<Model>)) => void,
     onError: ?(err: Error) => void
-  ): Promise<?Model | Array<Model>> {
+  ): Promise<number | ?Model | Array<Model>> {
     return tryCatch(async () => {
       const data = await this.run();
 

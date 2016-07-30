@@ -62,12 +62,12 @@ function initializeProps(prototype, attributes, relationships) {
           get() {
             const refs = refsFor(this);
 
-            return refs[key] || defaultValue;
+            return Reflect.get(refs, key) || defaultValue;
           },
 
           set(nextValue) {
             const refs = refsFor(this);
-            const currentValue = refs[key] || defaultValue;
+            const currentValue = Reflect.get(refs, key) || defaultValue;
 
             if (nextValue !== currentValue) {
               const { initialized, initialValues } = this;
@@ -83,7 +83,7 @@ function initializeProps(prototype, attributes, relationships) {
                 return;
               }
 
-              refs[key] = nextValue;
+              Reflect.set(refs, key, nextValue);
 
               if (initialized) {
                 const { dirtyAttributes } = this;

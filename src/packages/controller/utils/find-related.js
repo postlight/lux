@@ -1,5 +1,7 @@
 // @flow
+import isNull from '../../../utils/is-null';
 import entries from '../../../utils/entries';
+import isObject from '../../../utils/is-object';
 import promiseHash from '../../../utils/promise-hash';
 
 import type { JSONAPI$IdentifierObject } from '../../jsonapi';
@@ -16,7 +18,12 @@ export default function findRelated(
     entries(relationships).reduce((result, [key, { data: value }]: [string, {
       data: JSONAPI$IdentifierObject | Array<JSONAPI$IdentifierObject>
     }]) => {
-      if (Array.isArray(value)) {
+      if (isNull(value)) {
+        return {
+          ...result,
+          [key]: value
+        };
+      } else if (Array.isArray(value)) {
         return {
           ...result,
           [key]: Promise.all(
@@ -29,18 +36,20 @@ export default function findRelated(
             })
           )
         };
-      } else {
+      } else if (isObject(value)) {
         const { id, type } = value;
         const controller = controllers.get(type);
 
-        if (controller) {
-          return {
-            ...result,
-            [key]: controller.model.find(id)
-          };
-        } else {
+        if (!controller) {
           return result;
         }
+
+        return {
+          ...result,
+          [key]: controller.model.find(id)
+        };
+      } else {
+        return result;
       }
     }, {})
   );

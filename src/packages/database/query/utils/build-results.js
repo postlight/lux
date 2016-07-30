@@ -15,13 +15,17 @@ export default async function buildResults({
   records,
   relationships
 }: {
-  model: typeof Model,
+  model: Class<Model>,
   records: Promise<Array<Object>>,
   relationships: Object
-}): Promise<Array<Object>> {
+}): Promise<Array<Model>> {
   const results = await records;
   const pkPattern = new RegExp(`^.+\.${model.primaryKey}$`);
   let related;
+
+  if (!results.length) {
+    return results;
+  }
 
   if (Object.keys(relationships).length) {
     related = entries(relationships)
@@ -83,11 +87,14 @@ export default async function buildResults({
             foreignKey = camelize(foreignKey, true);
 
             const match = relatedResults.filter(({ rawColumnData }) => {
-              return rawColumnData[foreignKey] === record[model.primaryKey];
+              const fk = Reflect.get(rawColumnData, foreignKey);
+              const pk = Reflect.get(record, model.primaryKey);
+
+              return fk === pk;
             });
 
             if (match.length) {
-              record[name] = match;
+              Reflect.set(record, name, match);
             }
           }
         });
@@ -118,6 +125,6 @@ export default async function buildResults({
         };
       }, {});
 
-    return new model(record);
+    return Reflect.construct(model, [record]);
   });
 }
