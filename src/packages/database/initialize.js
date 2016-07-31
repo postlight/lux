@@ -3,7 +3,7 @@ import { worker, isMaster } from 'cluster';
 
 import { NODE_ENV } from '../../constants';
 
-import { MigrationsPendingError } from './errors';
+import { ConfigMissingError, MigrationsPendingError } from './errors';
 
 import connect from './utils/connect';
 import createMigrations from './utils/create-migrations';
@@ -23,88 +23,90 @@ export default async function initialize<T: Database>(instance: T, {
 }: Database$opts) {
   config = Reflect.get(config, NODE_ENV);
 
-  if (config) {
-    const {
-      debug = (NODE_ENV === 'development')
-    }: {
-      debug: boolean
-    } = config;
+  if (!config) {
+    throw new ConfigMissingError(NODE_ENV);
+  }
 
-    Object.defineProperties(instance, {
-      path: {
-        value: path,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
+  const {
+    debug = (NODE_ENV === 'development')
+  }: {
+    debug: boolean
+  } = config;
 
-      debug: {
-        value: debug,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
+  Object.defineProperties(instance, {
+    path: {
+      value: path,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    },
 
-      models: {
-        value: models,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
+    debug: {
+      value: debug,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    },
 
-      logger: {
-        value: logger,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
+    models: {
+      value: models,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    },
 
-      config: {
-        value: config,
-        writable: false,
-        enumerable: true,
-        configurable: false
-      },
+    logger: {
+      value: logger,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    },
 
-      schema: {
-        value: () => instance.connection.schema,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
+    config: {
+      value: config,
+      writable: false,
+      enumerable: true,
+      configurable: false
+    },
 
-      connection: {
-        value: connect(path, config),
-        writable: false,
-        enumerable: false,
-        configurable: false
-      }
-    });
+    schema: {
+      value: () => instance.connection.schema,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    },
 
-    if (isMaster || worker && worker.id === 1) {
-      await createMigrations(instance.schema);
+    connection: {
+      value: connect(path, config),
+      writable: false,
+      enumerable: false,
+      configurable: false
+    }
+  });
 
-      if (checkMigrations) {
-        const pending = await pendingMigrations(path, () => {
-          return instance.connection('migrations');
-        });
+  if (isMaster || worker && worker.id === 1) {
+    await createMigrations(instance.schema);
 
-        if (pending.length) {
-          throw new MigrationsPendingError(pending);
-        }
+    if (checkMigrations) {
+      const pending = await pendingMigrations(path, () => {
+        return instance.connection('migrations');
+      });
+
+      if (pending.length) {
+        throw new MigrationsPendingError(pending);
       }
     }
-
-    await Promise.all(
-      Array
-        .from(models.values())
-        .map(model => {
-          return model.initialize(instance, () => {
-            return instance.connection(model.tableName);
-          });
-        })
-    );
   }
+
+  await Promise.all(
+    Array
+      .from(models.values())
+      .map(model => {
+        return model.initialize(instance, () => {
+          return instance.connection(model.tableName);
+        });
+      })
+  );
 
   return instance;
 }
