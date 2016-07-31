@@ -25,9 +25,7 @@ export default async function findOne({
     include
   } = paramsToQuery(model, merge(defaultParams, params));
 
-  const result = await model.find(id)
+  return await model.find(id)
     .select(...select)
     .include(include);
-
-  return result instanceof Model ? result : null;
 }

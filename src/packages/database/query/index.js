@@ -3,12 +3,15 @@ import { camelize } from 'inflection';
 
 import { sql } from '../../logger';
 
+import { RecordNotFoundError } from './errors';
+
 import initialize from './initialize';
 
 import entries from '../../../utils/entries';
 import tryCatch from '../../../utils/try-catch';
 import formatSelect from './utils/format-select';
 import buildResults from './utils/build-results';
+import getFindParam from './utils/get-find-param';
 
 import type { Model } from '../index'; // eslint-disable-line no-unused-vars
 
@@ -25,6 +28,11 @@ class Query {
    * @private
    */
   snapshots: Array<[string, mixed]>;
+
+  /**
+   * @private
+   */
+  isFind: boolean;
 
   /**
    * @private
@@ -90,8 +98,11 @@ class Query {
     return this.where(conditions, true);
   }
 
-  find(primaryKey: string | number) {
-    this.collection = false;
+  find(primaryKey: any) {
+    Object.assign(this, {
+      isFind: true,
+      collection: false
+    });
 
     this.where({
       [this.model.primaryKey]: primaryKey
@@ -377,6 +388,7 @@ class Query {
 
     const {
       model,
+      isFind,
       snapshots,
       collection,
       shouldCount,
@@ -419,7 +431,17 @@ class Query {
         relationships
       });
 
-      return collection ? results : results[0];
+      if (collection) {
+        return results;
+      } else {
+        const [result] = results;
+
+        if (!result && isFind) {
+          throw new RecordNotFoundError(model, getFindParam(this));
+        }
+
+        return result;
+      }
     }
   }
 

@@ -420,7 +420,7 @@ class Model {
   /**
    * @private
    */
-  getPrimaryKey(): any {
+  getPrimaryKey() {
     return Reflect.get(this, this.constructor.primaryKey);
   }
 
@@ -516,7 +516,7 @@ class Model {
     return new Query(this).all();
   }
 
-  static find(primaryKey: string | number) {
+  static find(primaryKey: any) {
     return new Query(this).find(primaryKey);
   }
 
