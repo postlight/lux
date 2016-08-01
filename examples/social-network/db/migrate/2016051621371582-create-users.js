@@ -2,32 +2,23 @@ export function up(schema) {
   return schema.createTable('users', table => {
     table.increments('id');
 
-    table
-      .string('name')
+    table.string('name')
+      .index()
       .notNullable();
 
-    table
-      .string('email')
-      .notNullable()
-      .unique();
-
-    table
-      .string('password')
+    table.string('email')
+      .index()
+      .unique()
       .notNullable();
 
-    table
-      .string('password_salt')
+    table.string('password')
+      .notNullable();
+
+    table.string('password_salt')
       .notNullable();
 
     table.timestamps();
-
-    table.index([
-      'id',
-      'name',
-      'email',
-      'created_at',
-      'updated_at'
-    ]);
+    table.index(['created_at', 'updated_at']);
   });
 }
 

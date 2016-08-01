@@ -4,12 +4,12 @@ class Friendship extends Model {
   static belongsTo = {
     follower: {
       model: 'user',
-      inverse: 'followers',
+      inverse: 'followers'
     },
 
     followee: {
       model: 'user',
-      inverse: 'followees',
+      inverse: 'followees'
     }
   };
 }

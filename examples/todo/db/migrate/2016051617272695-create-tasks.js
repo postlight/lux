@@ -2,26 +2,22 @@ export function up(schema) {
   return schema.createTable('tasks', table => {
     table.increments('id');
 
-    table
-      .string('name')
+    table.string('name')
+      .index()
       .defaultTo('New Task')
       .notNullable();
 
-    table
-      .boolean('is_completed')
+    table.boolean('is_completed')
+      .index()
       .defaultTo(false)
       .notNullable();
 
-    table.datetime('due_date');
-    table.integer('list_id');
-    table.timestamps();
+    table.datetime('due_date').index();
 
+    table.integer('list_id').index();
+
+    table.timestamps();
     table.index([
-      'id',
-      'name',
-      'is_completed',
-      'due_date',
-      'list_id',
       'created_at',
       'updated_at'
     ]);

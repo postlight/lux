@@ -2,8 +2,8 @@ import { Serializer } from 'lux-framework';
 
 class NotificationsSerializer extends Serializer {
   attributes = [
-    'message',
-    'unread'
+    'unread',
+    'message'
   ];
 
   hasOne = [

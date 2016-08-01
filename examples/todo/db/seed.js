@@ -18,21 +18,17 @@ const {
 
 export default async function seed() {
   await Promise.all(
-    [...range(1, 4)].map(() => {
-      return List.create({
-        name: `${company.bsAdjective()} tasks`
-      });
-    })
+    Array.from(range(1, 4)).map(() => List.create({
+      name: `${company.bsAdjective()} tasks`
+    }))
   );
 
   await Promise.all(
-    [...range(1, 100)].map(() => {
-      return Task.create({
-        name: hacker.phrase(),
-        listId: randomize([...range(1, 4)]),
-        dueDate: date.future(),
-        isCompleted: random.boolean()
-      })
-    })
+    Array.from(range(1, 100)).map(() => Task.create({
+      name: hacker.phrase(),
+      listId: randomize(Array.from(range(1, 4))),
+      dueDate: date.future(),
+      isCompleted: random.boolean()
+    }))
   );
 }

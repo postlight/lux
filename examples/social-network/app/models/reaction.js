@@ -1,10 +1,5 @@
 import { Model } from 'lux-framework';
 
-import Comment from './comment';
-import Notification from './notification';
-import Post from './post';
-import User from './user';
-
 import track from '../utils/track';
 
 class Reaction extends Model {

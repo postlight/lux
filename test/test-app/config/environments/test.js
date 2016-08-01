@@ -1,6 +1,6 @@
 export default {
   logging: {
-    level: 'DEBUG',
+    level: 'WARN',
     format: 'text',
     enabled: false,
 

@@ -2,8 +2,8 @@ import { Serializer } from 'lux-framework';
 
 class CategorizationsSerializer extends Serializer {
   hasOne = [
-    'post',
-    'tag'
+    'tag',
+    'post'
   ];
 }
 
