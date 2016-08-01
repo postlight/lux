@@ -9,7 +9,7 @@ import type { Request } from '../../server';
 /**
  * @private
  */
-export default async function findOne({
+export default function findOne({
   params,
   defaultParams,
 
@@ -25,7 +25,7 @@ export default async function findOne({
     include
   } = paramsToQuery(model, merge(defaultParams, params));
 
-  return await model.find(id)
+  return model.find(id)
     .select(...select)
     .include(include);
 }

@@ -400,7 +400,7 @@ class Controller {
    * @param  {Request} request
    * @param  {Response} response
    */
-  index(req: Request): Promise<Array<Model>> {
+  index(req: Request) {
     return findMany(req);
   }
 
