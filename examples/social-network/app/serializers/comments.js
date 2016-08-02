@@ -2,8 +2,8 @@ import { Serializer } from 'lux-framework';
 
 class CommentsSerializer extends Serializer {
   attributes = [
-    'message',
-    'edited'
+    'edited',
+    'message'
   ];
 
   hasOne = [

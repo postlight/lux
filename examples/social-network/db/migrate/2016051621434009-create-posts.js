@@ -4,30 +4,21 @@ export function up(schema) {
 
     table.text('body');
 
-    table
-      .string('title')
-      .defaultTo('New Post')
-      .notNullable();
+    table.string('title')
+      .index()
+      .notNullable()
+      .defaultTo('New Post');
 
-    table
-      .boolean('is_public')
+    table.boolean('is_public')
+      .index()
       .defaultTo(false)
       .notNullable();
 
-    table
-      .integer('user_id')
-      .notNullable();
+    table.integer('user_id')
+      .index();
 
     table.timestamps();
-
-    table.index([
-      'id',
-      'title',
-      'is_public',
-      'user_id',
-      'created_at',
-      'updated_at'
-    ]);
+    table.index(['created_at', 'updated_at']);
   });
 }
 

@@ -6,8 +6,8 @@ class ReactionsSerializer extends Serializer {
   ];
 
   hasOne = [
-    'user',
     'post',
+    'user',
     'comment'
   ];
 }

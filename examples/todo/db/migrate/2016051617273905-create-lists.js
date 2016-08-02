@@ -2,15 +2,13 @@ export function up(schema) {
   return schema.createTable('lists', table => {
     table.increments('id');
 
-    table
-      .string('name')
+    table.string('name')
+      .index()
       .defaultTo('New List')
       .notNullable();
 
     table.timestamps();
-
     table.index([
-      'id',
       'created_at',
       'updated_at'
     ]);
