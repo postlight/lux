@@ -1,5 +1,66 @@
 # Lux Changelog
 
+### 1.0.0-rc.2 (Aug 2, 2016)
+
+##### Notable Changes
+
+* Invalid parameters and malformed request bodies no longer fail silently.
+* Controller's now accept relationships for `create` and `update` actions.
+
+##### Commits
+
+* [[`1172d562c5`](https://github.com/postlight/lux/commit/1172d562c5)] - **fix**: do not allow public route definitions to set private params (#252) (Zachary Golba)
+* [[`278ab5dda3`](https://github.com/postlight/lux/commit/278ab5dda3)] - **fix**: allow show action to be chained (#251) (Zachary Golba)
+* [[`4777e1a22e`](https://github.com/postlight/lux/commit/4777e1a22e)] - **chore**: update example apps (#250) (Zachary Golba)
+* [[`5f55d63b57`](https://github.com/postlight/lux/commit/5f55d63b57)] - **deps**: update eslint to version 3.2.2 (#248) (Greenkeeper)
+* [[`831a61c7a1`](https://github.com/postlight/lux/commit/831a61c7a1)] - **deps**: update rollup to version 0.34.3 (#249) (Greenkeeper)
+* [[`e49e7df0e6`](https://github.com/postlight/lux/commit/e49e7df0e6)] - **deps**: update all dependencies (#247) (Zachary Golba)
+* [[`f41007d873`](https://github.com/postlight/lux/commit/f41007d873)] - **deps**: update eslint to version 3.2.1 (#245) (Greenkeeper)
+* [[`62ee4be098`](https://github.com/postlight/lux/commit/62ee4be098)] - **deps**: update rollup-plugin-multi-entry to version 2.0.1 (#246) (Greenkeeper)
+* [[`32aa4484d0`](https://github.com/postlight/lux/commit/32aa4484d0)] - **deps**: update rollup to version 0.34.2 (#244) (Greenkeeper)
+* [[`82fb3ce32e`](https://github.com/postlight/lux/commit/82fb3ce32e)] - **deps**: update mocha to version 3.0.0 (#243) (Greenkeeper)
+* [[`e4de52d116`](https://github.com/postlight/lux/commit/e4de52d116)] - **refactor**: add better relationship support and refactor type systems (#229) (Zachary Golba)
+* [[`e5e4c7afde`](https://github.com/postlight/lux/commit/e5e4c7afde)] - **deps**: update rollup-plugin-node-resolve to version 2.0.0 (#242) (Greenkeeper)
+* [[`edefdb50be`](https://github.com/postlight/lux/commit/edefdb50be)] - **deps**: update rollup-plugin-node-resolve to version 1.7.3 (#241) (Greenkeeper)
+* [[`2d35a05c43`](https://github.com/postlight/lux/commit/2d35a05c43)] - **deps**: update ora to version 0.3.0 (#239) (Greenkeeper)
+* [[`6787f15135`](https://github.com/postlight/lux/commit/6787f15135)] - **deps**: update eslint to version 3.2.0 (#237) (Greenkeeper)
+* [[`aab024dc10`](https://github.com/postlight/lux/commit/aab024dc10)] - **deps**: update flow-bin to version 0.30.0 (#238) (Greenkeeper)
+* [[`4fcf1fcb54`](https://github.com/postlight/lux/commit/4fcf1fcb54)] - **deps**: update rollup-plugin-node-resolve to version 1.7.2 (#236) (Greenkeeper)
+* [[`dff620b617`](https://github.com/postlight/lux/commit/dff620b617)] - **deps**: update eslint-plugin-flowtype to version 2.4.0 (#235) (Greenkeeper)
+* [[`c1e1d69956`](https://github.com/postlight/lux/commit/c1e1d69956)] - **deps**: update babel-plugin-transform-es2015-modules-commonjs to version 6.11.5 (#234) (Greenkeeper)
+* [[`8c2494cd4b`](https://github.com/postlight/lux/commit/8c2494cd4b)] - **deps**: update babel-core to version 6.11.4 (#233) (Greenkeeper)
+* [[`7682b8720a`](https://github.com/postlight/lux/commit/7682b8720a)] - **deps**: update eslint to version 3.1.1 (#231) (Greenkeeper)
+* [[`6b62779f27`](https://github.com/postlight/lux/commit/6b62779f27)] - **fix**: pluralize fields resource name (#216) (Louis Person)
+* [[`44025b35f7`](https://github.com/postlight/lux/commit/44025b35f7)] - **deps**: update documentation (package) to version 4.0.0-beta8 (#228) (Zachary Golba)
+* [[`ef8a1f6e22`](https://github.com/postlight/lux/commit/ef8a1f6e22)] - **deps**: update pg to version 6.0.2 in test-app (#227) (Zachary Golba)
+* [[`4247194886`](https://github.com/postlight/lux/commit/4247194886)] - **feat**: deduce domain protocol from connection (#217) (Louis Person)
+* [[`cb5e45d342`](https://github.com/postlight/lux/commit/cb5e45d342)] - **deps**: update eslint to version 3.1.0 (#226) (Greenkeeper)
+* [[`d8ef797d46`](https://github.com/postlight/lux/commit/d8ef797d46)] - **refactor**: remove response stream in favor of res.end() (#225) (Zachary Golba)
+* [[`a8a5406995`](https://github.com/postlight/lux/commit/a8a5406995)] - **feat**: improve log messages and data (#213) (Zachary Golba)
+* [[`6cd3474a53`](https://github.com/postlight/lux/commit/6cd3474a53)] - **deps**: update flow-bin to version 0.29.0 (#224) (Greenkeeper)
+* [[`2960a4148a`](https://github.com/postlight/lux/commit/2960a4148a)] - **deps**: update source-map-support to version 0.4.2 (#220) (Greenkeeper)
+* [[`c06a677c81`](https://github.com/postlight/lux/commit/c06a677c81)] - **deps**: update eslint-plugin-flowtype to version 2.3.1 (#219) (Greenkeeper)
+* [[`e69f04f6d9`](https://github.com/postlight/lux/commit/e69f04f6d9)] - **feat**: check directory for valid directory structure (#215) (kev5873)
+* [[`a7960f6bea`](https://github.com/postlight/lux/commit/a7960f6bea)] - **deps**: update rollup to version 0.34.1 (#214) (Greenkeeper)
+* [[`9c7e24a6dd`](https://github.com/postlight/lux/commit/9c7e24a6dd)] - **refactor**: add flow comment to the top of decl files (#212) (Zachary Golba)
+* [[`fc325ea65b`](https://github.com/postlight/lux/commit/fc325ea65b)] - **refactor**: improve and simplify eslint rules (#209) (Zachary Golba)
+* [[`a8460e5d4c`](https://github.com/postlight/lux/commit/a8460e5d4c)] - **fix**: resource IDs must be strings (#211) (Louis Person)
+* [[`fd0a593bb1`](https://github.com/postlight/lux/commit/fd0a593bb1)] - **deps**: update rollup to version 0.34.0 (#210) (Greenkeeper)
+* [[`4cc248bed4`](https://github.com/postlight/lux/commit/4cc248bed4)] - **deps**: update test-app dependencies (#208) (Zachary Golba)
+* [[`81a30f76b9`](https://github.com/postlight/lux/commit/81a30f76b9)] - **feat**: improve proxy decl (#207) (Zachary Golba)
+* [[`99523b7a0d`](https://github.com/postlight/lux/commit/99523b7a0d)] - **deps**: update babel-eslint to version 6.1.2 (#206) (Greenkeeper)
+* [[`eca77d5e9f`](https://github.com/postlight/lux/commit/eca77d5e9f)] - **deps**: update rollup to version 0.33.2 (#205) (Greenkeeper)
+* [[`4bb1878b91`](https://github.com/postlight/lux/commit/4bb1878b91)] - **deps**: update babel-eslint to version 6.1.1 (#204) (Greenkeeper)
+* [[`3bb6e07431`](https://github.com/postlight/lux/commit/3bb6e07431)] - **fix**: errors is a top level member (#203) (Louis Person)
+* [[`370630c8d4`](https://github.com/postlight/lux/commit/370630c8d4)] - **deps**: update rollup to version 0.33.1 (#202) (Greenkeeper)
+* [[`3eb6790091`](https://github.com/postlight/lux/commit/3eb6790091)] - **deps**: update rollup-plugin-multi-entry to version 2.0.0 🚀 (#199) (Greenkeeper)
+* [[`dc2e232b94`](https://github.com/postlight/lux/commit/dc2e232b94)] - **deps**: update flow-bin to version 0.28.0 🚀 (#201) (Greenkeeper)
+* [[`000bf415a2`](https://github.com/postlight/lux/commit/000bf415a2)] - **deps**: update eslint to version 3.0.1 (#200) (Greenkeeper)
+* [[`14b7bab46c`](https://github.com/postlight/lux/commit/14b7bab46c)] - **docs**: update CHANGELOG.md to include docker images (#198) (Zachary Golba)
+* [[`236c3961f0`](https://github.com/postlight/lux/commit/236c3961f0)] - **docs**: update ROADMAP.md (#197) (Zachary Golba)
+* [[`1d3a7b29ae`](https://github.com/postlight/lux/commit/1d3a7b29ae)] - **docs**: update testing section of README.md (#196) (Zachary Golba)
+* [[`266b2120a2`](https://github.com/postlight/lux/commit/266b2120a2)] - **release**: 1.0.0-rc.1 (#195) (Zachary Golba)
+
 ### 1.0.0-rc.1 (July 4, 2016)
 
 Happy Independence Day 🇺🇸
