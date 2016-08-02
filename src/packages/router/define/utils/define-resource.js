@@ -1,6 +1,7 @@
 // @flow
 import defineRoute from './define-route';
-import type { options } from '../interfaces';
+
+import type { Router$resource } from '../interfaces';
 
 /**
  * @private
@@ -9,11 +10,7 @@ export default function defineResource({
   path,
   router,
   controllers
-}: {
-  path: options.path;
-  router: options.router;
-  controllers: options.controllers;
-}): void {
+}: Router$resource) {
   defineRoute({
     path,
     router,

@@ -3,7 +3,7 @@ import { ID_PATTERN } from '../route';
 
 import { FreezeableMap } from '../freezeable';
 
-import define from './define';
+import * as define from './define';
 
 import type { Request } from '../server';
 import type { Router$opts } from './interfaces';
@@ -17,9 +17,10 @@ class Router extends FreezeableMap<string, Route> {
     super();
 
     Reflect.apply(routes, {
-      route: (path: string, opts: Route$opts) => define.route({
-        ...opts,
+      route: (path: string, { method, action }: Route$opts) => define.route({
         path,
+        method,
+        action,
         controllers,
         router: this
       }),
