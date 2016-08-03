@@ -34,6 +34,10 @@ export async function destroyType(type, name) {
     case 'middleware':
       path = `app/${type}/${name}.js`;
       break;
+
+    case 'util':
+      path = `app/${pluralize(type)}/${name}.js`;
+      break;
   }
 
   if (await exists(`${CWD}/${path}`)) {
