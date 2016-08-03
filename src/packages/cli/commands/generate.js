@@ -12,6 +12,7 @@ import controllerTemplate from '../templates/controller';
 import emptyMigrationTemplate from '../templates/empty-migration';
 import modelMigrationTemplate from '../templates/model-migration';
 import middlewareTemplate from '../templates/middleware';
+import utilTemplate from '../templates/util';
 
 import indent from '../utils/indent';
 
@@ -54,6 +55,10 @@ export async function generateType(type, name, cwd, attrs = []) {
     case 'middleware':
       data = middlewareTemplate(name);
       break;
+
+    case 'util':
+      data = utilTemplate(name);
+      break;
   }
 
   if (type === 'model') {
@@ -61,7 +66,7 @@ export async function generateType(type, name, cwd, attrs = []) {
   }
 
   if (type !== 'model' && type !== 'migration' && type !== 'middleware' &&
-      name !== 'application') {
+      type !== 'util' && name !== 'application') {
     name = pluralize(name);
   }
 
