@@ -11,6 +11,7 @@ import serializerTemplate from '../templates/serializer';
 import controllerTemplate from '../templates/controller';
 import emptyMigrationTemplate from '../templates/empty-migration';
 import modelMigrationTemplate from '../templates/model-migration';
+import middlewareTemplate from '../templates/middleware';
 
 import indent from '../utils/indent';
 
@@ -49,13 +50,18 @@ export async function generateType(type, name, cwd, attrs = []) {
     case 'controller':
       data = controllerTemplate(name, attrs);
       break;
+
+    case 'middleware':
+      data = middlewareTemplate(name);
+      break;
   }
 
   if (type === 'model') {
     name = singularize(name);
   }
 
-  if (type !== 'model' && type !== 'migration' && name !== 'application') {
+  if (type !== 'model' && type !== 'migration' && type !== 'middleware' &&
+      name !== 'application') {
     name = pluralize(name);
   }
 
@@ -67,6 +73,8 @@ export async function generateType(type, name, cwd, attrs = []) {
     const timestamp = generateTimestamp();
 
     path = `db/migrate/${timestamp}-create-${pluralize(name)}.js`;
+  } else if (type === 'middleware') {
+    path = `app/${type}/${name}.js`;
   } else {
     path = `app/${pluralize(type)}/${name}.js`;
   }

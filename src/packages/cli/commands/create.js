@@ -42,6 +42,7 @@ export async function create(name, database) {
     fs.mkdirAsync(`${project}/app/models`),
     fs.mkdirAsync(`${project}/app/serializers`),
     fs.mkdirAsync(`${project}/app/controllers`),
+    fs.mkdirAsync(`${project}/app/middleware`),
     fs.mkdirAsync(`${project}/config/environments`),
     fs.mkdirAsync(`${project}/db/migrate`)
   ]);
