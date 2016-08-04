@@ -1,5 +1,18 @@
 # Lux Changelog
 
+### 1.0.0-rc.3 (Aug 3, 2016)
+
+Shout out to @adampash for fixing a bug that prevents newly created Lux apps from successfully being built! 👏
+
+##### Notable Changes
+
+* Newly created Lux projects no longer fail to build due to invalid config files.
+
+##### Commits
+
+* [[`6b598748d0`](https://github.com/postlight/lux/commit/6b598748d0)] - **Fix**: Quoting quotes inside config template (#260) (Adam Pash)
+* [[`74416748e4`](https://github.com/postlight/lux/commit/74416748e4)] - **release**: 1.0.0-rc.2 (#253) (Zachary Golba)
+
 ### 1.0.0-rc.2 (Aug 2, 2016)
 
 ##### Notable Changes
