@@ -18,6 +18,7 @@ const PROJECT_REQUIRED = [
 
 const cli = require('commander');
 const path = require('path');
+const { red, green } = require('chalk');
 
 function inLuxProject() {
   if (PWD.indexOf(path.join('lux', 'test', 'test-app')) >= 0) {
@@ -30,6 +31,14 @@ function inLuxProject() {
       return false;
     }
   }
+}
+
+function commandNotFound(cmd) {
+  console.log();
+  console.log(`  ${red(cmd)} isn't a valid command`);
+  console.log();
+  console.log(`  Type ${green('lux --help')} for a full list of commands`);
+  console.log();
 }
 
 function exec(cmd, ...args) {
@@ -230,6 +239,11 @@ cli
       .then(() => exec('dbseed'))
       .then(exit)
       .catch(rescue);
+  });
+
+cli
+  .on('*', (cmd) => {
+    commandNotFound(cmd)
   });
 
 cli.parse(process.argv);
