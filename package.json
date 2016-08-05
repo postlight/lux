@@ -52,7 +52,7 @@
     "source-map-support": "0.4.2"
   },
   "devDependencies": {
-    "babel-core": "6.11.4",
+    "babel-core": "6.13.1",
     "babel-plugin-transform-es2015-modules-commonjs": "6.11.5",
     "babel-preset-lux": "1.1.0",
     "chai": "3.5.0",
