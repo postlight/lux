@@ -410,10 +410,6 @@ class Model {
   }
 
   getAttributes(...keys: Array<string>): Object {
-    if (!keys.length) {
-      keys = this.constructor.attributeNames;
-    }
-
     return setType(() => pick(this, ...keys));
   }
 
