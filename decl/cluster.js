@@ -1,5 +1,5 @@
 // @flow
-import { EventEmitter } from 'events';
+import EventEmitter from 'events';
 
 declare module 'cluster' {
   declare class Worker extends EventEmitter {

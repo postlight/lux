@@ -1,7 +1,7 @@
 // @flow
+import EventEmitter from 'events';
 import os from 'os';
 import cluster from 'cluster';
-import { EventEmitter } from 'events';
 import { join as joinPath } from 'path';
 import { red, green } from 'chalk';
 
@@ -148,7 +148,7 @@ class Cluster extends EventEmitter {
     });
   }
 
-  shutdown(worker: Worker): Promise<Object> {
+  shutdown(worker: Worker): Promise<Worker> {
     return new Promise(resolve => {
       this.workers.delete(worker);
 
