@@ -3,8 +3,9 @@ import { pluralize, singularize } from 'inflection';
 import { createInterface } from 'readline';
 
 import { CWD } from '../../../constants';
-import fs, { rmrf, exists } from '../../fs';
+
 import { generateTimestamp } from '../../database';
+import { rmrf, exists, readdir, readFile, writeFile } from '../../fs';
 
 import modelTemplate from '../templates/model';
 import serializerTemplate from '../templates/serializer';
@@ -105,7 +106,7 @@ export async function generateType(type, name, cwd, attrs = []) {
 
     if (overwrite) {
       if (isMigration) {
-        const migrations = await fs.readdirAsync(`${cwd}/db/migrate`);
+        const migrations = await readdir(`${cwd}/db/migrate`);
         const isModelMigration = type === 'model-migration';
 
         const oldName = migrations.find(file => {
@@ -120,17 +121,17 @@ export async function generateType(type, name, cwd, attrs = []) {
           console.log(`${red('remove')} ${oldPath}`);
         }
 
-        await fs.writeFileAsync(`${cwd}/${path}`, data, 'utf8');
+        await writeFile(`${cwd}/${path}`, data);
         console.log(`${green('create')} ${path}`);
       } else {
-        await fs.writeFileAsync(`${cwd}/${path}`, data, 'utf8');
+        await writeFile(`${cwd}/${path}`, data);
         console.log(`${yellow('overwrite')} ${path}`);
       }
     } else {
       console.log(`${yellow('skip')} ${path}`);
     }
   } else {
-    await fs.writeFileAsync(`${cwd}/${path}`, data, 'utf8');
+    await writeFile(`${cwd}/${path}`, data);
     console.log(`${green('create')} ${path}`);
   }
 
@@ -152,7 +153,7 @@ export async function generate({
   attrs: Array<string>
 }) {
   if (type === 'resource') {
-    const routes = (await fs.readFileAsync(`${cwd}/app/routes.js`, 'utf8'))
+    const routes = (await readFile(`${cwd}/app/routes.js`, 'utf8'))
       .split('\n')
       .reduce((str, line, index, array) => {
         const closeIndex = array.lastIndexOf('}');
@@ -173,7 +174,7 @@ export async function generate({
     await generateType('serializer', name, cwd, attrs);
     await generateType('controller', name, cwd, attrs);
 
-    await fs.writeFileAsync(`${cwd}/app/routes.js`, routes, 'utf8');
+    await writeFile(`${cwd}/app/routes.js`, routes);
     console.log(`${green('update')} app/routes.js`);
   } else if (type === 'model') {
     await generateType(type, name, cwd, attrs);

@@ -3,7 +3,7 @@ import { join as joinPath } from 'path';
 import { camelize, classify, pluralize } from 'inflection';
 
 import { BACKSLASH } from '../constants';
-import fs from '../../fs';
+import { mkdir, writeFile, appendFile } from '../../fs';
 
 import tryCatch from '../../../utils/try-catch';
 import underscore from '../../../utils/underscore';
@@ -36,8 +36,8 @@ export default async function createManifest(
   const dist = joinPath(dir, 'dist');
   const file = joinPath(dist, 'index.js');
 
-  await tryCatch(() => fs.mkdirAsync(dist));
-  await fs.writeFileAsync(file, useStrict ? '\'use strict\';\n\n' : '', 'utf8');
+  await tryCatch(() => mkdir(dist));
+  await writeFile(file, useStrict ? '\'use strict\';\n\n' : '');
 
   for (const [key, value] of assets) {
     switch (key) {
@@ -53,7 +53,7 @@ export default async function createManifest(
 
           name += 'Controller';
 
-          await fs.appendFileAsync(file, exportStatement(name, path), 'utf8');
+          await appendFile(file, exportStatement(name, path));
         }
         break;
 
@@ -62,7 +62,7 @@ export default async function createManifest(
           const path = joinPath('app', 'models', name);
           name = classify(underscore(name.replace(/\.js$/ig, '')));
 
-          await fs.appendFileAsync(file, exportStatement(name, path), 'utf8');
+          await appendFile(file, exportStatement(name, path));
         }
         break;
 
@@ -73,13 +73,15 @@ export default async function createManifest(
             underscore(name.replace(/\.js$/ig, '')).substr(17)
           , true);
 
-          await fs.appendFileAsync(file,
+          await appendFile(
+            file,
             exportStatement(`up as ${name}Up`, path, false)
-          , 'utf8');
+          );
 
-          await fs.appendFileAsync(file,
+          await appendFile(
+            file,
             exportStatement(`down as ${name}Down`, path, false)
-          , 'utf8');
+          );
         }
         break;
 
@@ -95,13 +97,13 @@ export default async function createManifest(
 
           name += 'Serializer';
 
-          await fs.appendFileAsync(file, exportStatement(name, path), 'utf8');
+          await appendFile(file, exportStatement(name, path));
         }
         break;
 
       default:
         if (typeof value === 'string') {
-          await fs.appendFileAsync(file, exportStatement(key, value), 'utf8');
+          await appendFile(file, exportStatement(key, value));
         }
     }
   }

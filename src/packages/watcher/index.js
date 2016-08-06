@@ -5,10 +5,12 @@ import { EventEmitter } from 'events';
 
 import initialize from './initialize';
 
+import type { Watcher$Client } from './interfaces'; // eslint-disable-line max-len, no-unused-vars
+
 /**
  * @private
  */
-class Watcher<T: Client | FSWatcher> extends EventEmitter {
+class Watcher<T: Watcher$Client> extends EventEmitter {
   path: string;
 
   client: T;

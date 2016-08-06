@@ -5,7 +5,7 @@ require('../../lib/babel-hook');
 const path = require('path');
 const rollup = require('rollup').rollup;
 
-const fs = require('../../src/packages/fs').default;
+const fs = require('../../src/packages/fs');
 const dist = path.join(__dirname, '..', '..', 'dist');
 const config = require('./config');
 const commands = path.join(
@@ -18,7 +18,7 @@ const commands = path.join(
   'commands'
 );
 
-fs.readdirAsync(commands)
+fs.readdir(commands)
   .then(files => {
     return Promise.all(
       files.map(file => {

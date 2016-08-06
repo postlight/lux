@@ -1,8 +1,9 @@
 import { CWD } from '../../../constants';
+
 import Database from '../../database';
 import Logger, { sql } from '../../logger';
-import fs from '../../fs';
 import loader from '../../loader';
+import { readdir } from '../../fs';
 
 /**
  * @private
@@ -23,7 +24,7 @@ export async function dbrollback() {
     })
   });
 
-  const migrationFiles = await fs.readdirAsync(`${CWD}/db/migrate`);
+  const migrationFiles = await readdir(`${CWD}/db/migrate`);
 
   if (migrationFiles.length) {
     let migration;

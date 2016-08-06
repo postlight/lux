@@ -3,7 +3,7 @@ import { green } from 'chalk';
 
 import { CWD } from '../../../constants';
 
-import fs from '../../fs';
+import { mkdir, writeFile } from '../../fs';
 import template from '../../template';
 
 import exec from '../../../utils/exec';
@@ -30,101 +30,88 @@ export async function create(name, database) {
   const driver = driverFor(database);
   const project = `${CWD}/${name}`;
 
-  await fs.mkdirAsync(project);
+  await mkdir(project);
 
   await Promise.all([
-    fs.mkdirAsync(`${project}/app`),
-    fs.mkdirAsync(`${project}/config`),
-    fs.mkdirAsync(`${project}/db`)
+    mkdir(`${project}/app`),
+    mkdir(`${project}/config`),
+    mkdir(`${project}/db`)
   ]);
 
   await Promise.all([
-    fs.mkdirAsync(`${project}/app/models`),
-    fs.mkdirAsync(`${project}/app/serializers`),
-    fs.mkdirAsync(`${project}/app/controllers`),
-    fs.mkdirAsync(`${project}/app/middleware`),
-    fs.mkdirAsync(`${project}/app/utils`),
-    fs.mkdirAsync(`${project}/config/environments`),
-    fs.mkdirAsync(`${project}/db/migrate`)
+    mkdir(`${project}/app/models`),
+    mkdir(`${project}/app/serializers`),
+    mkdir(`${project}/app/controllers`),
+    mkdir(`${project}/app/middleware`),
+    mkdir(`${project}/app/utils`),
+    mkdir(`${project}/config/environments`),
+    mkdir(`${project}/db/migrate`)
   ]);
 
   await Promise.all([
-    fs.writeFileAsync(
+    writeFile(
       `${project}/app/index.js`,
-      appTemplate(name),
-      'utf8'
+      appTemplate(name)
     ),
 
-    fs.writeFileAsync(
+    writeFile(
       `${project}/app/routes.js`,
-      routesTemplate(),
-      'utf8'
+      routesTemplate()
     ),
 
-    fs.writeFileAsync(
+    writeFile(
       `${project}/config/environments/development.js`,
-      configTemplate(name, 'development'),
-      'utf8'
+      configTemplate(name, 'development')
     ),
 
-    fs.writeFileAsync(
+    writeFile(
       `${project}/config/environments/test.js`,
-      configTemplate(name, 'test'),
-      'utf8'
+      configTemplate(name, 'test')
     ),
 
-    fs.writeFileAsync(
+    writeFile(
       `${project}/config/environments/production.js`,
-      configTemplate(name, 'production'),
-      'utf8'
+      configTemplate(name, 'production')
     ),
 
-    fs.writeFileAsync(
+    writeFile(
       `${project}/config/database.js`,
-      dbTemplate(name, driver),
-      'utf8'
+      dbTemplate(name, driver)
     ),
 
-    fs.writeFileAsync(
+    writeFile(
       `${project}/db/seed.js`,
-      seedTemplate(),
-      'utf8'
+      seedTemplate()
     ),
 
-    fs.writeFileAsync(
+    writeFile(
       `${project}/README.md`,
-      readmeTemplate(name),
-      'utf8'
+      readmeTemplate(name)
     ),
 
-    fs.writeFileAsync(
+    writeFile(
       `${project}/LICENSE`,
-      licenseTemplate(),
-      'utf8'
+      licenseTemplate()
     ),
 
-    fs.writeFileAsync(
+    writeFile(
       `${project}/package.json`,
-      pkgJSONTemplate(name, database),
-      'utf8'
+      pkgJSONTemplate(name, database)
     ),
 
-    fs.writeFileAsync(
+    writeFile(
       `${project}/.babelrc`,
-      babelrcTemplate(),
-      'utf8'
+      babelrcTemplate()
     ),
 
-    fs.writeFileAsync(
+    writeFile(
       `${project}/.eslintrc.json`,
-      eslintrcTemplate(),
-      'utf8'
+      eslintrcTemplate()
     ),
 
-    fs.writeFileAsync(
+    writeFile(
       `${project}/.gitignore`,
-      gitignoreTemplate(),
-      'utf8'
+      gitignoreTemplate()
     )
   ]);
 
