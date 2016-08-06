@@ -9,6 +9,6 @@ export type Relationship$opts = {
   type: 'hasOne' | 'hasMany' | 'belongsTo';
   model: Class<Model>;
   inverse: string;
-  through?: string;
+  through?: Class<Model>;
   foreignKey: string;
 };

@@ -84,18 +84,17 @@ export default async function buildResults<T: Model>({
 
           if (relationship) {
             let { foreignKey } = relationship;
+
             foreignKey = camelize(foreignKey, true);
 
-            const match = relatedResults.filter(({ rawColumnData }) => {
+            Reflect.set(record, name, relatedResults.filter(({
+              rawColumnData
+            }) => {
               const fk = Reflect.get(rawColumnData, foreignKey);
               const pk = Reflect.get(record, model.primaryKey);
 
               return fk === pk;
-            });
-
-            if (match.length) {
-              Reflect.set(record, name, match);
-            }
+            }));
           }
         });
     }

@@ -21,7 +21,7 @@ export async function get(
   }
 
   const related = relatedFor(owner);
-  const { type, model, inverse } = opts;
+  const { type } = opts;
   let { foreignKey } = opts;
   let value = related.get(key);
 
@@ -31,27 +31,21 @@ export async function get(
     switch (type) {
       case 'hasOne':
         value = await getHasOne(owner, {
-          type,
-          model,
-          inverse,
+          ...opts,
           foreignKey
         });
         break;
 
       case 'hasMany':
         value = await getHasMany(owner, {
-          type,
-          model,
-          inverse,
+          ...opts,
           foreignKey
         });
         break;
 
       case 'belongsTo':
         value = await getBelongsTo(owner, {
-          type,
-          model,
-          inverse,
+          ...opts,
           foreignKey
         });
         break;
@@ -70,7 +64,7 @@ export function set(owner: Model, key: string, value?: Array<Model> | ?Model) {
   const opts = owner.constructor.relationshipFor(key);
 
   if (opts) {
-    const { type, model, inverse } = opts;
+    const { type } = opts;
     let { foreignKey } = opts;
 
     foreignKey = camelize(foreignKey, true);
@@ -78,24 +72,18 @@ export function set(owner: Model, key: string, value?: Array<Model> | ?Model) {
     if (Array.isArray(value)) {
       if (type === 'hasMany') {
         setHasMany(owner, key, value, {
-          type,
-          model,
-          inverse,
+          ...opts,
           foreignKey
         });
       }
     } else if (type === 'hasOne') {
       setHasOne(owner, key, value, {
-        type,
-        model,
-        inverse,
+        ...opts,
         foreignKey
       });
     } else if (type === 'belongsTo') {
       setBelongsTo(owner, key, value, {
-        type,
-        model,
-        inverse,
+        ...opts,
         foreignKey
       });
     }
