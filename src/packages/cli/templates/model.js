@@ -1,4 +1,5 @@
 // @flow
+import { EOL } from 'os';
 import { classify, camelize } from 'inflection';
 
 import template from '../../template';
@@ -7,84 +8,72 @@ import indent from '../utils/indent';
 import entries from '../../../utils/entries';
 import underscore from '../../../utils/underscore';
 
+const VALID_ATTR = /^(\w|-)+:(\w|-)+$/;
+const RELATIONSHIP = /^belongs-to|has-(one|many)$/;
+
 /**
  * @private
  */
-export default (name: string, attrs: Array<string>): string => {
+export default (name: string, attrs: Array<string>) => {
   name = classify(underscore(name));
 
   if (!attrs) {
     attrs = [];
   }
 
-  const body = entries(
-    attrs
-      .filter(attr => /^(\w|-)+:(\w|-)+$/g.test(attr))
-      .map(attr => attr.split(':'))
-      .filter(([, type]) => /^belongs-to|has-(one|many)$/g.test(type))
-      .reduce(({ belongsTo, hasOne, hasMany }, [related, type]) => {
-        const inverse = camelize(name, true);
-
-        related = camelize(underscore(related), true);
-
-        switch (type) {
-          case 'belongs-to':
-            belongsTo = [
-              ...belongsTo,
-
-              indent(8) + `${related}: {\n` +
-              indent(10) + `inverse: '${inverse}'\n` +
-              indent(8) + '}'
-            ];
-            break;
-
-          case 'has-one':
-            hasOne = [
-              ...hasOne,
-
-              indent(8) + `${related}: {\n` +
-              indent(10) + `inverse: '${inverse}'\n` +
-              indent(8) + '}'
-            ];
-            break;
-
-          case 'has-many':
-            hasMany = [
-              ...hasMany,
-
-              indent(8) + `${related}: {\n` +
-              indent(10) + `inverse: '${inverse}'\n` +
-              indent(8) + '}'
-            ];
-            break;
-        }
-
-        return {
-          belongsTo,
-          hasOne,
-          hasMany
-        };
-      }, { belongsTo: [], hasOne: [], hasMany: [] })
-  ).reduce((str, [key, value], index) => {
-    if (value.length) {
-      value = value.join(',\n\n');
-
-      if (index && str.length) {
-        str += '\n\n';
-      }
-
-      str += `${indent(index === 0 ? 2 : 6)}static ${key} = ` +
-        `{\n${value}\n${indent(6)}};`;
-    }
-
-    return str;
-  }, '');
-
   return template`
     import { Model } from 'lux-framework';
 
     class ${name} extends Model {
-    ${body}
+    ${entries(attrs
+      .filter(attr => VALID_ATTR.test(attr))
+      .map(attr => attr.split(':'))
+      .filter(([, type]) => RELATIONSHIP.test(type))
+      .reduce((types, [related, type]) => {
+        type = camelize(underscore(type), true);
+
+        const value = Reflect.get(types, type);
+
+
+        if (value) {
+          const inverse = camelize(name, true);
+
+          related = camelize(underscore(related), true);
+
+          return {
+            ...types,
+
+            [type]: [
+              ...value,
+
+              indent(8)
+                + `${related}: {${EOL}`
+                + indent(10)
+                + `inverse: '${inverse}'${EOL}`
+                + indent(8)
+                + '}'
+            ]
+          };
+        } else {
+          return types;
+        }
+      }, {
+        hasOne: [],
+        hasMany: [],
+        belongsTo: []
+      }))
+      .filter(([, value]) => value.length)
+      .reduce((str, [key, value], index) => {
+        value = value.join(',' + EOL.repeat(2));
+
+        if (index && str.length) {
+          str += EOL.repeat(2);
+        }
+
+        return str
+          + `${indent(index === 0 ? 2 : 6)}static ${key} = `
+          + `{${EOL}${value}${EOL}${indent(6)}};`;
+      }, '')}
     }
 
     export default ${name};
