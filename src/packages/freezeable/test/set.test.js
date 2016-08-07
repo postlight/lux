@@ -26,7 +26,7 @@ describe('Unit: class FreezeableSet', () => {
     expect(subject.freeze()).to.equal(subject);
   });
 
-  it('is immutable if it is frozen', () => {
+  it('is immutable after #freeze is called', () => {
     expect(subject.size).to.equal(3);
 
     subject.clear();
