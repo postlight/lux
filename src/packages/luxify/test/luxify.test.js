@@ -3,7 +3,7 @@ import { expect } from 'chai';
 
 import luxify from '../index';
 
-describe('Unit: function luxify', () => {
+describe('#luxify()', () => {
   it('promisifies a callback based function', () => {
     const subject = luxify((req, res, next) => {
       next();

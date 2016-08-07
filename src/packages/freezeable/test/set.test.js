@@ -3,7 +3,7 @@ import { expect } from 'chai';
 
 import { FreezeableSet } from '../index';
 
-describe('Unit: class FreezeableSet', () => {
+describe('FreezeableSet', () => {
   const subject = new FreezeableSet([1, 2, 3]);
 
   it('is mutable before #freeze is called', () => {

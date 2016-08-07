@@ -3,7 +3,7 @@ import { expect } from 'chai';
 
 import { FreezeableMap } from '../index';
 
-describe('Unit: class FreezeableMap', () => {
+describe('FreezeableMap', () => {
   const subject = new FreezeableMap([
     ['a', 1],
     ['b', 2],
