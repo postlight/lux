@@ -1,8 +1,8 @@
 // @flow
 import path from 'path';
 
-import fs from '../../fs';
 import template from '../../template';
+import { writeFile } from '../../fs';
 
 /**
  * @private
@@ -30,5 +30,5 @@ export default async function createBootScript(dir: string, {
     data = `'use strict';\n\n${data}`;
   }
 
-  await fs.writeFileAsync(path.join(dir, 'dist', 'boot.js'), data, 'utf8');
+  await writeFile(path.join(dir, 'dist', 'boot.js'), data);
 }

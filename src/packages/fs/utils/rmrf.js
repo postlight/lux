@@ -1,19 +1,20 @@
 // @flow
 import path from 'path';
 
-import fs from '../index';
+import { stat, rmdir, readdir, unlink } from '../index';
+
 import tryCatch from '../../../utils/try-catch';
 
 /**
  * @private
  */
-async function rmrf(target: string): Promise<boolean> {
-  const stats = await tryCatch(() => fs.statAsync(target));
+async function rmrf(target: string) {
+  const stats = await tryCatch(() => stat(target));
 
   if (stats && stats.isDirectory()) {
-    await rmdir(target);
+    await rmdirRec(target);
   } else if (stats && stats.isFile()) {
-    await tryCatch(() => fs.unlinkAsync(target));
+    await tryCatch(() => unlink(target));
   }
 
   return true;
@@ -22,8 +23,8 @@ async function rmrf(target: string): Promise<boolean> {
 /**
  * @private
  */
-async function rmdir(target: string): Promise<void> {
-  let files = await tryCatch(() => fs.readdirAsync(target));
+async function rmdirRec(target: string) {
+  let files = await tryCatch(() => readdir(target));
 
   if (files) {
     files = files.map(file => {
@@ -31,7 +32,7 @@ async function rmdir(target: string): Promise<void> {
     });
 
     await Promise.all(files);
-    await fs.rmdirAsync(target);
+    await rmdir(target);
   }
 }
 

@@ -1,26 +1,24 @@
 // @flow
-import { stat, readdir } from 'fs';
+import { stat, readdir } from '../index';
+
+import tryCatch from '../../../utils/try-catch';
 
 /**
  * @private
  */
-export default function exists(
-  path: string | RegExp,
-  dir: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    if (typeof path === 'string') {
-      stat(path, err => resolve(Boolean(!err)));
-    } else if (path instanceof RegExp) {
-      const pattern = path;
+export default async function exists(path: string | RegExp, dir: string) {
+  if (typeof path === 'string') {
+    return Boolean(await tryCatch(() => stat(path)));
+  } else if (path instanceof RegExp) {
+    const pattern = path;
+    let files = [];
 
-      readdir(dir, (err, files) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(files.some(file => pattern.test(file)));
-        }
-      });
+    if (dir) {
+      files = await readdir(dir);
     }
-  });
+
+    return files.some(file => pattern.test(file));
+  }
+
+  return false;
 }

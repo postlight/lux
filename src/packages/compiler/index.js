@@ -8,7 +8,7 @@ import nodeResolve from 'rollup-plugin-node-resolve';
 import { rollup } from 'rollup';
 
 import { BACKSLASH } from './constants';
-import fs, { rmrf } from '../fs';
+import { rmrf, readdir } from '../fs';
 import template from '../template';
 
 import createManifest from './utils/create-manifest';
@@ -33,17 +33,17 @@ export async function compile(dir: string, env: string, {
   const sourceMapSupport = path.join(luxNodeModules, 'source-map-support');
 
   const external = await Promise.all([
-    fs.readdirAsync(nodeModules),
-    fs.readdirAsync(luxNodeModules),
+    readdir(nodeModules),
+    readdir(luxNodeModules)
   ]).then(([a, b]: [Array<string>, Array<string>]) => {
     return a.concat(b).filter(name => name !== 'lux-framework');
   });
 
   const assets = await Promise.all([
-    fs.readdirAsync(path.join(dir, 'app', 'models')),
-    fs.readdirAsync(path.join(dir, 'app', 'controllers')),
-    fs.readdirAsync(path.join(dir, 'app', 'serializers')),
-    fs.readdirAsync(path.join(dir, 'db', 'migrate')),
+    readdir(path.join(dir, 'app', 'models')),
+    readdir(path.join(dir, 'app', 'controllers')),
+    readdir(path.join(dir, 'app', 'serializers')),
+    readdir(path.join(dir, 'db', 'migrate'))
   ]).then(([
     models,
     controllers,
