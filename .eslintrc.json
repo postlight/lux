@@ -6,6 +6,8 @@
     "node": true
   },
   "globals": {
+    "it": true,
+    "describe": true,
     "T": true,
     "Map": true,
     "Set": true,

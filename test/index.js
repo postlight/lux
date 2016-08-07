@@ -31,7 +31,7 @@ before(done => {
       database
     } = require(joinPath(path, 'dist/bundle'));
 
-    await new Application({
+    global.app = await new Application({
       ...config,
       database,
       path,
