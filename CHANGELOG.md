@@ -1,5 +1,120 @@
 # Lux Changelog
 
+### 1.0.0-rc.4 (Aug 7, 2016)
+
+This release contains a fix for a number of bugs introduced in `1.0.0-rc.3`. In addition to bug fixes this release introduces a couple new features.
+
+##### Features
+
+###### Generating Utilities
+
+You can now generate utility functions via the command line!
+
+```bash
+$ lux generate util do-something
+create app/utils/do-something.js
+```
+
+```javascript
+// app/utils/do-something.js
+
+export default function doSomething() {
+
+}
+```
+
+###### Generating Middleware
+
+You can now generate middleware functions via the command line!
+
+```bash
+$ lux generate middleware do-something
+create app/middleware/do-something.js
+```
+
+```javascript
+// app/middleware/do-something.js
+
+export default function doSomething(/*request, response*/) {
+
+}
+```
+
+##### Upgrading
+
+Make sure the following directories exist:
+
+- `app/middleware`
+- `app/utils`
+
+Also, `1.0.0-rc.3` introduced some changes to config files so make sure that the files in your `config/environments` directory match the following format:
+
+```javascript
+// config/environments/development.js
+
+export default {
+  logging: {
+    level: 'DEBUG',
+    format: 'text',
+    enabled: true,
+
+    filter: {
+      params: []
+    }
+  }
+};
+```
+
+```javascript
+// config/environments/test.js
+
+export default {
+  logging: {
+    level: 'WARN',
+    format: 'text',
+    enabled: false,
+
+    filter: {
+      params: []
+    }
+  }
+};
+```
+
+```javascript
+// config/environments/production.js
+
+export default {
+  logging: {
+    level: 'INFO',
+    format: 'json',
+    enabled: true,
+
+    filter: {
+      params: []
+    }
+  }
+};
+```
+
+
+##### Commits
+
+* [[`62431679b2`](https://github.com/postlight/lux/commit/62431679b2)] - **deps**: update rollup to version 0.34.7 (#284) (Greenkeeper)
+* [[`0c12e8b754`](https://github.com/postlight/lux/commit/0c12e8b754)] - **fix**: indentation is off when using model generators (#281) (Zachary Golba)
+* [[`4d89474fce`](https://github.com/postlight/lux/commit/4d89474fce)] - **refactor**: remove bluebird in favor of native apis (#279) (Zachary Golba)
+* [[`241ae8993d`](https://github.com/postlight/lux/commit/241ae8993d)] - **refactor**: improve third party type declarations (#276) (Zachary Golba)
+* [[`5de7a0d6c3`](https://github.com/postlight/lux/commit/5de7a0d6c3)] - **fix**: empty n:m relationships loads every record instead of an empty array (#277) (Zachary Golba)
+* [[`48d2fb7377`](https://github.com/postlight/lux/commit/48d2fb7377)] - **deps**: update rollup to version 0.34.5 (#275) (Greenkeeper)
+* [[`6ea44c3aef`](https://github.com/postlight/lux/commit/6ea44c3aef)] - **deps**: update babel-core to version 6.13.2 (#273) (Greenkeeper)
+* [[`329309d9ec`](https://github.com/postlight/lux/commit/329309d9ec)] - **fix**: empty 'fields' params cause all keys of a resource to be exposed (#270) (Zachary Golba)
+* [[`a412aa7493`](https://github.com/postlight/lux/commit/a412aa7493)] - **deps**: update test-app dependencies (#268) (Zachary Golba)
+* [[`35f301c1d8`](https://github.com/postlight/lux/commit/35f301c1d8)] - **deps**: update babel-core to version 6.13.1 (#267) (Greenkeeper)
+* [[`d0f4f2bfd3`](https://github.com/postlight/lux/commit/d0f4f2bfd3)] - **Feat**: Added generator for utils (#262) (Adam Pash)
+* [[`2ead12a73a`](https://github.com/postlight/lux/commit/2ead12a73a)] - **deps**: update mocha to version 3.0.1 (#265) (Greenkeeper)
+* [[`94abf145d1`](https://github.com/postlight/lux/commit/94abf145d1)] - **Feat**: Added generator for middleware (#261) (Adam Pash)
+* [[`d9d008111c`](https://github.com/postlight/lux/commit/d9d008111c)] - **release**: 1.0.0-rc.3 (#264) (Zachary Golba)
+
 ### 1.0.0-rc.3 (Aug 3, 2016)
 
 Shout out to @adampash for fixing a bug that prevents newly created Lux apps from successfully being built! 👏
