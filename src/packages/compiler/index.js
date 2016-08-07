@@ -15,8 +15,6 @@ import createManifest from './utils/create-manifest';
 import createBootScript from './utils/create-boot-script';
 import { default as onwarn } from './utils/handle-warning';
 
-import type { Bundle } from 'rollup';
-
 /**
  * @private
  */
@@ -75,7 +73,7 @@ export async function compile(dir: string, env: string, {
     })
   ]);
 
-  const bundle: Bundle = await rollup({
+  const bundle = await rollup({
     entry,
     onwarn,
     external,

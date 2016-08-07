@@ -1,7 +1,7 @@
 // @flow
+import EventEmitter from 'events';
 import { Client } from 'fb-watchman';
 import { FSWatcher } from 'fs';
-import { EventEmitter } from 'events';
 
 import initialize from './initialize';
 
