@@ -44,9 +44,11 @@ ${stats.map(({ type, name, duration, controller }) => {
     name = `${yellow(controller)}#${name}`;
   }
 
-  return `${duration >= 10 ? duration : ` ${duration}`} ms ${name}`;
+  return `${pad(startTime, endTime, duration)} ms ${name}`;
 }).join('\n')}
-${stats.reduce((total, { duration }) => total + duration, 0)} ms Total
+${pad(startTime,
+      endTime,
+      stats.reduce((total, { duration }) => total + duration, 0))} ms Total
 ${(endTime - startTime).toString()} ms Actual\
 `;
 
@@ -77,3 +79,19 @@ Processed ${cyan(`${method}`)} "${path}" ${magenta('Params')} ${
   : null
 }
 `;
+
+/**
+ * @private
+ */
+function countDigits(num: number) {
+  return Math.floor(Math.log10(num) + 1);
+}
+
+/**
+ * @private
+ */
+function pad(startTime: number, endTime: number, duration: number) {
+  const maxLength = countDigits(endTime - startTime);
+
+  return ' '.repeat(maxLength - countDigits(duration)) + duration;
+}
