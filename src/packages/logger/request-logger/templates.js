@@ -84,7 +84,9 @@ Processed ${cyan(`${method}`)} "${path}" ${magenta('Params')} ${
  * @private
  */
 function countDigits(num: number) {
-  return Math.floor(Math.log10(num) + 1);
+  const digits = Math.floor(Math.log10(num) + 1);
+
+  return digits > 0 && Number.isFinite(digits) ? digits : 1;
 }
 
 /**
