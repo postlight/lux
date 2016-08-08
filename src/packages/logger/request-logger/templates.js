@@ -44,9 +44,11 @@ ${stats.map(({ type, name, duration, controller }) => {
     name = `${yellow(controller)}#${name}`;
   }
 
-  return `${duration >= 10 ? duration : ` ${duration}`} ms ${name}`;
+  return `${pad(endTime, startTime, duration)} ms ${name}`;
 }).join('\n')}
-${stats.reduce((total, { duration }) => total + duration, 0)} ms Total
+${pad(endTime,
+      startTime,
+      stats.reduce((total, { duration }) => total + duration, 0))} ms Total
 ${(endTime - startTime).toString()} ms Actual\
 `;
 
@@ -77,3 +79,20 @@ Processed ${cyan(`${method}`)} "${path}" ${magenta('Params')} ${
   : null
 }
 `;
+
+/**
+ * @private
+ */
+const pad = (endTime, startTime, duration) => {
+  const maxLength = (endTime - startTime).toString().length;
+  let padNum = maxLength - duration.toString().length;
+
+  let padding = '';
+
+  while (padNum > 0) {
+    padding += ' ';
+    padNum--;
+  }
+
+  return padding + duration
+}
