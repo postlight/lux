@@ -18,6 +18,8 @@ const PROJECT_REQUIRED = [
 
 const cli = require('commander');
 const path = require('path');
+const { EOL } = require('os');
+const { red, green } = require('chalk');
 
 function inLuxProject() {
   if (PWD.indexOf(path.join('lux', 'test', 'test-app')) >= 0) {
@@ -30,6 +32,11 @@ function inLuxProject() {
       return false;
     }
   }
+}
+
+function commandNotFound(cmd) {
+  console.log(`${EOL}  ${red(cmd)} is not a valid command${EOL}`);
+  console.log(`  Use ${green('lux --help')} for a full list of commands${EOL}`);
 }
 
 function exec(cmd, ...args) {
@@ -230,6 +237,11 @@ cli
       .then(() => exec('dbseed'))
       .then(exit)
       .catch(rescue);
+  });
+
+cli
+  .on('*', (cmd) => {
+    commandNotFound(cmd)
   });
 
 cli.parse(process.argv);

@@ -80,7 +80,8 @@ export async function compile(dir: string, env: string, {
 
     plugins: [
       alias({
-        LUX_LOCAL: local.replace(BACKSLASH, '/')
+        LUX_LOCAL: local.replace(BACKSLASH, '/'),
+        app: path.join(dir, 'app')
       }),
 
       json(),
