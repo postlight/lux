@@ -18,6 +18,7 @@ const PROJECT_REQUIRED = [
 
 const cli = require('commander');
 const path = require('path');
+const { EOL } = require('os');
 const { red, green } = require('chalk');
 
 function inLuxProject() {
@@ -34,11 +35,8 @@ function inLuxProject() {
 }
 
 function commandNotFound(cmd) {
-  console.log();
-  console.log(`  ${red(cmd)} isn't a valid command`);
-  console.log();
-  console.log(`  Type ${green('lux --help')} for a full list of commands`);
-  console.log();
+  console.log(`${EOL}  ${red(cmd)} is not a valid command${EOL}`);
+  console.log(`  Use ${green('lux --help')} for a full list of commands${EOL}`);
 }
 
 function exec(cmd, ...args) {
