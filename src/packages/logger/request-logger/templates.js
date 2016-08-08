@@ -94,5 +94,5 @@ const pad = (endTime, startTime, duration) => {
     padNum--;
   }
 
-  return padding + duration
-}
+  return padding + duration;
+};
