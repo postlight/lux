@@ -44,10 +44,10 @@ ${stats.map(({ type, name, duration, controller }) => {
     name = `${yellow(controller)}#${name}`;
   }
 
-  return `${pad(endTime, startTime, duration)} ms ${name}`;
+  return `${pad(startTime, endTime, duration)} ms ${name}`;
 }).join('\n')}
-${pad(endTime,
-      startTime,
+${pad(startTime,
+      endTime,
       stats.reduce((total, { duration }) => total + duration, 0))} ms Total
 ${(endTime - startTime).toString()} ms Actual\
 `;
@@ -83,16 +83,15 @@ Processed ${cyan(`${method}`)} "${path}" ${magenta('Params')} ${
 /**
  * @private
  */
-const pad = (endTime, startTime, duration) => {
-  const maxLength = (endTime - startTime).toString().length;
-  let padNum = maxLength - duration.toString().length;
+function countDigits(num: number) {
+  return Math.floor(Math.log10(num) + 1);
+}
 
-  let padding = '';
+/**
+ * @private
+ */
+function pad(startTime: number, endTime: number, duration: number) {
+  const maxLength = countDigits(endTime - startTime);
 
-  while (padNum > 0) {
-    padding += ' ';
-    padNum--;
-  }
-
-  return padding + duration;
-};
+  return ' '.repeat(maxLength - countDigits(duration)) + duration;
+}
