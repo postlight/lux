@@ -18,14 +18,13 @@ import type Application, { Application$opts } from './index'; // eslint-disable-
  */
 export default async function initialize<T: Application>(app: T, {
   path,
-  port,
-  logging,
-  database
+  port
 }: Application$opts) {
   const routes = loader(path, 'routes');
   const models = loader(path, 'models');
   const controllers = loader(path, 'controllers');
   const serializers = loader(path, 'serializers');
+  const { logging, database } = loader(path, 'config');
 
   const logger = new Logger(logging);
 

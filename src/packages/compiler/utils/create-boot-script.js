@@ -15,11 +15,10 @@ export default async function createBootScript(dir: string, {
   let data = template`
     const CWD = process.cwd();
     const { env: { PORT } } = process;
-    const { Application, config, database } = require('./bundle');
 
-    module.exports = new Application(
-      Object.assign(config, {
-        database,
+    const { Application } = require('./bundle')
+
+    module.exports = new Application({
         path: CWD,
         port: PORT
       })
