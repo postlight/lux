@@ -1,10 +1,9 @@
 // @flow
-import type { Logger$config } from '../logger';
+import type { Config } from '../config';
 import type { Database$config } from '../database';
 
-export type Application$opts = {
+export type Application$opts = Config & {
   path: string;
   port: number;
-  logging: Logger$config;
   database: Database$config;
 };
