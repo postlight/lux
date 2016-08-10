@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import { it, describe } from 'mocha';
 
 import omit from '../omit';
 

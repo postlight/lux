@@ -1,5 +1,6 @@
 // @flow
 import { expect } from 'chai';
+import { it, describe } from 'mocha';
 
 import entries from '../entries';
 
