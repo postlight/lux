@@ -10,13 +10,14 @@ import { createResponder } from './responder';
 import { tryCatchSync } from '../../utils/try-catch';
 import validateAccept from './utils/validate-accept';
 import validateContentType from './utils/validate-content-type';
+import setCORSHeaders from './utils/set-cors-headers';
 
 import type { Writable } from 'stream';
 import type { IncomingMessage, Server as HTTPServer } from 'http';
 
 import type { Request } from './request/interfaces';
 import type { Response } from './response/interfaces';
-import type { Server$opts } from './interfaces';
+import type { Server$opts, Server$config } from './interfaces';
 
 /**
  * @private
@@ -26,9 +27,11 @@ class Server {
 
   router: Server$opts.router;
 
+  cors: Server$config.cors;
+
   instance: HTTPServer;
 
-  constructor({ logger, router }: Server$opts) {
+  constructor({ logger, router, cors }: Server$opts) {
     Object.defineProperties(this, {
       router: {
         value: router,
@@ -39,6 +42,13 @@ class Server {
 
       logger: {
         value: logger,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
+
+      cors: {
+        value: cors,
         writable: false,
         enumerable: false,
         configurable: false
@@ -58,19 +68,22 @@ class Server {
   }
 
   initializeRequest(req: IncomingMessage, res: Writable): [Request, Response] {
-    const { logger, router } = this;
+    const { logger, router, cors } = this;
 
     req.setEncoding('utf8');
 
-    return [
-      createRequest(req, {
-        logger,
-        router
-      }),
-      createResponse(res, {
-        logger
-      })
-    ];
+    const response = createResponse(res, {
+      logger
+    });
+
+    setCORSHeaders(response, cors);
+
+    const request = createRequest(req, {
+      logger,
+      router
+    });
+
+    return [request, response];
   }
 
   validateRequest({ method, headers }: Request): true {
@@ -121,6 +134,8 @@ class Server {
 export default Server;
 export { getDomain } from './request';
 export { default as createServerError } from './utils/create-server-error';
+
+export type { Server$config } from './interfaces';
 
 export type {
   Request,

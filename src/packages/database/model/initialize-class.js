@@ -229,7 +229,7 @@ export default async function initializeClass<T: Class<Model>>({
 
       Object.defineProperties(relationship, {
         model: {
-          value: store.modelFor(relatedModel || singularize(relatedName)),
+          value: store.modelFor(relatedModel || relatedName),
           writable: false,
           enumerable: true,
           configurable: false
@@ -269,7 +269,7 @@ export default async function initializeClass<T: Class<Model>>({
 
       Object.defineProperties(relationship, {
         model: {
-          value: store.modelFor(relatedModel || singularize(relatedName)),
+          value: store.modelFor(relatedModel || relatedName),
           writable: false,
           enumerable: true,
           configurable: false
@@ -314,7 +314,7 @@ export default async function initializeClass<T: Class<Model>>({
       if (typeof relatedModel === 'string') {
         relatedModel = store.modelFor(relatedModel);
       } else {
-        relatedModel = store.modelFor(singularize(relatedName));
+        relatedModel = store.modelFor(relatedName);
       }
 
       if (typeof through === 'string') {
