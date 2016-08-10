@@ -1,4 +1,5 @@
-import type { Response } from '../response';
+// @flow
+import type { Response } from '../index';
 import type { Server$cors } from '../interfaces';
 
 export default function setCORSHeaders(res: Response, {

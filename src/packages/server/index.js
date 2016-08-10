@@ -17,8 +17,7 @@ import type { IncomingMessage, Server as HTTPServer } from 'http';
 
 import type { Request } from './request/interfaces';
 import type { Response } from './response/interfaces';
-import type { Server$opts } from './interfaces';
-import type { Server$config } from './interfaces';
+import type { Server$opts, Server$config } from './interfaces';
 
 /**
  * @private
@@ -72,17 +71,19 @@ class Server {
     const { logger, router, cors } = this;
 
     req.setEncoding('utf8');
-    setCORSHeaders(res, cors);
 
-    return [
-      createRequest(req, {
-        logger,
-        router
-      }),
-      createResponse(res, {
-        logger
-      })
-    ];
+    const response = createResponse(res, {
+      logger
+    });
+
+    setCORSHeaders(response, cors);
+
+    const request = createRequest(req, {
+      logger,
+      router
+    });
+
+    return [request, response];
   }
 
   validateRequest({ method, headers }: Request): true {
