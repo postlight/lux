@@ -2,8 +2,10 @@ import path from 'path';
 
 import { Migration } from '../database';
 import { FreezeableMap } from '../freezeable';
+import { createDefaultConfig } from '../config';
 
 import entries from '../../utils/entries';
+import merge from '../../utils/merge';
 import formatKey from './utils/format-key';
 
 let bundle: FreezeableMap<string, any>;
@@ -53,10 +55,10 @@ export default function loader(appPath: string, type: string): ?mixed {
                   break;
 
                 case 'config':
-                  hash.config = {
+                  hash.config = merge(createDefaultConfig(), {
                     ...hash.config,
                     ...value
-                  };
+                  });
                   break;
 
                 case 'database':

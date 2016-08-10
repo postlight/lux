@@ -1,5 +1,7 @@
 // @flow
 import initialize from './initialize';
+import { createDefaultConfig } from '../config';
+import merge from '../../utils/merge';
 
 import type Logger from '../logger';
 import type Router from '../router';
@@ -117,7 +119,7 @@ class Application {
    * It is highly reccomended that you do not override this method.
    */
   constructor(opts: Application$opts): Promise<Application> {
-    return initialize(this, opts);
+    return initialize(this, merge(createDefaultConfig(), opts));
   }
 }
 
