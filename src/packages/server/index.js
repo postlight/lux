@@ -18,6 +18,7 @@ import type { IncomingMessage, Server as HTTPServer } from 'http';
 import type { Request } from './request/interfaces';
 import type { Response } from './response/interfaces';
 import type { Server$opts } from './interfaces';
+import type { Server$config } from './interfaces';
 
 /**
  * @private
@@ -27,11 +28,11 @@ class Server {
 
   router: Server$opts.router;
 
-  cors: Server$opts.server.cors;
+  cors: Server$config.cors;
 
   instance: HTTPServer;
 
-  constructor({ logger, router, server: { cors } }: Server$opts) {
+  constructor({ logger, router, cors }: Server$opts) {
     Object.defineProperties(this, {
       router: {
         value: router,
@@ -133,7 +134,7 @@ export default Server;
 export { getDomain } from './request';
 export { default as createServerError } from './utils/create-server-error';
 
-export type { Server$opts } from './interfaces';
+export type { Server$config } from './interfaces';
 
 export type {
   Request,

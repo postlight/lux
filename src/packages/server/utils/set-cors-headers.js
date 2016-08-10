@@ -7,7 +7,10 @@ export default function setCORSHeaders(res: Response, {
   headers,
   enabled
 }: Server$cors) {
-  if (!enabled) return;
+  if (!enabled) {
+    return;
+  }
+
   if (origin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }

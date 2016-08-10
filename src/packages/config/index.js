@@ -10,6 +10,7 @@ export function createDefaultConfig(): Config {
   return {
     server: {
       cors: {
+        enabled: false
       }
     },
     logging: {

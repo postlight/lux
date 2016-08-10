@@ -105,7 +105,7 @@ export default async function initialize<T: Application>(app: T, {
   const server = new Server({
     router,
     logger,
-    server: serverOpts
+    ...serverOpts
   });
 
   if (!LUX_CONSOLE) {
