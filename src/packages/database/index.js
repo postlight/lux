@@ -5,6 +5,8 @@ import Model from './model';
 
 import initialize from './initialize';
 
+import normalizeModelName from './utils/normalize-model-name';
+
 import type Logger from '../logger';
 import type { Database$opts } from './interfaces';
 
@@ -43,7 +45,7 @@ class Database {
   }
 
   modelFor(type: string): Class<Model> {
-    const model = this.models.get(type);
+    const model = this.models.get(normalizeModelName(type));
 
     if (!model) {
       throw new ModelMissingError(type);

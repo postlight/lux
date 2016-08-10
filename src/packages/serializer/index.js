@@ -1,8 +1,11 @@
 // @flow
+import { dasherize } from 'inflection';
+
 import { VERSION } from '../jsonapi';
 
 import uniq from '../../utils/uniq';
 import insert from '../../utils/insert';
+import underscore from '../../utils/underscore';
 import promiseHash from '../../utils/promise-hash';
 import { dasherizeKeys } from '../../utils/transform-keys';
 
@@ -386,7 +389,7 @@ class Serializer {
         [...this.hasOne, ...this.hasMany].reduce((hash, name) => ({
           ...hash,
 
-          [name]: (async () => {
+          [dasherize(underscore(name))]: (async () => {
             const related = await Reflect.get(item, name);
 
             if (Array.isArray(related)) {
