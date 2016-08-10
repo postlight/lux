@@ -21,7 +21,7 @@ export default async function initialize<T: Application>(app: T, {
   port,
   logging,
   database,
-  server: serverOpts
+  server: serverConfig
 }: Application$opts) {
   const routes = loader(path, 'routes');
   const models = loader(path, 'models');
@@ -105,7 +105,7 @@ export default async function initialize<T: Application>(app: T, {
   const server = new Server({
     router,
     logger,
-    ...serverOpts
+    ...serverConfig
   });
 
   if (!LUX_CONSOLE) {
