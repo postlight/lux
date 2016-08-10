@@ -10,6 +10,7 @@ import { createResponder } from './responder';
 import { tryCatchSync } from '../../utils/try-catch';
 import validateAccept from './utils/validate-accept';
 import validateContentType from './utils/validate-content-type';
+import setCORSHeaders from './utils/set-cors-headers';
 
 import type { Writable } from 'stream';
 import type { IncomingMessage, Server as HTTPServer } from 'http';
@@ -26,9 +27,11 @@ class Server {
 
   router: Server$opts.router;
 
+  cors: Server$opts.server.cors;
+
   instance: HTTPServer;
 
-  constructor({ logger, router }: Server$opts) {
+  constructor({ logger, router, server: { cors } }: Server$opts) {
     Object.defineProperties(this, {
       router: {
         value: router,
@@ -39,6 +42,13 @@ class Server {
 
       logger: {
         value: logger,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
+
+      cors: {
+        value: cors,
         writable: false,
         enumerable: false,
         configurable: false
@@ -58,9 +68,10 @@ class Server {
   }
 
   initializeRequest(req: IncomingMessage, res: Writable): [Request, Response] {
-    const { logger, router } = this;
+    const { logger, router, cors } = this;
 
     req.setEncoding('utf8');
+    setCORSHeaders(res, cors);
 
     return [
       createRequest(req, {
@@ -121,6 +132,8 @@ class Server {
 export default Server;
 export { getDomain } from './request';
 export { default as createServerError } from './utils/create-server-error';
+
+export type { Server$opts } from './interfaces';
 
 export type {
   Request,
