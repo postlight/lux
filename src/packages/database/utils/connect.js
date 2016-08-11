@@ -1,6 +1,6 @@
 import { join as joinPath } from 'path';
 
-import { NODE_ENV } from '../../../constants';
+import { NODE_ENV, DATABASE_URL } from '../../../constants';
 import { VALID_DRIVERS } from '../constants';
 
 import { tryCatchSync } from '../../../utils/try-catch';
@@ -21,7 +21,8 @@ export default function connect(path, config = {}) {
     driver,
     database,
     username,
-    password
+    password,
+    url
   } = config;
 
   if (VALID_DRIVERS.indexOf(driver) < 0) {
@@ -43,22 +44,22 @@ export default function connect(path, config = {}) {
 
   const usingSQLite = driver === 'sqlite3';
 
+  const connection = DATABASE_URL || url || {
+    host,
+    database,
+    password,
+    user: username,
+    socketPath: socket,
+    filename: usingSQLite ?
+    joinPath(path, 'db', `${database || 'default'}_${NODE_ENV}.sqlite`)
+    : undefined
+  };
+
   return knex({
     pool,
+    connection,
     debug: false,
     client: driver,
-    useNullAsDefault: usingSQLite,
-
-    connection: {
-      host,
-      database,
-      password,
-      user: username,
-      socketPath: socket,
-
-      filename: usingSQLite ?
-        joinPath(path, 'db', `${database}_${NODE_ENV}.sqlite`)
-        : undefined
-    }
+    useNullAsDefault: usingSQLite
   });
 }
