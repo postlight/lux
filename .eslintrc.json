@@ -15,7 +15,8 @@
     "Reflect": true,
     "WeakMap": true,
     "WeakSet": true,
-    "Iterable": true
+    "Iterable": true,
+    "Generator": true
   },
   "settings": {
     "flowtype": {

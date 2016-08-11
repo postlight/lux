@@ -4,13 +4,17 @@ import { it, describe } from 'mocha';
 
 import luxify from '../index';
 
+import setType from '../../../utils/set-type';
+
 describe('#luxify()', () => {
+  const [request, response] = setType(() => [{}, {}]);
+
   it('promisifies a callback based function', () => {
     const subject = luxify((req, res, next) => {
       next();
     });
 
-    expect(subject({}, {})).to.be.a('promise');
+    expect(subject(request, response)).to.be.a('promise');
   });
 
   it('resolves when Response#end is called', () => {
@@ -18,29 +22,29 @@ describe('#luxify()', () => {
       res.end('Hello world!');
     });
 
-    return subject({}, {}).then(data => {
+    return subject(request, response).then(data => {
       expect(data).to.equal('Hello world!');
     });
   });
 
   it('resolves when Response#send is called', () => {
     const subject = luxify((req, res) => {
-      res.send('Hello world!');
+      Reflect.apply(Reflect.get(res, 'send'), res, ['Hello world!']);
     });
 
-    return subject({}, {}).then(data => {
+    return subject(request, response).then(data => {
       expect(data).to.equal('Hello world!');
     });
   });
 
   it('resolves when Response#json is called', () => {
     const subject = luxify((req, res) => {
-      res.json({
+      Reflect.apply(Reflect.get(res, 'json'), res, [{
         data: 'Hello world!'
-      });
+      }]);
     });
 
-    return subject({}, {}).then(data => {
+    return subject(request, response).then(data => {
       expect(data).to.deep.equal({
         data: 'Hello world!'
       });
@@ -52,7 +56,7 @@ describe('#luxify()', () => {
       next(new Error('Test'));
     });
 
-    return subject({}, {}).catch(err => {
+    return subject(request, response).catch(err => {
       expect(err).to.be.a('error');
     });
   });

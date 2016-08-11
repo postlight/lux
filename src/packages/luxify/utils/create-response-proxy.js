@@ -10,7 +10,7 @@ import type { Response } from '../../server';
 export default function createResponseProxy(
   res: Response,
   resolve: (result: mixed) => void
-) {
+): Response {
   return new Proxy(res, {
     get(target, key) {
       switch (key) {
