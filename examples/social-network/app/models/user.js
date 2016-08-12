@@ -43,7 +43,7 @@ class User extends Model {
     async beforeSave(user) {
       const { id, password, dirtyAttributes } = user;
 
-      if (!id && password || dirtyAttributes.has('password')) {
+      if ((typeof id !== 'number') && password || dirtyAttributes.has('password')) {
         const salt = generateSalt();
 
         assign(user, {

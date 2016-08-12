@@ -21,8 +21,9 @@ export type Database$environment = {
   driver: string;
   socket?: string;
   database?: string;
-  username: string;
+  username?: string;
   password?: string;
+  url?: string;
 };
 
 export type Database$config = {
