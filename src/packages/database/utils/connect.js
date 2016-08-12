@@ -16,6 +16,7 @@ export default function connect(path, config = {}) {
   let { pool } = config;
 
   const {
+    url,
     host,
     socket,
     driver,
@@ -43,22 +44,23 @@ export default function connect(path, config = {}) {
 
   const usingSQLite = driver === 'sqlite3';
 
+  const connection = (url) ? url : {
+    host,
+    database,
+    password,
+    user: username,
+    socketPath: socket,
+
+    filename: usingSQLite ?
+      joinPath(path, 'db', `${database}_${NODE_ENV}.sqlite`)
+      : undefined
+  };
+
   return knex({
     pool,
     debug: false,
     client: driver,
-    useNullAsDefault: usingSQLite,
-
-    connection: {
-      host,
-      database,
-      password,
-      user: username,
-      socketPath: socket,
-
-      filename: usingSQLite ?
-        joinPath(path, 'db', `${database}_${NODE_ENV}.sqlite`)
-        : undefined
-    }
+    connection,
+    useNullAsDefault: usingSQLite
   });
 }
