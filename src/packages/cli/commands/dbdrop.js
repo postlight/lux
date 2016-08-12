@@ -2,7 +2,7 @@ import { CWD, NODE_ENV, DATABASE_URL } from '../../../constants';
 import { connect } from '../../database';
 import { rmrf } from '../../fs';
 import loader from '../../loader';
-import urlMessage from '../utils/url-message';
+import { CONNECTION_STRING_MESSAGE } from '../constants';
 
 /**
  * @private
@@ -23,7 +23,7 @@ export async function dbdrop() {
     await rmrf(`${CWD}/db/${database}_${NODE_ENV}.sqlite`);
   } else {
     if (DATABASE_URL || url) {
-      return urlMessage();
+      return console.log(CONNECTION_STRING_MESSAGE);
     }
     const { schema } = connect(CWD, { ...config, driver });
     const query = schema.raw(`DROP DATABASE IF EXISTS ${database}`);

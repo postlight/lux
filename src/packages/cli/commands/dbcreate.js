@@ -3,7 +3,7 @@ import { CWD, NODE_ENV, DATABASE_URL } from '../../../constants';
 import loader from '../../loader';
 import { connect } from '../../database';
 import { writeFile } from '../../fs';
-import urlMessage from '../utils/url-message';
+import { CONNECTION_STRING_MESSAGE } from '../constants';
 
 /**
  * @private
@@ -24,7 +24,7 @@ export async function dbcreate() {
     await writeFile(`${CWD}/db/${database}_${NODE_ENV}.sqlite`, '');
   } else {
     if (DATABASE_URL || url) {
-      return urlMessage();
+      return console.log(CONNECTION_STRING_MESSAGE);
     }
 
     const { schema } = connect(CWD, { ...config, driver });
