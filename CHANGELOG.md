@@ -1,5 +1,147 @@
 # Lux Changelog
 
+### 1.0.0-rc.5 (Aug 13, 2016)
+
+This release contains a number of bug fixes as well as some new features. Big shout out to [@adampash](https://github.com/adampash), a new member of the Postlight team. :clap: Awesome job these past 2 weeks!
+
+##### Features
+
+###### Aliased Imports
+
+Previously, you would have to use relative paths for importing modules within the `app` directory. Now, `app` is alias so you can import modules from the `app` directory without having to write out the relative path (`../../../`).
+
+```javascript
+import { Controller } from 'lux-framework';
+
+import Post from 'app/models/post';
+
+class PostsController extends Controller {
+  show({ params: { id } }) {
+    return Post.find(id);
+  }
+}
+
+export default PostsController;
+```
+
+###### CORS Config Options
+
+You now have the ability to setup CORS headers in your config file. These headers are added to the request before it is parsed. Doing so, prevents request that fail before reaching your `ApplicationController` from not having the CORS headers set. This should allow for a more graceful error handling experience on the client.
+
+Here is an example of how you may want to configure CORS for your application:
+
+```javascript
+export default {
+  server: {
+    cors: {
+      origin: '*',
+      enabled: true,
+
+      headers: [
+        'Accept',
+        'Content-Type'
+      ],
+
+      methods: [
+        'GET',
+        'POST',
+        'PATCH',
+        'DELETE',
+        'HEAD',
+        'OPTIONS'
+      ]
+    }
+  },
+
+  logging: {
+    level: 'DEBUG',
+    format: 'text',
+    enabled: true,
+
+    filter: {
+      params: [
+        'email',
+        'password'
+      ]
+    }
+  }
+};
+```
+
+###### Database Connection Strings
+
+You may now use connection strings to configure your database connection. You may now specify a full config object as we have supported in previous versions, a config object containing `driver` and `url` properties, or a config object containing only the `driver` property if your environment variables contain a `DATABASE_URL`.
+
+The following three examples are equivalent:
+
+*Example A:*
+
+```javascript
+// ./config/database.js
+export default {
+  development: {
+    port: 5432,
+    host: '127.0.0.1',
+    driver: 'pg',
+    username: 'postgres',
+    password: '********',
+    database: 'lux_test'
+  }
+}
+```
+
+*Example B:*
+
+```javascript
+// ./config/database.js
+export default {
+  development: {
+    driver: 'pg',
+    url: 'postgres://postgres:********@127.0.0.1:5432/lux_test'
+  }
+}
+```
+
+*Example C:*
+
+```bash
+# ~/.bash_profile
+export DATABASE_URL='postgres://postgres:********@127.0.0.1:5432/lux_test'
+```
+
+```javascript
+// ./config/database.js
+export default {
+  development: {
+    driver: 'pg'
+  }
+}
+```
+
+###### Default Config
+
+In prior versions, it could be a pain to upgrade due to differing config files based on when you first generated your Lux application. Now, you can have an easier time upgrading as default values for config options are used internally.
+
+##### Commits
+
+* [[`30e3e2e6b9`](https://github.com/postlight/lux/commit/30e3e2e6b9)] - **fix**: id null check fails if using postgres (#308) (Adam Pash)
+* [[`d01c27eae5`](https://github.com/postlight/lux/commit/d01c27eae5)] - **feat**: adding support for urls in database config (#307) (Adam Pash)
+* [[`bf6a518239`](https://github.com/postlight/lux/commit/bf6a518239)] - **deps**: update eslint to version 3.3.0 (#310) (Greenkeeper)
+* [[`fb22a31c8a`](https://github.com/postlight/lux/commit/fb22a31c8a)] - **deps**: update eslint-plugin-flowtype to version 2.6.4 (#305) (Greenkeeper)
+* [[`8b416b748b`](https://github.com/postlight/lux/commit/8b416b748b)] - **deps**: update eslint-plugin-flowtype to version 2.6.3 (#303) (Greenkeeper)
+* [[`fd1d01ec1b`](https://github.com/postlight/lux/commit/fd1d01ec1b)] - **feat**: added CORS to config (#302) (Adam Pash)
+* [[`a04c0fdda9`](https://github.com/postlight/lux/commit/a04c0fdda9)] - **fix**: camel cased relationships do not resolve correctly (#300) (Zachary Golba)
+* [[`c90377052f`](https://github.com/postlight/lux/commit/c90377052f)] - **deps**: update eslint-plugin-flowtype to version 2.6.1 (#301) (Greenkeeper)
+* [[`386cd24270`](https://github.com/postlight/lux/commit/386cd24270)] - **feat**: setting default configuration (#299) (Adam Pash)
+* [[`99b48107d0`](https://github.com/postlight/lux/commit/99b48107d0)] - **deps**: update eslint-plugin-flowtype to version 2.4.1 (#296) (Greenkeeper)
+* [[`d11aafc5f8`](https://github.com/postlight/lux/commit/d11aafc5f8)] - **fix**: pad function is failing due to negative values (#295) (Zachary Golba)
+* [[`164daec01a`](https://github.com/postlight/lux/commit/164daec01a)] - **fix**: lining up stats in debug logger when ms length differs (#292) (Adam Pash)
+* [[`e33f742d0e`](https://github.com/postlight/lux/commit/e33f742d0e)] - **feat**: aliased app dir for easier imports (#293) (Adam Pash)
+* [[`14a9cea1f6`](https://github.com/postlight/lux/commit/14a9cea1f6)] - **feat**: added default fallback for CLI (#271) (Adam Pash)
+* [[`4ff3f81218`](https://github.com/postlight/lux/commit/4ff3f81218)] - **deps**: update mocha to version 3.0.2 (#291) (Greenkeeper)
+* [[`9e658e9daa`](https://github.com/postlight/lux/commit/9e658e9daa)] - **chore**: enable flow on windows (#286) (Zachary Golba)
+* [[`cceb67995d`](https://github.com/postlight/lux/commit/cceb67995d)] - **release**: 1.0.0-rc.4 (#285) (Zachary Golba)
+
 ### 1.0.0-rc.4 (Aug 7, 2016)
 
 This release contains a fix for a number of bugs introduced in `1.0.0-rc.3`. In addition to bug fixes this release introduces a couple new features.
