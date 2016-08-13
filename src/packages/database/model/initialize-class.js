@@ -224,7 +224,10 @@ export default async function initializeClass<T: Class<Model>>({
     }, {});
 
   const belongsTo = entries(model.belongsTo || {})
-    .reduce((hash, [relatedName, { inverse, model: relatedModel }]) => {
+    .reduce((hash, [relatedName, {
+      inverse=camelize(pluralize(model.name), true),
+      model: relatedModel
+    }]) => {
       const relationship = {};
 
       Object.defineProperties(relationship, {
@@ -264,7 +267,10 @@ export default async function initializeClass<T: Class<Model>>({
     }, {});
 
   const hasOne = entries(model.hasOne || {})
-    .reduce((hash, [relatedName, { inverse, model: relatedModel }]) => {
+    .reduce((hash, [relatedName, {
+      inverse=camelize(model.name, true),
+      model: relatedModel
+    }]) => {
       const relationship = {};
 
       Object.defineProperties(relationship, {
@@ -305,7 +311,7 @@ export default async function initializeClass<T: Class<Model>>({
 
   const hasMany = entries(model.hasMany || {})
     .reduce((hash, [relatedName, {
-      inverse,
+      inverse=camelize(model.name, true),
       through, model: relatedModel
     }]) => {
       const relationship = {};
