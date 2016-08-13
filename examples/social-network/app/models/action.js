@@ -1,10 +1,10 @@
 import { Model } from 'lux-framework';
 
-import Comment from './comment';
-import Notification from './notification';
-import Post from './post';
-import Reaction from './reaction';
-import User from './user';
+import Comment from 'app/models/comment';
+import Notification from 'app/models/notification';
+import Post from 'app/models/post';
+import Reaction from 'app/models/reaction';
+import User from 'app/models/user';
 
 /* TODO: Add support for polymorphic relationship to a 'trackable'.
  * https://github.com/postlight/lux/issues/75

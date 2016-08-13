@@ -3,7 +3,9 @@ import { Serializer } from 'lux-framework';
 class CommentsSerializer extends Serializer {
   attributes = [
     'edited',
-    'message'
+    'message',
+    'createdAt',
+    'updatedAt'
   ];
 
   hasOne = [

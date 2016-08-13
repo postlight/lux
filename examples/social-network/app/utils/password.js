@@ -21,9 +21,3 @@ export function decryptPassword(hash, secret) {
   decrypted += decipher.final('utf8');
   return decrypted;
 }
-
-export default {
-  generateSalt,
-  encryptPassword,
-  decryptPassword
-};

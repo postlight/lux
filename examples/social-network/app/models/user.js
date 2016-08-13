@@ -4,9 +4,7 @@ import {
   generateSalt,
   encryptPassword,
   decryptPassword
-} from '../utils/password';
-
-const { assign } = Object;
+} from 'app/utils/password';
 
 class User extends Model {
   static hasMany = {
@@ -46,11 +44,19 @@ class User extends Model {
       if ((typeof id !== 'number') && password || dirtyAttributes.has('password')) {
         const salt = generateSalt();
 
-        assign(user, {
+        Object.assign(user, {
           password: encryptPassword(password, salt),
           passwordSalt: salt
         });
       }
+    }
+  };
+
+  static scopes = {
+    findByEmail(email) {
+      return this.first().where({
+        email
+      });
     }
   };
 
@@ -60,25 +66,10 @@ class User extends Model {
     }
   };
 
-  static async authenticate(email, password) {
-    const user = await this.findOne({
-      where: {
-        email
-      }
-    });
+  authenticate(password) {
+    const { password: encrypted, passwordSalt: salt } = this;
 
-    if (user) {
-      const {
-        password: encrypted,
-        passwordSalt: salt
-      } = user;
-
-      if (password === decryptPassword(encrypted, salt)) {
-        return user;
-      }
-    }
-
-    return false;
+    return password === decryptPassword(encrypted, salt);
   }
 }
 
