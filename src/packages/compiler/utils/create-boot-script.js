@@ -23,7 +23,12 @@ export default async function createBootScript(dir: string, {
         path: CWD,
         port: PORT
       })
-    );
+    ).catch(err => {
+      process.send({
+        error: err ? err.stack : void 0,
+        message: 'error'
+      });
+    });
   `;
 
   if (useStrict) {

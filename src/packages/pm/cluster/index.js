@@ -7,6 +7,9 @@ import { red, green } from 'chalk';
 
 import { NODE_ENV } from '../../../constants';
 
+import { line } from '../../logger';
+
+import omit from '../../../utils/omit';
 import range from '../../../utils/range';
 
 import type { Worker } from 'cluster';
@@ -94,9 +97,6 @@ class Cluster extends EventEmitter {
         const timeout = setTimeout(() => {
           handleError();
 
-          worker.removeListener('exit', handleExit);
-          worker.kill();
-
           if (retry) {
             this.fork(false);
           }
@@ -108,36 +108,66 @@ class Cluster extends EventEmitter {
           worker.removeListener('message', handleMessage);
 
           if (typeof code === 'number') {
-            this.logger.info(
-              `Worker process: ${red(`${pid}`)} exited with code ${code}`
-            );
+            this.logger.info(line`
+              Worker process: ${red(`${pid}`)} exited with code ${code}
+            `);
           }
 
           this.logger.info(`Removing worker process: ${red(`${pid}`)}`);
 
-          this.workers.delete(worker);
+          cleanUp(true);
+
           this.fork();
         };
 
-        const handleError = () => {
-          this.logger.info(
-            `Removing worker process: ${red(`${worker.process.pid}`)}`
-          );
+        const handleError = (err?: string) => {
+          if (err) {
+            this.logger.error(err);
+          }
 
-          this.workers.delete(worker);
-          clearTimeout(timeout);
+          this.logger.info(line`
+            Removing worker process: ${red(`${worker.process.pid}`)}
+          `);
+
+          cleanUp(true);
         };
 
-        const handleMessage = (message: string) => {
-          if (message === 'ready') {
-            this.logger.info(
-              `Adding worker process: ${green(`${worker.process.pid}`)}`
-            );
+        const handleMessage = (message: string | Object) => {
+          let data = {};
 
-            this.workers.add(worker);
+          if (typeof message === 'object') {
+            data = omit(message, 'message');
+            message = message.message;
+          }
 
-            clearTimeout(timeout);
-            resolve(worker);
+          switch (message) {
+            case 'ready':
+              this.logger.info(line`
+                Adding worker process: ${green(`${worker.process.pid}`)}
+              `);
+
+              this.workers.add(worker);
+
+              cleanUp(false);
+              resolve(worker);
+              break;
+
+            case 'error':
+              handleError(data.error);
+              break;
+          }
+        };
+
+        const cleanUp = (remove: boolean) => {
+          clearTimeout(timeout);
+
+          if (remove) {
+            worker.kill();
+            worker.removeAllListeners();
+
+            this.workers.delete(worker);
+          } else {
+            worker.removeListener('error', handleError);
           }
         };
 
