@@ -124,11 +124,15 @@ function getCustomParams({
 export function getMemberQueryParams(
   controller: Controller
 ): Array<[string, ParameterLike]> {
-  return [
-    getFieldsParam(controller),
-    getIncludeParam(controller),
-    ...getCustomParams(controller)
-  ];
+  if (controller.hasModel) {
+    return [
+      getFieldsParam(controller),
+      getIncludeParam(controller),
+      ...getCustomParams(controller)
+    ];
+  } else {
+    return getCustomParams(controller);
+  }
 }
 
 /**
@@ -137,12 +141,16 @@ export function getMemberQueryParams(
 export function getCollectionQueryParams(
   controller: Controller
 ): Array<[string, ParameterLike]> {
-  return [
-    getPageParam(),
-    getSortParam(controller),
-    getFilterParam(controller),
-    getFieldsParam(controller),
-    getIncludeParam(controller),
-    ...getCustomParams(controller)
-  ];
+  if (controller.hasModel) {
+    return [
+      getPageParam(),
+      getSortParam(controller),
+      getFilterParam(controller),
+      getFieldsParam(controller),
+      getIncludeParam(controller),
+      ...getCustomParams(controller)
+    ];
+  } else {
+    return getCustomParams(controller);
+  }
 }
