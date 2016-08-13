@@ -1,6 +1,6 @@
 import { Model } from 'lux-framework';
 
-import track from '../utils/track';
+import track from 'app/utils/track';
 
 class Comment extends Model {
   static belongsTo = {

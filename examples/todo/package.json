@@ -10,9 +10,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "babel-core": "6.11.4",
+    "babel-core": "6.13.2",
     "babel-preset-lux": "1.1.0",
-    "knex": "0.11.9",
+    "knex": "0.11.10",
     "lux-framework": "1.0.0-rc.5",
     "sqlite3": "3.1.4"
   },

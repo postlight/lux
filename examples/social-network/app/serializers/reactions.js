@@ -2,7 +2,8 @@ import { Serializer } from 'lux-framework';
 
 class ReactionsSerializer extends Serializer {
   attributes = [
-    'type'
+    'type',
+    'createdAt'
   ];
 
   hasOne = [

@@ -15,6 +15,11 @@ export default function routes() {
     action: 'show'
   });
 
+  this.route('friendships', {
+    method: 'POST',
+    action: 'create'
+  });
+
   this.route('notifications', {
     method: 'GET',
     action: 'index'
@@ -23,5 +28,10 @@ export default function routes() {
   this.route('notifications/:id', {
     method: 'GET',
     action: 'show'
+  });
+
+  this.route('users/login', {
+    method: 'POST',
+    action: 'login'
   });
 }
