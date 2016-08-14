@@ -144,17 +144,21 @@ export default function getDataParams(
   controller: Controller,
   includeID: boolean
 ): [string, ParameterLike] {
-  let params = [
-    getTypeParam(controller),
-    getAttributesParam(controller),
-    getRelationshipsParam(controller)
-  ];
+  let params = [getTypeParam(controller)];
 
-  if (includeID) {
+  if (controller.hasModel) {
     params = [
-      getIDParam(controller),
+      getAttributesParam(controller),
+      getRelationshipsParam(controller),
       ...params
     ];
+
+    if (includeID) {
+      params = [
+        getIDParam(controller),
+        ...params
+      ];
+    }
   }
 
   return ['data', new ParameterGroup(params, {

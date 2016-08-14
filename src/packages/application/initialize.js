@@ -11,6 +11,8 @@ import loader from '../loader';
 
 import { ControllerMissingError, SerializerMissingError } from './errors';
 
+import { tryCatchSync } from '../../utils/try-catch';
+
 import type Application, { Application$opts } from './index'; // eslint-disable-line no-unused-vars, max-len
 
 /**
@@ -83,7 +85,7 @@ export default async function initialize<T: Application>(app: T, {
 
   controllers.forEach((controller, key) => {
     if (key !== 'application') {
-      const model = store.modelFor(singularize(key));
+      const model = tryCatchSync(() => store.modelFor(singularize(key)));
 
       controller = new controller({
         store,
