@@ -23,6 +23,26 @@ import type { Controller$opts } from './interfaces';
  */
 class Controller {
   /**
+   * A boolean value representing whether or not a `Controller` has a backing
+   * `Model`.
+   *
+   * @property hasModel
+   * @memberof Controller
+   * @instance
+   */
+  hasModel: boolean;
+
+  /**
+   * A boolean value representing whether or not a `Controller` has a backing
+   * `Serializer`.
+   *
+   * @property hasSerializer
+   * @memberof Controller
+   * @instance
+   */
+  hasSerializer: boolean;
+
+  /**
    * The number of records to return for the #index action when a `?limit`
    * parameter is not specified.
    *
@@ -111,10 +131,12 @@ class Controller {
     controllers,
     parentController
   }: Controller$opts) {
+    const hasModel = Boolean(model);
+    const hasSerializer = Boolean(serializer);
     let attributes = [];
     let relationships = [];
 
-    if (model && serializer) {
+    if (hasModel && hasSerializer) {
       const { primaryKey, attributeNames, relationshipNames } = model;
       const { attributes: serializedAttributes } = serializer;
 
@@ -143,6 +165,20 @@ class Controller {
         configurable: false
       },
 
+      hasModel: {
+        value: hasModel,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      },
+
+      modelName: {
+        value: hasModel ? model.modelName : '',
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
+
       serializer: {
         value: serializer,
         writable: false,
@@ -150,15 +186,15 @@ class Controller {
         configurable: false
       },
 
-      store: {
-        value: store,
+      hasSerializer: {
+        value: hasSerializer,
         writable: false,
-        enumerable: false,
+        enumerable: true,
         configurable: false
       },
 
-      modelName: {
-        value: model ? model.modelName : '',
+      store: {
+        value: store,
         writable: false,
         enumerable: false,
         configurable: false
