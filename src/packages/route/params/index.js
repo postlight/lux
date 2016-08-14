@@ -73,18 +73,22 @@ export function defaultParamsFor({
   action: string;
   controller: Controller
 }): Object {
-  switch (action) {
-    case 'index':
-      return getDefaultCollectionParams(controller);
+  if (controller.hasModel) {
+    switch (action) {
+      case 'index':
+        return getDefaultCollectionParams(controller);
 
-    case 'show':
-    case 'create':
-    case 'update':
-    case 'destroy':
-      return getDefaultMemberParams(controller);
+      case 'show':
+      case 'create':
+      case 'update':
+      case 'destroy':
+        return getDefaultMemberParams(controller);
 
-    default:
-      return {};
+      default:
+        return {};
+    }
+  } else {
+    return {};
   }
 }
 

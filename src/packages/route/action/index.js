@@ -14,16 +14,18 @@ export function createAction(
   controller: Controller,
   action: Action<any>
 ): Array<Action<any>> {
-  switch (name) {
-    case 'index':
-      action = collection(action);
-      break;
+  if (controller.hasModel && controller.hasSerializer) {
+    switch (name) {
+      case 'index':
+        action = collection(action);
+        break;
 
-    case 'create':
-    case 'update':
-    case 'show':
-      action = member(action);
-      break;
+      case 'create':
+      case 'update':
+      case 'show':
+        action = member(action);
+        break;
+    }
   }
 
   function __FINAL__HANDLER__(req, res) {
