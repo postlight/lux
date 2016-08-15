@@ -22,6 +22,8 @@ export default function connect(path, config = {}) {
     database,
     username,
     password,
+    port,
+    ssl,
     url
   } = config;
 
@@ -48,6 +50,8 @@ export default function connect(path, config = {}) {
     host,
     database,
     password,
+    port,
+    ssl,
     user: username,
     socketPath: socket,
     filename: usingSQLite ?
