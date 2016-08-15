@@ -39,6 +39,14 @@ function commandNotFound(cmd) {
   console.log(`  Use ${green('lux --help')} for a full list of commands${EOL}`);
 }
 
+function setEnvVar(key, val, def) {
+  if (val) {
+    Reflect.set(process.env, key, val);
+  } else if (!Reflect.has(process.env, key)) {
+    Reflect.set(process.env, key, def);
+  }
+}
+
 function exec(cmd, ...args) {
   let handler;
 
@@ -119,11 +127,11 @@ cli
   .command('c')
   .alias('console')
   .description('Load your application into a repl')
-  .option('-e, --environment [env]', '(Default: development)', 'development')
+  .option('-e, --environment [env]', '(Default: development)')
   .option('-w, --use-weak', 'Use weak mode')
   .action(({ environment, useWeak }) => {
-    process.env.PORT = 4000;
-    process.env.NODE_ENV = environment;
+    setEnvVar('PORT', port, 4000);
+    setEnvVar('NODE_ENV', environment, 'development');
     process.env.LUX_CONSOLE = true;
 
     exec('build', !useWeak)
@@ -136,7 +144,7 @@ cli
   .command('s')
   .alias('serve')
   .description('Serve your application')
-  .option('-e, --environment [env]', '(Default: development)', 'development')
+  .option('-e, --environment [env]', '(Default: development)')
   .option('-p, --port [port]', '(Default: 4000)', parseInt)
   .option('-c, --cluster', 'Run in cluster mode')
   .option('-H, --hot', 'Reload when a file change is detected')
@@ -144,8 +152,8 @@ cli
   .action(({ hot, port, cluster, environment, useWeak }) => {
     const useStrict = !useWeak;
 
-    process.env.PORT = port;
-    process.env.NODE_ENV = environment;
+    setEnvVar('PORT', port, 4000);
+    setEnvVar('NODE_ENV', environment, 'development');
 
     exec('build', useStrict)
       .then(() => exec('serve', { hot, cluster, useStrict }))
