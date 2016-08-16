@@ -86,7 +86,7 @@ class Cluster extends EventEmitter {
     this.forkAll().then(() => this.emit('ready'));
   }
 
-  fork(retry: boolean = true): Promise<Worker> {
+  fork(retry: boolean = true) {
     return new Promise(resolve => {
       if (this.workers.size < this.maxWorkers) {
         const worker = cluster.fork({
@@ -179,7 +179,7 @@ class Cluster extends EventEmitter {
     });
   }
 
-  shutdown(worker: Worker): Promise<Worker> {
+  shutdown<T: Worker>(worker: T): Promise<T> {
     return new Promise(resolve => {
       this.workers.delete(worker);
 
@@ -195,9 +195,9 @@ class Cluster extends EventEmitter {
     });
   }
 
-  async reload(): Promise<void> {
+  async reload() {
     if (this.workers.size) {
-      const workers: Array<[Worker, Worker]> = Array
+      const workers = Array
         .from(this.workers)
         .reduce((arr, item, idx, src) => {
           return (idx + 1) % 2 ? [...arr, src.slice(idx, idx + 2)] : arr;
@@ -211,7 +211,7 @@ class Cluster extends EventEmitter {
     }
   }
 
-  forkAll(): Promise<Worker> {
+  forkAll() {
     return Promise.race(Array.from(range(1, this.maxWorkers)).map(() => {
       return this.fork();
     }));
