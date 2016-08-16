@@ -130,6 +130,7 @@ class Cluster extends EventEmitter {
           `);
 
           cleanUp(true);
+          resolve(worker);
         };
 
         const handleMessage = (message: string | Object) => {
