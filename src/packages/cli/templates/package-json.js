@@ -24,6 +24,9 @@ export default (name: string): string => template`
       "babel-preset-lux": "${BABEL_PRESET_VERSION}",
       "knex": "0.11.5",
       "lux-framework": "${LUX_VERSION}"
+    },
+    "engines": {
+      "node": ">= 6.0"
     }
   }
 `;

@@ -23,6 +23,8 @@ export type Database$environment = {
   database?: string;
   username?: string;
   password?: string;
+  port?: number;
+  ssl?: boolean;
   url?: string;
 };
 
