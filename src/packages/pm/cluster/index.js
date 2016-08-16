@@ -195,13 +195,17 @@ class Cluster extends EventEmitter {
   }
 
   async reload(): Promise<void> {
-    const workers: Array<[Worker, Worker]> = Array.from(this.workers)
-      .reduce((arr, item, idx, src) => {
-        return (idx + 1) % 2 ? [...arr, src.slice(idx, idx + 2)] : arr;
-      }, []);
+    if (this.workers.size) {
+      const workers: Array<[Worker, Worker]> = Array.from(this.workers)
+        .reduce((arr, item, idx, src) => {
+          return (idx + 1) % 2 ? [...arr, src.slice(idx, idx + 2)] : arr;
+        }, []);
 
-    for (const group of workers) {
-      await Promise.all(group.map(worker => this.shutdown(worker)));
+      for (const group of workers) {
+        await Promise.all(group.map(worker => this.shutdown(worker)));
+      }
+    } else {
+      await this.fork();
     }
   }
 
