@@ -10,6 +10,9 @@ export default (): string => template`
   # dependencies
   /node_modules
 
+  # build
+  /dist
+
   # logs
   /log
   npm-debug.log
