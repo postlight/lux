@@ -62,7 +62,7 @@ It's fast, it allows the developer to get low level with a relatively simple API
 
 ##### Not so fast (metaphorically speaking).
 
-The last bit there "It's just JavaScript" has actually been somewhat of a double edge sword. This has positioned Node as a "great prototyping tool" or "only used for micro services".
+The last bit there "It's just JavaScript" has actually been somewhat of a double-edged sword. This has positioned Node as a "great prototyping tool" or "only used for micro services."
 
 I can somewhat see why people would think that when returning a list of the first 10 records from a SQL database table looks like this:
 
@@ -78,11 +78,11 @@ app.get('/posts', (req, res) => {
 });
 ```
 
-Could you imagine how ugly that would be if you have implement pagination, filtering, sorting, or better yet formatting the response for JSON API?
+Could you imagine how ugly that gets when you have implement pagination, filtering, sorting, or—better yet—formatting the response for JSON API?
 
-Also, where does that code live? What file in what folder would I be able to find that? What pattern do you use for organizing this code?
+Also, where does that code live? In what file and folder would I find it? What pattern do you use for organizing this code?
 
-😲Ok ok give me back Rails I'll worry about performance and scaling later. After all premature optimization is the root of all evil.
+😲Ok ok give me back Rails I'll worry about performance and scaling later. After all, premature optimization is the root of all evil.
 
 ##### Problem.resolve();
 
