@@ -78,7 +78,7 @@ app.get('/posts', (req, res) => {
 });
 ```
 
-Could you imagine how ugly that gets when you have implement pagination, filtering, sorting, or—better yet—formatting the response for JSON API?
+Could you imagine how ugly that gets when you have to implement pagination, filtering, sorting, or—better yet—formatting the response for JSON API?
 
 Also, where does that code live? In what file and folder would I find it? What pattern do you use for organizing this code?
 
