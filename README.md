@@ -37,7 +37,7 @@ This isn't another wrapper around [Express](http://expressjs.com/) or a framewor
 
 ##### Minimal API surface area
 
-Lux utilizes JavaScript's standard library rather than creating a ton of functions you'll have to learn and remember.
+Lux uses JavaScript's standard library rather than creating a ton of functions you'll have to learn and remember.
 
 After your learn how to use it, you'll rarely need to look at the docs.
 
