@@ -7,7 +7,7 @@ import isFrozen from '../utils/is-frozen';
  */
 class FreezeableSet<T> extends Set<T> {
   add(value: T): FreezeableSet<T> {
-    if (!isFrozen(this)) {
+    if (!this.isFrozen()) {
       super.add(value);
     }
 
@@ -15,17 +15,21 @@ class FreezeableSet<T> extends Set<T> {
   }
 
   clear() {
-    if (!isFrozen(this)) {
+    if (!this.isFrozen()) {
       super.clear();
     }
   }
 
   delete(value: T) {
-    return isFrozen(this) ? false : super.delete(value);
+    return this.isFrozen() ? false : super.delete(value);
   }
 
   freeze() {
     return freeze(this);
+  }
+
+  isFrozen() {
+    return isFrozen(this);
   }
 }
 

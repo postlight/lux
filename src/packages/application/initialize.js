@@ -74,14 +74,19 @@ export default async function initialize<T: Application>(app: T, {
     serializers.set(name, serializer);
   });
 
-  let appController = controllers.get('application');
-  appController = new appController({
+  let ApplicationController = controllers.get('application');
+
+  if (!ApplicationController) {
+    throw new ControllerMissingError('application');
+  }
+
+  ApplicationController = new ApplicationController({
     store,
     serializers,
     serializer: serializers.get('application')
   });
 
-  controllers.set('application', appController);
+  controllers.set('application', ApplicationController);
 
   controllers.forEach((controller, key) => {
     if (key !== 'application') {
@@ -92,7 +97,7 @@ export default async function initialize<T: Application>(app: T, {
         model,
         controllers,
         serializer: serializers.get(key),
-        parentController: appController
+        parentController: ApplicationController
       });
 
       controllers.set(key, controller);
@@ -101,7 +106,8 @@ export default async function initialize<T: Application>(app: T, {
 
   const router = new Router({
     routes,
-    controllers
+    controllers,
+    controller: ApplicationController
   });
 
   const server = new Server({

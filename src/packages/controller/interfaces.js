@@ -10,3 +10,10 @@ export type Controller$opts = {
   controllers: Map<string, Controller>;
   parentController: ?Controller;
 };
+
+export type Controller$builtIn =
+  | 'show'
+  | 'index'
+  | 'create'
+  | 'update'
+  | 'destroy';

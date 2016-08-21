@@ -1,5 +1,5 @@
 // @flow
-import type Route from '../../route';
+import type { Route } from '../../router';
 import type { Request, Response } from '../../server';
 
 export type Logger$RequestLogger = (

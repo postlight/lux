@@ -315,7 +315,7 @@ class Controller {
 
   set filter(value: Array<string>): void {
     if (value && value.length) {
-      const filter = new Array(filter.length);
+      const filter = new Array(value.length);
 
       insert(filter, value);
 
@@ -572,3 +572,6 @@ class Controller {
 }
 
 export default Controller;
+export { BUILT_IN_ACTIONS } from './constants';
+
+export type { Controller$opts, Controller$builtIn } from './interfaces';

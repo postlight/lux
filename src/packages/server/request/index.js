@@ -28,5 +28,7 @@ export function createRequest(req: any, {
   return req;
 }
 
+export { REQUEST_METHODS } from './constants';
+
 export { parseRequest } from './parser';
 export { default as getDomain } from './utils/get-domain';

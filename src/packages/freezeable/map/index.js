@@ -7,7 +7,7 @@ import isFrozen from '../utils/is-frozen';
  */
 class FreezeableMap<K, V> extends Map<K, V> {
   set(key: K, value: V): FreezeableMap<K, V> {
-    if (!isFrozen(this)) {
+    if (!this.isFrozen()) {
       super.set(key, value);
     }
 
@@ -15,17 +15,21 @@ class FreezeableMap<K, V> extends Map<K, V> {
   }
 
   clear() {
-    if (!isFrozen(this)) {
+    if (!this.isFrozen()) {
       super.clear();
     }
   }
 
   delete(key: K) {
-    return isFrozen(this) ? false : super.delete(key);
+    return this.isFrozen() ? false : super.delete(key);
   }
 
   freeze() {
     return freeze(this);
+  }
+
+  isFrozen() {
+    return isFrozen(this);
   }
 }
 
