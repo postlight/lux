@@ -30,7 +30,7 @@ describe('fs', () => {
       expect(fileExists).to.be.true;
     });
 
-    it('is false if regexp "PATH" does not exist within PATH', async () => {
+    it('is false if regexp "PATH" does not exist within "DIR"', async () => {
       const emptyRegexp = new RegExp('does-not-exist.tmp');
       const fileExists = await exists(emptyRegexp, dirname(TMP_PATH));
       expect(fileExists).to.be.false;
