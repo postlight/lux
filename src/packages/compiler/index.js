@@ -8,7 +8,7 @@ import nodeResolve from 'rollup-plugin-node-resolve';
 import { rollup } from 'rollup';
 
 import { BACKSLASH } from './constants';
-import { rmrf, readdir } from '../fs';
+import { rmrf, readdir, readdirRec, isJSFile } from '../fs';
 import template from '../template';
 
 import createManifest from './utils/create-manifest';
@@ -41,15 +41,20 @@ export async function compile(dir: string, env: string, {
 
   const assets = await Promise.all([
     readdir(path.join(dir, 'app', 'models')),
-    readdir(path.join(dir, 'app', 'controllers')),
-    readdir(path.join(dir, 'app', 'serializers')),
-    readdir(path.join(dir, 'db', 'migrate'))
+    readdir(path.join(dir, 'db', 'migrate')),
+    readdirRec(path.join(dir, 'app', 'controllers')),
+    readdirRec(path.join(dir, 'app', 'serializers'))
   ]).then(([
     models,
+    migrations,
     controllers,
     serializers,
-    migrations
   ]) => {
+    models = models.filter(isJSFile);
+    migrations = migrations.filter(isJSFile);
+    controllers = controllers.filter(isJSFile);
+    serializers = serializers.filter(isJSFile);
+
     return new Map([
       ['Application', path.join('app', 'index.js')],
       ['config', path.join('config', 'environments', `${env}.js`)],

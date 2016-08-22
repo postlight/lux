@@ -7,3 +7,8 @@ export interface Lux$Collection<T> {
   delete(key: T): boolean;
   values(): Iterator<T>;
 }
+
+export interface Chain<T> {
+  pipe<U>(handler: (value: T) => U): Chain<U>;
+  value(): T;
+}

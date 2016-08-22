@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { join as joinPath } from 'path';
 
 import createResolver from './utils/create-resolver';
 
@@ -25,7 +26,7 @@ export function mkdir(path: string, mode: number = 511) {
 /**
  * @private
  */
-export function rmdir(path: string) {
+export function rmdir(path: string): Promise<void> {
   return new Promise((resolve, reject) => {
     fs.rmdir(path, createResolver(resolve, reject));
   });
@@ -34,10 +35,48 @@ export function rmdir(path: string) {
 /**
  * @private
  */
-export function readdir(path: string, opts?: fs$readOpts) {
+export function readdir(
+  path: string,
+  opts?: fs$readOpts
+): Promise<Array<string>> {
   return new Promise((resolve, reject) => {
     fs.readdir(path, opts, createResolver(resolve, reject));
   });
+}
+
+/**
+ * @private
+ */
+export function readdirRec(
+  path: string,
+  opts?: fs$readOpts
+): Promise<Array<string>> {
+  const pathRegex = new RegExp(`${path}\/?(.+)`);
+  const stripPath = file => file.replace(pathRegex, '$1');
+
+  return readdir(path, opts)
+    .then(files => Promise.all(
+      files.map(file => {
+        file = joinPath(path, file);
+
+        return Promise.all([file, stat(file)]);
+      })
+    ))
+    .then(files => Promise.all(
+      files.map(([file, stats]) => Promise.all([
+        file,
+        stats.isDirectory() ? readdirRec(file) : []
+      ]))
+    ))
+    .then(files => files.reduce((arr, [file, children]) => {
+      file = stripPath(file);
+
+      return [
+        ...arr,
+        file,
+        ...children.map(child => joinPath(file, stripPath(child)))
+      ];
+    }, []));
 }
 
 /**

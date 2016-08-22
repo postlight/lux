@@ -4,8 +4,8 @@ import { Migration } from '../database';
 import { FreezeableMap } from '../freezeable';
 import { createDefaultConfig } from '../config';
 
-import entries from '../../utils/entries';
 import merge from '../../utils/merge';
+import entries from '../../utils/entries';
 import formatKey from './utils/format-key';
 
 let bundle: FreezeableMap<string, any>;
@@ -36,12 +36,12 @@ export default function loader(appPath: string, type: string): ?mixed {
                     break;
 
                   case 'Controller':
-                    key = formatKey(key, k => k.replace(match, ''));
+                    key = formatKey(key, target => target.replace(match, ''));
                     hash.controllers.set(key, value);
                     break;
 
                   case 'Serializer':
-                    key = formatKey(key, k => k.replace(match, ''));
+                    key = formatKey(key, target => target.replace(match, ''));
                     hash.serializers.set(key, value);
                     break;
                 }
@@ -88,3 +88,9 @@ export default function loader(appPath: string, type: string): ?mixed {
 
   return bundle.get(type);
 }
+
+export type {
+  Bundle$Models,
+  Bundle$Controllers,
+  Bundle$Serializers
+} from './interfaces';

@@ -7,7 +7,6 @@ import findOne from './utils/find-one';
 import findMany from './utils/find-many';
 import findRelated from './utils/find-related';
 
-import type Database from '../database';
 import type Serializer from '../serializer';
 import type { Request, Response } from '../server';
 import type { Controller$opts } from './interfaces';
@@ -51,15 +50,6 @@ class Controller {
    * @instance
    */
   defaultPerPage: number = 25;
-
-  /**
-   * @property store
-   * @memberof Controller
-   * @instance
-   * @readonly
-   * @private
-   */
-  store: Database;
 
   /**
    * @property model
@@ -125,7 +115,6 @@ class Controller {
   parentController: ?Controller;
 
   constructor({
-    store,
     model,
     serializer,
     controllers,
@@ -193,13 +182,6 @@ class Controller {
         configurable: false
       },
 
-      store: {
-        value: store,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
       attributes: {
         value: attributes,
         writable: false,
@@ -218,14 +200,14 @@ class Controller {
         value: controllers,
         writable: false,
         enumerable: false,
-        configurable: false
+        configurable: true
       },
 
       parentController: {
         value: parentController,
         writable: false,
         enumerable: false,
-        configurable: false
+        configurable: true
       }
     });
   }

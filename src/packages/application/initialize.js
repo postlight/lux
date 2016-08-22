@@ -11,7 +11,7 @@ import loader from '../loader';
 
 import { ControllerMissingError, SerializerMissingError } from './errors';
 
-import { tryCatchSync } from '../../utils/try-catch';
+import setupControllers from './utils/setup-controllers';
 
 import type Application, { Application$opts } from './index'; // eslint-disable-line no-unused-vars, max-len
 
@@ -27,8 +27,8 @@ export default async function initialize<T: Application>(app: T, {
 }: Application$opts) {
   const routes = loader(path, 'routes');
   const models = loader(path, 'models');
-  const controllers = loader(path, 'controllers');
   const serializers = loader(path, 'serializers');
+  const controllers = loader(path, 'controllers');
 
   const logger = new Logger(logging);
 
@@ -74,35 +74,16 @@ export default async function initialize<T: Application>(app: T, {
     serializers.set(name, serializer);
   });
 
-  let ApplicationController = controllers.get('application');
+  setupControllers(controllers, {
+    store,
+    serializers
+  });
+
+  const ApplicationController = controllers.get('application');
 
   if (!ApplicationController) {
     throw new ControllerMissingError('application');
   }
-
-  ApplicationController = new ApplicationController({
-    store,
-    serializers,
-    serializer: serializers.get('application')
-  });
-
-  controllers.set('application', ApplicationController);
-
-  controllers.forEach((controller, key) => {
-    if (key !== 'application') {
-      const model = tryCatchSync(() => store.modelFor(singularize(key)));
-
-      controller = new controller({
-        store,
-        model,
-        controllers,
-        serializer: serializers.get(key),
-        parentController: ApplicationController
-      });
-
-      controllers.set(key, controller);
-    }
-  });
 
   const router = new Router({
     routes,
