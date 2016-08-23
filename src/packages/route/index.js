@@ -10,7 +10,7 @@ import getStaticPath from './utils/get-static-path';
 import getDynamicSegments from './utils/get-dynamic-segments';
 
 import type Controller from '../controller';
-import type { Request, Response } from '../server';
+import type { Request, Response, Request$method } from '../server';
 import type { Action } from './action';
 import type { ParameterGroup } from './params';
 import type { Route$opts } from './interfaces';
@@ -19,13 +19,13 @@ import type { Route$opts } from './interfaces';
  * @private
  */
 class Route extends FreezeableSet<Action<any>> {
-  path: Route$opts.path;
+  path: string;
 
   params: ParameterGroup;
 
-  action: Route$opts.action;
+  action: string;
 
-  method: Route$opts.method;
+  method: Request$method;
 
   resource: string;
 

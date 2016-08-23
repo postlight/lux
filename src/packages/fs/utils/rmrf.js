@@ -8,7 +8,7 @@ import tryCatch from '../../../utils/try-catch';
 /**
  * @private
  */
-async function rmrf(target: string) {
+async function rmrf(target: string): Promise<boolean> {
   const stats = await tryCatch(() => stat(target));
 
   if (stats && stats.isDirectory()) {

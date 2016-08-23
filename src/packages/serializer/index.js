@@ -37,7 +37,7 @@ class Serializer {
    * @readonly
    * @private
    */
-  model: Serializer$opts.model;
+  model: Class<Model>;
 
   /**
    * A Map of all resolved serializers in a an `Application` instance. This is
@@ -50,7 +50,7 @@ class Serializer {
    * @readonly
    * @private
    */
-  serializers: Serializer$opts.serializers;
+  serializers: Map<string, Serializer>;
 
   /**
    * Create an instance of `Serializer`.

@@ -15,19 +15,21 @@ import setCORSHeaders from './utils/set-cors-headers';
 import type { Writable } from 'stream';
 import type { IncomingMessage, Server as HTTPServer } from 'http';
 
+import type Logger from '../logger';
+import type Router from '../router';
 import type { Request } from './request/interfaces';
 import type { Response } from './response/interfaces';
-import type { Server$opts, Server$config } from './interfaces';
+import type { Server$opts, Server$cors } from './interfaces';
 
 /**
  * @private
  */
 class Server {
-  logger: Server$opts.logger;
+  logger: Logger;
 
-  router: Server$opts.router;
+  router: Router;
 
-  cors: Server$config.cors;
+  cors: Server$cors;
 
   instance: HTTPServer;
 

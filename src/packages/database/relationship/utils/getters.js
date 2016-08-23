@@ -12,7 +12,7 @@ async function getHasManyThrough(owner: Model, {
   inverse,
   through,
   foreignKey: baseKey
-}: Relationship$opts) {
+}: Relationship$opts): Promise<Array<Model>> {
   const inverseOpts = model.relationshipFor(inverse);
 
   if (through && inverseOpts) {

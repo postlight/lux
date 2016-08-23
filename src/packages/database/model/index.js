@@ -297,7 +297,7 @@ class Model {
     }
   }
 
-  save(deep?: boolean): Promise<void | Model> {
+  save(deep?: boolean): Promise<Model> {
     return tryCatch(async () => {
       const {
         constructor: {
@@ -367,12 +367,17 @@ class Model {
       return this;
     }, err => {
       throw processWriteError(err);
-    });
+    }).then(() => this);
   }
 
   async update(attributes: Object = {}): Promise<Model> {
     Object.assign(this, attributes);
-    return this.isDirty ? await this.save(true) : this;
+
+    if (this.isDirty) {
+      return await this.save(true);
+    }
+
+    return this;
   }
 
   async destroy(): Promise<Model> {
