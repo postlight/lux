@@ -44,13 +44,20 @@ export function contextFor(build: Router$DefinitionBuilder<*>) {
           ...context,
 
           namespace(name: string, builder?: () => void) {
-            const { path, controller, controllers } = namespace;
+            const { controllers } = namespace;
+            const path = namespace.isRoot ? `/${name}` : `${path}/${name}`;
+            let controller = controllers.get(`${path.substr(1)}/application`);
+
+            if (!controller) {
+              controller = namespace.controller;
+            }
+
             const child = new Namespace({
               name,
+              path,
               namespace,
-              controllers,
-              path: namespace.isRoot ? `/${name}` : `${path}/${name}`,
-              controller: controllers.get(name) || controller
+              controller,
+              controllers
             });
 
             build(builder, child);
@@ -58,14 +65,28 @@ export function contextFor(build: Router$DefinitionBuilder<*>) {
           },
 
           resource(...args: Array<mixed>) {
+            const { controllers } = namespace;
             const [opts, builder] = normalizeResourceArgs(args);
-            const { path, controller, controllers } = namespace;
+            let path;
+
+            if (namespace.isRoot) {
+              path = opts.path;
+            } else {
+              path = namespace.path + opts.path;
+            }
+
+            let controller = controllers.get(path.substr(1));
+
+            if (!controller) {
+              controller = namespace.controller;
+            }
+
             const child = new Resource({
               ...opts,
+              path,
               namespace,
-              controllers,
-              path: namespace.isRoot ? opts.path : path + opts.path,
-              controller: controllers.get(opts.name) || controller
+              controller,
+              controllers
             });
 
             build(builder, child);

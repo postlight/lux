@@ -245,7 +245,7 @@ class Controller {
 
       Reflect.defineProperty(this, 'query', {
         value: Object.freeze(query),
-        writable: false,
+        writable: true,
         enumerable: true,
         configurable: false
       });
@@ -274,7 +274,7 @@ class Controller {
 
       Reflect.defineProperty(this, 'sort', {
         value: Object.freeze(sort),
-        writable: false,
+        writable: true,
         enumerable: true,
         configurable: false
       });
@@ -303,7 +303,7 @@ class Controller {
 
       Reflect.defineProperty(this, 'filter', {
         value: Object.freeze(filter),
-        writable: false,
+        writable: true,
         enumerable: true,
         configurable: false
       });
@@ -343,7 +343,7 @@ class Controller {
 
       Reflect.defineProperty(this, 'params', {
         value: Object.freeze(params),
-        writable: false,
+        writable: true,
         enumerable: true,
         configurable: false
       });
@@ -372,7 +372,7 @@ class Controller {
 
       Reflect.defineProperty(this, 'beforeAction', {
         value: Object.freeze(beforeAction),
-        writable: false,
+        writable: true,
         enumerable: true,
         configurable: false
       });

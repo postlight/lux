@@ -1,21 +1,8 @@
-import { Controller } from 'LUX_LOCAL';
+import PostsController from 'app/controllers/posts';
 
-class AdminPostsController extends Controller {
-  params = [
-    'body',
-    'title',
-    'author',
-    'isPublic'
-  ];
-
-  beforeAction = [
-    function setControllerHeader(req, res) {
-      res.setHeader('X-Controller', 'Posts');
-    }
-  ];
-
+class AdminPostsController extends PostsController {
   index(req, res) {
-    return super.index(req, res).isPublic();
+    return super.index(req, res).unscope('isPublic');
   }
 }
 
