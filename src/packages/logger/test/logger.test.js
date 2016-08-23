@@ -7,7 +7,7 @@ import Logger from '../index';
 
 const TEST_MESSAGE = 'test';
 
-describe('logger', () => {
+describe('Logger', () => {
   let jsonLogger: Logger;
   let disabledLogger: Logger;
   let unhookWrite: ?() => void;
