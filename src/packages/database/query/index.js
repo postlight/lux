@@ -399,7 +399,10 @@ class Query {
       this.select(...this.model.attributeNames);
     }
 
-    const records = snapshots.reduce((query, [name, params]) => {
+    const records: any = snapshots.reduce((
+      query,
+      [name, params]
+    ) => {
       if (!shouldCount && name === 'includeSelect') {
         name = 'select';
       }

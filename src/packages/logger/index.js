@@ -11,7 +11,8 @@ import type {
   Logger$config,
   Logger$format,
   Logger$level,
-  Logger$logFn
+  Logger$logFn,
+  Logger$filter
 } from './interfaces';
 
 import type { Logger$RequestLogger } from './request-logger/interfaces';
@@ -46,7 +47,7 @@ class Logger {
    * @memberof Logger
    * @instance
    */
-  filter: Logger$config.filter;
+  filter: Logger$filter;
 
   /**
    * Wether on not logging is enabled for an instance of `Logger`.

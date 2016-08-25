@@ -9,7 +9,7 @@ import type { Action } from '../interfaces';
 /**
 * @private
 */
-export default function resource(action: Action<mixed>): Action<mixed> {
+export default function resource(action: Action<any>): Action<any> {
   return async function resourceAction(req, res) {
     const { route: { action: actionName } } = req;
     const result = action(req, res);

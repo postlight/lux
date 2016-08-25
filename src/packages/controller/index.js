@@ -443,7 +443,7 @@ class Controller {
    * @param  {Request} request
    * @param  {Response} response
    */
-  async create(req: Request, res: Response) {
+  async create(req: Request, res: Response): Promise<Model> {
     const {
       url: {
         pathname
@@ -489,7 +489,7 @@ class Controller {
    * @param  {Request} request
    * @param  {Response} response
    */
-  async update(req: Request) {
+  async update(req: Request): Promise<number | Model | void> {
     const record = await findOne(req);
 
     const {
@@ -518,7 +518,11 @@ class Controller {
 
         return await record.save(true);
       } else {
-        return record.isDirty ? await record.save() : 204;
+        if (record.isDirty) {
+          return await record.save();
+        } else {
+          return 204;
+        }
       }
     }
 
@@ -532,7 +536,7 @@ class Controller {
    * @param  {Request} request
    * @param  {Response} response
    */
-  async destroy(req: Request) {
+  async destroy(req: Request): Promise<number | void> {
     const record = await findOne(req);
 
     if (record) {

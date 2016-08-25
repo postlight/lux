@@ -10,7 +10,7 @@ import getStaticPath from './utils/get-static-path';
 import getDynamicSegments from './utils/get-dynamic-segments';
 
 import type Controller from '../../controller';
-import type { Request, Response } from '../../server';
+import type { Request, Response, Request$method } from '../../server';
 import type { Action } from './action';
 import type { ParameterGroup } from './params';
 import type { Route$opts } from './interfaces';
@@ -19,15 +19,15 @@ import type { Route$opts } from './interfaces';
  * @private
  */
 class Route extends FreezeableSet<Action<any>> {
-  type: Route$opts.type;
+  type: string;
 
-  path: Route$opts.path;
+  path: string;
+
+  action: string;
 
   params: ParameterGroup;
 
-  action: Route$opts.action;
-
-  method: Route$opts.method;
+  method: Request$method;
 
   controller: Controller;
 
@@ -160,7 +160,7 @@ class Route extends FreezeableSet<Action<any>> {
     });
   }
 
-  async execHandlers(req: Request, res: Response) {
+  async execHandlers(req: Request, res: Response): Promise<any> {
     for (const handler of this) {
       const data = await handler(req, res);
 
@@ -170,7 +170,7 @@ class Route extends FreezeableSet<Action<any>> {
     }
   }
 
-  async visit(req: Request, res: Response) {
+  async visit(req: Request, res: Response): Promise<any> {
     Object.assign(req, {
       defaultParams: this.getDefaultParams(),
 

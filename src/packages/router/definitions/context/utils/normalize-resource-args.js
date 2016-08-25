@@ -1,19 +1,19 @@
 // @flow
 import { BUILT_IN_ACTIONS } from '../../../../controller';
 
-import type { Resource$opts } from '../../../index';
+import type { Controller$builtIn } from '../../../../controller';
 
 /**
  * @private
  */
 export default function normalizeResourceArgs(args: [
   string,
-  ?{ path: Resource$opts.path, only: Resource$opts.only },
+  ?{ path: string, only: Array<Controller$builtIn> },
   Function
 ]): [{
-  name: Resource$opts.name,
-  path: Resource$opts.path,
-  only: Resource$opts.only
+  name: string,
+  path: string,
+  only: Array<Controller$builtIn>
 }, Function] {
   const [name] = args;
   let [, opts, builder] = args;

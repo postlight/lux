@@ -3,7 +3,9 @@
 /**
  * @private
  */
-export default async function createMigrations(schema: Function) {
+export default async function createMigrations(
+  schema: Function
+): Promise<boolean> {
   const hasTable = await schema().hasTable('migrations');
 
   if (!hasTable) {

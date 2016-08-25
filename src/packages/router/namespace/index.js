@@ -4,6 +4,7 @@ import { FreezeableSet } from '../../freezeable';
 import normalizeName from './utils/normalize-name';
 import normalizePath from './utils/normalize-path';
 
+import type Controller from '../../controller';
 import type { Route, Router$Namespace } from '../index';
 import type { Namespace$opts } from './interfaces';
 
@@ -11,17 +12,17 @@ import type { Namespace$opts } from './interfaces';
  * @private
  */
 class Namespace extends FreezeableSet<Route | Router$Namespace> {
-  name: Router$Namespace.name;
+  name: string;
 
-  path: Router$Namespace.path;
+  path: string;
 
-  isRoot: Router$Namespace.isRoot;
+  isRoot: boolean;
 
   namespace: Router$Namespace;
 
-  controller: Router$Namespace.controller;
+  controller: Controller;
 
-  controllers: Router$Namespace.controllers;
+  controllers: Map<string, Controller>;
 
   constructor({
     name,

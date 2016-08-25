@@ -6,7 +6,10 @@ import tryCatch from '../../../utils/try-catch';
 /**
  * @private
  */
-export default async function exists(path: string | RegExp, dir: string) {
+export default async function exists(
+  path: string | RegExp,
+  dir: string
+): Promise<boolean> {
   if (typeof path === 'string') {
     return Boolean(await tryCatch(() => stat(path)));
   } else if (path instanceof RegExp) {
