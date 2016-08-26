@@ -1,15 +1,18 @@
 import { CWD } from '../../../constants';
+
 import Logger from '../../logger';
 import Database from '../../database';
-import loader from '../../loader';
+import { createLoader } from '../../loader';
 
 /**
  * @private
  */
 export async function dbseed() {
-  const { database: config } = loader(CWD, 'config');
-  const seed = loader(CWD, 'seed');
-  const models = loader(CWD, 'models');
+  const load = createLoader(CWD);
+
+  const { database: config } = load('config');
+  const seed = load('seed');
+  const models = load('models');
 
   await new Database({
     config,

@@ -42,6 +42,15 @@ class Controller {
   hasSerializer: boolean;
 
   /**
+   * The namespace that a `Controller` instance is a member of.
+   *
+   * @property namespace
+   * @memberof Controller
+   * @instance
+   */
+  namespace: string;
+
+  /**
    * The number of records to return for the #index action when a `?limit`
    * parameter is not specified.
    *
@@ -58,7 +67,16 @@ class Controller {
    * @readonly
    * @private
    */
-  model: typeof Model;
+  model: Class<Model>;
+
+  /**
+   * @property parent
+   * @memberof Controller
+   * @instance
+   * @readonly
+   * @private
+   */
+  parent: ?Controller;
 
   /**
    * @property modelName
@@ -105,21 +123,7 @@ class Controller {
    */
   controllers: Map<string, Controller>;
 
-  /**
-   * @property parentController
-   * @memberof Controller
-   * @instance
-   * @readonly
-   * @private
-   */
-  parentController: ?Controller;
-
-  constructor({
-    model,
-    serializer,
-    controllers,
-    parentController
-  }: Controller$opts) {
+  constructor({ model, parent, namespace, serializer }: Controller$opts) {
     const hasModel = Boolean(model);
     const hasSerializer = Boolean(serializer);
     let attributes = [];
@@ -168,6 +172,20 @@ class Controller {
         configurable: false
       },
 
+      parent: {
+        value: parent,
+        writable: false,
+        enumerable: false,
+        configurable: true
+      },
+
+      namespace: {
+        value: namespace,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      },
+
       serializer: {
         value: serializer,
         writable: false,
@@ -194,20 +212,6 @@ class Controller {
         writable: false,
         enumerable: false,
         configurable: false
-      },
-
-      controllers: {
-        value: controllers,
-        writable: false,
-        enumerable: false,
-        configurable: true
-      },
-
-      parentController: {
-        value: parentController,
-        writable: false,
-        enumerable: false,
-        configurable: true
       }
     });
   }
@@ -387,16 +391,16 @@ class Controller {
    * @private
    */
   get middleware(): Array<Function> {
-    const { beforeAction, parentController } = this;
+    const { parent, beforeAction } = this;
     let middleware;
 
-    if (parentController) {
-      const length = beforeAction.length + parentController.beforeAction.length;
+    if (parent) {
+      const length = beforeAction.length + parent.beforeAction.length;
 
       middleware = new Array(length);
 
       insert(middleware, [
-        ...parentController.middleware,
+        ...parent.middleware,
         ...beforeAction
       ]);
     } else {

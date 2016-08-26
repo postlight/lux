@@ -1,17 +1,21 @@
 // @flow
-import { pluralize, singularize } from 'inflection';
-
 import { LUX_CONSOLE } from '../../constants';
 
 import Database from '../database';
 import Logger from '../logger';
 import Router from '../router';
 import Server from '../server';
-import loader from '../loader';
+import {
+  build,
+  createLoader,
+  getNamespaceKey,
+  stripNamespaces,
+  closestAncestor
+} from '../loader';
 
-import { ControllerMissingError, SerializerMissingError } from './errors';
+import { ControllerMissingError } from './errors';
 
-import setupControllers from './utils/setup-controllers';
+import { tryCatchSync } from '../../utils/try-catch';
 
 import type Application, { Application$opts } from './index'; // eslint-disable-line no-unused-vars, max-len
 
@@ -25,10 +29,9 @@ export default async function initialize<T: Application>(app: T, {
   database,
   server: serverConfig
 }: Application$opts): Promise<T> {
-  const routes = loader(path, 'routes');
-  const models = loader(path, 'models');
-  const serializers = loader(path, 'serializers');
-  const controllers = loader(path, 'controllers');
+  const load = createLoader(path);
+  const routes = load('routes');
+  const models = load('models');
 
   const logger = new Logger(logging);
 
@@ -42,41 +45,40 @@ export default async function initialize<T: Application>(app: T, {
 
   port = parseInt(port, 10);
 
-  models.forEach((model, name) => {
-    const resource = pluralize(name);
-
-    if (!controllers.get(resource)) {
-      throw new ControllerMissingError(resource);
-    }
-
-    if (!serializers.get(resource)) {
-      throw new SerializerMissingError(resource);
-    }
+  const serializers = build(load('serializers'), (key, value, parent) => {
+    return Reflect.construct(value, [{
+      parent,
+      model: tryCatchSync(() => store.modelFor(stripNamespaces(key))),
+      namespace: getNamespaceKey(key).replace('root', '')
+    }]);
   });
 
-  serializers.forEach((serializer, name) => {
-    const model = models.get(singularize(name));
-
-    serializer = new serializer({
-      model,
-      serializers
+  models.forEach(model => {
+    Reflect.defineProperty(model, 'serializer', {
+      value: serializers.get(model.resourceName),
+      writable: false,
+      enumerable: false,
+      configurable: false
     });
-
-    if (model) {
-      Reflect.defineProperty(model, 'serializer', {
-        value: serializer,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      });
-    }
-
-    serializers.set(name, serializer);
   });
 
-  setupControllers(controllers, {
-    store,
-    serializers
+  const controllers = build(load('controllers'), (key, value, parent) => {
+    return Reflect.construct(value, [{
+      parent,
+      serializers,
+      model: tryCatchSync(() => store.modelFor(stripNamespaces(key))),
+      namespace: getNamespaceKey(key).replace('root', ''),
+      serializer: serializers.get(key) || closestAncestor(serializers, key)
+    }]);
+  });
+
+  controllers.forEach(controller => {
+    Reflect.defineProperty(controller, 'controllers', {
+      value: controllers,
+      writable: true,
+      enumerable: false,
+      configurable: false
+    });
   });
 
   const ApplicationController = controllers.get('application');

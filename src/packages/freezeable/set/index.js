@@ -14,21 +14,21 @@ class FreezeableSet<T> extends Set<T> {
     return this;
   }
 
-  clear() {
+  clear(): void {
     if (!this.isFrozen()) {
       super.clear();
     }
   }
 
-  delete(value: T) {
+  delete(value: T): boolean {
     return this.isFrozen() ? false : super.delete(value);
   }
 
-  freeze() {
+  freeze(): FreezeableSet<T> {
     return freeze(this);
   }
 
-  isFrozen() {
+  isFrozen(): boolean {
     return isFrozen(this);
   }
 }

@@ -14,21 +14,21 @@ class FreezeableMap<K, V> extends Map<K, V> {
     return this;
   }
 
-  clear() {
+  clear(): void {
     if (!this.isFrozen()) {
       super.clear();
     }
   }
 
-  delete(key: K) {
+  delete(key: K): boolean {
     return this.isFrozen() ? false : super.delete(key);
   }
 
-  freeze() {
+  freeze(): FreezeableMap<K, V> {
     return freeze(this);
   }
 
-  isFrozen() {
+  isFrozen(): boolean {
     return isFrozen(this);
   }
 }

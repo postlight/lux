@@ -1,4 +1,11 @@
 // @flow
+import type Controller from './packages/controller';
+import type Serializer from './packages/serializer';
+
+export type Lux$Namespaceable =
+  | Controller
+  | Serializer;
+
 export interface Lux$Collection<T> {
   size: number;
 
@@ -11,4 +18,5 @@ export interface Lux$Collection<T> {
 export interface Chain<T> {
   pipe<U>(handler: (value: T) => U): Chain<U>;
   value(): T;
+  construct<U, V: Class<U>>(constructor: V): Chain<U>;
 }

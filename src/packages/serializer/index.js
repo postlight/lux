@@ -10,6 +10,7 @@ import promiseHash from '../../utils/promise-hash';
 import { dasherizeKeys } from '../../utils/transform-keys';
 
 import type { Model } from '../database';
+import type { FreezeableMap } from '../freezeable';
 import type { Serializer$opts } from './interfaces';
 
 import type {
@@ -34,10 +35,28 @@ class Serializer {
    * @property model
    * @memberof Serializer
    * @instance
-   * @readonly
    * @private
    */
   model: Class<Model>;
+
+  /**
+   * A reference to the root `Serializer` for the namespace that a `Serializer`
+   * instance is a member of.
+   *
+   * @property parent
+   * @memberof Serializer
+   * @instance
+   */
+  parent: ?Serializer;
+
+  /**
+   * The namespace that a `Serializer` instance is a member of.
+   *
+   * @property namespace
+   * @memberof Serializer
+   * @instance
+   */
+  namespace: string;
 
   /**
    * A Map of all resolved serializers in a an `Application` instance. This is
@@ -47,10 +66,9 @@ class Serializer {
    * @property serializers
    * @memberof Serializer
    * @instance
-   * @readonly
    * @private
    */
-  serializers: Map<string, Serializer>;
+  serializers: FreezeableMap<string, Serializer>;
 
   /**
    * Create an instance of `Serializer`.
@@ -62,10 +80,24 @@ class Serializer {
    *
    * @private
    */
-  constructor({ model, serializers }: Serializer$opts) {
+  constructor({ model, parent, namespace, serializers }: Serializer$opts) {
     Object.defineProperties(this, {
       model: {
         value: model,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
+
+      parent: {
+        value: parent,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
+
+      namespace: {
+        value: namespace,
         writable: false,
         enumerable: false,
         configurable: false
@@ -144,7 +176,7 @@ class Serializer {
 
       Reflect.defineProperty(this, 'hasOne', {
         value: Object.freeze(hasOne),
-        writable: false,
+        writable: true,
         enumerable: true,
         configurable: false
       });
@@ -223,7 +255,7 @@ class Serializer {
 
       Reflect.defineProperty(this, 'hasMany', {
         value: Object.freeze(hasMany),
-        writable: false,
+        writable: true,
         enumerable: true,
         configurable: false
       });
@@ -286,7 +318,7 @@ class Serializer {
 
       Reflect.defineProperty(this, 'attributes', {
         value: Object.freeze(attributes),
-        writable: false,
+        writable: true,
         enumerable: true,
         configurable: false
       });

@@ -12,6 +12,10 @@ export default function chain<T>(source: T): Chain<T> {
 
     value(): T {
       return source;
+    },
+
+    construct<U, V: Class<U>>(constructor: V): Chain<U> {
+      return chain(Reflect.construct(constructor, [source]));
     }
   };
 }
