@@ -20,7 +20,7 @@ export default async function initialize<T: Database>(instance: T, {
   config,
   logger,
   checkMigrations
-}: Database$opts) {
+}: Database$opts): Promise<T> {
   config = Reflect.get(config, NODE_ENV);
 
   if (!config) {

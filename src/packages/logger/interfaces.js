@@ -9,12 +9,13 @@ export type Logger$data = {
   timestamp: string;
 };
 
+export type Logger$filter = {
+  params: Array<string>;
+};
+
 export type Logger$config = {
   level: Logger$level;
   format: Logger$format;
+  filter: Logger$filter;
   enabled: boolean;
-
-  filter: {
-    params: Array<string>;
-  };
 };

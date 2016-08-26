@@ -3,7 +3,7 @@ import omit from '../../../../utils/omit';
 import merge from '../../../../utils/merge';
 import createQueryString from '../../../../utils/create-query-string';
 
-import type { Request } from '../../../server';
+import type { Request$params } from '../../../server';
 import type { JSONAPI$DocumentLinks } from '../../../jsonapi';
 
 function createLinkTemplate({
@@ -14,7 +14,7 @@ function createLinkTemplate({
   defaultPerPage
 }: {
   total: number,
-  params: Request.params;
+  params: Request$params;
   domain: string;
   pathname: string;
   defaultPerPage: number;
@@ -68,7 +68,7 @@ function createLinkTemplate({
  */
 export default function createPageLinks(opts: {
   total: number;
-  params: Request.params;
+  params: Request$params;
   domain: string;
   pathname: string;
   defaultPerPage: number;

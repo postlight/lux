@@ -24,7 +24,7 @@ export default async function initialize<T: Application>(app: T, {
   logging,
   database,
   server: serverConfig
-}: Application$opts) {
+}: Application$opts): Promise<T> {
   const routes = loader(path, 'routes');
   const models = loader(path, 'models');
   const controllers = loader(path, 'controllers');
