@@ -561,6 +561,10 @@ class Model {
     return new Query(this).select(...params);
   }
 
+  static distinct(...params: Array<string>) {
+    return new Query(this).distinct(...params);
+  }
+
   static include(...relationships: Array<Object|string>) {
     return new Query(this).include(...relationships);
   }
