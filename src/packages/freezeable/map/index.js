@@ -24,7 +24,11 @@ class FreezeableMap<K, V> extends Map<K, V> {
     return this.isFrozen() ? false : super.delete(key);
   }
 
-  freeze(): FreezeableMap<K, V> {
+  freeze(deep?: boolean): FreezeableMap<K, V> {
+    if (deep) {
+      this.forEach(Object.freeze);
+    }
+
     return freeze(this);
   }
 

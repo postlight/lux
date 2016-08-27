@@ -24,7 +24,11 @@ class FreezeableSet<T> extends Set<T> {
     return this.isFrozen() ? false : super.delete(value);
   }
 
-  freeze(): FreezeableSet<T> {
+  freeze(deep?: boolean): FreezeableSet<T> {
+    if (deep) {
+      this.forEach(Object.freeze);
+    }
+
     return freeze(this);
   }
 

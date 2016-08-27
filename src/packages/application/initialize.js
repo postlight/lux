@@ -6,6 +6,7 @@ import Logger from '../logger';
 import Router from '../router';
 import Server from '../server';
 import { build, createLoader } from '../loader';
+import { freezeProps } from '../freezeable';
 
 import { ControllerMissingError } from './errors';
 
@@ -103,84 +104,35 @@ export default async function initialize<T: Application>(app: T, {
     });
   }
 
-  Object.defineProperties(app, {
-    models: {
-      value: models,
-      writable: false,
-      enumerable: true,
-      configurable: false
-    },
-
-    controllers: {
-      value: controllers,
-      writable: false,
-      enumerable: true,
-      configurable: false
-    },
-
-    serializers: {
-      value: serializers,
-      writable: false,
-      enumerable: true,
-      configurable: false
-    },
-
-    logger: {
-      value: logger,
-      writable: false,
-      enumerable: true,
-      configurable: false
-    },
-
-    path: {
-      value: path,
-      writable: false,
-      enumerable: false,
-      configurable: false
-    },
-
-    port: {
-      value: port,
-      writable: false,
-      enumerable: false,
-      configurable: false
-    },
-
-    store: {
-      value: store,
-      writable: false,
-      enumerable: false,
-      configurable: false
-    },
-
-    router: {
-      value: router,
-      writable: false,
-      enumerable: false,
-      configurable: false
-    },
-
-    server: {
-      value: server,
-      writable: false,
-      enumerable: false,
-      configurable: false
-    }
+  Object.assign(app, {
+    logger,
+    models,
+    controllers,
+    serializers
   });
 
-  Object.freeze(app);
-  Object.freeze(store);
-  Object.freeze(logger);
-  Object.freeze(router);
-  Object.freeze(server);
+  freezeProps(app, true,
+    'logger',
+    'models',
+    'controllers',
+    'serializers'
+  );
 
-  models.forEach(Object.freeze);
-  controllers.forEach(Object.freeze);
-  serializers.forEach(Object.freeze);
+  Object.assign(app, {
+    path,
+    port,
+    store,
+    router,
+    server
+  });
 
-  models.freeze();
-  controllers.freeze();
-  serializers.freeze();
+  freezeProps(app, false,
+    'path',
+    'port',
+    'store',
+    'router',
+    'server'
+  );
 
-  return app;
+  return Object.freeze(app);
 }

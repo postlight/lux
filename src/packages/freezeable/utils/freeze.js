@@ -23,13 +23,11 @@ export function freezeArray<T>(target: Array<T>): Array<T> {
 /**
  * @private
  */
-export function freezeValue<T>(value: T | Array<T>): T | Array<T> {
-  if (isObject(value)) {
-    Object.freeze(value);
-  } else if (Array.isArray(value)) {
-    return freezeArray(value);
-  } else if (value && typeof value.freeze === 'function') {
-    value.freeze();
+export function freezeValue<T: any>(value: T): T {
+  if (value && typeof value.freeze === 'function') {
+    return Object.freeze(value).freeze(true);
+  } else if (isObject(value)) {
+    return Object.freeze(value);
   }
 
   return value;
@@ -43,15 +41,25 @@ export function freezeProps<T>(
   makePublic: boolean,
   ...props: Array<string>
 ): T {
-  Object.defineProperties(target, props.reduce((obj, key) => ({
-    ...obj,
-    [key]: {
-      value: freezeValue(Reflect.get(target, key)),
-      writable: false,
-      enumerable: makePublic,
-      configurable: false,
+  Object.defineProperties(target, props.reduce((obj, key) => {
+    let value = Reflect.get(target, key);
+
+    if (Array.isArray(value)) {
+      value = freezeArray(value);
+    } else {
+      value = freezeValue(value);
     }
-  }), {}));
+
+    return {
+      ...obj,
+      [key]: {
+        value,
+        writable: false,
+        enumerable: makePublic,
+        configurable: false,
+      }
+    };
+  }, {}));
 
   return target;
 }
