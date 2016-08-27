@@ -22,7 +22,7 @@ export default function createController<T: Controller>(constructor: Class<T>, {
   key: string;
   store: Database;
   parent: ?Controller;
-  serializers: Bundle$Namespace<Serializer>;
+  serializers: Bundle$Namespace<Serializer<*>>;
 }): T {
   const namespace = getNamespaceKey(key).replace('root', '');
   let model = tryCatchSync(() => store.modelFor(stripNamespaces(key)));

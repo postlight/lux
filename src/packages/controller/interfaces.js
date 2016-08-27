@@ -7,7 +7,7 @@ import type Controller from './index';
 export type Controller$opts = {
   model: Class<Model>;
   namespace: string;
-  serializer: Serializer;
+  serializer: Serializer<*>;
 };
 
 export type Controller$builtIn =

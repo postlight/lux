@@ -199,7 +199,7 @@ class Controller {
    * @instance
    * @private
    */
-  serializer: Serializer;
+  serializer: Serializer<*>;
 
   /**
    * @property controllers

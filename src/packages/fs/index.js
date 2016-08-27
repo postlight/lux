@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { join as joinPath } from 'path';
+import { join as joinPath, resolve as resolvePath } from 'path';
 
 import createResolver from './utils/create-resolver';
 
@@ -21,6 +21,23 @@ export function mkdir(path: string, mode: number = 511) {
   return new Promise((resolve, reject) => {
     fs.mkdir(path, mode, createResolver(resolve, reject));
   });
+}
+
+/**
+ * @private
+ */
+export function mkdirRec(path: string, mode: number = 511) {
+  const parent = resolvePath(path, '..');
+
+  return stat(parent)
+    .catch(err => {
+      if (err.code === 'ENOENT') {
+        return mkdirRec(parent, mode);
+      } else {
+        return Promise.reject(err);
+      }
+    })
+    .then(() => mkdir(path, mode));
 }
 
 /**

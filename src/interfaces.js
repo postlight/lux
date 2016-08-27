@@ -1,11 +1,4 @@
 // @flow
-import type Controller from './packages/controller';
-import type Serializer from './packages/serializer';
-
-export type Lux$Namespaceable =
-  | Controller
-  | Serializer;
-
 export interface Lux$Collection<T> {
   size: number;
 

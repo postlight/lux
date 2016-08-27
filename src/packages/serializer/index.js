@@ -9,7 +9,7 @@ import underscore from '../../utils/underscore';
 import promiseHash from '../../utils/promise-hash';
 import { dasherizeKeys } from '../../utils/transform-keys';
 
-import type { Model } from '../database';
+import type { Model } from '../database'; // eslint-disable-line no-unused-vars
 import type { Serializer$opts } from './interfaces';
 
 import type {
@@ -23,7 +23,7 @@ import type {
  * The `Serializer` class is where you declare the specific attributes and
  * relationships you would like to include for a particular resource (`Model`).
  */
-class Serializer {
+class Serializer<T: Model> {
   /**
    * The resolved `Model` that a `Serializer` instance represents.
    *
@@ -35,7 +35,7 @@ class Serializer {
    * @memberof Serializer
    * @instance
    */
-  model: Class<Model>;
+  model: Class<T>;
 
   /**
    * A reference to the root `Serializer` for the namespace that a `Serializer`
@@ -45,7 +45,7 @@ class Serializer {
    * @memberof Serializer
    * @instance
    */
-  parent: ?Serializer;
+  parent: ?Serializer<*>;
 
   /**
    * The namespace that a `Serializer` instance is a member of.
@@ -228,7 +228,7 @@ class Serializer {
    *
    * @private
    */
-  constructor({ model, parent, namespace }: Serializer$opts) {
+  constructor({ model, parent, namespace }: Serializer$opts<T>) {
     Object.assign(this, {
       model,
       parent,
@@ -251,7 +251,7 @@ class Serializer {
     domain,
     include
   }: {
-    data: Model | Array<Model>;
+    data: T | Array<T>;
     links: JSONAPI$DocumentLinks;
     domain: string;
     include: Array<string>;
@@ -310,7 +310,7 @@ class Serializer {
     included,
     formatRelationships = true
   }: {
-    item: Model;
+    item: T;
     links?: boolean;
     domain: string;
     include: Array<string>;
@@ -403,7 +403,7 @@ class Serializer {
     include,
     included
   }: {
-    item: Model;
+    item: T;
     domain: string;
     include: boolean;
     included: Array<JSONAPI$ResourceObject>;
