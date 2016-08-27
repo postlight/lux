@@ -1,6 +1,8 @@
 // @flow
 import { pluralize } from 'inflection';
 
+import { NEW_RECORDS } from '../constants';
+
 import Query from '../query';
 import { sql } from '../../logger';
 import { saveRelationships } from '../relationship';
@@ -138,7 +140,7 @@ class Model {
    */
   static relationshipNames: Array<string>;
 
-  constructor(attrs: {} = {}, initialize: boolean = true) {
+  constructor(attrs: Object = {}, initialize: boolean = true) {
     const { constructor: { attributeNames, relationshipNames } } = this;
 
     Object.defineProperties(this, {
@@ -185,11 +187,21 @@ class Model {
       Object.freeze(this);
     }
 
+    NEW_RECORDS.add(this);
+
     return this;
+  }
+
+  get isNew(): boolean {
+    return NEW_RECORDS.has(this);
   }
 
   get isDirty(): boolean {
     return Boolean(this.dirtyAttributes.size);
+  }
+
+  get persisted(): boolean {
+    return !this.isNew && !this.isDirty;
   }
 
   static get hasOne(): Object {
@@ -354,6 +366,7 @@ class Model {
         await query;
       }
 
+      NEW_RECORDS.delete(this);
       this.dirtyAttributes.clear();
 
       if (typeof afterUpdate === 'function') {
@@ -498,6 +511,7 @@ class Model {
       });
 
       Object.freeze(instance);
+      NEW_RECORDS.delete(instance);
 
       if (typeof afterCreate === 'function') {
         await afterCreate(instance);
