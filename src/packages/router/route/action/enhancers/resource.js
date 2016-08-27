@@ -40,6 +40,7 @@ export default function resource(action: Action<any>): Action<any> {
 
         route: {
           controller: {
+            namespace,
             serializer,
             defaultPerPage
           }
@@ -61,14 +62,23 @@ export default function resource(action: Action<any>): Action<any> {
           })
         });
       } else {
+        let links;
+
+        if (namespace) {
+          links = {
+            self: domain.replace(`/${namespace}`, '') + path
+          };
+        } else {
+          links = {
+            self: domain + path
+          };
+        }
+
         return await serializer.format({
           data,
+          links,
           domain,
-          include: params.include || [],
-
-          links: {
-            self: `${domain}${path}`
-          }
+          include: params.include || []
         });
       }
     }

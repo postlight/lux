@@ -1,47 +1,37 @@
 // @flow
 import { getParentKey } from '../../resolver';
 
-import chain from '../../../../utils/chain';
-
 import type { Builder$Construct, Builder$ParentBuilder } from '../interfaces';
 
 export default function createParentBuilder<T>(
   construct: Builder$Construct<T>
 ): Builder$ParentBuilder<T> {
-  return target => chain(target)
-    .pipe(Array.from)
-    .pipe(arr => arr.reduce((result, [key, value]) => {
-      const parent = value.get('application');
+  return target => Array
+    .from(target)
+    .sort(([a], [b]) => a.length - b.length)
+    .reduce((result, [key, value]) => {
+      let parent = value.get('application') || null;
 
-      return [...result, {
-        key,
-        value,
-        parent: parent ? construct('application', parent) : null
-      }];
-    }, []))
-    .pipe(arr => {
-      return arr.reduce((result, { key, value, parent }, idx, input) => {
-        if (key !== 'root' && parent) {
-          const grandparent = input.find(namespace => {
+      if (parent) {
+        let grandparent = null;
+
+        if (key !== 'root') {
+          grandparent = result.find(namespace => {
             return namespace.key === getParentKey(key);
           });
 
           if (grandparent) {
-            Reflect.defineProperty(parent, 'parent', {
-              value: grandparent.parent,
-              writable: true,
-              enumerable: false,
-              configurable: false
-            });
+            grandparent = grandparent.parent;
           }
         }
 
-        return [...result, {
-          key,
-          value,
-          parent
-        }];
-      }, []);
-    })
-    .value();
+        parent = construct(`${key}/application`, parent, grandparent);
+      }
+
+      return [...result, {
+        key,
+        value,
+        parent
+      }];
+    }, []);
 }

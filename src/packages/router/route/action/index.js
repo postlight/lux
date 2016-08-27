@@ -21,7 +21,7 @@ export function createAction(
     return action(req, res);
   }
 
-  return [...controller.middleware, __FINAL__HANDLER__].map(trackPerf);
+  return [...controller.beforeAction, __FINAL__HANDLER__].map(trackPerf);
 }
 
 export { default as createPageLinks } from './utils/create-page-links';

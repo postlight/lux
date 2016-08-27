@@ -2,15 +2,14 @@
 import { dasherize } from 'inflection';
 
 import { VERSION } from '../jsonapi';
+import { freezeProps } from '../freezeable';
 
 import uniq from '../../utils/uniq';
-import insert from '../../utils/insert';
 import underscore from '../../utils/underscore';
 import promiseHash from '../../utils/promise-hash';
 import { dasherizeKeys } from '../../utils/transform-keys';
 
 import type { Model } from '../database';
-import type { FreezeableMap } from '../freezeable';
 import type { Serializer$opts } from './interfaces';
 
 import type {
@@ -35,7 +34,6 @@ class Serializer {
    * @property model
    * @memberof Serializer
    * @instance
-   * @private
    */
   model: Class<Model>;
 
@@ -57,60 +55,6 @@ class Serializer {
    * @instance
    */
   namespace: string;
-
-  /**
-   * A Map of all resolved serializers in a an `Application` instance. This is
-   * used when a `Serializer` instance has to serialize an embedded
-   * relationship.
-   *
-   * @property serializers
-   * @memberof Serializer
-   * @instance
-   * @private
-   */
-  serializers: FreezeableMap<string, Serializer>;
-
-  /**
-   * Create an instance of `Serializer`.
-   *
-   * WARNING:
-   * This is a private constructor and you should not instantiate a `Serializer`
-   * manually. Serializers are instantiated automatically by your application
-   * when it is started.
-   *
-   * @private
-   */
-  constructor({ model, parent, namespace, serializers }: Serializer$opts) {
-    Object.defineProperties(this, {
-      model: {
-        value: model,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      parent: {
-        value: parent,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      namespace: {
-        value: namespace,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      serializers: {
-        value: serializers,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      }
-    });
-  }
 
   /**
    * An Array of the `hasOne` or `belongsTo` relationships on a `Serializer`
@@ -164,24 +108,7 @@ class Serializer {
    * @memberof Serializer
    * @instance
    */
-  get hasOne(): Array<string> {
-    return Object.freeze([]);
-  }
-
-  set hasOne(value: Array<string>): void {
-    if (value && value.length) {
-      const hasOne = new Array(value.length);
-
-      insert(hasOne, value);
-
-      Reflect.defineProperty(this, 'hasOne', {
-        value: Object.freeze(hasOne),
-        writable: true,
-        enumerable: true,
-        configurable: false
-      });
-    }
-  }
+  hasOne: Array<string> = [];
 
   /**
    * An Array of the `hasMany` relationships on a `Serializer` instance's model
@@ -243,24 +170,7 @@ class Serializer {
    * @memberof Serializer
    * @instance
    */
-  get hasMany(): Array<string> {
-    return Object.freeze([]);
-  }
-
-  set hasMany(value: Array<string>): void {
-    if (value && value.length) {
-      const hasMany = new Array(value.length);
-
-      insert(hasMany, value);
-
-      Reflect.defineProperty(this, 'hasMany', {
-        value: Object.freeze(hasMany),
-        writable: true,
-        enumerable: true,
-        configurable: false
-      });
-    }
-  }
+  hasMany: Array<string> = [];
 
   /**
    * An Array of the `attributes` on a `Serializer` instance's model to include
@@ -306,23 +216,30 @@ class Serializer {
    * @memberof Serializer
    * @instance
    */
-  get attributes(): Array<string> {
-    return Object.freeze([]);
-  }
+  attributes: Array<string> = [];
 
-  set attributes(value: Array<string>): void {
-    if (value && value.length) {
-      const attributes = new Array(value.length);
+  /**
+   * Create an instance of `Serializer`.
+   *
+   * WARNING:
+   * This is a private constructor and you should not instantiate a `Serializer`
+   * manually. Serializers are instantiated automatically by your application
+   * when it is started.
+   *
+   * @private
+   */
+  constructor({ model, parent, namespace }: Serializer$opts) {
+    Object.assign(this, {
+      model,
+      parent,
+      namespace
+    });
 
-      insert(attributes, value);
-
-      Reflect.defineProperty(this, 'attributes', {
-        value: Object.freeze(attributes),
-        writable: true,
-        enumerable: true,
-        configurable: false
-      });
-    }
+    freezeProps(this, true,
+      'model',
+      'parent',
+      'namespace'
+    );
   }
 
   /**
@@ -461,9 +378,17 @@ class Serializer {
     }
 
     if (links || typeof links !== 'boolean') {
-      serialized.links = {
-        self: `${domain}/${type}/${id}`
-      };
+      const { namespace } = this;
+
+      if (namespace) {
+        serialized.links = {
+          self: `${domain}/${namespace}/${type}/${id}`
+        };
+      } else {
+        serialized.links = {
+          self: `${domain}/${type}/${id}`
+        };
+      }
     }
 
     return serialized;
@@ -483,8 +408,20 @@ class Serializer {
     include: boolean;
     included: Array<JSONAPI$ResourceObject>;
   }): Promise<JSONAPI$RelationshipObject> {
+    const { namespace } = this;
     const { resourceName: type, constructor: { serializer } } = item;
     const id = item.getPrimaryKey().toString();
+    let links;
+
+    if (namespace) {
+      links = {
+        self: `${domain}/${namespace}/${type}/${id}`
+      };
+    } else {
+      links = {
+        self: `${domain}/${type}/${id}`
+      };
+    }
 
     if (include) {
       included.push(
@@ -499,14 +436,8 @@ class Serializer {
     }
 
     return {
-      data: {
-        id,
-        type
-      },
-
-      links: {
-        self: `${domain}/${type}/${id}`
-      }
+      data: { id, type },
+      links
     };
   }
 }

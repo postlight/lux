@@ -2,8 +2,8 @@ import { Serializer } from 'LUX_LOCAL';
 
 class PostsSerializer extends Serializer {
   attributes = [
-    'title',
     'body',
+    'title',
     'createdAt',
     'updatedAt'
   ];

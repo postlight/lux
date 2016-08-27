@@ -5,17 +5,12 @@ import Database from '../database';
 import Logger from '../logger';
 import Router from '../router';
 import Server from '../server';
-import {
-  build,
-  createLoader,
-  getNamespaceKey,
-  stripNamespaces,
-  closestAncestor
-} from '../loader';
+import { build, createLoader } from '../loader';
 
 import { ControllerMissingError } from './errors';
 
-import { tryCatchSync } from '../../utils/try-catch';
+import createController from './utils/create-controller';
+import createSerializer from './utils/create-serializer';
 
 import type Application, { Application$opts } from './index'; // eslint-disable-line no-unused-vars, max-len
 
@@ -46,11 +41,11 @@ export default async function initialize<T: Application>(app: T, {
   port = parseInt(port, 10);
 
   const serializers = build(load('serializers'), (key, value, parent) => {
-    return Reflect.construct(value, [{
-      parent,
-      model: tryCatchSync(() => store.modelFor(stripNamespaces(key))),
-      namespace: getNamespaceKey(key).replace('root', '')
-    }]);
+    return createSerializer(value, {
+      key,
+      store,
+      parent
+    });
   });
 
   models.forEach(model => {
@@ -63,13 +58,12 @@ export default async function initialize<T: Application>(app: T, {
   });
 
   const controllers = build(load('controllers'), (key, value, parent) => {
-    return Reflect.construct(value, [{
+    return createController(value, {
+      key,
+      store,
       parent,
-      serializers,
-      model: tryCatchSync(() => store.modelFor(stripNamespaces(key))),
-      namespace: getNamespaceKey(key).replace('root', ''),
-      serializer: serializers.get(key) || closestAncestor(serializers, key)
-    }]);
+      serializers
+    });
   });
 
   controllers.forEach(controller => {

@@ -2,15 +2,11 @@ import PostsSerializer from 'app/serializers/posts';
 
 class AdminPostsSerializer extends PostsSerializer {
   attributes = [
-    'title',
     'body',
+    'title',
     'isPublic',
     'createdAt',
     'updatedAt'
-  ];
-
-  hasOne = [
-    'author'
   ];
 }
 
