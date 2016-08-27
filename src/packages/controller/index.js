@@ -9,7 +9,7 @@ import findRelated from './utils/find-related';
 
 import type Serializer from '../serializer';
 import type { Request, Response } from '../server';
-import type { Controller$opts } from './interfaces';
+import type { Controller$opts, Controller$Middleware } from './interfaces';
 
 /**
  * The `Controller` class is responsible for taking in requests from the outside
@@ -70,8 +70,8 @@ class Controller {
   /**
    * Whitelisted `?sort` parameter values.
    *
-   * If you do not override this property all of the attributes of the Model
-   * that this Controller represents will be valid.
+   * If you do not override this property all of the attributes specified in an
+   * instance's `Serializer` will be whitelisted.
    *
    * @property sort
    * @memberof Controller
@@ -82,8 +82,8 @@ class Controller {
   /**
    * Whitelisted `?filter[{key}]` parameter keys.
    *
-   * If you do not override this property all of the attributes of the Model
-   * that this Controller represents will be valid.
+   * If you do not override this property all of the attributes specified in an
+   * instance's `Serializer` will be whitelisted.
    *
    * @property filter
    * @memberof Controller
@@ -124,7 +124,7 @@ class Controller {
    * @memberof Controller
    * @instance
    */
-  beforeAction: Array<Function> = [];
+  beforeAction: Array<Controller$Middleware> = [];
 
   /**
    * The number of records to return for the #index action when a `?limit`
@@ -420,4 +420,8 @@ class Controller {
 export default Controller;
 export { BUILT_IN_ACTIONS } from './constants';
 
-export type { Controller$opts, Controller$builtIn } from './interfaces';
+export type {
+  Controller$opts,
+  Controller$builtIn,
+  Controller$Middleware,
+} from './interfaces';

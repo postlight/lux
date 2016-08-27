@@ -17,6 +17,10 @@ class PostsController extends Controller {
   index(req, res) {
     return super.index(req, res).isPublic();
   }
+
+  show(req, res) {
+    return super.show(req, res).isPublic();
+  }
 }
 
 export default PostsController;
