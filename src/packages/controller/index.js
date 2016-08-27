@@ -1,7 +1,7 @@
 // @flow
 import { Model } from '../database';
 import { getDomain } from '../server';
-import { freezeProps } from '../freezeable';
+import { freezeProps, deepFreezeProps } from '../freezeable';
 
 import findOne from './utils/find-one';
 import findMany from './utils/find-many';
@@ -258,7 +258,7 @@ class Controller {
       modelName: hasModel ? model.modelName : '',
     });
 
-    freezeProps(this, false,
+    deepFreezeProps(this, false,
       'hasModel',
       'hasNamespace',
       'hasSerializer',

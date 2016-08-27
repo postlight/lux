@@ -41,6 +41,27 @@ export function freezeProps<T>(
   makePublic: boolean,
   ...props: Array<string>
 ): T {
+  Object.defineProperties(target, props.reduce((obj, key) => ({
+    ...obj,
+    [key]: {
+      value: Reflect.get(target, key),
+      writable: false,
+      enumerable: makePublic,
+      configurable: false,
+    }
+  }), {}));
+
+  return target;
+}
+
+/**
+ * @private
+ */
+export function deepFreezeProps<T>(
+  target: T,
+  makePublic: boolean,
+  ...props: Array<string>
+): T {
   Object.defineProperties(target, props.reduce((obj, key) => {
     let value = Reflect.get(target, key);
 

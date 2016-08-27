@@ -6,7 +6,7 @@ import Logger from '../logger';
 import Router from '../router';
 import Server from '../server';
 import { build, createLoader } from '../loader';
-import { freezeProps } from '../freezeable';
+import { freezeProps, deepFreezeProps } from '../freezeable';
 
 import { ControllerMissingError } from './errors';
 
@@ -111,7 +111,7 @@ export default async function initialize<T: Application>(app: T, {
     serializers
   });
 
-  freezeProps(app, true,
+  deepFreezeProps(app, true,
     'logger',
     'models',
     'controllers',

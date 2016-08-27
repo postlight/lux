@@ -1,5 +1,5 @@
 // @flow
-import { freezeProps } from '../../freezeable';
+import { deepFreezeProps } from '../../freezeable';
 import {
   getNamespaceKey,
   stripNamespaces,
@@ -47,6 +47,16 @@ export default function createController<T: Controller>(constructor: Class<T>, {
     serializers
   }]);
 
+  if (serializer) {
+    if (!instance.filter.length) {
+      instance.filter = [].concat(serializer.attributes);
+    }
+
+    if (!instance.sort.length) {
+      instance.sort = [].concat(serializer.attributes);
+    }
+  }
+
   if (parent) {
     instance.beforeAction = [
       ...parent.beforeAction,
@@ -61,7 +71,7 @@ export default function createController<T: Controller>(constructor: Class<T>, {
     configurable: false
   });
 
-  return freezeProps(instance, true,
+  return deepFreezeProps(instance, true,
     'query',
     'sort',
     'filter',

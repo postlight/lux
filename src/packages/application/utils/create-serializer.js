@@ -1,5 +1,5 @@
 // @flow
-import { freezeProps } from '../../freezeable';
+import { deepFreezeProps } from '../../freezeable';
 import { getNamespaceKey, stripNamespaces } from '../../loader';
 
 import { tryCatchSync } from '../../../utils/try-catch';
@@ -40,7 +40,7 @@ export default function createSerializer<T: Serializer>(constructor: Class<T>, {
     configurable: false
   });
 
-  return freezeProps(instance, true,
+  return deepFreezeProps(instance, true,
     'hasOne',
     'hasMany',
     'attributes'
