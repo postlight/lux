@@ -54,7 +54,8 @@ export async function destroy({ type, name }: {
   name: string;
 }) {
   if (type === 'resource') {
-    const routes = (await readFile(`${CWD}/app/routes.js`, 'utf8'))
+    const routes = (await readFile(`${CWD}/app/routes.js`))
+      .toString('utf8')
       .split('\n')
       .reduce((lines, line) => {
         const pattern = new RegExp(

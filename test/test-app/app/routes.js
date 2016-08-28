@@ -4,6 +4,8 @@ export default function routes() {
   this.resource('tags');
 
   this.namespace('admin', function () {
+    this.resource('authors');
     this.resource('posts');
+    this.resource('tags');
   });
 }

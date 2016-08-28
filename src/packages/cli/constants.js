@@ -1,8 +1,6 @@
+// @flow
 import template from '../template';
 
-/**
- * @private
- */
 export const VALID_DATABASES = [
   'postgres',
   'sqlite',

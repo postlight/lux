@@ -513,4 +513,18 @@ describe('Integration: class Controller', () => {
       });
     });
   });
+
+  /**
+   * This is a VERY basic test to show that namespaces are working.
+   *
+   * TODO: Add more meaningful namespace tests as a part of
+   *       https://github.com/postlight/lux/pull/287.
+   */
+  describe('Namespaces', () => {
+    it('works as expected', async () => {
+      const subject = await fetch(`${host}/admin/posts`);
+
+      expect(subject.headers.get('X-Namespace')).to.equal('admin');
+    });
+  });
 });

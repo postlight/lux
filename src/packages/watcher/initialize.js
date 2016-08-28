@@ -7,6 +7,8 @@ import * as fs from '../fs';
 import exec from '../../utils/exec';
 import tryCatch from '../../utils/try-catch';
 
+import type { FSWatcher } from 'fs';
+
 import type Watcher from './index'; // eslint-disable-line no-unused-vars
 import type { Watcher$Client } from './interfaces'; // eslint-disable-line max-len, no-unused-vars
 
@@ -15,10 +17,7 @@ const SUBSCRIPTION_NAME = 'lux-watcher';
 /**
  * @private
  */
-function fallback<T: Watcher$Client, U: Watcher<T>>(
-  instance: U,
-  path: string
-): T {
+function fallback(instance: Watcher, path: string): FSWatcher {
   return fs.watch(path, {
     recursive: true
   }, (type, name) => {
@@ -31,10 +30,7 @@ function fallback<T: Watcher$Client, U: Watcher<T>>(
 /**
  * @private
  */
-function setupWatchmen<T: Watcher$Client, U: Watcher<T>>( // eslint-disable-line max-len, no-unused-vars
-  instance: U,
-  path: string
-): Promise<Client> {
+function setupWatchmen(instance: Watcher, path: string): Promise<Client> {
   return new Promise((resolve, reject) => {
     const client = new Client();
 
@@ -101,10 +97,10 @@ function setupWatchmen<T: Watcher$Client, U: Watcher<T>>( // eslint-disable-line
 /**
  * @private
  */
-export default async function initialize<T: Watcher$Client, U: Watcher<T>>( // eslint-disable-line max-len, no-unused-vars
-  instance: U,
+export default async function initialize<T: Watcher>(
+  instance: T,
   path: string
-): Promise<U> {
+): Promise<T> {
   let client;
 
   path = joinPath(path, 'app');

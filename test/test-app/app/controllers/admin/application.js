@@ -2,8 +2,8 @@ import ApplicationController from 'app/controllers/application';
 
 class AdminApplicationController extends ApplicationController {
   beforeAction = [
-    function authenticate({ logger }) {
-      logger.info('Hello from the Admin Namespace!');
+    function setNamespaceHeader(req, res) {
+      res.setHeader('X-Namespace', 'admin');
     }
   ];
 }
