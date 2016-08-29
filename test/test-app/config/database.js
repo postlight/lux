@@ -1,62 +1,10 @@
-const { env: { DB = 'sqlite' } } = process;
+const { env: { DATABASE_DRIVER = 'sqlite3' } } = process;
+const environments = ['development', 'test', 'production'];
 
-let config;
-
-switch (DB) {
-  case 'mysql':
-    config = {
-      development: {
-        pool: 5,
-        driver: 'mysql2',
-        username: 'root',
-        password: 'root',
-        database: 'lux_test'
-      },
-
-      test: {
-        pool: 5,
-        driver: 'mysql2',
-        username: 'travis',
-        database: 'lux_test'
-      },
-
-      production: {
-        pool: 5,
-        driver: 'mysql2',
-        username: 'root',
-        password: 'root',
-        database: 'lux_test'
-      }
-    };
-    break;
-
-  case 'sqlite':
-    const sqlite = {
-      driver: 'sqlite3',
-      database: 'lux_test'
-    };
-
-    config = {
-      development: sqlite,
-      test: sqlite,
-      production: sqlite
-    };
-    break;
-
-  case 'postgresql':
-    const postgresql = {
-      pool: 5,
-      driver: 'pg',
-      username: 'postgres',
-      database: 'lux_test'
-    };
-
-    config = {
-      development: postgresql,
-      test: postgresql,
-      production: postgresql
-    };
-    break;
-}
-
-export default config;
+export default environments.reduce((config, key) => ({
+  ...config,
+  [key]: {
+    driver: DATABASE_DRIVER,
+    database: 'lux_test'
+  }
+}), {});

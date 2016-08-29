@@ -1,0 +1,35 @@
+environment:
+  nodejs_version: 6
+  NODE_ENV: test
+
+  matrix:
+    - DATABASE_DRIVER: sqlite3
+
+    - DATABASE_DRIVER: mysql2
+      DATABASE_URL: mysql://root:Password12!@127.0.0.1:3306/lux_test
+
+    - DATABASE_DRIVER: mssql
+      DATABASE_URL: Server=(local)\SQL2016;Database=lux_test;User ID=sa;Password=Password12!
+
+    - DATABASE_DRIVER: pg
+      DATABASE_URL: postgresql://postgres:Password12!@127.0.0.1:5432/lux_test
+
+services:
+  - mysql
+  - mssql2016
+  - postgresql
+
+install:
+  - ps: C:\projects\lux\scripts\appveyor\install.ps1
+
+before_test:
+  - ps: C:\projects\lux\scripts\appveyor\before-test.ps1
+
+test_script:
+  - npm test
+
+cache:
+  - C:\projects\lux\node_modules
+  - C:\projects\lux\test\test-app\node_modules
+
+build: off
