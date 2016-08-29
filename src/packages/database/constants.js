@@ -1,4 +1,7 @@
 // @flow
+import type { Model } from './index';
+
+export const NEW_RECORDS: WeakSet<Model> = new WeakSet();
 export const UNIQUE_CONSTRAINT = /UNIQUE\sCONSTRAINT/ig;
 
 export const VALID_DRIVERS = [
