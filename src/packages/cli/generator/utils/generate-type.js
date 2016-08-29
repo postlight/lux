@@ -1,10 +1,13 @@
 // @flow
+import { green } from 'chalk';
 import { join as joinPath } from 'path';
 import { pluralize, singularize } from 'inflection';
 
+import { NAMESPACED_RESOURCE_MESSAGE } from '../constants';
+
 import { stripNamespaces, getNamespaceKey } from '../../../loader';
 import { generateTimestamp } from '../../../database';
-import { exists } from '../../../fs';
+import { exists, readFile, writeFile } from '../../../fs';
 
 import modelTemplate from '../../templates/model';
 import serializerTemplate from '../../templates/serializer';
@@ -14,6 +17,7 @@ import modelMigrationTemplate from '../../templates/model-migration';
 import middlewareTemplate from '../../templates/middleware';
 import utilTemplate from '../../templates/util';
 
+import log from './log';
 import chain from '../../../../utils/chain';
 import createGenerator from './create-generator';
 import { createConflictResolver, detectConflict } from './migration-conflict';
@@ -229,4 +233,30 @@ export async function resource(opts: Generator$opts) {
   await model(opts);
   await controller(opts);
   await serializer(opts);
+
+  if (getNamespaceKey(opts.name) !== 'root') {
+    log(NAMESPACED_RESOURCE_MESSAGE);
+  } else {
+    const path = joinPath(opts.cwd, 'app', 'routes.js');
+    const routes = chain(await readFile(path))
+      .pipe(buf => buf.toString('utf8'))
+      .pipe(str => str.split('\n'))
+      .pipe(lines => lines.reduce((result, line, index, arr) => {
+        const closeIndex = arr.lastIndexOf('}');
+
+        if (index <= closeIndex) {
+          result += `${line}\n`;
+        }
+
+        if (index + 1 === closeIndex) {
+          result += `\n  this.resource('${pluralize(opts.name)}');\n`;
+        }
+
+        return result;
+      }, ''))
+      .value();
+
+    await writeFile(path, routes);
+    log(`${green('update')} app/routes.js`);
+  }
 }

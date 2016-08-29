@@ -4,6 +4,8 @@ import { join as joinPath, resolve as resolvePath } from 'path';
 
 import createResolver from './utils/create-resolver';
 
+import type { Stats } from 'fs';
+
 import type { fs$readOpts, fs$writeOpts } from './interfaces';
 
 export { default as rmrf } from './utils/rmrf';
@@ -105,7 +107,10 @@ export function readdirRec(
 /**
  * @private
  */
-export function readFile(path: string, opts?: fs$readOpts) {
+export function readFile(
+  path: string,
+  opts?: fs$readOpts
+): Promise<string | Buffer> {
   return new Promise((resolve, reject) => {
     if (typeof opts !== 'object') {
       opts = {};
@@ -148,7 +153,7 @@ export function appendFile(
 /**
  * @private
  */
-export function stat(path: string) {
+export function stat(path: string): Promise<Stats> {
   return new Promise((resolve, reject) => {
     fs.stat(path, createResolver(resolve, reject));
   });
@@ -157,7 +162,7 @@ export function stat(path: string) {
 /**
  * @private
  */
-export function unlink(path: string) {
+export function unlink(path: string): Promise<void> {
   return new Promise((resolve, reject) => {
     fs.unlink(path, createResolver(resolve, reject));
   });

@@ -4,6 +4,8 @@ import { red, green, yellow } from 'chalk';
 
 import { rmrf, exists, mkdirRec, writeFile, parsePath } from '../../../fs';
 
+import log from './log';
+
 import type { Generator, Generator$template } from '../index';
 
 const FORWARD_SLASH = /\//g;
@@ -20,14 +22,6 @@ export default function createGenerator({
   template: Generator$template;
   hasConflict?: (path: string) => Promise<boolean>;
 }): Generator {
-  const log = (data: string | Error): void => {
-    if (data instanceof Error) {
-      process.stdout.write(`${data.stack || data.message}\n`);
-    } else {
-      process.stderr.write(`${data}\n`);
-    }
-  };
-
   return async ({ cwd, name, attrs, onConflict }) => {
     const path = parsePath(cwd, dir, `${name}.js`);
     let action = green('create');
