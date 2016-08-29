@@ -263,6 +263,14 @@ class Query {
     return this;
   }
 
+  distinct(...attrs: Array<string>) {
+    if (!this.shouldCount) {
+      this.snapshots.push(['distinct', formatSelect(this.model, attrs)]);
+    }
+
+    return this.select();
+  }
+
   include(...relationships: Array<Object|string>) {
     let included;
 

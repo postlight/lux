@@ -318,7 +318,7 @@ class Serializer<T: Model> {
     formatRelationships?: boolean
   }): Promise<JSONAPI$ResourceObject> {
     const { resourceName: type } = item;
-    const id = item.getPrimaryKey().toString();
+    const id = String(item.getPrimaryKey());
     let relationships = {};
 
     const attributes = dasherizeKeys(
@@ -403,14 +403,14 @@ class Serializer<T: Model> {
     include,
     included
   }: {
-    item: T;
+    item: Model;
     domain: string;
     include: boolean;
     included: Array<JSONAPI$ResourceObject>;
   }): Promise<JSONAPI$RelationshipObject> {
     const { namespace } = this;
     const { resourceName: type, constructor: { serializer } } = item;
-    const id = item.getPrimaryKey().toString();
+    const id = String(item.getPrimaryKey());
     let links;
 
     if (namespace) {
@@ -436,7 +436,10 @@ class Serializer<T: Model> {
     }
 
     return {
-      data: { id, type },
+      data: {
+        id,
+        type
+      },
       links
     };
   }
