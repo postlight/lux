@@ -1,6 +1,8 @@
 // @flow
 import { camelize, singularize } from 'inflection';
 
+import { NEW_RECORDS } from '../../constants';
+
 import Model from '../../model';
 
 import entries from '../../../../utils/entries';
@@ -124,6 +126,9 @@ export default async function buildResults<T: Model>({
         };
       }, {});
 
-    return Reflect.construct(model, [record]);
+    const instance = Reflect.construct(model, [record]);
+
+    NEW_RECORDS.delete(instance);
+    return instance;
   });
 }
