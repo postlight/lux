@@ -68,7 +68,7 @@ function exec(cmd, ...args) {
     handler = require(path.join(__dirname, '..', 'dist', cmd))[cmd];
   }
 
-  return handler.apply(null, args);
+  return Reflect.apply(handler, null, args);
 }
 
 function exit(code) {
@@ -130,7 +130,6 @@ cli
   .option('-e, --environment [env]', '(Default: development)')
   .option('-w, --use-weak', 'Use weak mode')
   .action(({ environment, useWeak }) => {
-    setEnvVar('PORT', port, 4000);
     setEnvVar('NODE_ENV', environment, 'development');
     process.env.LUX_CONSOLE = true;
 
@@ -248,11 +247,8 @@ cli
   });
 
 cli
-  .on('*', (cmd) => {
-    commandNotFound(cmd)
-  });
-
-cli.parse(process.argv);
+  .on('*', commandNotFound)
+  .parse(process.argv);
 
 if (!cli.args.length) {
   cli.help();
