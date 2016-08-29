@@ -369,7 +369,7 @@ class Serializer {
     formatRelationships?: boolean
   }): Promise<JSONAPI$ResourceObject> {
     const { resourceName: type } = item;
-    const id = item.getPrimaryKey().toString();
+    const id = String(item.getPrimaryKey());
     let relationships = {};
 
     const attributes = dasherizeKeys(
@@ -452,7 +452,7 @@ class Serializer {
     included: Array<JSONAPI$ResourceObject>;
   }): Promise<JSONAPI$RelationshipObject> {
     const { resourceName: type, constructor: { serializer } } = item;
-    const id = item.getPrimaryKey().toString();
+    const id = String(item.getPrimaryKey());
 
     if (include) {
       included.push(
