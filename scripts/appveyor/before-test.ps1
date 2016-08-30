@@ -29,3 +29,5 @@ Write-Host "[X] Migrate`n"
 
 lux db:seed >$null 2>&1
 Write-Host "[X] Seed`n"
+
+Set-Location C:\projects\lux
