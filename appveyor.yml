@@ -28,8 +28,4 @@ before_test:
 test_script:
   - npm test
 
-cache:
-  - C:\projects\lux\node_modules
-  - C:\projects\lux\test\test-app\node_modules
-
 build: off
