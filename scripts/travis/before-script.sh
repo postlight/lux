@@ -7,8 +7,8 @@ CREATE_SCHEMA="CREATE SCHEMA lux_test;"
 
 case "$DATABASE_DRIVER" in
   pg )
-    psql -U postgres -c "$DROP_SCHEMA"
-    psql -U postgres -c "$CREATE_SCHEMA"
+    psql -c "$DROP_SCHEMA" -U postgres
+    psql -c "$CREATE_SCHEMA" -U postgres
     ;;
 
   mysql2 )
@@ -21,14 +21,14 @@ case "$DATABASE_DRIVER" in
     touch test/test-app/db/lux_test_test.sqlite
     ;;
 esac
-echo "  ✓  Reset" && echo
+echo -e "✓  Reset\n"
 
 cd test/test-app
 
 lux db:migrate >/dev/null 2>&1
-echo "  ✓  Migrate" && echo
+echo -e "✓  Migrate\n"
 
 lux db:seed >/dev/null 2>&1
-echo "  ✓  Seed" && echo
+echo -e "✓  Seed\n"
 
 cd ../../

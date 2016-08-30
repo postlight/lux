@@ -4,8 +4,8 @@ $CREATE_SCHEMA="CREATE SCHEMA lux_test;"
 
 Switch ($env:DATABASE_DRIVER) {
   "pg" {
-    psql -U postgres -c "$DROP_SCHEMA"
-    psql -U postgres -c "$CREATE_SCHEMA"
+    psql -c "$DROP_SCHEMA" -U postgres
+    psql -c "$CREATE_SCHEMA" -U postgres
   }
 
   "mysql2" {
@@ -20,12 +20,12 @@ Switch ($env:DATABASE_DRIVER) {
   }
 }
 
-Write-Host "  ✓  Reset"; Write-Host
+Write-Host "[X] Reset`n"
 
 Set-Location C:\projects\lux\test\test-app
 
 lux db:migrate >$null 2>&1
-Write-Host "  ✓  Migrate"; Write-Host
+Write-Host "[X] Migrate`n"
 
 lux db:seed >$null 2>&1
-Write-Host "  ✓  Seed"; Write-Host
+Write-Host "[X] Seed`n"
