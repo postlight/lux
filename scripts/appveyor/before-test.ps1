@@ -1,17 +1,20 @@
-$MYSQL="C:\Program Files\MySql\MySQL Server 5.7\bin\mysql"
 $DROP_DATABASE="DROP DATABASE IF EXISTS lux_test;"
 $CREATE_DATABASE="CREATE DATABASE lux_test;"
 
 Switch ($env:DATABASE_DRIVER) {
   "pg" {
-    psql -c "$DROP_DATABASE" -U postgres
-    psql -c "$CREATE_DATABASE" -U postgres
+    $psql="C:\Program Files\PostgreSQL\9.4\bin\psql.exe"
+
+    iex "& '$psql' -c '$DROP_DATABASE' -U postgres"
+    iex "& '$psql' -c '$CREATE_DATABASE' -U postgres"
   }
 
   "mysql2" {
     $env:MYSQL_PWD="Password12!"
-    iex "& '$MYSQL' -e '$DROP_DATABASE' -u root"
-    iex "& '$MYSQL' -e '$CREATE_DATABASE' -u root"
+    $mysql="C:\Program Files\MySql\MySQL Server 5.7\bin\mysql"
+
+    iex "& '$mysql' -e '$DROP_DATABASE' -u root"
+    iex "& '$mysql' -e '$CREATE_DATABASE' -u root"
   }
 
   "sqlite3" {

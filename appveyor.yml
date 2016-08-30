@@ -22,7 +22,7 @@ environment:
 services:
   - mysql
   - mssql2016
-  - postgresql
+  - postgresql94
 
 install:
   - ps: C:\projects\lux\scripts\appveyor\install.ps1
