@@ -2,18 +2,18 @@
 
 echo
 
-DROP_SCHEMA="DROP SCHEMA IF EXISTS lux_test;"
-CREATE_SCHEMA="CREATE SCHEMA lux_test;"
+DROP_DATABASE="DROP DATABASE IF EXISTS lux_test;"
+CREATE_DATABASE="CREATE DATABASE lux_test;"
 
 case "$DATABASE_DRIVER" in
   pg )
-    psql -c "$DROP_SCHEMA" -U postgres
-    psql -c "$CREATE_SCHEMA" -U postgres
+    psql -c "$DROP_DATABASE" -U postgres
+    psql -c "$CREATE_DATABASE" -U postgres
     ;;
 
   mysql2 )
-    mysql -e "$DROP_SCHEMA"
-    mysql -e "$CREATE_SCHEMA"
+    mysql -e "$DROP_DATABASE"
+    mysql -e "$CREATE_DATABASE"
     ;;
 
   sqlite3 )
