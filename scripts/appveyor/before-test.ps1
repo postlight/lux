@@ -9,6 +9,11 @@ Switch ($env:DATABASE_DRIVER) {
     iex "& '$psql' -c '$CREATE_DATABASE' -U postgres"
   }
 
+  "mssql" {
+    sqlcmd -S "(local)" -U "sa" -P "Password12!" -Q "$DROP_DATABASE"
+    sqlcmd -S "(local)" -U "sa" -P "Password12!" -Q "$CREATE_DATABASE"
+  }
+
   "mysql2" {
     $env:MYSQL_PWD="Password12!"
     $mysql="C:\Program Files\MySql\MySQL Server 5.7\bin\mysql"

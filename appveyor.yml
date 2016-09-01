@@ -14,7 +14,7 @@ environment:
       DATABASE_URL: mysql://root:Password12!@127.0.0.1:3306/lux_test
 
     - DATABASE_DRIVER: mssql
-      DATABASE_URL: Server=(local)\SQL2016;Database=lux_test;User ID=sa;Password=Password12!
+      DATABASE_URL: 'Server=(local)\SQL2016;Database=lux_test;User ID=sa;Password=Password12!'
 
     - DATABASE_DRIVER: pg
       DATABASE_URL: postgres://postgres:Password12!@127.0.0.1:5432/lux_test
