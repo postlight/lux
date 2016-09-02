@@ -13,8 +13,9 @@ export default {
   },
   test: {
     driver: DATABASE_DRIVER,
+    database: 'lux_test',
     username: DATABASE_USERNAME,
-    database: DATABASE_PASSWORD
+    password: DATABASE_PASSWORD
   },
   production: {
     driver: 'sqlite3',
