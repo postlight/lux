@@ -4,20 +4,20 @@ platform: x64
 
 environment:
   nodejs_version: 6
-
   NODE_ENV: test
+  DATABASE_PASSWORD: Password12!
 
   matrix:
     - DATABASE_DRIVER: sqlite3
 
     - DATABASE_DRIVER: mysql2
-      DATABASE_URL: mysql://root:Password12!@127.0.0.1:3306/lux_test
+      DATABASE_USERNAME: root
 
     - DATABASE_DRIVER: mssql
-      DATABASE_URL: Server=(local)\SQL2016;Database=lux_test;Uid=sa;Pwd=Password12!
+      DATABASE_USERNAME: sa
 
     - DATABASE_DRIVER: pg
-      DATABASE_URL: postgres://postgres:Password12!@127.0.0.1:5432/lux_test
+      DATABASE_USERNAME: postgres
 
 services:
   - mysql

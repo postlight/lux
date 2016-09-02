@@ -18,10 +18,10 @@ env:
     - DATABASE_DRIVER: sqlite3
 
     - DATABASE_DRIVER: mysql2
-      DATABASE_URL: mysql://travis@127.0.0.1:3306/lux_test
+      DATABASE_USERNAME: travis
 
     - DATABASE_DRIVER: pg
-      DATABASE_URL: postgresql://postgres@127.0.0.1:5432/lux_test
+      DATABASE_USERNAME: postgres
 
 addons:
   apt:
