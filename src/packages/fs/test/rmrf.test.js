@@ -7,6 +7,8 @@ import { mkdir, rmdir, writeFile, readdir, unlink } from 'fs';
 import { sep, join } from 'path';
 
 import range  from '../../../utils/range';
+import createRootTmpDir from './utils/create-tmp-dir';
+
 import { rmrf, exists } from '../index';
 
 describe('fs', () => {
@@ -15,6 +17,8 @@ describe('fs', () => {
 
     beforeEach(async () => {
       tmpDirPath = join(sep, 'tmp', `lux-${Date.now()}`);
+
+      await createRootTmpDir();
       await createTmpDir(tmpDirPath);
     });
 

@@ -6,6 +6,8 @@ import { it, describe, before, after } from 'mocha';
 import { mkdir, rmdir, writeFile, unlink } from 'fs';
 import { sep, basename, dirname, join } from 'path';
 
+import createTmpDir from './utils/create-tmp-dir';
+
 import { exists } from '../index';
 
 const TMP_PATH = join(sep, 'tmp', `lux-${Date.now()}`, 'exists-test.tmp');
@@ -13,7 +15,10 @@ const TMP_PATH = join(sep, 'tmp', `lux-${Date.now()}`, 'exists-test.tmp');
 describe('fs', () => {
   describe('#exists()', () => {
 
-    before(() => createTmpFile(TMP_PATH));
+    before(async () => {
+      await createTmpDir();
+      await createTmpFile(TMP_PATH);
+    });
 
     it('is true if "PATH" exists', async () => {
       expect(await exists(TMP_PATH)).to.be.true;
