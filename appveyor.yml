@@ -8,12 +8,6 @@ environment:
   DATABASE_PASSWORD: Password12!
 
   matrix:
-    - DATABASE_DRIVER: pg
-      DATABASE_USERNAME: postgres
-
-    - DATABASE_DRIVER: mssql
-      DATABASE_USERNAME: sa
-
     - DATABASE_DRIVER: mysql2
       DATABASE_USERNAME: root
 
@@ -21,15 +15,16 @@ environment:
 
 services:
   - mysql
-  - mssql2016
-  - postgresql94
+
+cache:
+  - C:\projects\lux\node_modules
+  - C:\projects\lux\test\test-app\node_modules
 
 install:
   - ps: C:\projects\lux\scripts\appveyor\install.ps1
 
 before_test:
   - ps: C:\projects\lux\scripts\appveyor\before-test.ps1
-  - cmd: C:\projects\lux\scripts\appveyor\before-test.bat
 
 test_script:
   - npm test

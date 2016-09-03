@@ -2,11 +2,6 @@ $DROP_DATABASE="DROP DATABASE IF EXISTS lux_test;"
 $CREATE_DATABASE="CREATE DATABASE lux_test;"
 
 Switch ($env:DATABASE_DRIVER) {
-  "mssql" {
-    sqlcmd -S "(local)" -U "sa" -P "Password12!" -Q "$DROP_DATABASE"
-    sqlcmd -S "(local)" -U "sa" -P "Password12!" -Q "$CREATE_DATABASE"
-  }
-
   "mysql2" {
     $env:MYSQL_PWD="Password12!"
     $mysql="C:\Program Files\MySql\MySQL Server 5.7\bin\mysql"
