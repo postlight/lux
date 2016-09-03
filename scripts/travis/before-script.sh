@@ -1,7 +1,4 @@
 #!/bin/bash -e
-
-echo
-
 DROP_DATABASE="DROP DATABASE IF EXISTS lux_test;"
 CREATE_DATABASE="CREATE DATABASE lux_test;"
 
@@ -21,14 +18,3 @@ case "$DATABASE_DRIVER" in
     touch test/test-app/db/lux_test_test.sqlite
     ;;
 esac
-echo -e "✓  Reset\n"
-
-cd test/test-app
-
-lux db:migrate >/dev/null 2>&1
-echo -e "✓  Migrate\n"
-
-lux db:seed >/dev/null 2>&1
-echo -e "✓  Seed\n"
-
-cd ../../

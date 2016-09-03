@@ -8,10 +8,10 @@ before(done => {
 
   tryCatch(async () => {
     const path = resolvePath(__dirname, '..', 'test-app');
+    const execOpts = { cwd: path };
 
-    await exec('lux build', {
-      cwd: path
-    });
+    await exec('lux db:migrate', execOpts);
+    await exec('lux db:seed', execOpts);
 
     const {
       Application,

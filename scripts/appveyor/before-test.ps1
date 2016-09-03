@@ -5,8 +5,8 @@ Switch ($env:DATABASE_DRIVER) {
   "pg" {
     $psql="C:\Program Files\PostgreSQL\9.4\bin\psql.exe"
 
-    iex "& '$psql' -c '$DROP_DATABASE' -U postgres"
-    iex "& '$psql' -c '$CREATE_DATABASE' -U postgres"
+    Invoke-Expression "& '$psql' -c '$DROP_DATABASE' -U postgres"
+    Invoke-Expression "& '$psql' -c '$CREATE_DATABASE' -U postgres"
   }
 
   "mssql" {
@@ -18,8 +18,8 @@ Switch ($env:DATABASE_DRIVER) {
     $env:MYSQL_PWD="Password12!"
     $mysql="C:\Program Files\MySql\MySQL Server 5.7\bin\mysql"
 
-    iex "& '$mysql' -e '$DROP_DATABASE' -u root"
-    iex "& '$mysql' -e '$CREATE_DATABASE' -u root"
+    Invoke-Expression "& '$mysql' -e '$DROP_DATABASE' -u root"
+    Invoke-Expression "& '$mysql' -e '$CREATE_DATABASE' -u root"
   }
 
   "sqlite3" {
@@ -27,15 +27,3 @@ Switch ($env:DATABASE_DRIVER) {
     Write-Host $null >> C:\projects\lux\test\test-app\db\lux_test_test.sqlite
   }
 }
-
-Write-Host "[X] Reset`n"
-
-Set-Location C:\projects\lux\test\test-app
-
-lux db:migrate >$null 2>&1
-Write-Host "[X] Migrate`n"
-
-lux db:seed >$null 2>&1
-Write-Host "[X] Seed`n"
-
-Set-Location C:\projects\lux
