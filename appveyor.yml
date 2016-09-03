@@ -8,9 +8,6 @@ environment:
   DATABASE_PASSWORD: Password12!
 
   matrix:
-    allow_failures:
-      - DATABASE_DRIVER: mssql
-
     - DATABASE_DRIVER: pg
       DATABASE_USERNAME: postgres
 
