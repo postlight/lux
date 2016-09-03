@@ -1,4 +1,4 @@
-import { join as joinPath } from 'path';
+import { resolve as resolvePath } from 'path';
 
 import exec from '../src/utils/exec';
 import tryCatch from '../src/utils/try-catch';
@@ -9,15 +9,11 @@ before(done => {
   process.once('ready', done);
 
   tryCatch(async () => {
-    const path = joinPath(__dirname, '../test-app');
-    const options = { cwd: path };
+    const path = resolvePath(__dirname, '..', 'test-app');
+    const execOpts = { cwd: path };
 
-    if (!process.env.TRAVIS) {
-      await exec('lux db:reset', options);
-    }
-
-    await exec('lux db:migrate', options);
-    await exec('lux db:seed', options);
+    await exec('lux db:migrate', execOpts);
+    await exec('lux db:seed', execOpts);
 
     await getTestApp();
   }, (err) => {

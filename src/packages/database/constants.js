@@ -7,6 +7,7 @@ export const UNIQUE_CONSTRAINT = /UNIQUE\sCONSTRAINT/ig;
 export const VALID_DRIVERS = [
   'pg',
   'sqlite3',
+  'mssql',
   'mysql',
   'mysql2',
   'mariasql',
