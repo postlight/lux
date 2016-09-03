@@ -13,7 +13,7 @@ export type Builder$ParentBuilder<T> = (
 
 export type Builder$ChildrenBuilder<T> = (
   target: Array<Builder$NamespaceMeta<T>>
-) => Array<[string, T]>;
+) => Array<Array<[string, T]>>;
 
 export type Builder$Construct<T> = (
   key: string,

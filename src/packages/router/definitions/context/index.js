@@ -64,7 +64,7 @@ export function contextFor(build: Router$DefinitionBuilder<*>) {
             namespace.add(child);
           },
 
-          resource(...args: Array<mixed>) {
+          resource(...args: Array<any>) {
             const { controllers } = namespace;
             const [opts, builder] = normalizeResourceArgs(args);
             let path;
