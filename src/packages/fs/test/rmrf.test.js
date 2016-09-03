@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { it, describe, beforeEach, afterEach } from 'mocha';
 
 import { mkdir, rmdir, writeFile, readdir, unlink } from 'fs';
-import { join } from 'path';
+import { sep, join } from 'path';
 
 import range  from '../../../utils/range';
 import { rmrf, exists } from '../index';
@@ -14,7 +14,7 @@ describe('fs', () => {
     let tmpDirPath: string;
 
     beforeEach(async () => {
-      tmpDirPath = `/tmp/lux-${Date.now()}`;
+      tmpDirPath = join(sep, 'tmp', `lux-${Date.now()}`);
       await createTmpDir(tmpDirPath);
     });
 

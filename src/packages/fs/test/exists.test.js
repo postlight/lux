@@ -4,11 +4,11 @@ import { expect } from 'chai';
 import { it, describe, before, after } from 'mocha';
 
 import { mkdir, rmdir, writeFile, unlink } from 'fs';
-import { basename, dirname, join } from 'path';
+import { sep, basename, dirname, join } from 'path';
 
 import { exists } from '../index';
 
-const TMP_PATH = `/tmp/lux-${Date.now()}/exists-test.tmp`;
+const TMP_PATH = join(sep, 'tmp', `lux-${Date.now()}`, 'exists-test.tmp');
 
 describe('fs', () => {
   describe('#exists()', () => {
