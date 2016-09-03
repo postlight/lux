@@ -1,0 +1,32 @@
+os: Visual Studio 2015
+
+platform: x64
+
+environment:
+  nodejs_version: 6
+  NODE_ENV: test
+  DATABASE_PASSWORD: Password12!
+
+  matrix:
+    - DATABASE_DRIVER: mysql2
+      DATABASE_USERNAME: root
+
+    - DATABASE_DRIVER: sqlite3
+
+services:
+  - mysql
+
+cache:
+  - C:\projects\lux\node_modules
+  - C:\projects\lux\test\test-app\node_modules
+
+install:
+  - ps: C:\projects\lux\scripts\appveyor\install.ps1
+
+before_test:
+  - ps: C:\projects\lux\scripts\appveyor\before-test.ps1
+
+test_script:
+  - npm test
+
+build: off

@@ -23,7 +23,7 @@
     "build:test": "node scripts/build/test.js",
     "clean": "node scripts/clean.js",
     "docs": "npm run clean && npm run build:docs",
-    "flow": "flow check",
+    "flow": "node scripts/flow.js",
     "lint": "eslint .",
     "start": "lux serve",
     "test": "npm run build && npm run build:test && mocha --timeout 60000 test/dist/index.js"

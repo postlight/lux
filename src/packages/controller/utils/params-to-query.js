@@ -53,9 +53,9 @@ export default function paramsToQuery(model: Model, {
       relationship
     ] = relationships.find(([, { model: related }]) => {
       return key === related.resourceName;
-    });
+    }) || [];
 
-    if (!relationship) {
+    if (!name || !relationship) {
       return result;
     }
 
