@@ -2,13 +2,6 @@ $DROP_DATABASE="DROP DATABASE IF EXISTS lux_test;"
 $CREATE_DATABASE="CREATE DATABASE lux_test;"
 
 Switch ($env:DATABASE_DRIVER) {
-  "pg" {
-    $psql="C:\Program Files\PostgreSQL\9.4\bin\psql.exe"
-
-    Invoke-Expression "& '$psql' -c '$DROP_DATABASE' -U postgres"
-    Invoke-Expression "& '$psql' -c '$CREATE_DATABASE' -U postgres"
-  }
-
   "mssql" {
     sqlcmd -S "(local)" -U "sa" -P "Password12!" -Q "$DROP_DATABASE"
     sqlcmd -S "(local)" -U "sa" -P "Password12!" -Q "$CREATE_DATABASE"

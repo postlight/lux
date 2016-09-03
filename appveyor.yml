@@ -8,16 +8,19 @@ environment:
   DATABASE_PASSWORD: Password12!
 
   matrix:
-    - DATABASE_DRIVER: sqlite3
+    allow_failures:
+      - DATABASE_DRIVER: mssql
 
-    - DATABASE_DRIVER: mysql2
-      DATABASE_USERNAME: root
+    - DATABASE_DRIVER: pg
+      DATABASE_USERNAME: postgres
 
     - DATABASE_DRIVER: mssql
       DATABASE_USERNAME: sa
 
-    - DATABASE_DRIVER: pg
-      DATABASE_USERNAME: postgres
+    - DATABASE_DRIVER: mysql2
+      DATABASE_USERNAME: root
+
+    - DATABASE_DRIVER: sqlite3
 
 services:
   - mysql
@@ -29,6 +32,7 @@ install:
 
 before_test:
   - ps: C:\projects\lux\scripts\appveyor\before-test.ps1
+  - cmd: C:\projects\lux\scripts\appveyor\before-test.bat
 
 test_script:
   - npm test
