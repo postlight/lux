@@ -1,4 +1,4 @@
-import ApplicationSerializer from 'app/serializers/application.js';
+import ApplicationSerializer from 'app/serializers/application';
 
 class AdminApplicationSerializer extends ApplicationSerializer {
 

@@ -25,7 +25,7 @@ describe('Router', () => {
 
       routes() {
         this.resource('posts');
-        this.resource('authors', {
+        this.resource('users', {
           only: ['index']
         });
       }

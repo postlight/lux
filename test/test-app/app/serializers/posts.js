@@ -9,7 +9,13 @@ class PostsSerializer extends Serializer {
   ];
 
   hasOne = [
-    'author'
+    'user'
+  ];
+
+  hasMany = [
+    'comments',
+    'reactions',
+    'tags'
   ];
 }
 

@@ -18,26 +18,26 @@ describe('Route', () => {
 
   before(async () => {
     const { controllers }: Application = await getTestApp();
-    const controller: Controller = setType(() => controllers.get('authors'));
+    const controller: Controller = setType(() => controllers.get('users'));
 
     staticRoute = new Route({
       controller,
       type: 'collection',
-      path: 'authors',
+      path: 'users',
       action: 'index',
       method: 'GET',
     });
     dynamicRoute = new Route({
       controller,
       type: 'member',
-      path: 'authors/:id',
+      path: 'users/:id',
       action: 'show',
       method: 'GET',
     });
     dataRoute = new Route({
       controller,
       type: 'member',
-      path: 'authors/:id',
+      path: 'users/:id',
       action: 'create',
       method: 'PATCH',
     });
@@ -45,15 +45,15 @@ describe('Route', () => {
 
   describe('#parseParams()', () => {
     it('is empty for static paths', () => {
-      expect(staticRoute.parseParams('/authors/1')).to.be.empty;
+      expect(staticRoute.parseParams('/users/1')).to.be.empty;
     });
 
     it('contains params matching dynamic segments', () => {
-      expect(dynamicRoute.parseParams('/authors/1')).to.deep.equal({ id: 1 });
+      expect(dynamicRoute.parseParams('/users/1')).to.deep.equal({ id: 1 });
     });
 
     it('does not contain params for unmatched dynamic segments', () => {
-      expect(dynamicRoute.parseParams('/authors/1/2')).to.deep.equal({ id: 1 });
+      expect(dynamicRoute.parseParams('/users/1/2')).to.deep.equal({ id: 1 });
     });
   });
 

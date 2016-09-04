@@ -15,8 +15,6 @@ config = {
     entry: [
       path.join(__dirname, '..', '..', 'src', '**', '*.test.js'),
       path.join(__dirname, '..', '..', 'test', 'index.js'),
-      path.join(__dirname, '..', '..', 'test', 'unit', '**', '*.js'),
-      path.join(__dirname, '..', '..', 'test', 'integration', '**', '*.js'),
       path.join(__dirname, '..', '..', 'test', 'integration', '**', '*.js')
     ],
 

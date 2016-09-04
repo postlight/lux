@@ -1,5 +1,5 @@
 // @flow
-export const ROUTE_KEY = 'GET:/authors';
+export const ROUTE_KEY = 'GET:/users';
 
 export const RESOURCE_KEYS = [
   'GET:/posts',
