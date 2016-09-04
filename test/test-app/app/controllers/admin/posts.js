@@ -1,4 +1,4 @@
-import PostsController from 'app/controllers/posts';
+import PostsController from 'app/controllers/posts.js';
 
 class AdminPostsController extends PostsController {
   index(req, res) {

@@ -1,4 +1,4 @@
-import PostsSerializer from 'app/serializers/posts';
+import PostsSerializer from 'app/serializers/posts.js';
 
 class AdminPostsSerializer extends PostsSerializer {
   attributes = [

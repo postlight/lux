@@ -1,4 +1,4 @@
-import ApplicationController from 'app/controllers/application';
+import ApplicationController from 'app/controllers/application.js';
 
 class AdminApplicationController extends ApplicationController {
   beforeAction = [

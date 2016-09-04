@@ -1,4 +1,4 @@
-import TagsSerializer from 'app/serializers/tags';
+import TagsSerializer from 'app/serializers/tags.js';
 
 class AdminTagsSerializer extends TagsSerializer {
   attributes = [

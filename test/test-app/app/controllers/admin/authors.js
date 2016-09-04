@@ -1,4 +1,4 @@
-import AuthorsController from 'app/controllers/authors';
+import AuthorsController from 'app/controllers/authors.js';
 
 class AdminAuthorsController extends AuthorsController {
 
