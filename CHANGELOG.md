@@ -1,5 +1,395 @@
 # Lux Changelog
 
+### 1.0.0-rc.7 (Sept 4, 2016)
+
+This release implements a fix for a regression in `1.0.0-rc.6` where model migrations would include the formatted filename as the table name (i.e `'2016050414243335_create_posts'` instead of `'posts'`).
+
+##### Commits
+
+* [[`7bd0f4d87b`](https://github.com/postlight/lux/commit/7bd0f4d87b)] - **chore**: update example applications (#361) (Zachary Golba)
+* [[`9bcecc5650`](https://github.com/postlight/lux/commit/9bcecc5650)] - **release**: 1.0.0-rc.6 (#360) (Zachary Golba)
+
+### 1.0.0-rc.6 (Sept 4, 2016)
+
+This release contains a number of bug fixes related to overriding default behavior such as custom actions, model-less controllers, etc. In addition to bug fixes this release contains some awesome new features.
+
+##### Upgrading
+
+Route definitions have changed quite a bit with the implementation of router namespaces. In order to upgrade you will have to remove any calls to `this.route` within the `app/routes.js` file.
+
+Previously, `this.route` was a means of defining custom routes or just defining individual routes rather than a whole resource. It did not scale well to multiple namespaces and was kind of a clunky API to begin with.
+
+To define a custom route within a resource you may do the following:
+
+```javascript
+export default function routes() {
+  // Arbitrary Routes (i.e /{route})
+  // GET /health => ApplicationController#health
+  this.get('health');
+
+  this.resource('posts', function () {
+    // Member Routes (i.e /posts/:id/{route})
+    this.member(function () {
+      // GET /posts/1/comments => PostsController#comments()
+      this.get('comments');
+
+      // POST /posts/1/comments => PostsController#createComment()
+      this.post('comments', 'createComment');
+    });
+
+    // Collection Routes (i.e /posts/{route})
+    this.collection(function () {
+      // GET /posts/drafts => PostsController#drafts()
+      this.get('drafts');
+    });
+  });
+}
+```
+
+To only define a subset of routes for a given resource you may now do the following as shortcut:
+
+```javascript
+export default function routes() {
+  // GET /posts => 200 OK
+  // GET /posts/1 => 200 OK
+  // POST /posts => 404 Not Found
+  // PATCH /posts/1 => 404 Not Found
+  // DELETE /posts/1 => 404 Not Found
+  this.resource('posts', {
+    only: ['show', 'index']
+  });
+}
+```
+
+##### Features
+
+###### Router Namespaces
+
+You now have the ability to define namespaces with your routes. Common uses cases for defining a namespace within your routes include admin-only routes, requiring payment from a user, api versioning, etc.
+
+**Generators**
+
+To generate a resource within a namespace, include the namespace as part of the name argument passed to the `generate` command.
+
+*Example:*
+
+```bash
+lux generate resource admin/posts
+```
+
+The command above will result in the following files being created:
+
+- `app/controllers/admin/posts`
+- `app/serializers/admin/posts`
+
+If you do not already have an `ApplicationController` or `ApplicationSerializer` for a namespace, they will automatically be generated.
+
+Also, the `generate` command will omit namespaces when generating a `Model` or `Migration`. If you generate a resource in a namespace that already has a `Model`, you will be given the choice to either overwrite or skip the `Model` or `Migration` files.
+
+**Controllers**
+
+You can think of a namespace as if it is it's own Lux application that you are mounting into it's parent namespace. Similar to how a `Controller` works in previous versions, a `Controller` within a namespace will merge it's middleware with the `ApplicationController` for the namespace it is a part of. If the `Controller` is the `ApplicationController` for a namespace, it will merge it's middleware with the `ApplicationController` of parent namespace if possible.
+
+*Example:*
+
+```javascript
+/*********************
+ * Namespace: 'Root' *
+ * Path: '/'         *
+ *********************/
+
+import { Controller } from 'lux-framework';
+
+class ApplicationController extends Controller {
+  beforeAction = [
+    async function sayHello({ logger }) {
+      logger.info('Hello world!');
+    }
+  ];
+}
+
+class PostsController extends Controller {
+  index() {
+    return Post.isPublic();
+  }
+}
+```
+
+A `GET` request to `/posts` will result in the following functions (in this order) handling the request:
+
+- `sayHello`
+- `PostsController#index`
+
+The `PostsController#index` action only gives us the posts that are publicly available. This is what we want, but we should have a way for user's with admin access to be able to see what has not been published yet. To accomplish this we will use a namespace.
+
+```javascript
+/**********************
+ * Namespace: 'admin' *
+ * Path: '/admin'     *
+ **********************/
+
+import { Controller } from 'lux-framework';
+
+class AdminApplicationController extends Controller {
+  beforeAction = [
+    async function authenticate() {
+      // Authenticate request...
+    }
+  ];
+}
+
+class AdminPostsController extends Controller {
+  index() {
+    return Post.all();
+  }
+}
+```
+
+A `GET` request to `/admin/posts` will result in the following functions (in this order) handling the request:
+
+- `sayHello`
+- `authenticate`
+- `AdminPostsController#index`
+
+As you can see in the example above, namespaces allow you to isolate middleware functions in a `beforeAction` array to only execute at certain paths of your application. This is done behind the scenes with Lux and does not require you to use inheritance between your controllers. Inheritance is 100% opt-in so feel free to start from scratch while still gaining the benefit of shared middleware functions.
+
+Sometimes it can be nice to use inheritance if we're only slightly changing the behavior of a `Controller`. Let's look at an example where the `AdminPostsController` extends the `PostsController`.
+
+```javascript
+import PostsController from 'app/controllers/posts';
+
+class AdminPostsController extends PostsController {
+  index(request, response) {
+    return super.index(request, response).unscope('isPublic');
+  }
+}
+```
+
+In the example above we are able to simply remove the `isPublic` scope from the `#index()` action because we are using inheritance. This would be very helpful if we added additional logic to the `#index()` route that would have otherwise had to duplicate across `posts` routes in other namespaces.
+
+Keep in mind, inheritance can be an anti-pattern if it takes you more work to override methods than it would be to start fresh.
+
+**Serializers**
+
+Serializers within a namespace work very similar to a `Controller`. The main difference being that it is not required to have a `Serializer` within each namespace. Serializers will resolve to their closest ancestor. That means that if you have a `PostsSerializer` for a `posts` resource at the root namespace, requests to `/admin/posts` will fall back to use the `PostsSerializer` if a `AdminPostsSerializer` is not found at `app/serializers/admin/posts.js`.
+
+Serializers within a namespace are great for versioning an api. Over time some fields may become deprecated in your responses and using serializers in a namespace is a great way to solve this problem.
+
+*Example:*
+
+```javascript
+/**********************
+ * Namespace: 'v1' *
+ * Path: '/v1'     *
+ **********************/
+import { Serializer } from 'lux-framework';
+
+class V1PostsSerializer extends Serializer {
+  attributes = [
+    'body',
+    'title',
+    'deprecated'
+  ];
+
+  hasOne = [
+    'author'
+  ];
+
+  haMany = [
+    'comments'
+  ];
+}
+```
+
+As you can see above we have a `V1PostsSerializer` that has an attribute that we no longer wish to include in responses in the `v2` namespace. We can use a namespaces to help us accomplish this task.
+
+```javascript
+/**********************
+ * Namespace: 'v2' *
+ * Path: '/v2'     *
+ **********************/
+
+import V1PostsSerializer from 'app/serializers/v1/posts';
+
+ class V2PostsSerializer extends V1PostsSerializer {
+   attributes = [
+     'body',
+     'title'
+   ];
+ }
+```
+
+🎉 It's that simple. Requests to `/v1/posts` will include the `deprecated` attribute while requests to `/v2/posts` will not.
+
+
+**Defining Namespaces**
+
+To define a namespace in your application, you must specify it in the `app/routes.js` file.
+
+```javascript
+function routes() {
+  this.resource('posts');
+
+  this.namespace('admin', function () {
+    this.resource('posts');
+  });  
+}
+```
+
+There is no limit to how many levels you nest namespaces. Lux will flatten the execution of functions nested within namespaces during application boot so feel free to go crazy.
+
+```javascript
+function routes() {
+  this.namespace('a', function () {
+    this.resource('posts');
+
+    this.namespace('b', function () {
+      this.resource('posts');
+
+      this.namespace('c', function () {
+        this.resource('posts');
+
+        this.namespace('d', function () {
+          this.resource('posts');
+        });
+      });
+    });
+  });
+}
+```
+
+###### Persistence Checking
+
+Previously, the only means of checking persistence was by checking if a Model has an dirty attributes. This was unsuitable for determining wether or not a record has been persisted to the database yet.
+
+We have added `Model#isNew` and `Model#persisted` to handle this.
+
+*Example:*
+
+```javascript
+import Post from 'app/models/posts';
+
+let post = await Post.first();
+
+
+/**
+ * Check existing record's persistence...
+ */
+post.isDirty
+// => false
+post.isNew
+// => false
+post.persisted
+// => true
+
+
+/**
+ * Check an existing record's persistence after an attribute has been changed...
+ */
+post.title = 'add ability to check if model has been saved';
+// => 'add ability to check if model has been saved'
+post.isDirty
+// => true
+post.isNew
+// => false
+post.persisted
+// => false
+
+
+await post.save();
+
+/**
+ * Check a recently saved record's persistence...
+ */
+post.isDirty
+// => false
+post.isNew
+// => false
+post.persisted
+// => true
+
+
+post = new Post({
+  title: 'I have yet to be saved.'
+});
+
+/**
+ * Check the persistence of a record that has yet to be saved...
+ */
+post.isDirty
+// => false
+post.isNew
+// => true
+post.persisted
+// => false
+
+
+/**
+ * Check a new record that was created via the #create() method...
+ */
+post = await Post.create({
+  title: 'I have yet to be saved.'
+});
+
+post.isDirty
+// => false
+post.isNew
+// => false
+post.persisted
+// => true
+```
+
+###### Distinct Queries
+
+🎉 You can now do distinct queries on a Model.
+
+```javascript
+import Post from 'app/models/post';
+
+Post.distinct('title' /*, 'body', ...etc */).where({
+  isPublic: true
+});
+
+// SELECT DISTINCT "posts"."title" AS "title" FROM "posts" WHERE "posts"."is_public" = TRUE
+```
+
+##### Commits
+
+* [[`361acd467f`](https://github.com/postlight/lux/commit/361acd467f)] - **deps**: update babel-preset-lux to version 1.2.0 (#359) (Greenkeeper)
+* [[`1adeb907df`](https://github.com/postlight/lux/commit/1adeb907df)] - **feat**: router namespaces (#338) (Zachary Golba)
+* [[`1f9094e5db`](https://github.com/postlight/lux/commit/1f9094e5db)] - **chore**: add appveyor badge to readme (#358) (Zachary Golba)
+* [[`af75c59062`](https://github.com/postlight/lux/commit/af75c59062)] - **chore**: remove unnecessary event emitter decl (#357) (Zachary Golba)
+* [[`ce5568297d`](https://github.com/postlight/lux/commit/ce5568297d)] - **deps**: update flow-bin to version 0.32.0 🚀 (#356) (Greenkeeper)
+* [[`48d1cf8cd9`](https://github.com/postlight/lux/commit/48d1cf8cd9)] - **chore**: improve ci set up (#350) (Zachary Golba)
+* [[`58a4c6ed04`](https://github.com/postlight/lux/commit/58a4c6ed04)] - **deps**: update rollup to version 0.34.13 (#355) (Greenkeeper)
+* [[`603c45a5ec`](https://github.com/postlight/lux/commit/603c45a5ec)] - **deps**: update rollup to version 0.34.11 (#353) (Greenkeeper)
+* [[`0e05e3d9b9`](https://github.com/postlight/lux/commit/0e05e3d9b9)] - **fix**: lux console fails when running on an npm linked version of the master branch (#349) (Zachary Golba)
+* [[`5d492f5cea`](https://github.com/postlight/lux/commit/5d492f5cea)] - **feat**: add #distinct() query method (#346) (Zachary Golba)
+* [[`d9e00625e6`](https://github.com/postlight/lux/commit/d9e00625e6)] - **feat**: add ability to check if model has been saved (#347) (Zachary Golba)
+* [[`6474d516b5`](https://github.com/postlight/lux/commit/6474d516b5)] - **deps**: update eslint to version 3.4.0 (#345) (Greenkeeper)
+* [[`482bfe272a`](https://github.com/postlight/lux/commit/482bfe272a)] - **deps**: update eslint-plugin-flowtype to version 2.11.4 (#344) (Greenkeeper)
+* [[`0e66aa5405`](https://github.com/postlight/lux/commit/0e66aa5405)] - **deps**: update flow-bin to version 0.31.1 🚀 (#341) (Greenkeeper)
+* [[`6e88a55c08`](https://github.com/postlight/lux/commit/6e88a55c08)] - **deps**: update babel-plugin-transform-es2015-modules-commonjs to version 6.14.0 (#343) (Greenkeeper)
+* [[`15b648aa77`](https://github.com/postlight/lux/commit/15b648aa77)] - **deps**: update babel-core to version 6.14.0 (#342) (Greenkeeper)
+* [[`d33e6e67c3`](https://github.com/postlight/lux/commit/d33e6e67c3)] - **deps**: update eslint-plugin-flowtype to version 2.11.1 (#339) (Greenkeeper)
+* [[`56e329f968`](https://github.com/postlight/lux/commit/56e329f968)] - **docs**: small readme typos/rephrasings (#330) (Kevin Barrett)
+* [[`bace2de2bd`](https://github.com/postlight/lux/commit/bace2de2bd)] - **fix**: errors occuring during application boot fail silently (#316) (Zachary Golba)
+* [[`b8c5815045`](https://github.com/postlight/lux/commit/b8c5815045)] - **deps**: update rollup to version 0.34.10 (#328) (Greenkeeper)
+* [[`20f18a3459`](https://github.com/postlight/lux/commit/20f18a3459)] - **Feat**: Ignoring build/dist folder (#327) (Adam Pash)
+* [[`98dcfe05ce`](https://github.com/postlight/lux/commit/98dcfe05ce)] - **deps**: update eslint-plugin-flowtype to version 2.7.1 (#326) (Greenkeeper)
+* [[`d28529ffc6`](https://github.com/postlight/lux/commit/d28529ffc6)] - **deps**: update rollup to version 0.34.9 (#324) (Greenkeeper)
+* [[`86ea773e88`](https://github.com/postlight/lux/commit/86ea773e88)] - **deps**: update eslint to version 3.3.1 (#323) (Greenkeeper)
+* [[`6501ad00a0`](https://github.com/postlight/lux/commit/6501ad00a0)] - **Fix**: Environment variables overwritten by lux CLI (#322) (Adam Pash)
+* [[`9868b3d54d`](https://github.com/postlight/lux/commit/9868b3d54d)] - **Feat**: Added ssl for database; fixed port (#319) (Adam Pash)
+* [[`55cc30ae2b`](https://github.com/postlight/lux/commit/55cc30ae2b)] - **Feat**: Added minimum node version to package.json template (#321) (Adam Pash)
+* [[`612b9ced7a`](https://github.com/postlight/lux/commit/612b9ced7a)] - **deps**: update eslint-plugin-flowtype to version 2.7.0 (#318) (Greenkeeper)
+* [[`039dda77f2`](https://github.com/postlight/lux/commit/039dda77f2)] - **deps**: update rollup to version 0.34.8 (#317) (Greenkeeper)
+* [[`2b2829fbca`](https://github.com/postlight/lux/commit/2b2829fbca)] - **fix**: model-less controllers prevent applications from starting (#315) (Zachary Golba)
+* [[`2c90cfa994`](https://github.com/postlight/lux/commit/2c90cfa994)] - **deps**: update test-app dependencies (#314) (Zachary Golba)
+* [[`e9df74a9ef`](https://github.com/postlight/lux/commit/e9df74a9ef)] - **chore**: update examples (#313) (Zachary Golba)
+* [[`d1fbddc7b0`](https://github.com/postlight/lux/commit/d1fbddc7b0)] - **release**: 1.0.0-rc.5 (#312) (Zachary Golba)
+
+
 ### 1.0.0-rc.5 (Aug 13, 2016)
 
 This release contains a number of bug fixes as well as some new features. Big shout out to [@adampash](https://github.com/adampash), a new member of the Postlight team. :clap: Awesome job these past 2 weeks!
