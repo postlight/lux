@@ -2,13 +2,14 @@
 import { join as joinPath } from 'path';
 import { camelize, capitalize, pluralize } from 'inflection';
 
-import { BACKSLASH } from '../constants';
+import { BACKSLASH } from '../../../constants';
 import { mkdir, writeFile, appendFile } from '../../fs';
 
 import chain from '../../../utils/chain';
 import tryCatch from '../../../utils/try-catch';
 import underscore from '../../../utils/underscore';
-import formatName, { stripExt } from './format-name';
+import stripExt from './strip-ext';
+import formatName from './format-name';
 
 /**
  * @private

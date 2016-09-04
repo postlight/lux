@@ -3,6 +3,7 @@ import fs from 'fs';
 import { join as joinPath, resolve as resolvePath } from 'path';
 
 import createResolver from './utils/create-resolver';
+import createPathRemover from './utils/create-path-remover';
 
 import type { Stats } from 'fs';
 
@@ -76,8 +77,7 @@ export function readdirRec(
   path: string,
   opts?: fs$readOpts
 ): Promise<Array<string>> {
-  const pathRegex = new RegExp(`${path}\/?(.+)`);
-  const stripPath = file => file.replace(pathRegex, '$1');
+  const stripPath = createPathRemover(path);
 
   return readdir(path, opts)
     .then(files => Promise.all(

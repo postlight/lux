@@ -10,6 +10,8 @@ export type fs$readOpts = string | {
   encoding?: ?string;
 };
 
+export type fs$PathRemover = (source: string) => string;
+
 export interface fs$ParsedPath {
   root: string;
   dir: string;
