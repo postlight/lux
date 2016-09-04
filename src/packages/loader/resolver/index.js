@@ -1,6 +1,4 @@
 // @flow
-import { sep } from 'path';
-
 import { FreezeableMap } from '../../freezeable';
 
 import type { Bundle$Namespace, Bundle$NamespaceGroup } from '../index';
@@ -14,7 +12,7 @@ export function resolve<T>(
   return Array
     .from(group)
     .map(([key, value]) => {
-      let namespace = key.split(sep);
+      let namespace = key.split('/');
 
       namespace = namespace
         .slice(0, Math.max(namespace.length - 1, 0))
