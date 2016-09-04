@@ -11,7 +11,6 @@ import { BACKSLASH } from '../../constants';
 import { rmrf, readdir, readdirRec, isJSFile } from '../fs';
 import template from '../template';
 
-import chain from '../../utils/chain';
 import normalizePath from './utils/normalize-path';
 import createManifest from './utils/create-manifest';
 import createBootScript from './utils/create-boot-script';
@@ -87,11 +86,9 @@ export async function compile(dir: string, env: string, {
 
     plugins: [
       alias({
-        LUX_LOCAL: normalizePath(local),
-        app: chain(dir)
-          .pipe(str => path.join(str, 'app'))
-          .pipe(normalizePath)
-          .value()
+        resolve: ['.js'],
+        app: normalizePath(path.join(dir, 'app')),
+        LUX_LOCAL: normalizePath(local)
       }),
 
       json(),
