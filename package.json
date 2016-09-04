@@ -1,6 +1,6 @@
 {
   "name": "lux-framework",
-  "version": "1.0.0-rc.5",
+  "version": "1.0.0-rc.6",
   "description": "A MVC style Node.js framework for building lightning fast JSON APIs",
   "repository": "github:postlight/lux",
   "keywords": [
