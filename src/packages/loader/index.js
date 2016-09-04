@@ -25,4 +25,8 @@ export {
   getParentKey as getNamespaceKey
 } from './resolver';
 
-export type { Bundle$Namespace, Bundle$NamespaceGroup, } from './interfaces';
+export type {
+  Loader,
+  Bundle$Namespace,
+  Bundle$NamespaceGroup
+} from './interfaces';

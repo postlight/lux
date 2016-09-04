@@ -4,7 +4,7 @@ import { it, before, describe } from 'mocha';
 
 import { ROUTE_KEY, RESOURCE_KEYS } from './fixtures/data';
 
-import Route from '../../route';
+import Route from '../route';
 import Router from '../index';
 
 import setType from '../../../utils/set-type';
@@ -21,13 +21,12 @@ describe('Router', () => {
 
     subject = new Router({
       controllers,
+      controller: setType(() => controllers.get('application')),
 
       routes() {
         this.resource('posts');
-
-        this.route('authors', {
-          method: 'GET',
-          action: 'index'
+        this.resource('authors', {
+          only: ['index']
         });
       }
     });

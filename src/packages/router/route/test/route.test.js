@@ -5,9 +5,11 @@ import { it, describe, before } from 'mocha';
 
 import Route from '../index';
 
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import setType from '../../../../utils/set-type';
+import { getTestApp } from '../../../../../test/utils/get-test-app';
 
-import type Application from '../../application';
+import type Application from '../../../application';
+import type Controller from '../../../controller';
 
 describe('Route', () => {
   let staticRoute: Route;
@@ -16,23 +18,28 @@ describe('Route', () => {
 
   before(async () => {
     const { controllers }: Application = await getTestApp();
+    const controller: Controller = setType(() => controllers.get('authors'));
+
     staticRoute = new Route({
+      controller,
+      type: 'collection',
       path: 'authors',
       action: 'index',
       method: 'GET',
-      controllers
     });
     dynamicRoute = new Route({
+      controller,
+      type: 'member',
       path: 'authors/:id',
       action: 'show',
       method: 'GET',
-      controllers
     });
     dataRoute = new Route({
+      controller,
+      type: 'member',
       path: 'authors/:id',
       action: 'create',
       method: 'PATCH',
-      controllers
     });
   });
 

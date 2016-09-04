@@ -13,6 +13,7 @@ import {
   FORMAT_RESULT_COLLECTION_INCLUDED
 } from './fixtures/results';
 
+import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 import type Serializer from '../index';
@@ -22,7 +23,7 @@ const DOMAIN = 'http://localhost:4000';
 
 describe('Serializer', () => {
   let data;
-  let subject: Serializer;
+  let subject: Serializer<*>;
 
   before(async () => {
     const app: Application = await getTestApp();
@@ -106,7 +107,7 @@ describe('Serializer', () => {
     it('converts a single of model to a JSONAPI resource object', async () => {
       const [item] = data;
       const result = await subject.formatOne({
-        item,
+        item: setType(() => item),
         links: false,
         domain: DOMAIN,
         include: [],

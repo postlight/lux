@@ -3,11 +3,12 @@ import { expect } from 'chai';
 import { it, before, describe } from 'mocha';
 
 import { FreezeableMap } from '../../freezeable';
-import loader from '../index';
+import { createLoader } from '../index';
 
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 import type Application from '../../application';
+import type { Loader } from '../index';
 
 describe('loader', () => {
   let app: Application;
@@ -16,27 +17,39 @@ describe('loader', () => {
     app = await getTestApp();
   });
 
-  describe('#loader()', () => {
+  describe('#createLoader()', () => {
+    let subject: Loader;
+
+    before(() => {
+      subject = createLoader(app.path);
+    });
+
+    it('can create a loader function', () => {
+      expect(subject).to.be.a('function').and.have.lengthOf(1);
+    });
+
     it('can load an Application', () => {
-      expect(loader(app.path, 'application')).to.be.equal(app.constructor);
+      expect(subject('application')).to.be.equal(app.constructor);
     });
 
     it('can load a config object', () => {
-      expect(loader(app.path, 'config')).to.be.an.object;
+      expect(subject('config')).to.be.an.object;
     });
 
     it('can load Controllers', () => {
-      const result = loader(app.path, 'controllers');
+      const result = subject('controllers');
 
       expect(result).to.be.an.instanceof(FreezeableMap);
 
       result.forEach(value => {
-        expect(Reflect.getPrototypeOf(value).name).to.equal('Controller');
+        expect(
+          Reflect.getPrototypeOf(value).name.endsWith('Controller')
+        ).to.be.true;
       });
     });
 
     it('can load Migrations', () => {
-      const result = loader(app.path, 'migrations');
+      const result = subject('migrations');
 
       expect(result).to.be.an.instanceof(FreezeableMap);
 
@@ -46,7 +59,7 @@ describe('loader', () => {
     });
 
     it('can load Models', () => {
-      const result = loader(app.path, 'models');
+      const result = subject('models');
 
       expect(result).to.be.an.instanceof(FreezeableMap);
 
@@ -56,20 +69,22 @@ describe('loader', () => {
     });
 
     it('can load a routes function', () => {
-      expect(loader(app.path, 'routes')).to.be.a('function');
+      expect(subject('routes')).to.be.a('function');
     });
 
     it('can load a database seed function', () => {
-      expect(loader(app.path, 'seed')).to.be.a('function');
+      expect(subject('seed')).to.be.a('function');
     });
 
     it('can load Serializers', () => {
-      const result = loader(app.path, 'serializers');
+      const result = subject('serializers');
 
       expect(result).to.be.an.instanceof(FreezeableMap);
 
       result.forEach(value => {
-        expect(Reflect.getPrototypeOf(value).name).to.equal('Serializer');
+        expect(
+          Reflect.getPrototypeOf(value).name.endsWith('Serializer')
+        ).to.be.true;
       });
     });
   });
