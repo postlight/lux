@@ -3,6 +3,7 @@ import { pluralize } from 'inflection';
 
 import template from '../../template';
 
+import chain from '../../../utils/chain';
 import indent from '../utils/indent';
 import underscore from '../../../utils/underscore';
 
@@ -10,8 +11,12 @@ import underscore from '../../../utils/underscore';
  * @private
  */
 export default (name: string, attrs: Array<string> | string): string => {
-  const table = pluralize(underscore(name));
   const indices = ['id'];
+  const table = chain(name)
+    .pipe(str => str.substr(24))
+    .pipe(underscore)
+    .pipe(pluralize)
+    .value();
 
   if (!attrs) {
     attrs = [];
