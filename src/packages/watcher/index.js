@@ -5,17 +5,15 @@ import { FSWatcher } from 'fs';
 
 import initialize from './initialize';
 
-import type { Watcher$Client } from './interfaces'; // eslint-disable-line max-len, no-unused-vars
-
 /**
  * @private
  */
-class Watcher<T: Watcher$Client> extends EventEmitter {
+class Watcher extends EventEmitter {
   path: string;
 
-  client: T;
+  client: Client | FSWatcher;
 
-  constructor(path: string): Promise<Watcher<T>> {
+  constructor(path: string): Promise<Watcher> {
     super();
     return initialize(this, path);
   }

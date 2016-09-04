@@ -1,13 +1,16 @@
 import { CWD, NODE_ENV, DATABASE_URL } from '../../../constants';
-import { connect } from '../../database';
-import { rmrf } from '../../fs';
-import loader from '../../loader';
 import { CONNECTION_STRING_MESSAGE } from '../constants';
+
+import { rmrf } from '../../fs';
+import { connect } from '../../database';
+import { createLoader } from '../../loader';
 
 /**
  * @private
  */
 export async function dbdrop() {
+  const load = createLoader(CWD);
+
   const {
     database: {
       [NODE_ENV]: {
@@ -17,7 +20,7 @@ export async function dbdrop() {
         ...config
       }
     }
-  } = loader(CWD, 'config');
+  } = load('config');
 
   if (driver === 'sqlite3') {
     await rmrf(`${CWD}/db/${database}_${NODE_ENV}.sqlite`);
@@ -25,6 +28,7 @@ export async function dbdrop() {
     if (DATABASE_URL || url) {
       return console.log(CONNECTION_STRING_MESSAGE);
     }
+
     const { schema } = connect(CWD, { ...config, driver });
     const query = schema.raw(`DROP DATABASE IF EXISTS ${database}`);
 

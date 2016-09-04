@@ -7,25 +7,33 @@ import isFrozen from '../utils/is-frozen';
  */
 class FreezeableMap<K, V> extends Map<K, V> {
   set(key: K, value: V): FreezeableMap<K, V> {
-    if (!isFrozen(this)) {
+    if (!this.isFrozen()) {
       super.set(key, value);
     }
 
     return this;
   }
 
-  clear() {
-    if (!isFrozen(this)) {
+  clear(): void {
+    if (!this.isFrozen()) {
       super.clear();
     }
   }
 
-  delete(key: K) {
-    return isFrozen(this) ? false : super.delete(key);
+  delete(key: K): boolean {
+    return this.isFrozen() ? false : super.delete(key);
   }
 
-  freeze() {
+  freeze(deep?: boolean): FreezeableMap<K, V> {
+    if (deep) {
+      this.forEach(Object.freeze);
+    }
+
     return freeze(this);
+  }
+
+  isFrozen(): boolean {
+    return isFrozen(this);
   }
 }
 

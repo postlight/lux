@@ -1,37 +1,36 @@
 export default function routes() {
+  this.resource('actions', {
+    only: ['show', 'index']
+  });
+
   this.resource('comments');
+
+  this.resource('friendships', {
+    only: ['create', 'destroy']
+  });
+
+  this.resource('notifications', {
+    only: ['show', 'index']
+  });
+
   this.resource('posts');
   this.resource('reactions');
   this.resource('tags');
-  this.resource('users');
 
-  this.route('actions', {
-    method: 'GET',
-    action: 'index'
+  this.resource('users', function () {
+    this.collection(function () {
+      this.post('login');
+    });
   });
 
-  this.route('actions/:id', {
-    method: 'GET',
-    action: 'show'
-  });
-
-  this.route('friendships', {
-    method: 'POST',
-    action: 'create'
-  });
-
-  this.route('notifications', {
-    method: 'GET',
-    action: 'index'
-  });
-
-  this.route('notifications/:id', {
-    method: 'GET',
-    action: 'show'
-  });
-
-  this.route('users/login', {
-    method: 'POST',
-    action: 'login'
+  this.namespace('admin', function () {
+    this.resource('actions');
+    this.resource('comments');
+    this.resource('friendships');
+    this.resource('notifications');
+    this.resource('posts');
+    this.resource('reactions');
+    this.resource('tags');
+    this.resource('users');
   });
 }

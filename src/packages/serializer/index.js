@@ -2,14 +2,14 @@
 import { dasherize } from 'inflection';
 
 import { VERSION } from '../jsonapi';
+import { freezeProps } from '../freezeable';
 
 import uniq from '../../utils/uniq';
-import insert from '../../utils/insert';
 import underscore from '../../utils/underscore';
 import promiseHash from '../../utils/promise-hash';
 import { dasherizeKeys } from '../../utils/transform-keys';
 
-import type { Model } from '../database';
+import type { Model } from '../database'; // eslint-disable-line no-unused-vars
 import type { Serializer$opts } from './interfaces';
 
 import type {
@@ -23,7 +23,7 @@ import type {
  * The `Serializer` class is where you declare the specific attributes and
  * relationships you would like to include for a particular resource (`Model`).
  */
-class Serializer {
+class Serializer<T: Model> {
   /**
    * The resolved `Model` that a `Serializer` instance represents.
    *
@@ -34,51 +34,27 @@ class Serializer {
    * @property model
    * @memberof Serializer
    * @instance
-   * @readonly
-   * @private
    */
-  model: Class<Model>;
+  model: Class<T>;
 
   /**
-   * A Map of all resolved serializers in a an `Application` instance. This is
-   * used when a `Serializer` instance has to serialize an embedded
-   * relationship.
+   * A reference to the root `Serializer` for the namespace that a `Serializer`
+   * instance is a member of.
    *
-   * @property serializers
+   * @property parent
    * @memberof Serializer
    * @instance
-   * @readonly
-   * @private
    */
-  serializers: Map<string, Serializer>;
+  parent: ?Serializer<*>;
 
   /**
-   * Create an instance of `Serializer`.
+   * The namespace that a `Serializer` instance is a member of.
    *
-   * WARNING:
-   * This is a private constructor and you should not instantiate a `Serializer`
-   * manually. Serializers are instantiated automatically by your application
-   * when it is started.
-   *
-   * @private
+   * @property namespace
+   * @memberof Serializer
+   * @instance
    */
-  constructor({ model, serializers }: Serializer$opts) {
-    Object.defineProperties(this, {
-      model: {
-        value: model,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      serializers: {
-        value: serializers,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      }
-    });
-  }
+  namespace: string;
 
   /**
    * An Array of the `hasOne` or `belongsTo` relationships on a `Serializer`
@@ -132,24 +108,7 @@ class Serializer {
    * @memberof Serializer
    * @instance
    */
-  get hasOne(): Array<string> {
-    return Object.freeze([]);
-  }
-
-  set hasOne(value: Array<string>): void {
-    if (value && value.length) {
-      const hasOne = new Array(value.length);
-
-      insert(hasOne, value);
-
-      Reflect.defineProperty(this, 'hasOne', {
-        value: Object.freeze(hasOne),
-        writable: false,
-        enumerable: true,
-        configurable: false
-      });
-    }
-  }
+  hasOne: Array<string> = [];
 
   /**
    * An Array of the `hasMany` relationships on a `Serializer` instance's model
@@ -211,24 +170,7 @@ class Serializer {
    * @memberof Serializer
    * @instance
    */
-  get hasMany(): Array<string> {
-    return Object.freeze([]);
-  }
-
-  set hasMany(value: Array<string>): void {
-    if (value && value.length) {
-      const hasMany = new Array(value.length);
-
-      insert(hasMany, value);
-
-      Reflect.defineProperty(this, 'hasMany', {
-        value: Object.freeze(hasMany),
-        writable: false,
-        enumerable: true,
-        configurable: false
-      });
-    }
-  }
+  hasMany: Array<string> = [];
 
   /**
    * An Array of the `attributes` on a `Serializer` instance's model to include
@@ -274,23 +216,30 @@ class Serializer {
    * @memberof Serializer
    * @instance
    */
-  get attributes(): Array<string> {
-    return Object.freeze([]);
-  }
+  attributes: Array<string> = [];
 
-  set attributes(value: Array<string>): void {
-    if (value && value.length) {
-      const attributes = new Array(value.length);
+  /**
+   * Create an instance of `Serializer`.
+   *
+   * WARNING:
+   * This is a private constructor and you should not instantiate a `Serializer`
+   * manually. Serializers are instantiated automatically by your application
+   * when it is started.
+   *
+   * @private
+   */
+  constructor({ model, parent, namespace }: Serializer$opts<T>) {
+    Object.assign(this, {
+      model,
+      parent,
+      namespace
+    });
 
-      insert(attributes, value);
-
-      Reflect.defineProperty(this, 'attributes', {
-        value: Object.freeze(attributes),
-        writable: false,
-        enumerable: true,
-        configurable: false
-      });
-    }
+    freezeProps(this, true,
+      'model',
+      'parent',
+      'namespace'
+    );
   }
 
   /**
@@ -302,7 +251,7 @@ class Serializer {
     domain,
     include
   }: {
-    data: Model | Array<Model>;
+    data: T | Array<T>;
     links: JSONAPI$DocumentLinks;
     domain: string;
     include: Array<string>;
@@ -361,7 +310,7 @@ class Serializer {
     included,
     formatRelationships = true
   }: {
-    item: Model;
+    item: T;
     links?: boolean;
     domain: string;
     include: Array<string>;
@@ -429,9 +378,17 @@ class Serializer {
     }
 
     if (links || typeof links !== 'boolean') {
-      serialized.links = {
-        self: `${domain}/${type}/${id}`
-      };
+      const { namespace } = this;
+
+      if (namespace) {
+        serialized.links = {
+          self: `${domain}/${namespace}/${type}/${id}`
+        };
+      } else {
+        serialized.links = {
+          self: `${domain}/${type}/${id}`
+        };
+      }
     }
 
     return serialized;
@@ -451,8 +408,20 @@ class Serializer {
     include: boolean;
     included: Array<JSONAPI$ResourceObject>;
   }): Promise<JSONAPI$RelationshipObject> {
+    const { namespace } = this;
     const { resourceName: type, constructor: { serializer } } = item;
     const id = String(item.getPrimaryKey());
+    let links;
+
+    if (namespace) {
+      links = {
+        self: `${domain}/${namespace}/${type}/${id}`
+      };
+    } else {
+      links = {
+        self: `${domain}/${type}/${id}`
+      };
+    }
 
     if (include) {
       included.push(
@@ -471,10 +440,7 @@ class Serializer {
         id,
         type
       },
-
-      links: {
-        self: `${domain}/${type}/${id}`
-      }
+      links
     };
   }
 }

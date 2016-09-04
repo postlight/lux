@@ -1,14 +1,16 @@
 import { CWD, NODE_ENV, DATABASE_URL } from '../../../constants';
+import { CONNECTION_STRING_MESSAGE } from '../constants';
 
-import loader from '../../loader';
 import { connect } from '../../database';
 import { writeFile } from '../../fs';
-import { CONNECTION_STRING_MESSAGE } from '../constants';
+import { createLoader } from '../../loader';
 
 /**
  * @private
  */
 export async function dbcreate() {
+  const load = createLoader(CWD);
+
   const {
     database: {
       [NODE_ENV]: {
@@ -18,7 +20,7 @@ export async function dbcreate() {
         ...config
       }
     }
-  } = loader(CWD, 'config');
+  } = load('config');
 
   if (driver === 'sqlite3') {
     await writeFile(`${CWD}/db/${database}_${NODE_ENV}.sqlite`, '');

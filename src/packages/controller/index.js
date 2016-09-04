@@ -1,16 +1,15 @@
 // @flow
 import { Model } from '../database';
 import { getDomain } from '../server';
+import { freezeProps, deepFreezeProps } from '../freezeable';
 
-import insert from '../../utils/insert';
 import findOne from './utils/find-one';
 import findMany from './utils/find-many';
 import findRelated from './utils/find-related';
 
-import type Database from '../database';
 import type Serializer from '../serializer';
 import type { Request, Response } from '../server';
-import type { Controller$opts } from './interfaces';
+import type { Controller$opts, Controller$Middleware } from './interfaces';
 
 /**
  * The `Controller` class is responsible for taking in requests from the outside
@@ -23,24 +22,109 @@ import type { Controller$opts } from './interfaces';
  */
 class Controller {
   /**
-   * A boolean value representing whether or not a `Controller` has a backing
-   * `Model`.
-   *
-   * @property hasModel
+   * @property model
    * @memberof Controller
    * @instance
    */
-  hasModel: boolean;
+  model: Class<Model>;
 
   /**
-   * A boolean value representing whether or not a `Controller` has a backing
-   * `Serializer`.
-   *
-   * @property hasSerializer
+   * @property parent
    * @memberof Controller
    * @instance
    */
-  hasSerializer: boolean;
+  parent: ?Controller;
+
+  /**
+   * The namespace that a `Controller` instance is a member of.
+   *
+   * @property namespace
+   * @memberof Controller
+   * @instance
+   */
+  namespace: string;
+
+  /**
+   * Use this property to let Lux know what custom query parameters you want to
+   * allow for this controller.
+   *
+   * For security reasons, query parameters passed to Controller actions from an
+   * incoming request other than sort, filter, and page must have their key
+   * whitelisted.
+   *
+   * @example
+   * class UsersController extends Controller {
+   *   // Allow the following custom query parameters to be used for this
+   *   // Controller's actions.
+   *   query = [
+   *     'cache'
+   *   ];
+   * }
+   *
+   * @property params
+   * @memberof Controller
+   * @instance
+   */
+  query: Array<string> = [];
+
+  /**
+   * Whitelisted `?sort` parameter values.
+   *
+   * If you do not override this property all of the attributes specified in an
+   * instance's `Serializer` will be whitelisted.
+   *
+   * @property sort
+   * @memberof Controller
+   * @instance
+   */
+  sort: Array<string> = [];
+
+  /**
+   * Whitelisted `?filter[{key}]` parameter keys.
+   *
+   * If you do not override this property all of the attributes specified in an
+   * instance's `Serializer` will be whitelisted.
+   *
+   * @property filter
+   * @memberof Controller
+   * @instance
+   */
+  filter: Array<string> = [];
+
+  /**
+   * Whitelisted parameter keys to allow in incoming PATCH and POST requests.
+   *
+   * For security reasons, parameters passed to controller actions from an
+   * incoming request must have their key whitelisted.
+   *
+   * @example
+   * class UsersController extends Controller {
+   *   // Do not allow incoming PATCH or POST requests to modify User#isAdmin.
+   *   params = [
+   *     'name',
+   *     'email',
+   *     'password',
+   *     // 'isAdmin'
+   *   ];
+   * }
+   *
+   * @property params
+   * @memberof Controller
+   * @instance
+   */
+  params: Array<string> = [];
+
+  /**
+   * Middleware functions to execute on each request handled by a `Controller`.
+   *
+   * Middleware functions declared in beforeAction on an `ApplicationController`
+   * will be executed before ALL route handlers.
+   *
+   * @property beforeAction
+   * @memberof Controller
+   * @instance
+   */
+  beforeAction: Array<Controller$Middleware> = [];
 
   /**
    * The number of records to return for the #index action when a `?limit`
@@ -53,28 +137,42 @@ class Controller {
   defaultPerPage: number = 25;
 
   /**
-   * @property store
+   * A boolean value representing whether or not a `Controller` has a backing
+   * `Model`.
+   *
+   * @property hasModel
    * @memberof Controller
    * @instance
-   * @readonly
    * @private
    */
-  store: Database;
+  hasModel: boolean;
 
   /**
-   * @property model
+   * A boolean value representing whether or not a `Controller` is a member of
+   * a namespace.
+   *
+   * @property hasNamespace
    * @memberof Controller
    * @instance
-   * @readonly
    * @private
    */
-  model: typeof Model;
+  hasNamespace: boolean;
+
+  /**
+   * A boolean value representing whether or not a `Controller` has a backing
+   * `Serializer`.
+   *
+   * @property hasSerializer
+   * @memberof Controller
+   * @instance
+   * @private
+   */
+  hasSerializer: boolean;
 
   /**
    * @property modelName
    * @memberof Controller
    * @instance
-   * @readonly
    * @private
    */
   modelName: string;
@@ -83,7 +181,6 @@ class Controller {
    * @property attributes
    * @memberof Controller
    * @instance
-   * @readonly
    * @private
    */
   attributes: Array<string>;
@@ -92,7 +189,6 @@ class Controller {
    * @property relationships
    * @memberof Controller
    * @instance
-   * @readonly
    * @private
    */
   relationships: Array<string>;
@@ -101,37 +197,21 @@ class Controller {
    * @property serializer
    * @memberof Controller
    * @instance
-   * @readonly
    * @private
    */
-  serializer: Serializer;
+  serializer: Serializer<*>;
 
   /**
    * @property controllers
    * @memberof Controller
    * @instance
-   * @readonly
    * @private
    */
   controllers: Map<string, Controller>;
 
-  /**
-   * @property parentController
-   * @memberof Controller
-   * @instance
-   * @readonly
-   * @private
-   */
-  parentController: ?Controller;
-
-  constructor({
-    store,
-    model,
-    serializer,
-    controllers,
-    parentController
-  }: Controller$opts) {
+  constructor({ model, namespace, serializer }: Controller$opts) {
     const hasModel = Boolean(model);
+    const hasNamespace = Boolean(namespace);
     const hasSerializer = Boolean(serializer);
     let attributes = [];
     let relationships = [];
@@ -157,273 +237,35 @@ class Controller {
       Object.freeze(relationships);
     }
 
-    Object.defineProperties(this, {
-      model: {
-        value: model,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      hasModel: {
-        value: hasModel,
-        writable: false,
-        enumerable: true,
-        configurable: false
-      },
-
-      modelName: {
-        value: hasModel ? model.modelName : '',
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      serializer: {
-        value: serializer,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      hasSerializer: {
-        value: hasSerializer,
-        writable: false,
-        enumerable: true,
-        configurable: false
-      },
-
-      store: {
-        value: store,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      attributes: {
-        value: attributes,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      relationships: {
-        value: relationships,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      controllers: {
-        value: controllers,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      parentController: {
-        value: parentController,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      }
+    Object.assign(this, {
+      model,
+      namespace,
+      serializer
     });
-  }
 
-  /**
-   * Use this property to let Lux know what custom query parameters you want to
-   * allow for this controller.
-   *
-   * For security reasons, query parameters passed to Controller actions from an
-   * incoming request other than sort, filter, and page must have their key
-   * whitelisted.
-   *
-   * @example
-   * class UsersController extends Controller {
-   *   // Allow the following custom query parameters to be used for this
-   *   // Controller's actions.
-   *   query = [
-   *     'cache'
-   *   ];
-   * }
-   *
-   * @property params
-   * @memberof Controller
-   * @instance
-   */
-  get query(): Array<string> {
-    return Object.freeze([]);
-  }
+    freezeProps(this, true,
+      'model',
+      'namespace',
+      'serializer'
+    );
 
-  set query(value: Array<string>): void {
-    if (value && value.length) {
-      const query = new Array(value.length);
+    Object.assign(this, {
+      hasModel,
+      hasNamespace,
+      hasSerializer,
+      attributes,
+      relationships,
+      modelName: hasModel ? model.modelName : '',
+    });
 
-      insert(query, value);
-
-      Reflect.defineProperty(this, 'query', {
-        value: Object.freeze(query),
-        writable: false,
-        enumerable: true,
-        configurable: false
-      });
-    }
-  }
-
-  /**
-   * Whitelisted `?sort` parameter values.
-   *
-   * If you do not override this property all of the attributes of the Model
-   * that this Controller represents will be valid.
-   *
-   * @property sort
-   * @memberof Controller
-   * @instance
-   */
-  get sort(): Array<string> {
-    return this.attributes;
-  }
-
-  set sort(value: Array<string>): void {
-    if (value && value.length) {
-      const sort = new Array(sort.length);
-
-      insert(sort, value);
-
-      Reflect.defineProperty(this, 'sort', {
-        value: Object.freeze(sort),
-        writable: false,
-        enumerable: true,
-        configurable: false
-      });
-    }
-  }
-
-  /**
-   * Whitelisted `?filter[{key}]` parameter keys.
-   *
-   * If you do not override this property all of the attributes of the Model
-   * that this Controller represents will be valid.
-   *
-   * @property filter
-   * @memberof Controller
-   * @instance
-   */
-  get filter(): Array<string> {
-    return this.attributes;
-  }
-
-  set filter(value: Array<string>): void {
-    if (value && value.length) {
-      const filter = new Array(filter.length);
-
-      insert(filter, value);
-
-      Reflect.defineProperty(this, 'filter', {
-        value: Object.freeze(filter),
-        writable: false,
-        enumerable: true,
-        configurable: false
-      });
-    }
-  }
-
-  /**
-   * Whitelisted parameter keys to allow in incoming PATCH and POST requests.
-   *
-   * For security reasons, parameters passed to controller actions from an
-   * incoming request must have their key whitelisted.
-   *
-   * @example
-   * class UsersController extends Controller {
-   *   // Do not allow incoming PATCH or POST requests to modify User#isAdmin.
-   *   params = [
-   *     'name',
-   *     'email',
-   *     'password',
-   *     // 'isAdmin'
-   *   ];
-   * }
-   *
-   * @property params
-   * @memberof Controller
-   * @instance
-   */
-  get params(): Array<string> {
-    return Object.freeze([]);
-  }
-
-  set params(value: Array<string>): void {
-    if (value && value.length) {
-      const params = new Array(value.length);
-
-      insert(params, value);
-
-      Reflect.defineProperty(this, 'params', {
-        value: Object.freeze(params),
-        writable: false,
-        enumerable: true,
-        configurable: false
-      });
-    }
-  }
-
-  /**
-   * Middleware functions to execute on each request handled by a `Controller`.
-   *
-   * Middleware functions declared in beforeAction on an `ApplicationController`
-   * will be executed before ALL route handlers.
-   *
-   * @property beforeAction
-   * @memberof Controller
-   * @instance
-   */
-  get beforeAction(): Array<Function> {
-    return Object.freeze([]);
-  }
-
-  set beforeAction(value: Array<Function>): void {
-    if (value && value.length) {
-      const beforeAction = new Array(value.length);
-
-      insert(beforeAction, value);
-
-      Reflect.defineProperty(this, 'beforeAction', {
-        value: Object.freeze(beforeAction),
-        writable: false,
-        enumerable: true,
-        configurable: false
-      });
-    }
-  }
-
-  /**
-   * @property middleware
-   * @memberof Controller
-   * @instance
-   * @readonly
-   * @private
-   */
-  get middleware(): Array<Function> {
-    const { beforeAction, parentController } = this;
-    let middleware;
-
-    if (parentController) {
-      const length = beforeAction.length + parentController.beforeAction.length;
-
-      middleware = new Array(length);
-
-      insert(middleware, [
-        ...parentController.middleware,
-        ...beforeAction
-      ]);
-    } else {
-      middleware = new Array(beforeAction.length);
-
-      insert(middleware, beforeAction);
-    }
-
-    return middleware;
+    deepFreezeProps(this, false,
+      'hasModel',
+      'hasNamespace',
+      'hasSerializer',
+      'attributes',
+      'relationships',
+      'modelName'
+    );
   }
 
   /**
@@ -576,3 +418,10 @@ class Controller {
 }
 
 export default Controller;
+export { BUILT_IN_ACTIONS } from './constants';
+
+export type {
+  Controller$opts,
+  Controller$builtIn,
+  Controller$Middleware,
+} from './interfaces';

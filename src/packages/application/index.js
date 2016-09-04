@@ -88,7 +88,7 @@ class Application {
    * @instance
    * @readonly
    */
-  serializers: Map<string, Serializer>;
+  serializers: Map<string, Serializer<*>>;
 
   /**
    * A reference to the instance of `Router`.
@@ -125,4 +125,4 @@ class Application {
 
 export default Application;
 
-export type { Application$opts } from './interfaces';
+export type { Application$opts, Application$factoryOpts } from './interfaces';

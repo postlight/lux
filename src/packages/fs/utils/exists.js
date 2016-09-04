@@ -8,11 +8,9 @@ import tryCatch from '../../../utils/try-catch';
  */
 export default async function exists(
   path: string | RegExp,
-  dir: string
+  dir?: string
 ): Promise<boolean> {
-  if (typeof path === 'string') {
-    return Boolean(await tryCatch(() => stat(path)));
-  } else if (path instanceof RegExp) {
+  if (path instanceof RegExp) {
     const pattern = path;
     let files = [];
 
@@ -21,7 +19,9 @@ export default async function exists(
     }
 
     return files.some(file => pattern.test(file));
-  }
+  } else {
+    const str = path;
 
-  return false;
+    return Boolean(await tryCatch(() => stat(str)));
+  }
 }

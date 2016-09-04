@@ -118,7 +118,7 @@ class Model {
   /**
    * @private
    */
-  static serializer: Serializer;
+  static serializer: Serializer<this>;
 
   /**
    * @private

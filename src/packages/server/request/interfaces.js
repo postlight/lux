@@ -1,7 +1,6 @@
 // @flow
 import type Logger from '../../logger';
-import type Router from '../../router';
-import type Route from '../../route';
+import type Router, { Route } from '../../router';
 
 export type Request$opts = {
   logger: Logger;

@@ -7,25 +7,33 @@ import isFrozen from '../utils/is-frozen';
  */
 class FreezeableSet<T> extends Set<T> {
   add(value: T): FreezeableSet<T> {
-    if (!isFrozen(this)) {
+    if (!this.isFrozen()) {
       super.add(value);
     }
 
     return this;
   }
 
-  clear() {
-    if (!isFrozen(this)) {
+  clear(): void {
+    if (!this.isFrozen()) {
       super.clear();
     }
   }
 
-  delete(value: T) {
-    return isFrozen(this) ? false : super.delete(value);
+  delete(value: T): boolean {
+    return this.isFrozen() ? false : super.delete(value);
   }
 
-  freeze() {
+  freeze(deep?: boolean): FreezeableSet<T> {
+    if (deep) {
+      this.forEach(Object.freeze);
+    }
+
     return freeze(this);
+  }
+
+  isFrozen(): boolean {
+    return isFrozen(this);
   }
 }
 

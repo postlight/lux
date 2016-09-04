@@ -1,15 +1,18 @@
 import { CWD } from '../../../constants';
+
 import Database, { pendingMigrations } from '../../database';
 import Logger, { sql } from '../../logger';
-import loader from '../../loader';
+import { createLoader } from '../../loader';
 
 /**
  * @private
  */
 export async function dbmigrate() {
-  const { database: config } = loader(CWD, 'config');
-  const models = loader(CWD, 'models');
-  const migrations = loader(CWD, 'migrations');
+  const load = createLoader(CWD);
+
+  const { database: config } = load('config');
+  const models = load('models');
+  const migrations = load('migrations');
 
   const { connection, schema } = await new Database({
     config,

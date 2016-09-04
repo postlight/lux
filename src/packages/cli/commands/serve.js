@@ -5,7 +5,7 @@ import { CWD, PORT, NODE_ENV } from '../../../constants';
 
 import Logger from '../../logger';
 import Watcher from '../../watcher';
-import loader from '../../loader';
+import { createLoader } from '../../loader';
 import { createCluster } from '../../pm';
 
 import { build } from './build';
@@ -22,7 +22,8 @@ export async function serve({
   cluster: boolean;
   useStrict: boolean;
 }): Promise<void> {
-  const { logging } = loader(CWD, 'config');
+  const load = createLoader(CWD);
+  const { logging } = load('config');
   const logger = new Logger(logging);
 
   if (hot) {

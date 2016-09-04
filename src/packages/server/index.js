@@ -134,7 +134,7 @@ class Server {
 }
 
 export default Server;
-export { getDomain } from './request';
+export { REQUEST_METHODS, getDomain } from './request';
 export { default as createServerError } from './utils/create-server-error';
 
 export type { Server$config } from './interfaces';

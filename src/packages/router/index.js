@@ -1,36 +1,30 @@
 // @flow
-import { ID_PATTERN } from '../route';
+import { ID_PATTERN } from './route';
 
 import { FreezeableMap } from '../freezeable';
 
-import * as define from './define';
+import Namespace from './namespace';
+import { build, define } from './definitions';
 
 import type { Request } from '../server';
 import type { Router$opts } from './interfaces';
-import type Route, { Route$opts } from '../route';
+import type Route from './route';
 
 /**
  * @private
  */
 class Router extends FreezeableMap<string, Route> {
-  constructor({ routes, controllers }: Router$opts) {
+  constructor({ routes, controller, controllers }: Router$opts) {
     super();
 
-    Reflect.apply(routes, {
-      route: (path: string, { method, action }: Route$opts) => define.route({
-        path,
-        method,
-        action,
-        controllers,
-        router: this
-      }),
+    const definitions = build(routes, new Namespace({
+      controller,
+      controllers,
+      path: '/',
+      name: 'root'
+    }));
 
-      resource: (path: string) => define.resource({
-        path,
-        controllers,
-        router: this
-      })
-    }, []);
+    define(this, definitions);
 
     this.freeze();
   }
@@ -43,3 +37,15 @@ class Router extends FreezeableMap<string, Route> {
 }
 
 export default Router;
+
+export {
+  ID_PATTERN,
+  DYNAMIC_PATTERN,
+  RESOURCE_PATTERN,
+  default as Route
+ } from './route';
+
+export type { Router$Namespace } from './interfaces';
+export type { Resource$opts } from './resource';
+export type { Namespace$opts } from './namespace';
+export type { Action, Route$opts, Route$type } from './route';

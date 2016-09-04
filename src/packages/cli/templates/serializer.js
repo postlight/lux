@@ -17,7 +17,7 @@ export default (name: string, attrs: Array<string>): string => {
     attrs = [];
   }
 
-  if (name !== 'Application') {
+  if (!name.endsWith('Application')) {
     name = pluralize(name);
   }
 
