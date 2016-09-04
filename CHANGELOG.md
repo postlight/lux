@@ -1,5 +1,14 @@
 # Lux Changelog
 
+### 1.0.0-rc.7 (Sept 4, 2016)
+
+This release implements a fix for a regression in `1.0.0-rc.6` where model migrations would include the formatted filename as the table name (i.e `'2016050414243335_create_posts'` instead of `'posts'`).
+
+##### Commits
+
+* [[`7bd0f4d87b`](https://github.com/postlight/lux/commit/7bd0f4d87b)] - **chore**: update example applications (#361) (Zachary Golba)
+* [[`9bcecc5650`](https://github.com/postlight/lux/commit/9bcecc5650)] - **release**: 1.0.0-rc.6 (#360) (Zachary Golba)
+
 ### 1.0.0-rc.6 (Sept 4, 2016)
 
 This release contains a number of bug fixes related to overriding default behavior such as custom actions, model-less controllers, etc. In addition to bug fixes this release contains some awesome new features.
