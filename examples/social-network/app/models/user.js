@@ -1,9 +1,8 @@
 import { Model } from 'lux-framework';
 
 import {
-  generateSalt,
   encryptPassword,
-  decryptPassword
+  comparePassword
 } from 'app/utils/password';
 
 class User extends Model {
@@ -42,11 +41,9 @@ class User extends Model {
       const { id, password, dirtyAttributes } = user;
 
       if ((typeof id !== 'number') && password || dirtyAttributes.has('password')) {
-        const salt = generateSalt();
 
         Object.assign(user, {
-          password: encryptPassword(password, salt),
-          passwordSalt: salt
+          password: encryptPassword(password)
         });
       }
     }
@@ -67,9 +64,7 @@ class User extends Model {
   };
 
   authenticate(password) {
-    const { password: encrypted, passwordSalt: salt } = this;
-
-    return password === decryptPassword(encrypted, salt);
+    return comparePassword(password, this.password);
   }
 }
 
