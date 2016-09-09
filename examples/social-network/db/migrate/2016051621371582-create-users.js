@@ -14,9 +14,6 @@ export function up(schema) {
     table.string('password')
       .notNullable();
 
-    table.string('password_salt')
-      .notNullable();
-
     table.timestamps();
     table.index(['created_at', 'updated_at']);
   });

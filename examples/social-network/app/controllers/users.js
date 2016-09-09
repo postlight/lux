@@ -22,7 +22,7 @@ class UsersController extends Controller {
     const user = await User.findByEmail(email);
 
     if (user) {
-      return user.authenticate(password);
+      return await user.authenticate(password);
     }
   }
 }
