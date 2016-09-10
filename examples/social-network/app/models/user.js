@@ -1,9 +1,5 @@
 import { Model } from 'lux-framework';
-
-import {
-  encryptPassword,
-  comparePassword
-} from 'app/utils/password';
+import bcrypt from 'bcrypt-as-promised';
 
 class User extends Model {
   static hasMany = {
@@ -38,13 +34,8 @@ class User extends Model {
 
   static hooks = {
     async beforeSave(user) {
-      const { id, password, dirtyAttributes } = user;
-
-      if ((typeof id !== 'number') && password || dirtyAttributes.has('password')) {
-
-        Object.assign(user, {
-          password: encryptPassword(password)
-        });
+      if (user.isNew || user.dirtyAttributes.has('password')) {
+        user.password = await bcrypt.hash(user.password, 10);
       }
     }
   };
@@ -63,8 +54,15 @@ class User extends Model {
     }
   };
 
-  authenticate(password) {
-    return comparePassword(password, this.password);
+  static async authenticate(email, password) {
+    const user = await this.findByEmail(email);
+
+    if (user) {
+      return await bcrypt
+        .compare(password, user.password)
+        .then(() => user)
+        .catch(bcrypt.MISMATCH_ERROR, () => false);
+    }
   }
 }
 
