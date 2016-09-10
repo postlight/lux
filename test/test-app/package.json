@@ -1,5 +1,5 @@
 {
-  "name": "test-app",
+  "name": "social-network",
   "version": "0.0.1",
   "description": "",
   "main": "app/index.js",
@@ -10,11 +10,12 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "babel-core": "6.13.2",
-    "babel-preset-lux": "1.1.0",
+    "babel-core": "6.14.0",
+    "babel-preset-lux": "1.2.0",
+    "bcrypt-as-promised": "1.1.0",
     "knex": "0.11.10",
     "mssql": "3.3.0",
-    "mysql2": "1.0.0-rc.10",
+    "mysql2": "1.0.0-rc.12",
     "pg": "6.1.0",
     "sqlite3": "3.1.4"
   },

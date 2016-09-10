@@ -6,8 +6,6 @@ decl
 .*/dist/.*
 .*/docs/.*
 .*/scripts/.*
-.*/examples/.*
-.*/node_modules/.*
 
 [options]
 esproposal.class_instance_fields=enable

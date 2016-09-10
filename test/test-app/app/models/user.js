@@ -1,10 +1,5 @@
 import { Model } from 'LUX_LOCAL';
-
-import {
-  generateSalt,
-  encryptPassword,
-  decryptPassword
-} from 'app/utils/password';
+import bcrypt from 'bcrypt-as-promised';
 
 class User extends Model {
   static hasMany = {
@@ -39,19 +34,8 @@ class User extends Model {
 
   static hooks = {
     async beforeSave(user) {
-      const {
-        isNew,
-        password,
-        dirtyAttributes
-      } = user;
-
-      if (isNew && password || dirtyAttributes.has('password')) {
-        const salt = generateSalt();
-
-        Object.assign(user, {
-          password: encryptPassword(password, salt),
-          passwordSalt: salt
-        });
+      if (user.isNew || user.dirtyAttributes.has('password')) {
+        user.password = await bcrypt.hash(user.password, 10);
       }
     }
   };
@@ -70,10 +54,15 @@ class User extends Model {
     }
   };
 
-  authenticate(password) {
-    const { password: encrypted, passwordSalt: salt } = this;
+  static async authenticate(email, password) {
+    const user = await this.findByEmail(email);
 
-    return password === decryptPassword(encrypted, salt);
+    if (user) {
+      return await bcrypt
+        .compare(password, user.password)
+        .then(() => user)
+        .catch(bcrypt.MISMATCH_ERROR, () => false);
+    }
   }
 }
 
