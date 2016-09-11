@@ -1,7 +1,7 @@
 import { Application } from 'LUX_LOCAL';
 
-class SocialNetwork extends Application {
+class TestApp extends Application {
 
 }
 
-export default SocialNetwork;
+export default TestApp;
