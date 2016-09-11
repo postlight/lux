@@ -6,6 +6,7 @@ decl
 .*/dist/.*
 .*/docs/.*
 .*/scripts/.*
+.*/node_modules/bcryptjs/*
 
 [options]
 esproposal.class_instance_fields=enable
