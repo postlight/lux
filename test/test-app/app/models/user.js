@@ -1,6 +1,6 @@
 import { Model } from 'LUX_LOCAL';
 
-import { hashPassword, comparePassword } from 'app/utils/password';
+import { hashPassword, comparePassword } from '../utils/password';
 
 class User extends Model {
   static hasMany = {
