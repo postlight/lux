@@ -12,11 +12,9 @@ import initializeClass from './initialize-class';
 import pick from '../../../utils/pick';
 import omit from '../../../utils/omit';
 import setType from '../../../utils/set-type';
-import tryCatch from '../../../utils/try-catch';
 import underscore from '../../../utils/underscore';
 import validate from './utils/validate';
 import getColumns from './utils/get-columns';
-import processWriteError from './utils/process-write-error';
 
 import type Logger from '../../logger';
 import type Database from '../../database';
@@ -309,81 +307,77 @@ class Model {
     }
   }
 
-  save(deep?: boolean): Promise<Model> {
-    return tryCatch(async () => {
-      const {
-        constructor: {
-          table,
-          logger,
-          primaryKey,
+  async save(deep?: boolean): Promise<this> {
+    const {
+      constructor: {
+        table,
+        logger,
+        primaryKey,
 
-          hooks: {
-            afterUpdate,
-            afterSave,
-            afterValidation,
-            beforeUpdate,
-            beforeSave,
-            beforeValidation
-          }
+        hooks: {
+          afterUpdate,
+          afterSave,
+          afterValidation,
+          beforeUpdate,
+          beforeSave,
+          beforeValidation
         }
-      } = this;
-
-      if (typeof beforeValidation === 'function') {
-        await beforeValidation(this);
       }
+    } = this;
 
-      validate(this);
+    if (typeof beforeValidation === 'function') {
+      await beforeValidation(this);
+    }
 
-      if (typeof afterValidation === 'function') {
-        await afterValidation(this);
-      }
+    validate(this);
 
-      if (typeof beforeUpdate === 'function') {
-        await beforeUpdate(this);
-      }
+    if (typeof afterValidation === 'function') {
+      await afterValidation(this);
+    }
 
-      if (typeof beforeSave === 'function') {
-        await beforeSave(this);
-      }
+    if (typeof beforeUpdate === 'function') {
+      await beforeUpdate(this);
+    }
 
-      Reflect.set(this, 'updatedAt', new Date());
+    if (typeof beforeSave === 'function') {
+      await beforeSave(this);
+    }
 
-      const query = table()
-        .where({ [primaryKey]: Reflect.get(this, primaryKey) })
-        .update(getColumns(this, Array.from(this.dirtyAttributes)))
-        .on('query', () => {
-          setImmediate(() => logger.debug(sql`${query.toString()}`));
-        });
+    Reflect.set(this, 'updatedAt', new Date());
 
-      if (deep) {
-        await Promise.all([
-          query,
-          saveRelationships(this)
-        ]);
+    const query = table()
+      .where({ [primaryKey]: Reflect.get(this, primaryKey) })
+      .update(getColumns(this, Array.from(this.dirtyAttributes)))
+      .on('query', () => {
+        setImmediate(() => logger.debug(sql`${query.toString()}`));
+      });
 
-        this.prevAssociations.clear();
-      } else {
-        await query;
-      }
+    if (deep) {
+      await Promise.all([
+        query,
+        saveRelationships(this)
+      ]);
 
-      NEW_RECORDS.delete(this);
-      this.dirtyAttributes.clear();
+      this.prevAssociations.clear();
+    } else {
+      await query;
+    }
 
-      if (typeof afterUpdate === 'function') {
-        await afterUpdate(this);
-      }
+    NEW_RECORDS.delete(this);
+    this.dirtyAttributes.clear();
 
-      if (typeof afterSave === 'function') {
-        await afterSave(this);
-      }
+    if (typeof afterUpdate === 'function') {
+      await afterUpdate(this);
+    }
 
-      return this;
-    }, err => {
-      throw processWriteError(err);
-    }).then(() => this);
+    if (typeof afterSave === 'function') {
+      await afterSave(this);
+    }
+
+    return this;
   }
 
-  async update(attributes: Object = {}): Promise<Model> {
+  async update(attributes: Object = {}): Promise<this> {
     Object.assign(this, attributes);
 
     if (this.isDirty) {
@@ -393,7 +387,7 @@ class Model {
     return this;
   }
 
-  async destroy(): Promise<Model> {
+  async destroy(): Promise<this> {
     const {
       constructor: {
         primaryKey,

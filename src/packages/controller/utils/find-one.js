@@ -18,7 +18,7 @@ export default function findOne({
       model
     }
   }
-}: Request): Promise<?Model> {
+}: Request): Promise<Model> {
   const {
     id,
     select,

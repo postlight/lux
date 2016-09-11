@@ -292,7 +292,7 @@ class Controller {
    * @param  {Request} request
    * @param  {Response} response
    */
-  show(req: Request): Promise<void | ?Model> {
+  show(req: Request): Promise<Model> {
     return findOne(req);
   }
 
@@ -303,43 +303,57 @@ class Controller {
    * @param  {Request} request
    * @param  {Response} response
    */
-  async create(req: Request, res: Response): Promise<Model> {
+  create(req: Request, res: Response): Promise<Model> {
     const {
-      url: {
-        pathname
-      },
-
       params: {
         data: {
-          attributes,
-          relationships
-        } = {}
+          attributes
+        }
       },
-
       route: {
         controller: {
-          model,
-          controllers
+          model
         }
       }
     } = req;
 
-    const record = await model.create(attributes);
-    const id = Reflect.get(record, model.primaryKey);
+    return model
+      .create(attributes)
+      .then(record => {
+        const {
+          params: {
+            data: {
+              relationships
+            }
+          },
+          route: {
+            controller: {
+              controllers
+            }
+          }
+        } = req;
 
-    if (relationships) {
-      Object.assign(
-        record,
-        await findRelated(controllers, relationships)
-      );
+        if (relationships) {
+          return findRelated(
+            controllers,
+            relationships
+          ).then(related => {
+            Object.assign(record, related);
+            return record.save(true);
+          });
+        } else {
+          return record;
+        }
+      })
+      .then(record => {
+        const { url: { pathname } } = req;
+        const id = record.getPrimaryKey();
 
-      await record.save(true);
-    }
+        res.statusCode = 201;
+        res.setHeader('Location', `${getDomain(req) + pathname}/${id}`);
 
-    res.statusCode = 201;
-    res.setHeader('Location', `${getDomain(req) + pathname}/${id}`);
-
-    return record;
+        return record;
+      });
   }
 
   /**
@@ -349,44 +363,41 @@ class Controller {
    * @param  {Request} request
    * @param  {Response} response
    */
-  async update(req: Request): Promise<number | Model | void> {
-    const record = await findOne(req);
-
-    const {
-      params: {
-        data: {
-          attributes,
-          relationships
-        } = {}
-      },
-
-      route: {
-        controller: {
-          controllers
+  update(req: Request): Promise<number | Model> {
+    return new Promise((resolve, reject) => {
+      findOne(req).then(resolve, reject);
+    }).then(record => {
+      const {
+        params: {
+          data: {
+            attributes,
+            relationships
+          }
         }
-      }
-    } = req;
+      } = req;
 
-    if (record) {
       Object.assign(record, attributes);
 
       if (relationships) {
-        Object.assign(
-          record,
-          await findRelated(controllers, relationships)
-        );
+        const {
+          route: {
+            controller: {
+              controllers
+            }
+          }
+        } = req;
 
-        return await record.save(true);
-      } else {
-        if (record.isDirty) {
-          return await record.save();
-        } else {
-          return 204;
-        }
+        return findRelated(
+          controllers,
+          relationships
+        ).then(related => {
+          Object.assign(record, related);
+          return record.save(true);
+        });
       }
-    }
 
-    return 404;
+      return record.isDirty ? record.save() : 204;
+    });
   }
 
   /**
@@ -396,13 +407,10 @@ class Controller {
    * @param  {Request} request
    * @param  {Response} response
    */
-  async destroy(req: Request): Promise<number | void> {
-    const record = await findOne(req);
-
-    if (record) {
-      await record.destroy();
-      return 204;
-    }
+  destroy(req: Request): Promise<number> {
+    return findOne(req)
+      .then(record => record.destroy())
+      .then(() => 204);
   }
 
   /**
@@ -412,8 +420,8 @@ class Controller {
    * @param  {Response} response
    * @private
    */
-  async preflight(): Promise<number> {
-    return 204;
+  preflight(): Promise<number> {
+    return Promise.resolve(204);
   }
 }
 
