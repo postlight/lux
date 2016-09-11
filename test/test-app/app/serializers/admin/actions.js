@@ -1,4 +1,4 @@
-import ActionsSerializer from 'app/serializers/actions';
+import ActionsSerializer from '../actions';
 
 class AdminActionsSerializer extends ActionsSerializer {
 

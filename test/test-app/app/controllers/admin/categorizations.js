@@ -1,4 +1,4 @@
-import CategorizationsController from 'app/controllers/categorizations';
+import CategorizationsController from '../categorizations';
 
 class AdminCategorizationsController extends CategorizationsController {
 

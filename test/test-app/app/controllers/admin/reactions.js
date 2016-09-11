@@ -1,4 +1,4 @@
-import ReactionsController from 'app/controllers/reactions';
+import ReactionsController from '../reactions';
 
 class AdminReactionsController extends ReactionsController {
 

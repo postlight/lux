@@ -1,4 +1,4 @@
-import FriendshipsController from 'app/controllers/friendships';
+import FriendshipsController from '../friendships';
 
 class AdminFriendshipsController extends FriendshipsController {
 

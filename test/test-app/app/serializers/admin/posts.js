@@ -1,4 +1,4 @@
-import PostsSerializer from 'app/serializers/posts';
+import PostsSerializer from '../posts';
 
 class AdminPostsSerializer extends PostsSerializer {
 

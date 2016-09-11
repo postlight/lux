@@ -1,4 +1,4 @@
-import ReactionsSerializer from 'app/serializers/reactions';
+import ReactionsSerializer from '../reactions';
 
 class AdminReactionsSerializer extends ReactionsSerializer {
 

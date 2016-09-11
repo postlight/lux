@@ -1,4 +1,4 @@
-import PostsController from 'app/controllers/posts';
+import PostsController from '../posts';
 
 class AdminPostsController extends PostsController {
 

@@ -1,4 +1,4 @@
-import FriendshipsSerializer from 'app/serializers/friendships';
+import FriendshipsSerializer from '../friendships';
 
 class AdminFriendshipsSerializer extends FriendshipsSerializer {
 

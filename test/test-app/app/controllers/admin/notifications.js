@@ -1,4 +1,4 @@
-import NotificationsController from 'app/controllers/notifications';
+import NotificationsController from '../notifications';
 
 class AdminNotificationsController extends NotificationsController {
 

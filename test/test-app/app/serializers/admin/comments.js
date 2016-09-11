@@ -1,4 +1,4 @@
-import CommentsSerializer from 'app/serializers/comments';
+import CommentsSerializer from '../comments';
 
 class AdminCommentsSerializer extends CommentsSerializer {
 

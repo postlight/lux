@@ -1,4 +1,4 @@
-import UsersController from 'app/controllers/users';
+import UsersController from '../users';
 
 class AdminUsersController extends UsersController {
 

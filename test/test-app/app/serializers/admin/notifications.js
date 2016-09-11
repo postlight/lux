@@ -1,4 +1,4 @@
-import NotificationsSerializer from 'app/serializers/notifications';
+import NotificationsSerializer from '../notifications';
 
 class AdminNotificationsSerializer extends NotificationsSerializer {
 

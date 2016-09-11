@@ -1,4 +1,4 @@
-import CategorizationsSerializer from 'app/serializers/categorizations';
+import CategorizationsSerializer from '../categorizations';
 
 class AdminCategorizationsSerializer extends CategorizationsSerializer {
 

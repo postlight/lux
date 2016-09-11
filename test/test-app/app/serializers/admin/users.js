@@ -1,4 +1,4 @@
-import UsersSerializer from 'app/serializers/users';
+import UsersSerializer from '../users';
 
 class AdminUsersSerializer extends UsersSerializer {
 

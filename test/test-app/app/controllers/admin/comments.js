@@ -1,4 +1,4 @@
-import CommentsController from 'app/controllers/comments';
+import CommentsController from '../comments';
 
 class AdminCommentsController extends CommentsController {
 

@@ -1,4 +1,4 @@
-import TagsSerializer from 'app/serializers/tags';
+import TagsSerializer from '../tags';
 
 class AdminTagsSerializer extends TagsSerializer {
 
