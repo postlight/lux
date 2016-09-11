@@ -13,58 +13,60 @@ import { getTestApp } from '../../../../test/utils/get-test-app';
 import type Application from '../../application';
 import type { Request } from '../../server';
 
-describe('Router', () => {
-  let subject: Router;
+describe('module "router"', () => {
+  describe('class Router', () => {
+    let subject: Router;
 
-  before(async () => {
-    const { controllers }: Application = await getTestApp();
+    before(async () => {
+      const { controllers }: Application = await getTestApp();
 
-    subject = new Router({
-      controllers,
-      controller: setType(() => controllers.get('application')),
+      subject = new Router({
+        controllers,
+        controller: setType(() => controllers.get('application')),
 
-      routes() {
-        this.resource('posts');
-        this.resource('users', {
-          only: ['index']
-        });
-      }
-    });
-  });
-
-  it('can define a single route', () => {
-    expect(subject.has(ROUTE_KEY)).to.be.true;
-  });
-
-  it('can define a complete resource', () => {
-    RESOURCE_KEYS.forEach(key => {
-      expect(subject.has(key)).to.be.true;
-    });
-  });
-
-  describe('#match()', () => {
-    it('can match a route for a request with a dynamic url', () => {
-      const req: Request = setType(() => ({
-        method: 'GET',
-
-        url: {
-          pathname: '/posts/1'
+        routes() {
+          this.resource('posts');
+          this.resource('users', {
+            only: ['index']
+          });
         }
-      }));
-
-      expect(subject.match(req)).to.be.an.instanceof(Route);
+      });
     });
 
-    it('can match a route for a request with a non-dynamic url', () => {
-      const req: Request = setType(() => ({
-        method: 'GET',
+    it('can define a single route', () => {
+      expect(subject.has(ROUTE_KEY)).to.be.true;
+    });
 
-        url: {
-          pathname: '/posts'
-        }
-      }));
+    it('can define a complete resource', () => {
+      RESOURCE_KEYS.forEach(key => {
+        expect(subject.has(key)).to.be.true;
+      });
+    });
 
-      expect(subject.match(req)).to.be.an.instanceof(Route);
+    describe('#match()', () => {
+      it('can match a route for a request with a dynamic url', () => {
+        const req: Request = setType(() => ({
+          method: 'GET',
+
+          url: {
+            pathname: '/posts/1'
+          }
+        }));
+
+        expect(subject.match(req)).to.be.an.instanceof(Route);
+      });
+
+      it('can match a route for a request with a non-dynamic url', () => {
+        const req: Request = setType(() => ({
+          method: 'GET',
+
+          url: {
+            pathname: '/posts'
+          }
+        }));
+
+        expect(subject.match(req)).to.be.an.instanceof(Route);
+      });
     });
   });
 });
