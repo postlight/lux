@@ -1,6 +1,6 @@
 import { Model } from 'LUX_LOCAL';
 
-import track from 'app/utils/track';
+import track from '../utils/track';
 
 class Post extends Model {
   static belongsTo = {

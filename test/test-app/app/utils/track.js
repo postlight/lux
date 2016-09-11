@@ -1,4 +1,4 @@
-import Action from 'app/models/action';
+import Action from '../models/action';
 
 export default async function track(trackable) {
   if (trackable) {
