@@ -4,7 +4,7 @@ import { it, describe, before } from 'mocha';
 
 import Parameter from '../parameter';
 
-describe('Module "router/route/params"', () => {
+describe('module "router/route/params"', () => {
   describe('class Parameter', () => {
     let subject: Parameter;
 
@@ -12,9 +12,7 @@ describe('Module "router/route/params"', () => {
       subject = new Parameter({
         type: 'array',
         path: 'meta.test',
-        values: [1, 'test', false],
-        required: false,
-        sanitaize: true
+        values: [1, 'test', false]
       });
     });
 
