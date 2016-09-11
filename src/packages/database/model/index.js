@@ -450,81 +450,77 @@ class Model {
     }
   }
 
-  static create(props = {}) {
-    return tryCatch(async () => {
-      const {
-        primaryKey,
-        logger,
-        table,
+  static async create(props = {}): Promise<this> {
+    const {
+      primaryKey,
+      logger,
+      table,
 
-        hooks: {
-          afterCreate,
-          afterSave,
-          afterValidation,
-          beforeCreate,
-          beforeSave,
-          beforeValidation
-        }
-      } = this;
-
-      const datetime = new Date();
-      const instance = Reflect.construct(this, [{
-        ...props,
-        createdAt: datetime,
-        updatedAt: datetime
-      }, false]);
-
-      if (typeof beforeValidation === 'function') {
-        await beforeValidation(instance);
+      hooks: {
+        afterCreate,
+        afterSave,
+        afterValidation,
+        beforeCreate,
+        beforeSave,
+        beforeValidation
       }
+    } = this;
 
-      validate(instance);
+    const datetime = new Date();
+    const instance = Reflect.construct(this, [{
+      ...props,
+      createdAt: datetime,
+      updatedAt: datetime
+    }, false]);
 
-      if (typeof afterValidation === 'function') {
-        await afterValidation(instance);
-      }
+    if (typeof beforeValidation === 'function') {
+      await beforeValidation(instance);
+    }
 
-      if (typeof beforeCreate === 'function') {
-        await beforeCreate(instance);
-      }
+    validate(instance);
 
-      if (typeof beforeSave === 'function') {
-        await beforeSave(instance);
-      }
+    if (typeof afterValidation === 'function') {
+      await afterValidation(instance);
+    }
 
-      const query = table()
-        .returning(primaryKey)
-        .insert(omit(getColumns(instance), primaryKey))
-        .on('query', () => {
-          setImmediate(() => logger.debug(sql`${query.toString()}`));
-        });
+    if (typeof beforeCreate === 'function') {
+      await beforeCreate(instance);
+    }
 
-      Object.assign(instance, {
-        [primaryKey]: (await query)[0]
+    if (typeof beforeSave === 'function') {
+      await beforeSave(instance);
+    }
+
+    const query = table()
+      .returning(primaryKey)
+      .insert(omit(getColumns(instance), primaryKey))
+      .on('query', () => {
+        setImmediate(() => logger.debug(sql`${query.toString()}`));
       });
 
-      Reflect.defineProperty(instance, 'initialized', {
-        value: true,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      });
-
-      Object.freeze(instance);
-      NEW_RECORDS.delete(instance);
-
-      if (typeof afterCreate === 'function') {
-        await afterCreate(instance);
-      }
-
-      if (typeof afterSave === 'function') {
-        await afterSave(instance);
-      }
-
-      return instance;
-    }, err => {
-      throw processWriteError(err);
+    Object.assign(instance, {
+      [primaryKey]: (await query)[0]
     });
+
+    Reflect.defineProperty(instance, 'initialized', {
+      value: true,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    });
+
+    Object.freeze(instance);
+    NEW_RECORDS.delete(instance);
+
+    if (typeof afterCreate === 'function') {
+      await afterCreate(instance);
+    }
+
+    if (typeof afterSave === 'function') {
+      await afterSave(instance);
+    }
+
+    return instance;
   }
 
   static all() {

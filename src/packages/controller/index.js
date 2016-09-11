@@ -278,7 +278,7 @@ class Controller {
    * @param  {Request} request
    * @param  {Response} response
    */
-  index(req: Request) {
+  index(req: Request): Promise<Array<Model>> {
     return findMany(req);
   }
 
@@ -292,7 +292,7 @@ class Controller {
    * @param  {Request} request
    * @param  {Response} response
    */
-  show(req: Request) {
+  show(req: Request): Promise<void | ?Model> {
     return findOne(req);
   }
 
@@ -412,7 +412,7 @@ class Controller {
    * @param  {Response} response
    * @private
    */
-  preflight() {
+  async preflight(): Promise<number> {
     return 204;
   }
 }
