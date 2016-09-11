@@ -15,3 +15,5 @@ Switch ($env:DATABASE_DRIVER) {
     Write-Host $null >> C:\projects\lux\test\test-app\db\lux_test_test.sqlite
   }
 }
+
+New-Item -ItemType directory C:\tmp
