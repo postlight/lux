@@ -3,21 +3,24 @@
 import { expect } from 'chai';
 import { it, describe, before, after } from 'mocha';
 
-import { mkdir, rmdir, writeFile, unlink } from 'fs';
 import { sep, basename, dirname, join } from 'path';
 
-import createTmpDir from './utils/create-tmp-dir';
+import {
+  createTmpDir,
+  createTmpFiles,
+  removeTmpDir
+} from './utils';
 
 import { exists } from '../index';
 
-const TMP_PATH = join(sep, 'tmp', `lux-${Date.now()}`, 'exists-test.tmp');
+const TMP_PATH = join(sep, 'tmp', `lux-${Date.now()}`);
 
 describe('fs', () => {
   describe('#exists()', () => {
 
     before(async () => {
-      await createTmpDir();
-      await createTmpFile(TMP_PATH);
+      await createTmpDir(TMP_PATH);
+      await createTmpFiles(TMP_PATH, 5);
     });
 
     it('is true if "PATH" exists', async () => {
@@ -41,31 +44,6 @@ describe('fs', () => {
       expect(fileExists).to.be.false;
     });
 
-    after(() => removeTmpFile(TMP_PATH));
-
+    after(() => removeTmpDir(TMP_PATH));
   });
 });
-
-function createTmpFile(path: string) {
-  return new Promise((resolve, reject) => {
-    mkdir(dirname(path), undefined, (err) => {
-      if (err) return reject(err);
-      writeFile(path, 'exists-test', (error) => {
-        if (error) return reject(error);
-        resolve(path);
-      });
-    });
-  });
-}
-
-function removeTmpFile(path: string) {
-  return new Promise((resolve, reject) => {
-    unlink(path, err => {
-      if (err) return reject(err);
-      rmdir(dirname(path), (error) => {
-        if (error) return reject(error);
-        resolve();
-      });
-    });
-  });
-}

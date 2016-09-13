@@ -1,15 +1,17 @@
-//@flow
+// @flow
 
 import { expect } from 'chai';
 import { it, describe, beforeEach, afterEach } from 'mocha';
 
-import { mkdir, rmdir, writeFile, readdir, unlink } from 'fs';
 import { sep, join } from 'path';
 
-import range  from '../../../utils/range';
-import createRootTmpDir from './utils/create-tmp-dir';
-
 import { rmrf, exists } from '../index';
+import {
+  getTmpFile,
+  createTmpDir,
+  removeTmpDir,
+  createTmpFiles
+} from './utils';
 
 describe('fs', () => {
   describe('#rmrf()', () => {
@@ -18,8 +20,8 @@ describe('fs', () => {
     beforeEach(async () => {
       tmpDirPath = join(sep, 'tmp', `lux-${Date.now()}`);
 
-      await createRootTmpDir();
       await createTmpDir(tmpDirPath);
+      await createTmpFiles(tmpDirPath, 5);
     });
 
     it('removes a file', async () => {
@@ -40,62 +42,3 @@ describe('fs', () => {
     });
   });
 });
-
-function createTmpDir(path: string) {
-  return new Promise((resolve, reject) => {
-    mkdir(path, undefined, (err) => {
-      if (err) return reject(err);
-      const filePaths = Array.from(range(1, 5))
-        .map(() => join(path, `${Date.now()}.tmp`));
-      createTmpFiles(filePaths).then(resolve, reject);
-    });
-  });
-}
-
-function createTmpFiles(filePaths: Array<string>) {
-  return Promise.all(filePaths.map((filePath) => {
-    return new Promise((resolve, reject) => {
-      writeFile(filePath, '', (error) => {
-        if (error) return reject(error);
-        resolve();
-      });
-    });
-  }));
-}
-
-function removeTmpDir(path: string) {
-  return new Promise((resolve, reject) => {
-    readdir(path, (err, files) => {
-      if (err) return reject(err);
-      const filePaths = files.map(fileName => join(path, fileName));
-      removeTmpFiles(filePaths)
-        .then(() => {
-          rmdir(path, (error) => {
-            if (error) reject(error);
-            resolve();
-          });
-        })
-        .catch((error) => reject(error));
-    });
-  });
-}
-
-function removeTmpFiles(filePaths: Array<string>) {
-  return Promise.all(filePaths.map((filePath) => {
-    return new Promise((resolve, reject) => {
-      unlink(filePath, (err) => {
-        if (err) return reject(err);
-        resolve();
-      });
-    });
-  }));
-}
-
-function getTmpFile (path: string) {
-  return new Promise((resolve, reject) => {
-    readdir(path, (err, files) => {
-      if (err) return reject(err);
-      resolve(join(path, files[0]));
-    });
-  });
-}
