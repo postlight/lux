@@ -26,7 +26,7 @@
     "flow": "node scripts/flow.js",
     "lint": "eslint .",
     "start": "lux serve",
-    "test": "npm run build && npm run build:test && mocha --timeout 120000 test/dist/index.js"
+    "test": "npm run build && npm run build:test && mocha test/dist/index.js"
   },
   "author": "Zachary Golba",
   "license": "MIT",
