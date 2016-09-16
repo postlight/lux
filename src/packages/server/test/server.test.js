@@ -7,8 +7,6 @@ import Server from '../index';
 
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
-import type Application from '../../application';
-
 const PORT = 4100;
 const DOMAIN = `http://localhost:${PORT}`;
 
@@ -17,7 +15,7 @@ describe('module "server"', () => {
     let subject;
 
     before(async () => {
-      const { logger, router }: Application = await getTestApp();
+      const { logger, router } = await getTestApp();
 
       subject = new Server({
         logger,

@@ -8,7 +8,6 @@ import Route from '../index';
 import setType from '../../../../utils/set-type';
 import { getTestApp } from '../../../../../test/utils/get-test-app';
 
-import type Application from '../../../application';
 import type Controller from '../../../controller';
 
 describe('module "router/route"', () => {
@@ -18,7 +17,7 @@ describe('module "router/route"', () => {
     let dataRoute: Route;
 
     before(async () => {
-      const { controllers }: Application = await getTestApp();
+      const { controllers } = await getTestApp();
       const controller: Controller = setType(() => controllers.get('posts'));
 
       staticRoute = new Route({

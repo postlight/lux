@@ -10,15 +10,13 @@ import { getDomain, createRequest, parseRequest } from '../index';
 
 import { getTestApp } from '../../../../../test/utils/get-test-app';
 
-import type Application from '../../../application';
-
 const DOMAIN = 'http://localhost:4100';
 
 describe('module "server/request"', () => {
   let test;
 
   before(async () => {
-    const { logger, router }: Application = await getTestApp();
+    const { logger, router } = await getTestApp();
 
     test = (path, opts, fn) => {
       const server = createServer((req, res) => {

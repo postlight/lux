@@ -39,7 +39,7 @@ describe('module "controller"', () => {
     before(async () => {
       const app = await getTestApp();
 
-      Post = app.models.get('post');
+      Post = setType(() => app.models.get('post'));
 
       subject = new Controller({
         model: Post,

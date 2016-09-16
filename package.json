@@ -26,7 +26,7 @@
     "flow": "node scripts/flow.js",
     "lint": "eslint .",
     "start": "lux serve",
-    "test": "npm run build && npm run build:test && mocha test/dist/index.js"
+    "test": "npm run build && mocha --require ./lib/babel-hook.js test/index.js src/**/*.test.js"
   },
   "author": "Zachary Golba",
   "license": "MIT",
@@ -59,7 +59,6 @@
     "eslint-plugin-flowtype": "2.18.1",
     "flow-bin": "0.32.0",
     "mocha": "3.0.2",
-    "node-fetch": "1.6.1",
-    "rollup-plugin-multi-entry": "2.0.1"
+    "node-fetch": "1.6.1"
   }
 }

@@ -15,7 +15,7 @@ before(function (done) {
   process.once('ready', done);
 
   tryCatch(async () => {
-    const path = resolvePath(__dirname, '..', 'test-app');
+    const path = resolvePath(__dirname, 'test-app');
     const execOpts = { cwd: path };
 
     if (!APPVEYOR && !TRAVIS) {

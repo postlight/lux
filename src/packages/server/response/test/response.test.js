@@ -8,15 +8,13 @@ import { createResponse } from '../index';
 
 import { getTestApp } from '../../../../../test/utils/get-test-app';
 
-import type Application from '../../../application';
-
 const DOMAIN = 'http://localhost:4100';
 
 describe('module "server/response"', () => {
   let test;
 
   before(async () => {
-    const { logger }: Application = await getTestApp();
+    const { logger } = await getTestApp();
 
     test = (path, fn) => {
       const server = createServer((req, res) => {

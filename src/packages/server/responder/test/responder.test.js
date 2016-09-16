@@ -11,15 +11,13 @@ import { createResponder } from '../index';
 
 import { getTestApp } from '../../../../../test/utils/get-test-app';
 
-import type Application from '../../../application';
-
 const DOMAIN = 'http://localhost:4100';
 
 describe('module "server/responder"', () => {
   let test;
 
   before(async () => {
-    const { logger, router }: Application = await getTestApp();
+    const { logger, router } = await getTestApp();
 
     test = fn => new Promise((resolve, reject) => {
       const server = createServer((req, res) => {

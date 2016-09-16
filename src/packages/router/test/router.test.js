@@ -10,7 +10,6 @@ import Router from '../index';
 import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
-import type Application from '../../application';
 import type { Request } from '../../server';
 
 describe('module "router"', () => {
@@ -18,7 +17,7 @@ describe('module "router"', () => {
     let subject: Router;
 
     before(async () => {
-      const { controllers }: Application = await getTestApp();
+      const { controllers } = await getTestApp();
 
       subject = new Router({
         controllers,
