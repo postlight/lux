@@ -58,8 +58,8 @@
     "documentation": "4.0.0-beta9",
     "eslint-plugin-flowtype": "2.16.1",
     "flow-bin": "0.32.0",
-    "isomorphic-fetch": "2.2.1",
     "mocha": "3.0.2",
+    "node-fetch": "1.6.1",
     "rollup-plugin-multi-entry": "2.0.1"
   }
 }
