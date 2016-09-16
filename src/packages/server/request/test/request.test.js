@@ -7,6 +7,7 @@ import { it, describe, before } from 'mocha';
 
 import { MIME_TYPE } from '../../../jsonapi';
 import { getDomain, createRequest, parseRequest } from '../index';
+
 import { getTestApp } from '../../../../../test/utils/get-test-app';
 
 import type Application from '../../../application';

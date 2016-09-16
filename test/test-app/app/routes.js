@@ -9,6 +9,10 @@ export default function routes() {
     only: ['create', 'destroy']
   });
 
+  this.resource('health', {
+    only: ['index']
+  });
+
   this.resource('notifications', {
     only: ['show', 'index']
   });

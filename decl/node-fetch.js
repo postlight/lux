@@ -46,5 +46,11 @@ declare module 'node-fetch' {
       | 'origin'
       | 'origin-when-cross-origin'
       | 'unsafe-url';
-  }) => Promise<Object>;
+  }) => Promise<{
+    status: number;
+    headers: Map<string, string>;
+
+    text(): Promise<string>;
+    json(): Promise<Object>;
+  }>;
 }
