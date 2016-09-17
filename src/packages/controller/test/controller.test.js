@@ -303,6 +303,7 @@ describe('module "controller"', () => {
         result = await subject.create(request, response);
 
         assertRecord(result, [
+          'id',
           'title',
           'isPublic',
           'createdAt',

@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
 
-import Validation from '../index';
+import Validation from '../validation';
 
 describe('module "database/validation"', () => {
   describe('class Validation', () => {

@@ -183,6 +183,7 @@ class Model {
       });
 
       Object.freeze(this);
+      Object.freeze(this.rawColumnData);
     }
 
     NEW_RECORDS.add(this);
@@ -492,9 +493,13 @@ class Model {
         setImmediate(() => logger.debug(sql`${query.toString()}`));
       });
 
+    const [primaryKeyValue] = await query;
+
     Object.assign(instance, {
-      [primaryKey]: (await query)[0]
+      [primaryKey]: primaryKeyValue
     });
+
+    Reflect.set(instance.rawColumnData, primaryKey, primaryKeyValue);
 
     Reflect.defineProperty(instance, 'initialized', {
       value: true,
