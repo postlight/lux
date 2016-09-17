@@ -3,8 +3,9 @@ import { expect } from 'chai';
 import { it, describe, before, after, beforeEach, afterEach } from 'mocha';
 
 import Model from '../model';
-import Query from '../query';
+import Query, { RecordNotFoundError } from '../query';
 
+import K from '../../../utils/k';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 describe('module "database/model"', () => {
@@ -869,6 +870,98 @@ describe('module "database/model"', () => {
 
         const result = await Subject.find(instance.id);
         expect(result).to.have.property('title', 'Test Post');
+      });
+    });
+
+    describe('#destroy()', () => {
+      let instance: Subject;
+
+      class Subject extends Model {
+        id: number;
+
+        static tableName = 'posts';
+      }
+
+      before(async () => {
+        await Subject.initialize(store, () => {
+          return store.connection(Subject.tableName);
+        });
+
+        instance = await Subject.create({
+          title: 'Test Post'
+        });
+      });
+
+      after(async () => {
+        await instance.destroy();
+      });
+
+      it('removes the record from the database', async () => {
+        await instance.destroy();
+        await Subject.find(instance.id).then(K, err => {
+          expect(err).to.be.an.instanceof(RecordNotFoundError);
+        });
+      });
+    });
+
+    describe('#getAttributes()', () => {
+      let instance: Subject;
+
+      class Subject extends Model {
+        static tableName = 'posts';
+      }
+
+      before(async () => {
+        await Subject.initialize(store, () => {
+          return store.connection(Subject.tableName);
+        });
+
+        instance = await Subject.create({
+          body: 'Lots of content...',
+          title: 'Test Post',
+          isPublic: true
+        });
+      });
+
+      after(async () => {
+        await instance.destroy();
+      });
+
+      it('returns a pojo containing the requested attributes', () => {
+        const result = instance.getAttributes('body', 'title');
+
+        expect(result).to.deep.equal({
+          body: 'Lots of content...',
+          title: 'Test Post'
+        });
+      });
+    });
+
+    describe('#getPrimaryKey()', () => {
+      let instance: Subject;
+
+      class Subject extends Model {
+        static tableName = 'posts';
+      }
+
+      before(async () => {
+        await Subject.initialize(store, () => {
+          return store.connection(Subject.tableName);
+        });
+
+        instance = await Subject.create({
+          title: 'Test Post'
+        });
+      });
+
+      after(async () => {
+        await instance.destroy();
+      });
+
+      it('returns the value of `instance[Model.primaryKey]`', () => {
+        const result = instance.getPrimaryKey();
+
+        expect(result).to.be.a('number');
       });
     });
   });

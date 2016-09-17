@@ -496,3 +496,4 @@ class Query {
 }
 
 export default Query;
+export { RecordNotFoundError } from './errors';
