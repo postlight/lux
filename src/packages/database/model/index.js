@@ -407,7 +407,7 @@ class Model {
     }
 
     const query = table()
-      .where({ [primaryKey]: Reflect.get(this, primaryKey) })
+      .where({ [primaryKey]: this.getPrimaryKey() })
       .del()
       .on('query', () => {
         setImmediate(() => logger.debug(sql`${query.toString()}`));

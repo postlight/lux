@@ -1,6 +1,6 @@
 // @flow
 import { expect } from 'chai';
-import { it, before, after, describe } from 'mocha';
+import { it, describe, before, after, beforeEach, afterEach } from 'mocha';
 
 import Model from '../model';
 import Query from '../query';
@@ -17,7 +17,7 @@ describe('module "database/model"', () => {
       store = app.store;
     });
 
-    describe('static .initialize()', () => {
+    describe('.initialize()', () => {
       class Subject extends Model {
         static tableName = 'posts';
 
@@ -274,7 +274,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .create()', () => {
+    describe('.create()', () => {
       let result: Subject;
 
       class Subject extends Model {
@@ -312,7 +312,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .all()', () => {
+    describe('.all()', () => {
       class Subject extends Model {
         static tableName = 'posts';
       }
@@ -330,7 +330,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .find()', () => {
+    describe('.find()', () => {
       class Subject extends Model {
         static tableName = 'posts';
       }
@@ -348,7 +348,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .page()', () => {
+    describe('.page()', () => {
       class Subject extends Model {
         static tableName = 'posts';
       }
@@ -366,7 +366,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .limit()', () => {
+    describe('.limit()', () => {
       class Subject extends Model {
         static tableName = 'posts';
       }
@@ -384,7 +384,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .offset()', () => {
+    describe('.offset()', () => {
       class Subject extends Model {
         static tableName = 'posts';
       }
@@ -402,7 +402,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .count()', () => {
+    describe('.count()', () => {
       class Subject extends Model {
         static tableName = 'posts';
       }
@@ -420,7 +420,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .order()', () => {
+    describe('.order()', () => {
       class Subject extends Model {
         static tableName = 'posts';
       }
@@ -438,7 +438,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .where()', () => {
+    describe('.where()', () => {
       class Subject extends Model {
         static tableName = 'posts';
       }
@@ -458,7 +458,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .not()', () => {
+    describe('.not()', () => {
       class Subject extends Model {
         static tableName = 'posts';
       }
@@ -478,7 +478,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .first()', () => {
+    describe('.first()', () => {
       class Subject extends Model {
         static tableName = 'posts';
       }
@@ -496,7 +496,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .last()', () => {
+    describe('.last()', () => {
       class Subject extends Model {
         static tableName = 'posts';
       }
@@ -514,7 +514,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .select()', () => {
+    describe('.select()', () => {
       class Subject extends Model {
         static tableName = 'posts';
       }
@@ -532,7 +532,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .distinct()', () => {
+    describe('.distinct()', () => {
       class Subject extends Model {
         static tableName = 'posts';
       }
@@ -550,7 +550,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .include()', () => {
+    describe('.include()', () => {
       class Subject extends Model {
         static tableName = 'posts';
 
@@ -580,7 +580,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .unscope()', () => {
+    describe('.unscope()', () => {
       class Subject extends Model {
         static tableName = 'posts';
 
@@ -606,7 +606,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .hasScope()', () => {
+    describe('.hasScope()', () => {
       class Subject extends Model {
         static scopes = {
           mostRecent() {
@@ -628,7 +628,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .isInstance()', () => {
+    describe('.isInstance()', () => {
       class SubjectA extends Model {
         static tableName = 'posts';
       }
@@ -663,7 +663,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .columnFor()', () => {
+    describe('.columnFor()', () => {
       class Subject extends Model {
         static tableName = 'posts';
       }
@@ -688,7 +688,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .columnNameFor()', () => {
+    describe('.columnNameFor()', () => {
       class Subject extends Model {
         static tableName = 'posts';
       }
@@ -706,7 +706,7 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('static .relationshipFor()', () => {
+    describe('.relationshipFor()', () => {
       class Subject extends Model {
         static tableName = 'posts';
 
@@ -732,6 +732,143 @@ describe('module "database/model"', () => {
           'inverse',
           'foreignKey'
         ]);
+      });
+    });
+
+    describe('#save()', () => {
+      let instance: Subject;
+
+      class Subject extends Model {
+        id: number;
+        title: string;
+        isPublic: boolean;
+
+        static tableName = 'posts';
+
+        static hasMany = {
+          comments: {
+            inverse: 'posts',
+            foreignKey: 'post_id'
+          }
+        };
+
+        static belongsTo = {
+          user: {
+            inverse: 'posts'
+          }
+        };
+
+        static validates = {
+          title: str => Boolean(str)
+        };
+      }
+
+      before(async () => {
+        await Subject.initialize(store, () => {
+          return store.connection(Subject.tableName);
+        });
+      });
+
+      beforeEach(async () => {
+        instance = await Subject.create({
+          title: 'Test Post',
+          isPublic: false
+        });
+      });
+
+      afterEach(async () => {
+        await instance.destroy();
+      });
+
+      it('can persist dirty attributes', async () => {
+        instance.isPublic = true;
+        await instance.save();
+
+        expect(instance).to.have.property('isPublic', true);
+
+        const result = await Subject.find(instance.id);
+
+        expect(result).to.have.property('isPublic', true);
+      });
+
+      it('fails if a validation is not met', async () => {
+        instance.title = '';
+        await instance.save().catch(err => {
+          expect(err).to.be.an.instanceof(err);
+        });
+
+        expect(instance).to.have.property('title', 'Test Post');
+
+        const result = await Subject.find(instance.id);
+
+        expect(result).to.have.property('title', 'Test Post');
+      });
+    });
+
+    describe('#update()', () => {
+      let instance: Subject;
+
+      class Subject extends Model {
+        id: number;
+        title: string;
+        isPublic: boolean;
+
+        static tableName = 'posts';
+
+        static validates = {
+          title: str => Boolean(str)
+        };
+      }
+
+      before(async () => {
+        await Subject.initialize(store, () => {
+          return store.connection(Subject.tableName);
+        });
+      });
+
+      beforeEach(async () => {
+        instance = await Subject.create({
+          title: 'Test Post',
+          isPublic: false
+        });
+      });
+
+      afterEach(async () => {
+        await instance.destroy();
+      });
+
+      it('can set and persist attributes', async () => {
+        const body = 'Lots of content...';
+
+        await instance.update({
+          body,
+          isPublic: true
+        });
+
+        expect(instance).to.have.property('body', body);
+        expect(instance).to.have.property('isPublic', true);
+
+        const result = await Subject.find(instance.id);
+
+        expect(result).to.have.property('body', body);
+        expect(result).to.have.property('isPublic', true);
+      });
+
+      it('fails if a validation is not met', async () => {
+        await instance
+          .update({
+            title: '',
+            isPublic: true
+          })
+          .catch(err => {
+            expect(err).to.be.an.instanceof(err);
+          });
+
+        expect(instance).to.have.property('title', 'Test Post');
+        expect(instance).to.have.property('isPublic', true);
+
+        const result = await Subject.find(instance.id);
+        expect(result).to.have.property('title', 'Test Post');
       });
     });
   });
