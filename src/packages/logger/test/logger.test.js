@@ -3,7 +3,7 @@
 import { expect } from 'chai';
 import { it, describe, before, afterEach } from 'mocha';
 
-import Logger from '../index';
+import Logger, { line } from '../index';
 
 const TEST_MESSAGE = 'test';
 
@@ -85,6 +85,17 @@ describe('module "logger"', () => {
       });
       disabledLogger.info(TEST_MESSAGE);
       setTimeout(() => done(), 50);
+    });
+  });
+
+  describe('#line()', () => {
+    it('returns a single line string from a multi-line string', () => {
+      expect(line`
+        this
+        is
+        a
+        test
+      `).to.equal('this is a test');
     });
   });
 });
