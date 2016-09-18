@@ -42,7 +42,7 @@
     "fb-watchman": "1.9.0",
     "inflection": "1.10.0",
     "ora": "0.3.0",
-    "rollup": "0.34.13",
+    "rollup": "0.35.3",
     "rollup-plugin-alias": "1.2.0",
     "rollup-plugin-babel": "2.6.1",
     "rollup-plugin-eslint": "3.0.0",
