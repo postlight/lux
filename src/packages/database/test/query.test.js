@@ -1,10 +1,11 @@
 // @flow
 import { expect } from 'chai';
-import { it, describe, before } from 'mocha';
+import { it, describe, before, beforeEach } from 'mocha';
 
 import Query from '../query';
 import Model from '../model';
 
+import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 describe('module "database/query"', () => {
@@ -81,6 +82,85 @@ describe('module "database/query"', () => {
         expect(result.shouldCount).to.equal(source.shouldCount);
         expect(result.snapshots).to.deep.equal(source.snapshots);
         expect(result.relationships).to.equal(source.relationships);
+      });
+    });
+
+    describe('#all()', () => {
+      let subject;
+
+      beforeEach(() => {
+        subject = new Query(TestModel);
+      });
+
+      it('returns `this`', () => {
+        const result = subject.all();
+
+        expect(result).to.equal(subject);
+      });
+
+      it('does not modify #snapshots', () => {
+        const result = subject.all();
+
+        expect(result.snapshots).to.be.an('array').with.lengthOf(0);
+      });
+    });
+
+    describe('#not()', () => {
+      let subject;
+
+      beforeEach(() => {
+        subject = new Query(TestModel);
+      });
+
+      it('returns `this`', () => {
+        const result = subject.not({
+          isPublic: true
+        });
+
+        expect(result).to.equal(subject);
+      });
+
+      it('properly modifies #snapshots', () => {
+        const result = subject.not({
+          isPublic: true
+        });
+
+        expect(result.snapshots).to.deep.equal([
+          ['whereNot', { 'posts.is_public': true }]
+        ]);
+      });
+    });
+
+    describe('#find()', () => {
+      let subject;
+
+      beforeEach(() => {
+        subject = new Query(TestModel);
+      });
+
+      it('return `this`', () => {
+        const result = subject.find(1);
+
+        expect(result).to.equal(subject);
+      });
+
+      it('properly modifies #snapshots', () => {
+        const result = subject.find(1);
+
+        expect(result.snapshots).to.deep.equal([
+          ['where', { 'posts.id': 1 }],
+          ['limit', 1]
+        ]);
+      });
+
+      it('does not add a limit to #snapshots if #shouldCount', () => {
+        subject.shouldCount = true;
+
+        const result = subject.find(1);
+
+        expect(result.snapshots).to.deep.equal([
+          ['where', { 'posts.id': 1 }]
+        ]);
       });
     });
   });
