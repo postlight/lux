@@ -1,4 +1,5 @@
 // @flow
+import { spy } from 'sinon';
 import { expect } from 'chai';
 import { it, describe, before, after, beforeEach, afterEach } from 'mocha';
 
@@ -737,6 +738,449 @@ describe('module "database/model"', () => {
           'inverse',
           'foreignKey'
         ]);
+      });
+    });
+
+    describe('.hooks', () => {
+      const assertCreateHook = (instance, hookSpy) => {
+        expect(hookSpy.calledWith(instance)).to.be.true;
+      };
+
+      const assertSaveHook = async (instance, hookSpy) => {
+        hookSpy.reset();
+
+        instance.isPublic = true;
+        await instance.save();
+
+        expect(hookSpy.calledWith(instance)).to.be.true;
+      };
+
+      const assertUpdateHook = async (instance, hookSpy) => {
+        hookSpy.reset();
+
+        await instance.update({
+          isPublic: true
+        });
+
+        expect(hookSpy.calledWith(instance)).to.be.true;
+      };
+
+      const assertDestroyHook = async (instance, hookSpy) => {
+        await instance.destroy();
+        expect(hookSpy.calledWith(instance)).to.be.true;
+      };
+
+      describe('.afterCreate()', () => {
+        let hookSpy;
+        let instance;
+
+        class Subject extends Model {
+          isPublic: boolean;
+
+          static tableName = 'posts';
+
+          static hooks = {
+            async afterCreate() {}
+          };
+        }
+
+        before(async () => {
+          hookSpy = spy(Subject.hooks, 'afterCreate');
+
+          await Subject.initialize(store, () => {
+            return store.connection(Subject.tableName);
+          });
+
+          instance = await Subject.create({
+            title: 'Test Hook (afterCreate)',
+            isPublic: false
+          });
+        });
+
+        after(async () => {
+          await instance.destroy();
+          hookSpy.reset();
+        });
+
+        it('runs when .create() is called', () => {
+          assertCreateHook(instance, hookSpy);
+        });
+      });
+
+      describe('.afterDestroy()', () => {
+        let hookSpy;
+        let instance;
+
+        class Subject extends Model {
+          static tableName = 'posts';
+
+          static hooks = {
+            async afterDestroy() {}
+          };
+        }
+
+        before(async () => {
+          hookSpy = spy(Subject.hooks, 'afterDestroy');
+
+          await Subject.initialize(store, () => {
+            return store.connection(Subject.tableName);
+          });
+
+          instance = await Subject.create({
+            title: 'Test Hook (afterDestroy)',
+            isPublic: false
+          });
+        });
+
+        it('runs when #destroy is called', async () => {
+          await assertDestroyHook(instance, hookSpy);
+        });
+      });
+
+      describe('.afterSave()', () => {
+        let hookSpy;
+        let instance;
+
+        class Subject extends Model {
+          isPublic: boolean;
+
+          static tableName = 'posts';
+
+          static hooks = {
+            async afterSave() {}
+          };
+        }
+
+        before(async () => {
+          hookSpy = spy(Subject.hooks, 'afterSave');
+
+          await Subject.initialize(store, () => {
+            return store.connection(Subject.tableName);
+          });
+        });
+
+        beforeEach(async () => {
+          instance = await Subject.create({
+            title: 'Test Hook (afterSave)',
+            isPublic: false
+          });
+        });
+
+        afterEach(async () => {
+          await instance.destroy();
+          hookSpy.reset();
+        });
+
+        it('runs when .create() is called', () => {
+          assertCreateHook(instance, hookSpy);
+        });
+
+        it('runs when #save() is called', async () => {
+          await assertSaveHook(instance, hookSpy);
+        });
+
+        it('runs when #update() is called', async () => {
+          await assertUpdateHook(instance, hookSpy);
+        });
+      });
+
+      describe('.afterUpdate()', () => {
+        let hookSpy;
+        let instance;
+
+        class Subject extends Model {
+          isPublic: boolean;
+
+          static tableName = 'posts';
+
+          static hooks = {
+            async afterUpdate() {}
+          };
+        }
+
+        before(async () => {
+          hookSpy = spy(Subject.hooks, 'afterUpdate');
+
+          await Subject.initialize(store, () => {
+            return store.connection(Subject.tableName);
+          });
+        });
+
+        beforeEach(async () => {
+          instance = await Subject.create({
+            title: 'Test Hook (afterUpdate)',
+            isPublic: false
+          });
+        });
+
+        afterEach(async () => {
+          await instance.destroy();
+          hookSpy.reset();
+        });
+
+        it('runs when #save() is called', async () => {
+          await assertSaveHook(instance, hookSpy);
+        });
+
+        it('runs when #update() is called', async () => {
+          await assertUpdateHook(instance, hookSpy);
+        });
+      });
+
+      describe('.afterValidation()', () => {
+        let hookSpy;
+        let instance;
+
+        class Subject extends Model {
+          isPublic: boolean;
+
+          static tableName = 'posts';
+
+          static hooks = {
+            async afterValidation() {}
+          };
+        }
+
+        before(async () => {
+          hookSpy = spy(Subject.hooks, 'afterValidation');
+
+          await Subject.initialize(store, () => {
+            return store.connection(Subject.tableName);
+          });
+        });
+
+        beforeEach(async () => {
+          instance = await Subject.create({
+            title: 'Test Hook (afterValidation)',
+            isPublic: false
+          });
+        });
+
+        afterEach(async () => {
+          await instance.destroy();
+          hookSpy.reset();
+        });
+
+        it('runs when .create() is called', () => {
+          assertCreateHook(instance, hookSpy);
+        });
+
+        it('runs when #save() is called', async () => {
+          await assertSaveHook(instance, hookSpy);
+        });
+
+        it('runs when #update() is called', async () => {
+          await assertUpdateHook(instance, hookSpy);
+        });
+      });
+
+      describe('.beforeCreate()', () => {
+        let hookSpy;
+        let instance;
+
+        class Subject extends Model {
+          isPublic: boolean;
+
+          static tableName = 'posts';
+
+          static hooks = {
+            async beforeCreate() {}
+          };
+        }
+
+        before(async () => {
+          hookSpy = spy(Subject.hooks, 'beforeCreate');
+
+          await Subject.initialize(store, () => {
+            return store.connection(Subject.tableName);
+          });
+
+          instance = await Subject.create({
+            title: 'Test Hook (beforeCreate)',
+            isPublic: false
+          });
+        });
+
+        after(async () => {
+          await instance.destroy();
+        });
+
+        it('runs when .create() is called', () => {
+          assertCreateHook(instance, hookSpy);
+        });
+      });
+
+      describe('.beforeDestroy()', () => {
+        let hookSpy;
+        let instance;
+
+        class Subject extends Model {
+          isPublic: boolean;
+
+          static tableName = 'posts';
+
+          static hooks = {
+            async beforeDestroy() {}
+          };
+        }
+
+        before(async () => {
+          hookSpy = spy(Subject.hooks, 'beforeDestroy');
+
+          await Subject.initialize(store, () => {
+            return store.connection(Subject.tableName);
+          });
+
+          instance = await Subject.create({
+            title: 'Test Hook (beforeDestroy)',
+            isPublic: false
+          });
+        });
+
+        after(async () => {
+          await instance.destroy();
+        });
+
+        it('runs when #destroy is called', async () => {
+          await assertDestroyHook(instance, hookSpy);
+        });
+      });
+
+      describe('.beforeSave()', () => {
+        let hookSpy;
+        let instance;
+
+        class Subject extends Model {
+          isPublic: boolean;
+
+          static tableName = 'posts';
+
+          static hooks = {
+            async beforeSave() {}
+          };
+        }
+
+        before(async () => {
+          hookSpy = spy(Subject.hooks, 'beforeSave');
+
+          await Subject.initialize(store, () => {
+            return store.connection(Subject.tableName);
+          });
+        });
+
+        beforeEach(async () => {
+          instance = await Subject.create({
+            title: 'Test Hook (beforeSave)',
+            isPublic: false
+          });
+        });
+
+        afterEach(async () => {
+          await instance.destroy();
+          hookSpy.reset();
+        });
+
+        it('runs when .create() is called', () => {
+          assertCreateHook(instance, hookSpy);
+        });
+
+        it('runs when #save() is called', async () => {
+          await assertSaveHook(instance, hookSpy);
+        });
+
+        it('runs when #update() is called', async () => {
+          await assertUpdateHook(instance, hookSpy);
+        });
+      });
+
+      describe('.beforeUpdate()', () => {
+        let hookSpy;
+        let instance;
+
+        class Subject extends Model {
+          isPublic: boolean;
+
+          static tableName = 'posts';
+
+          static hooks = {
+            async beforeUpdate() {}
+          };
+        }
+
+        before(async () => {
+          hookSpy = spy(Subject.hooks, 'beforeUpdate');
+
+          await Subject.initialize(store, () => {
+            return store.connection(Subject.tableName);
+          });
+        });
+
+        beforeEach(async () => {
+          instance = await Subject.create({
+            title: 'Test Hook (beforeUpdate)',
+            isPublic: false
+          });
+        });
+
+        afterEach(async () => {
+          await instance.destroy();
+          hookSpy.reset();
+        });
+
+        it('runs when #save() is called', async () => {
+          await assertSaveHook(instance, hookSpy);
+        });
+
+        it('runs when #update() is called', async () => {
+          await assertUpdateHook(instance, hookSpy);
+        });
+      });
+
+      describe('.beforeValidation()', () => {
+        let hookSpy;
+        let instance;
+
+        class Subject extends Model {
+          isPublic: boolean;
+
+          static tableName = 'posts';
+
+          static hooks = {
+            async beforeValidation() {}
+          };
+        }
+
+        before(async () => {
+          hookSpy = spy(Subject.hooks, 'beforeValidation');
+
+          await Subject.initialize(store, () => {
+            return store.connection(Subject.tableName);
+          });
+        });
+
+        beforeEach(async () => {
+          instance = await Subject.create({
+            title: 'Test Hook (beforeValidation)',
+            isPublic: false
+          });
+        });
+
+        afterEach(async () => {
+          await instance.destroy();
+          hookSpy.reset();
+        });
+
+        it('runs when .create() is called', () => {
+          assertCreateHook(instance, hookSpy);
+        });
+
+        it('runs when #save() is called', async () => {
+          await assertSaveHook(instance, hookSpy);
+        });
+
+        it('runs when #update() is called', async () => {
+          await assertUpdateHook(instance, hookSpy);
+        });
       });
     });
 
