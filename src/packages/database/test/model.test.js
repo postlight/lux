@@ -4,18 +4,22 @@ import { it, describe, before, after, beforeEach, afterEach } from 'mocha';
 
 import Model from '../model';
 import Query, { RecordNotFoundError } from '../query';
+import { ValidationError } from '../validation';
 
 import K from '../../../utils/k';
+import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 describe('module "database/model"', () => {
   describe('class Model', () => {
     let store;
+    let User: Class<Model>;
 
     before(async () => {
       const app = await getTestApp();
 
       store = app.store;
+      User = setType(() => app.models.get('user'));
     });
 
     describe('.initialize()', () => {
@@ -737,10 +741,12 @@ describe('module "database/model"', () => {
     });
 
     describe('#save()', () => {
+      const instances = new Set();
       let instance: Subject;
 
       class Subject extends Model {
         id: number;
+        user: Model;
         title: string;
         isPublic: boolean;
 
@@ -778,7 +784,14 @@ describe('module "database/model"', () => {
       });
 
       afterEach(async () => {
-        await instance.destroy();
+        await Promise.all([
+          instance.destroy(),
+          ...Array.from(instances).map(record => {
+            return record.destroy().then(() => {
+              instances.delete(record);
+            });
+          })
+        ]);
       });
 
       it('can persist dirty attributes', async () => {
@@ -792,10 +805,37 @@ describe('module "database/model"', () => {
         expect(result).to.have.property('isPublic', true);
       });
 
+      it('can persist dirty relationships', async () => {
+        const userInstance = await User.create({
+          name: 'Test User',
+          email: 'test-user@postlight.com',
+          password: 'test12345678'
+        });
+
+        instances.add(userInstance);
+
+        instance.user = userInstance;
+        await instance.save(true);
+
+        const {
+          rawColumnData: {
+            user,
+            userId
+          }
+        } = await Subject
+          .find(instance.id)
+          .include('user');
+
+        expect(user).to.be.an('object');
+        expect(user).to.have.property('id', userId);
+        expect(user).to.have.property('name', 'Test User');
+        expect(user).to.have.property('email', 'test-user@postlight.com');
+      });
+
       it('fails if a validation is not met', async () => {
         instance.title = '';
         await instance.save().catch(err => {
-          expect(err).to.be.an.instanceof(err);
+          expect(err).to.be.an.instanceof(ValidationError);
         });
 
         expect(instance).to.have.property('title', 'Test Post');
@@ -862,7 +902,7 @@ describe('module "database/model"', () => {
             isPublic: true
           })
           .catch(err => {
-            expect(err).to.be.an.instanceof(err);
+            expect(err).to.be.an.instanceof(ValidationError);
           });
 
         expect(instance).to.have.property('title', 'Test Post');

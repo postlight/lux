@@ -42,3 +42,4 @@ class Validation<T> {
 }
 
 export default Validation;
+export { ValidationError } from './errors';

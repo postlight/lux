@@ -1,6 +1,5 @@
 // @flow
-import Validation from '../../validation';
-import { ValidationError } from '../errors';
+import Validation, { ValidationError } from '../../validation';
 
 import pick from '../../../../utils/pick';
 import entries from '../../../../utils/entries';
