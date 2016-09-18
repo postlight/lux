@@ -1,6 +1,6 @@
 const {
   env: {
-    DATABASE_DRIVER,
+    DATABASE_DRIVER = 'sqlite3',
     DATABASE_USERNAME,
     DATABASE_PASSWORD,
   }

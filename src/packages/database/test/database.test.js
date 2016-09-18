@@ -22,7 +22,7 @@ describe('module "database"', () => {
           database: 'lux_test'
         },
         test: {
-          driver: DATABASE_DRIVER,
+          driver: DATABASE_DRIVER || 'sqlite3',
           database: 'lux_test',
           username: DATABASE_USERNAME,
           password: DATABASE_PASSWORD
