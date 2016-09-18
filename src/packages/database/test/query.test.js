@@ -76,7 +76,11 @@ describe('module "database/query"', () => {
 
         expect(result).to.not.equal(source);
         expect(result.model).to.equal(source.model);
+        expect(result.isFind).to.equal(source.isFind);
+        expect(result.collection).to.equal(source.collection);
+        expect(result.shouldCount).to.equal(source.shouldCount);
         expect(result.snapshots).to.deep.equal(source.snapshots);
+        expect(result.relationships).to.equal(source.relationships);
       });
     });
   });
