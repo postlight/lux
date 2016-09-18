@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import range from '../range';
 
-describe('#range()', () => {
+describe('util range()', () => {
   it('creates an iterable sequence of numbers', () => {
     const subject = range(1, 3);
 

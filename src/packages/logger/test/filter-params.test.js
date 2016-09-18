@@ -5,8 +5,8 @@ import { it, describe, before } from 'mocha';
 
 import filterParams from '../request-logger/utils/filter-params';
 
-describe('Logger', () => {
-  describe('#filterParams()', () => {
+describe('module "logger"', () => {
+  describe('util filterParams()', () => {
     let params;
     let filter;
     before(() => {

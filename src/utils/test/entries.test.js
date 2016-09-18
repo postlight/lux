@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import entries from '../entries';
 
-describe('#entries()', () => {
+describe('util entries()', () => {
   it('creates an `Array` of key-value pairs from an object', () => {
     expect(entries({
       a: 1,

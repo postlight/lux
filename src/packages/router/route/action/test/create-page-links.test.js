@@ -8,7 +8,7 @@ const DOMAIN = 'http://localhost:4000';
 const RESOURCE = 'posts';
 
 describe('module "router/route/action"', () => {
-  describe('util #createPageLinks()', () => {
+  describe('util createPageLinks()', () => {
     const getOptions = ({
       total = 100,
       params = {}

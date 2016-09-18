@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import createQueryString from '../create-query-string';
 
-describe('#createQueryString()', () => {
+describe('util createQueryString()', () => {
   const subject = { a: 1, b: { a: 1 } };
 
   it('can build a query string from a nested object', () => {

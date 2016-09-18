@@ -5,8 +5,8 @@ import { it, describe } from 'mocha';
 
 import createResolver from '../utils/create-resolver';
 
-describe('fs', () => {
-  describe('#createResolver()', () => {
+describe('module "fs"', () => {
+  describe('util createResolver()', () => {
 
     const RESOLVED_VALUE = 'fs#createResolver resolved';
     const REJECTED_VALUE = new Error('fs#createResolver error');

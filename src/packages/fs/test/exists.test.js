@@ -15,7 +15,7 @@ import { exists } from '../index';
 
 const TMP_PATH = join(sep, 'tmp', `lux-${Date.now()}`);
 
-describe('fs', () => {
+describe('module "fs"', () => {
   describe('#exists()', () => {
 
     before(async () => {

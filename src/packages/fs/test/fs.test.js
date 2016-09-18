@@ -10,7 +10,7 @@ import * as fs from '../index';
 
 import type { Spy } from 'sinon';
 
-describe('fs', () => {
+describe('module "fs"', () => {
 
   let spies: {[ module: string ]: Spy } = {};
   let tmpDirPath: string;

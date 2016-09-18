@@ -5,7 +5,7 @@ import { it, describe } from 'mocha';
 
 import exec from '../exec';
 
-describe('#exec()', () => {
+describe('util exec()', () => {
   it('works as a `Promise` based interface to child_proces.exec', () => {
     exec('echo Test', { encoding: 'utf8' }).then(data => {
       expect(data).to.equal(`Test${EOL}`);

@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import isObject from '../is-object';
 
-describe('#isObject()', () => {
+describe('util isObject()', () => {
   it ('returns false when an `null` is passed in as an argument', () => {
     expect(isObject(null)).to.be.false;
   });

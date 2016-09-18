@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import underscore from '../underscore';
 
-describe('#underscore()', () => {
+describe('util underscore()', () => {
   it('converts ClassName to class_name', () => {
     expect(underscore('ClassName')).to.equal('class_name');
   });

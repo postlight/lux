@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import merge from '../merge';
 
-describe('#merge()', () => {
+describe('util merge()', () => {
   it('recursively merges two objects together', () => {
     const x = {
       a: 1,

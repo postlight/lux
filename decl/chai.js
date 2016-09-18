@@ -24,6 +24,8 @@ declare module 'chai' {
     a: ExpectChain<T> & (type: string) => ExpectChain<T>;
     an: ExpectChain<T> & (type: string) => ExpectChain<T>;
 
+    frozen: ExpectChain<T> & (value: mixed) => ExpectChain<T>;
+    sealed: ExpectChain<T> & (value: mixed) => ExpectChain<T>;
     include: ExpectChain<T> & (value: mixed) => ExpectChain<T>;
     includes: ExpectChain<T> & (value: mixed) => ExpectChain<T>;
     contain: ExpectChain<T> & (value: mixed) => ExpectChain<T>;

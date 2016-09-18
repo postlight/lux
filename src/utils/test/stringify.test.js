@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import stringify from '../stringify';
 
-describe('#stringify()', () => {
+describe('util stringify()', () => {
   it('converts arrays to a string', () => {
     const subject = [1, 2, 3];
 

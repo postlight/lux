@@ -6,7 +6,7 @@ import { it, describe } from 'mocha';
 import getDynamicSegments from '../utils/get-dynamic-segments';
 
 describe('module "router/route"', () => {
-  describe('util #getDynamicSegments()', () => {
+  describe('util getDynamicSegments()', () => {
     it('parses the dynamic segments in a path', () => {
       const segments = getDynamicSegments('/posts/:pid/comments/:cid');
       expect(segments).to.deep.equal(['pid', 'cid']);

@@ -13,7 +13,7 @@ import {
   createTmpFiles
 } from './utils';
 
-describe('fs', () => {
+describe('module "fs"', () => {
   describe('#rmrf()', () => {
     let tmpDirPath: string;
 

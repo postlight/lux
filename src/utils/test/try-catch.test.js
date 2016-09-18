@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import tryCatch, { tryCatchSync } from '../try-catch';
 
-describe('#tryCatch()', () => {
+describe('util tryCatch()', () => {
   it('is a async functional equivalent of try...catch', async () => {
     let value = await tryCatch(() => Promise.resolve(false));
 
@@ -21,7 +21,7 @@ describe('#tryCatch()', () => {
 });
 
 
-describe('#tryCatchSync()', () => {
+describe('util tryCatchSync()', () => {
   it('is a functional equivalent of try...catch', () => {
     let value = tryCatchSync(() => false);
 

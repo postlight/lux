@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import present from '../present';
 
-describe('#present()', () => {
+describe('util present()', () => {
   it('returns false when null is an argument', () => {
     expect(present('Test', 0, {}, [], true, false, NaN, null)).to.be.false;
   });

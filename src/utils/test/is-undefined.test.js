@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import isUndefined from '../is-undefined';
 
-describe('#isUndefined()', () => {
+describe('util isUndefined()', () => {
   it('returns false when falsy values are passed in as an argument', () => {
     expect(isUndefined(0)).to.be.false;
     expect(isUndefined('')).to.be.false;

@@ -103,187 +103,189 @@ const createAssertion = ({ attributes, hasOne, hasMany }: Serializer<*>) => (
   }
 };
 
-describe('Serializer', () => {
-  let data;
-  let subject: Serializer<*>;
-  let assertPost: Function;
-  let assertUser: Function;
+describe('module "serializer"', () => {
+  describe('class Serializer', () => {
+    let data;
+    let subject: Serializer<*>;
+    let assertPost: Function;
+    let assertUser: Function;
 
-  before(async () => {
-    const app: Application = await getTestApp();
-    const Post = app.models.get('post');
-    const User = app.models.get('user');
-    const PostsSerializer = app.serializers.get('posts');
-    const UsersSerializer = app.serializers.get('users');
+    before(async () => {
+      const app: Application = await getTestApp();
+      const Post = app.models.get('post');
+      const User = app.models.get('user');
+      const PostsSerializer = app.serializers.get('posts');
+      const UsersSerializer = app.serializers.get('users');
 
-    if (!Post || !User || !PostsSerializer || !UsersSerializer) {
-      throw new Error('TestApp is invalid');
-    }
+      if (!Post || !User || !PostsSerializer || !UsersSerializer) {
+        throw new Error('TestApp is invalid');
+      }
 
-    subject = PostsSerializer;
-    assertPost = createAssertion(PostsSerializer);
-    assertUser = createAssertion(UsersSerializer);
+      subject = PostsSerializer;
+      assertPost = createAssertion(PostsSerializer);
+      assertUser = createAssertion(UsersSerializer);
 
-    data = FIXTURES.map(({ user, ...attrs }) => new Post({
-      ...attrs,
-      user: user ? new User(user) : null
-    }));
-  });
+      data = FIXTURES.map(({ user, ...attrs }) => new Post({
+        ...attrs,
+        user: user ? new User(user) : null
+      }));
+    });
 
-  describe('#format()', () => {
-    it('converts a single of model to a JSONAPI document', async () => {
-      const [record] = data;
-      const result = await subject.format({
-        data: record,
-        domain: DOMAIN,
-        include: [],
-        links: {
-          self: `${DOMAIN}/posts/${record.id}`
+    describe('#format()', () => {
+      it('converts a single of model to a JSONAPI document', async () => {
+        const [record] = data;
+        const result = await subject.format({
+          data: record,
+          domain: DOMAIN,
+          include: [],
+          links: {
+            self: `${DOMAIN}/posts/${record.id}`
+          }
+        });
+
+        expect(result).to.have.all.keys([
+          'data',
+          'links',
+          'jsonapi'
+        ]);
+
+        expect(result.data).to.be.an('object');
+        expect(result.jsonapi).to.deep.equal({ version: JSONAPI_VERSION });
+
+        assertLinks(result.links);
+
+        if (result.data && !Array.isArray(result.data)) {
+          assertPost(result.data, String(record.id), record.resourceName);
         }
       });
 
-      expect(result).to.have.all.keys([
-        'data',
-        'links',
-        'jsonapi'
-      ]);
+      it('converts an `Array` of models to a JSONAPI document', async () => {
+        const result = await subject.format({
+          data: setType(() => data),
+          domain: DOMAIN,
+          include: [],
+          links: {
+            self: `${DOMAIN}/posts`
+          }
+        });
 
-      expect(result.data).to.be.an('object');
-      expect(result.jsonapi).to.deep.equal({ version: JSONAPI_VERSION });
+        expect(result).to.have.all.keys([
+          'data',
+          'links',
+          'jsonapi'
+        ]);
 
-      assertLinks(result.links);
+        expect(result.data).to.be.an('array').with.length.above(0);
+        expect(result.jsonapi).to.deep.equal({ version: JSONAPI_VERSION });
 
-      if (result.data && !Array.isArray(result.data)) {
-        assertPost(result.data, String(record.id), record.resourceName);
-      }
-    });
+        assertLinks(result.links);
 
-    it('converts an `Array` of models to a JSONAPI document', async () => {
-      const result = await subject.format({
-        data: setType(() => data),
-        domain: DOMAIN,
-        include: [],
-        links: {
-          self: `${DOMAIN}/posts`
+        if (Array.isArray(result.data)) {
+          result.data.forEach(item => {
+            assertPost(item);
+          });
         }
       });
 
-      expect(result).to.have.all.keys([
-        'data',
-        'links',
-        'jsonapi'
-      ]);
-
-      expect(result.data).to.be.an('array').with.length.above(0);
-      expect(result.jsonapi).to.deep.equal({ version: JSONAPI_VERSION });
-
-      assertLinks(result.links);
-
-      if (Array.isArray(result.data)) {
-        result.data.forEach(item => {
-          assertPost(item);
+      it('can include relationships for a single model', async () => {
+        const [record] = data;
+        const result = await subject.format({
+          data: record,
+          domain: DOMAIN,
+          include: ['user'],
+          links: {
+            self: `${DOMAIN}/posts/${record.id}`
+          }
         });
-      }
-    });
 
-    it('can include relationships for a single model', async () => {
-      const [record] = data;
-      const result = await subject.format({
-        data: record,
-        domain: DOMAIN,
-        include: ['user'],
-        links: {
-          self: `${DOMAIN}/posts/${record.id}`
+        expect(result).to.have.all.keys([
+          'data',
+          'links',
+          'jsonapi',
+          'included'
+        ]);
+
+        expect(result.data).to.be.an('object');
+        expect(result.jsonapi).to.deep.equal({ version: JSONAPI_VERSION });
+        expect(result.included).to.be.an('array').with.length.above(0);
+
+        assertLinks(result.links);
+
+        if (result.data && !Array.isArray(result.data)) {
+          assertPost(result.data, String(record.id), record.resourceName);
+        }
+
+        if (Array.isArray(result.included)) {
+          result.included.forEach(item => {
+            assertUser(item);
+          });
         }
       });
 
-      expect(result).to.have.all.keys([
-        'data',
-        'links',
-        'jsonapi',
-        'included'
-      ]);
-
-      expect(result.data).to.be.an('object');
-      expect(result.jsonapi).to.deep.equal({ version: JSONAPI_VERSION });
-      expect(result.included).to.be.an('array').with.length.above(0);
-
-      assertLinks(result.links);
-
-      if (result.data && !Array.isArray(result.data)) {
-        assertPost(result.data, String(record.id), record.resourceName);
-      }
-
-      if (Array.isArray(result.included)) {
-        result.included.forEach(item => {
-          assertUser(item);
+      it('can include relationships for an `Array` of models', async () => {
+        const result = await subject.format({
+          data: setType(() => data),
+          domain: DOMAIN,
+          include: ['user'],
+          links: {
+            self: `${DOMAIN}/posts`
+          }
         });
-      }
-    });
 
-    it('can include relationships for an `Array` of models', async () => {
-      const result = await subject.format({
-        data: setType(() => data),
-        domain: DOMAIN,
-        include: ['user'],
-        links: {
-          self: `${DOMAIN}/posts`
+        expect(result).to.have.all.keys([
+          'data',
+          'links',
+          'jsonapi',
+          'included'
+        ]);
+
+        expect(result.data).to.be.an('array').with.length.above(0);
+        expect(result.jsonapi).to.deep.equal({ version: JSONAPI_VERSION });
+        expect(result.included).to.be.an('array').with.length.above(0);
+
+        assertLinks(result.links);
+
+        if (Array.isArray(result.data)) {
+          result.data.forEach(item => {
+            assertPost(item);
+          });
+        }
+
+        if (Array.isArray(result.included)) {
+          result.included.forEach(item => {
+            assertUser(item);
+          });
         }
       });
-
-      expect(result).to.have.all.keys([
-        'data',
-        'links',
-        'jsonapi',
-        'included'
-      ]);
-
-      expect(result.data).to.be.an('array').with.length.above(0);
-      expect(result.jsonapi).to.deep.equal({ version: JSONAPI_VERSION });
-      expect(result.included).to.be.an('array').with.length.above(0);
-
-      assertLinks(result.links);
-
-      if (Array.isArray(result.data)) {
-        result.data.forEach(item => {
-          assertPost(item);
-        });
-      }
-
-      if (Array.isArray(result.included)) {
-        result.included.forEach(item => {
-          assertUser(item);
-        });
-      }
     });
-  });
 
-  describe('#formatOne()', () => {
-    it('converts a single of model to a JSONAPI resource object', async () => {
-      const [record] = data;
-      const result = await subject.formatOne({
-        item: record,
-        links: false,
-        domain: DOMAIN,
-        include: [],
-        included: []
+    describe('#formatOne()', () => {
+      it('converts a single model to a JSONAPI resource object', async () => {
+        const [record] = data;
+        const result = await subject.formatOne({
+          item: record,
+          links: false,
+          domain: DOMAIN,
+          include: [],
+          included: []
+        });
+
+        assertPost(result, String(record.id), record.resourceName);
       });
-
-      assertPost(result, String(record.id), record.resourceName);
     });
-  });
 
-  describe('#formatRelationship()', () => {
-    it('can build a JSONAPI relationship object', async () => {
-      const record = await Reflect.get(data[0], 'user');
-      const result = await subject.formatRelationship({
-        item: record,
-        domain: DOMAIN,
-        include: false,
-        included: []
+    describe('#formatRelationship()', () => {
+      it('can build a JSONAPI relationship object', async () => {
+        const record = await Reflect.get(data[0], 'user');
+        const result = await subject.formatRelationship({
+          item: record,
+          domain: DOMAIN,
+          include: false,
+          included: []
+        });
+
+        assertUser(result.data, String(record.id), record.resourceName);
       });
-
-      assertUser(result.data, String(record.id), record.resourceName);
     });
   });
 });

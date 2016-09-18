@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import uniq from '../uniq';
 
-describe('#uniq()', () => {
+describe('util uniq()', () => {
   it('removes duplicate items from an `Array`', () => {
     expect(uniq([1, 1, 2, 2, 3, 3])).to.deep.equal([1, 2, 3]);
   });

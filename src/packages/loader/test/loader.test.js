@@ -10,7 +10,7 @@ import { getTestApp } from '../../../../test/utils/get-test-app';
 import type Application from '../../application';
 import type { Loader } from '../index';
 
-describe('loader', () => {
+describe('module "loader"', () => {
   let app: Application;
 
   before(async () => {

@@ -8,7 +8,7 @@ import transformKeys, {
   underscoreKeys
 } from '../transform-keys';
 
-describe('#camelizeKeys()', () => {
+describe('util camelizeKeys()', () => {
   const subjectA = {
     key_a: 1, // eslint-disable-line camelcase
     key_b: 2, // eslint-disable-line camelcase
@@ -74,7 +74,7 @@ describe('#camelizeKeys()', () => {
   });
 });
 
-describe('#dasherizeKeys()', () => {
+describe('util dasherizeKeys()', () => {
   const subjectA = {
     key_a: 1, // eslint-disable-line camelcase
     key_b: 2, // eslint-disable-line camelcase
@@ -140,7 +140,7 @@ describe('#dasherizeKeys()', () => {
   });
 });
 
-describe('#underscoreKeys()', () => {
+describe('util underscoreKeys()', () => {
   const subjectA = {
     keyA: 1,
     keyB: 2,
@@ -206,7 +206,7 @@ describe('#underscoreKeys()', () => {
   });
 });
 
-describe('#transformKeys()', () => {
+describe('util transformKeys()', () => {
   const subject = {
     keyA: 1,
     keyB: 2,

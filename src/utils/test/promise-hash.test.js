@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import promiseHash from '../promise-hash';
 
-describe('#promiseHash()', () => {
+describe('util promiseHash()', () => {
   it('resolves `Promise`s within an object', () => {
     const subject = {
       a: 1,

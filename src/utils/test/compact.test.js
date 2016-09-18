@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import compact from '../compact';
 
-describe('#compact()', () => {
+describe('util compact()', () => {
   it('removes null and undefined values from an `Array`', () => {
     const result = compact([0, 'a', 1, null, {}, undefined, false]);
 

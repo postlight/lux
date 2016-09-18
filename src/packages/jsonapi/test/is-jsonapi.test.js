@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import { isJSONAPI } from '../index';
 
-describe('JSONAPI', () => {
+describe('module "jsonapi"', () => {
   describe('#isJSONAPI()', () => {
     it('is true if mime type matches application/vnd.api+json', () => {
       expect(isJSONAPI('application/vnd.api+json')).to.be.true;

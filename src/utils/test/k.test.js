@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import K from '../k';
 
-describe('#K()', () => {
+describe('util K()', () => {
   it('always returns the context it is called with', () => {
     const obj = {};
 

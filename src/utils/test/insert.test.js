@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import insert from '../insert';
 
-describe('#insert()', () => {
+describe('util insert()', () => {
   it('inserts elements into an `Array` in place', () => {
     const subject = new Array(3);
 

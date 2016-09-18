@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import formatKey from '../utils/format-key';
 
-describe('loader', () => {
+describe('module "loader"', () => {
   describe('#formatKey()', () => {
     it('converts a key to kebab-case', () => {
       expect(formatKey('someKey')).to.equal('some-key');

@@ -4,7 +4,7 @@ import { it, describe } from 'mocha';
 
 import { isJSFile } from '../index';
 
-describe('fs', () => {
+describe('module "fs"', () => {
   describe('#isJSFile()', () => {
     const [a, b, c] = [
       'author.js',
