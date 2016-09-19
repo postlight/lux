@@ -1,7 +1,7 @@
 // @flow
-import isObject from '../../../../utils/is-object';
+import isObject from '../../../../../utils/is-object';
 
-import type { Query } from '../../index';
+import type Query from '../../index';
 
 export default function getFindParam({
   isFind,
@@ -11,7 +11,7 @@ export default function getFindParam({
     tableName,
     primaryKey
   }
-}: Query) {
+}: Query<*>) {
   if (isFind) {
     const snapshot = snapshots.find(([method]) => method === 'where');
 

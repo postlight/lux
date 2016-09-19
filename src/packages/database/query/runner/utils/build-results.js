@@ -1,13 +1,13 @@
 // @flow
 import { camelize, singularize } from 'inflection';
 
-import { NEW_RECORDS } from '../../constants';
+import { NEW_RECORDS } from '../../../constants';
 
-import Model from '../../model';
+import Model from '../../../model';
 
-import entries from '../../../../utils/entries';
-import underscore from '../../../../utils/underscore';
-import promiseHash from '../../../../utils/promise-hash';
+import entries from '../../../../../utils/entries';
+import underscore from '../../../../../utils/underscore';
+import promiseHash from '../../../../../utils/promise-hash';
 
 /**
  * @private

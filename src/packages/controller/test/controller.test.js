@@ -6,7 +6,6 @@ import Controller from '../index';
 import Serializer from '../../serializer';
 import { Model } from '../../database';
 
-import K from '../../../utils/k';
 import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
@@ -179,10 +178,10 @@ describe('module "controller"', () => {
         }
       });
 
-      it('throws an error if the record is not found', () => {
+      it('throws an error if the record is not found', async () => {
         const request = createRequest({ d: Number.MAX_SAFE_INTEGER });
 
-        subject.show(request).then(K, err => {
+        await subject.show(request).catch(err => {
           expect(err).to.be.an.instanceof(Error);
         });
       });
@@ -465,7 +464,7 @@ describe('module "controller"', () => {
         expect(result).to.equal(204);
       });
 
-      it('throws an error if the record is not found', () => {
+      it('throws an error if the record is not found', async () => {
         const request = createRequest({
           id: Number.MAX_SAFE_INTEGER,
           type: 'posts',
@@ -476,7 +475,7 @@ describe('module "controller"', () => {
           }
         });
 
-        subject.update(request).then(K, err => {
+        await subject.update(request).catch(err => {
           expect(err).to.be.an.instanceof(Error);
         });
       });
@@ -538,15 +537,15 @@ describe('module "controller"', () => {
 
         expect(result).to.equal(204);
 
-        await Post.find(id).then(K, err => {
+        await Post.find(id).catch(err => {
           expect(err).to.be.an.instanceof(Error);
         });
       });
 
-      it('throws an error if the record is not found', () => {
+      it('throws an error if the record is not found', async () => {
         const request = createRequest({ id: Number.MAX_SAFE_INTEGER });
 
-        subject.destroy(request).then(K, err => {
+        await subject.destroy(request).catch(err => {
           expect(err).to.be.an.instanceof(Error);
         });
       });

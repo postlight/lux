@@ -9,7 +9,11 @@ decl
 .*/node_modules/bcryptjs/*
 
 [options]
-esproposal.class_instance_fields=enable
-esproposal.class_static_fields=enable
+suppress_comment=\\(.\\|\n\\)*\\$FlowIgnore
+
+module.name_mapper='LUX_LOCAL' -> '<PROJECT_ROOT>'
 
 unsafe.enable_getters_and_setters=true
+
+esproposal.class_static_fields=enable
+esproposal.class_instance_fields=enable

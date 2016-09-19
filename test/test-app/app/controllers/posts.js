@@ -7,6 +7,10 @@ class PostsController extends Controller {
     'title',
     'isPublic'
   ];
+
+  index(req, res) {
+    return super.index(req, res).isPublic();
+  }
 }
 
 export default PostsController;

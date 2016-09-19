@@ -522,63 +522,63 @@ class Model {
     return instance;
   }
 
-  static all() {
+  static all(): Query<Array<this>> {
     return new Query(this).all();
   }
 
-  static find(primaryKey: any) {
+  static find(primaryKey: any): Query<this> {
     return new Query(this).find(primaryKey);
   }
 
-  static page(num: number) {
+  static page(num: number): Query<Array<this>> {
     return new Query(this).page(num);
   }
 
-  static limit(amount: number) {
+  static limit(amount: number): Query<Array<this>> {
     return new Query(this).limit(amount);
   }
 
-  static offset(amount: number) {
+  static offset(amount: number): Query<Array<this>> {
     return new Query(this).offset(amount);
   }
 
-  static count() {
+  static count(): Query<number> {
     return new Query(this).count();
   }
 
-  static order(attr: string, direction?: string) {
+  static order(attr: string, direction?: string): Query<Array<this>> {
     return new Query(this).order(attr, direction);
   }
 
-  static where(conditions: Object) {
+  static where(conditions: Object): Query<Array<this>> {
     return new Query(this).where(conditions);
   }
 
-  static not(conditions: Object) {
+  static not(conditions: Object): Query<Array<this>> {
     return new Query(this).not(conditions);
   }
 
-  static first() {
+  static first(): Query<this> {
     return new Query(this).first();
   }
 
-  static last() {
+  static last(): Query<this> {
     return new Query(this).last();
   }
 
-  static select(...params: Array<string>) {
+  static select(...params: Array<string>): Query<Array<this>> {
     return new Query(this).select(...params);
   }
 
-  static distinct(...params: Array<string>) {
+  static distinct(...params: Array<string>): Query<Array<this>> {
     return new Query(this).distinct(...params);
   }
 
-  static include(...relationships: Array<Object|string>) {
+  static include(...relationships: Array<string | Object>): Query<Array<this>> {
     return new Query(this).include(...relationships);
   }
 
-  static unscope(...scopes: Array<string>) {
+  static unscope(...scopes: Array<string>): Query<Array<this>> {
     return new Query(this).unscope(...scopes);
   }
 

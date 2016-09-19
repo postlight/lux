@@ -3,19 +3,18 @@
   "plugins": ["flowtype"],
   "extends": "eslint:recommended",
   "env": {
+    "es6": true,
     "node": true
   },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "impliedStrict": true
+    }
+  },
   "globals": {
-    "T": true,
-    "Map": true,
-    "Set": true,
     "Class": true,
-    "Proxy": true,
-    "Promise": true,
-    "Reflect": true,
-    "WeakMap": true,
-    "WeakSet": true,
-    "Iterable": true,
     "Generator": true,
     "$PropertyType": true
   },

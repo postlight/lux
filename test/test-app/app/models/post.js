@@ -29,6 +29,14 @@ class Post extends Model {
       await track(post);
     }
   };
+
+  static scopes = {
+    isPublic() {
+      return this.where({
+        isPublic: true
+      });
+    }
+  };
 }
 
 export default Post;

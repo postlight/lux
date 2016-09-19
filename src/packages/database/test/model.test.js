@@ -7,7 +7,6 @@ import Model from '../model';
 import Query, { RecordNotFoundError } from '../query';
 import { ValidationError } from '../validation';
 
-import K from '../../../utils/k';
 import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
@@ -1382,7 +1381,7 @@ describe('module "database/model"', () => {
 
       it('removes the record from the database', async () => {
         await instance.destroy();
-        await Subject.find(instance.id).then(K, err => {
+        await Subject.find(instance.id).catch(err => {
           expect(err).to.be.an.instanceof(RecordNotFoundError);
         });
       });

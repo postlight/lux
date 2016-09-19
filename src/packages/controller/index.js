@@ -8,6 +8,7 @@ import findMany from './utils/find-many';
 import findRelated from './utils/find-related';
 
 import type Serializer from '../serializer';
+import type { Query } from '../database';
 import type { Request, Response } from '../server';
 import type { Controller$opts, Controller$Middleware } from './interfaces';
 
@@ -278,7 +279,7 @@ class Controller {
    * @param  {Request} request
    * @param  {Response} response
    */
-  index(req: Request): Promise<Array<Model>> {
+  index(req: Request): Query<Array<Model>> {
     return findMany(req);
   }
 
@@ -292,7 +293,7 @@ class Controller {
    * @param  {Request} request
    * @param  {Response} response
    */
-  show(req: Request): Promise<Model> {
+  show(req: Request): Query<Model> {
     return findOne(req);
   }
 
@@ -364,9 +365,7 @@ class Controller {
    * @param  {Response} response
    */
   update(req: Request): Promise<number | Model> {
-    return new Promise((resolve, reject) => {
-      findOne(req).then(resolve, reject);
-    }).then(record => {
+    return findOne(req).then(record => {
       const {
         params: {
           data: {

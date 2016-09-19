@@ -1,24 +1,18 @@
 // @flow
 import { camelize } from 'inflection';
 
-import { sql } from '../../logger';
-
-import { RecordNotFoundError } from './errors';
-
-import initialize from './initialize';
+import { runQuery, createRunner } from './runner';
 
 import entries from '../../../utils/entries';
-import tryCatch from '../../../utils/try-catch';
+import scopesFor from './utils/scopes-for';
 import formatSelect from './utils/format-select';
-import buildResults from './utils/build-results';
-import getFindParam from './utils/get-find-param';
 
-import type { Model } from '../index'; // eslint-disable-line no-unused-vars
+import type Model from '../model';
 
 /**
  * @private
  */
-class Query {
+class Query<+T: any> extends Promise {
   /**
    * @private
    */
@@ -27,12 +21,12 @@ class Query {
   /**
    * @private
    */
-  snapshots: Array<[string, mixed]>;
+  isFind: boolean;
 
   /**
    * @private
    */
-  isFind: boolean;
+  snapshots: Array<[string, mixed]>;
 
   /**
    * @private
@@ -50,6 +44,19 @@ class Query {
   relationships: Object;
 
   constructor(model: Class<Model>) {
+    let resolve;
+    let reject;
+
+    super((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+
+    createRunner(this, {
+      resolve,
+      reject
+    });
+
     Object.defineProperties(this, {
       model: {
         value: model,
@@ -87,18 +94,23 @@ class Query {
       }
     });
 
-    return initialize(this);
+    Object.defineProperties(this, scopesFor(this));
   }
 
-  all() {
+  // $FlowIgnore
+  static get [Symbol.species]() {
+    return Promise;
+  }
+
+  all(): this {
     return this;
   }
 
-  not(conditions: Object = {}) {
+  not(conditions: Object = {}): this {
     return this.where(conditions, true);
   }
 
-  find(primaryKey: any) {
+  find(primaryKey: any): this {
     Object.assign(this, {
       isFind: true,
       collection: false
@@ -115,7 +127,7 @@ class Query {
     return this;
   }
 
-  page(num: number) {
+  page(num: number): this {
     if (this.shouldCount) {
       return this;
     } else {
@@ -135,7 +147,7 @@ class Query {
     }
   }
 
-  limit(amount: number) {
+  limit(amount: number): this {
     if (!this.shouldCount) {
       this.snapshots.push(['limit', amount]);
     }
@@ -143,7 +155,7 @@ class Query {
     return this;
   }
 
-  order(attr: string, direction: string = 'ASC') {
+  order(attr: string, direction: string = 'ASC'): this {
     if (!this.shouldCount) {
       const columnName = this.model.columnNameFor(attr);
 
@@ -162,7 +174,7 @@ class Query {
     return this;
   }
 
-  where(conditions: Object = {}, not: boolean = false) {
+  where(conditions: Object = {}, not: boolean = false): this {
     const {
       model: {
         tableName
@@ -200,7 +212,7 @@ class Query {
     return this;
   }
 
-  first() {
+  first(): this {
     if (!this.shouldCount) {
       const willSort = this.snapshots.some(([method]) => method === 'orderBy');
 
@@ -216,7 +228,7 @@ class Query {
     return this;
   }
 
-  last() {
+  last(): this {
     if (!this.shouldCount) {
       const willSort = this.snapshots.some(([method]) => method === 'orderBy');
 
@@ -232,7 +244,7 @@ class Query {
     return this;
   }
 
-  count() {
+  count(): Query<number> {
     const validName = /^(where(Not)?(In)?)$/g;
 
     Object.assign(this, {
@@ -247,7 +259,7 @@ class Query {
     return this;
   }
 
-  offset(amount: number) {
+  offset(amount: number): this {
     if (!this.shouldCount) {
       this.snapshots.push(['offset', amount]);
     }
@@ -255,7 +267,7 @@ class Query {
     return this;
   }
 
-  select(...attrs: Array<string>) {
+  select(...attrs: Array<string>): this {
     if (!this.shouldCount) {
       this.snapshots.push(['select', formatSelect(this.model, attrs)]);
     }
@@ -263,7 +275,7 @@ class Query {
     return this;
   }
 
-  distinct(...attrs: Array<string>) {
+  distinct(...attrs: Array<string>): this {
     if (!this.shouldCount) {
       this.snapshots.push(['distinct', formatSelect(this.model, attrs)]);
     }
@@ -271,7 +283,7 @@ class Query {
     return this.select();
   }
 
-  include(...relationships: Array<Object|string>) {
+  include(...relationships: Array<Object|string>): this {
     let included;
 
     if (!this.shouldCount) {
@@ -372,7 +384,7 @@ class Query {
     return this;
   }
 
-  unscope(...scopes: Array<string>) {
+  unscope(...scopes: Array<string>): this {
     if (scopes.length) {
       scopes = scopes.filter(scope => {
         return scope === 'order' ? 'orderBy' : scope;
@@ -388,92 +400,20 @@ class Query {
     return this;
   }
 
-  /**
-   * @private
-   */
-  async run(): Promise<number | ?Model | Array<Model>> {
-    let results;
-
-    const {
-      model,
-      isFind,
-      snapshots,
-      collection,
-      shouldCount,
-      relationships
-    } = this;
-
-    if (!shouldCount && !snapshots.some(([name]) => name === 'select')) {
-      this.select(...this.model.attributeNames);
-    }
-
-    const records: any = snapshots.reduce((
-      query,
-      [name, params]
-    ) => {
-      if (!shouldCount && name === 'includeSelect') {
-        name = 'select';
-      }
-
-      const method = Reflect.get(query, name);
-
-      if (!Array.isArray(params)) {
-        params = [params];
-      }
-
-      return Reflect.apply(method, query, params);
-    }, model.table());
-
-    if (model.store.debug) {
-      records.on('query', () => {
-        setImmediate(() => model.logger.debug(sql`${records.toString()}`));
-      });
-    }
-
-    if (shouldCount) {
-      let [{ countAll: count }] = await records;
-      count = parseInt(count, 10);
-
-      return Number.isFinite(count) ? count : 0;
-    } else {
-      results = await buildResults({
-        model,
-        records,
-        relationships
-      });
-
-      if (collection) {
-        return results;
-      } else {
-        const [result] = results;
-
-        if (!result && isFind) {
-          throw new RecordNotFoundError(model, getFindParam(this));
-        }
-
-        return result;
-      }
-    }
+  then<U>(
+    onFulfilled?: (value: T) => Promise<U> | U,
+    onRejected?: (error: Error) => Promise<U> | U
+  ): Promise<U> {
+    runQuery(this);
+    return super.then(onFulfilled, onRejected);
   }
 
-  then(
-    onData: ?(data: number | ?Model | Array<Model>) => void,
-    onError: ?(err: Error) => void
-  ): Promise<number | ?Model | Array<Model>> {
-    return tryCatch(async () => {
-      const data = await this.run();
-
-      if (typeof onData === 'function') {
-        onData(data);
-      }
-    }, (err) => {
-      if (typeof onError === 'function') {
-        onError(err);
-      }
-    });
+  catch<U>(onRejected?: (error: Error) => ?Promise<U> | U): Promise<U> {
+    runQuery(this);
+    return super.catch(onRejected);
   }
 
-  static from(src: any) {
+  static from(src: any): Query<T> {
     const {
       model,
       snapshots,

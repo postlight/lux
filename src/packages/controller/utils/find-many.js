@@ -2,7 +2,7 @@
 import merge from '../../../utils/merge';
 import paramsToQuery from './params-to-query';
 
-import type { Model } from '../../database';
+import type { Model, Query } from '../../database';
 import type { Request } from '../../server';
 
 /**
@@ -17,7 +17,7 @@ export default function findMany({
       model
     }
   }
-}: Request): Promise<Array<Model>> {
+}: Request): Query<Array<Model>> {
   const {
     sort,
     page,
