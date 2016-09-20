@@ -1,11 +1,7 @@
-import TagsSerializer from 'app/serializers/tags.js';
+import TagsSerializer from '../tags';
 
 class AdminTagsSerializer extends TagsSerializer {
-  attributes = [
-    'name',
-    'createdAt',
-    'updatedAt'
-  ];
+
 }
 
 export default AdminTagsSerializer;

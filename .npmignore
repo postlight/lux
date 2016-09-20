@@ -1,17 +1,20 @@
 # dependencies
-/node_modules
+node_modules/
 
 # misc
 .git
 *.DS_Store
-/examples
+*.lcov
+.nyc_output/
+coverage/
+examples/
 
 # docs
-/docs
+docs/
 
 # logs
-/log
+log/
 npm-debug.log
 
 # tests
-/test
+test/

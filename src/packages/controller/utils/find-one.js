@@ -4,6 +4,7 @@ import { Model } from '../../database';
 import merge from '../../../utils/merge';
 import paramsToQuery from './params-to-query';
 
+import type { Query } from '../../database';
 import type { Request } from '../../server';
 
 /**
@@ -18,7 +19,7 @@ export default function findOne({
       model
     }
   }
-}: Request): Promise<?Model> {
+}: Request): Query<Model> {
   const {
     id,
     select,

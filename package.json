@@ -26,7 +26,8 @@
     "flow": "node scripts/flow.js",
     "lint": "eslint .",
     "start": "lux serve",
-    "test": "npm run build && npm run build:test && mocha --timeout 60000 test/dist/index.js"
+    "test": "npm run build && nyc -i ./lib/babel-hook.js --instrument false --source-map false mocha -r ./lib/babel-hook.js test/index.js src/**/*.test.js",
+    "test:codecov": "nyc report --reporter=lcov > coverage.lcov && codecov -t $LUX_CODECOV_TOKEN"
   },
   "author": "Zachary Golba",
   "license": "MIT",
@@ -52,14 +53,17 @@
   },
   "devDependencies": {
     "babel-core": "6.14.0",
+    "babel-plugin-istanbul": "2.0.1",
     "babel-plugin-transform-es2015-modules-commonjs": "6.14.0",
     "babel-preset-lux": "1.2.0",
     "chai": "3.5.0",
+    "codecov": "1.0.1",
     "documentation": "4.0.0-beta9",
     "eslint-plugin-flowtype": "2.18.2",
     "flow-bin": "0.32.0",
-    "isomorphic-fetch": "2.2.1",
     "mocha": "3.0.2",
-    "rollup-plugin-multi-entry": "2.0.1"
+    "node-fetch": "1.6.1",
+    "nyc": "8.3.0",
+    "sinon": "1.17.5"
   }
 }

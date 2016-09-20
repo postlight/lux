@@ -19,9 +19,7 @@ export default function resource(action: Action<any>): Action<any> {
     if (actionName == 'index') {
       [data, total] = await Promise.all([
         result,
-        new Promise((resolve, reject) => {
-          Query.from(result).count().then(resolve, reject);
-        })
+        Query.from(result).count()
       ]);
     } else {
       data = await result;

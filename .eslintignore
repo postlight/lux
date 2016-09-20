@@ -1,16 +1,18 @@
 # compiled output
-dist/*
+coverage/
+dist/
+.nyc_output/
 
 # tests
-test/*
+test/
 
 # docs
-docs/*
+docs/
 
 # dependencies
-node_modules/*
+node_modules/
 
 # misc
-decl/*
-examples/*
+decl/
+examples/
 *interfaces.js

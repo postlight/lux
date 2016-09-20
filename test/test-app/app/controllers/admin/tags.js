@@ -1,4 +1,4 @@
-import TagsController from 'app/controllers/tags.js';
+import TagsController from '../tags';
 
 class AdminTagsController extends TagsController {
 

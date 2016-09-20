@@ -12,11 +12,9 @@ import initializeClass from './initialize-class';
 import pick from '../../../utils/pick';
 import omit from '../../../utils/omit';
 import setType from '../../../utils/set-type';
-import tryCatch from '../../../utils/try-catch';
 import underscore from '../../../utils/underscore';
 import validate from './utils/validate';
 import getColumns from './utils/get-columns';
-import processWriteError from './utils/process-write-error';
 
 import type Logger from '../../logger';
 import type Database from '../../database';
@@ -185,6 +183,7 @@ class Model {
       });
 
       Object.freeze(this);
+      Object.freeze(this.rawColumnData);
     }
 
     NEW_RECORDS.add(this);
@@ -309,81 +308,77 @@ class Model {
     }
   }
 
-  save(deep?: boolean): Promise<Model> {
-    return tryCatch(async () => {
-      const {
-        constructor: {
-          table,
-          logger,
-          primaryKey,
+  async save(deep?: boolean): Promise<this> {
+    const {
+      constructor: {
+        table,
+        logger,
+        primaryKey,
 
-          hooks: {
-            afterUpdate,
-            afterSave,
-            afterValidation,
-            beforeUpdate,
-            beforeSave,
-            beforeValidation
-          }
+        hooks: {
+          afterUpdate,
+          afterSave,
+          afterValidation,
+          beforeUpdate,
+          beforeSave,
+          beforeValidation
         }
-      } = this;
-
-      if (typeof beforeValidation === 'function') {
-        await beforeValidation(this);
       }
+    } = this;
 
-      validate(this);
+    if (typeof beforeValidation === 'function') {
+      await beforeValidation(this);
+    }
 
-      if (typeof afterValidation === 'function') {
-        await afterValidation(this);
-      }
+    validate(this);
 
-      if (typeof beforeUpdate === 'function') {
-        await beforeUpdate(this);
-      }
+    if (typeof afterValidation === 'function') {
+      await afterValidation(this);
+    }
 
-      if (typeof beforeSave === 'function') {
-        await beforeSave(this);
-      }
+    if (typeof beforeUpdate === 'function') {
+      await beforeUpdate(this);
+    }
 
-      Reflect.set(this, 'updatedAt', new Date());
+    if (typeof beforeSave === 'function') {
+      await beforeSave(this);
+    }
 
-      const query = table()
-        .where({ [primaryKey]: Reflect.get(this, primaryKey) })
-        .update(getColumns(this, Array.from(this.dirtyAttributes)))
-        .on('query', () => {
-          setImmediate(() => logger.debug(sql`${query.toString()}`));
-        });
+    Reflect.set(this, 'updatedAt', new Date());
 
-      if (deep) {
-        await Promise.all([
-          query,
-          saveRelationships(this)
-        ]);
+    const query = table()
+      .where({ [primaryKey]: Reflect.get(this, primaryKey) })
+      .update(getColumns(this, Array.from(this.dirtyAttributes)))
+      .on('query', () => {
+        setImmediate(() => logger.debug(sql`${query.toString()}`));
+      });
 
-        this.prevAssociations.clear();
-      } else {
-        await query;
-      }
+    if (deep) {
+      await Promise.all([
+        query,
+        saveRelationships(this)
+      ]);
 
-      NEW_RECORDS.delete(this);
-      this.dirtyAttributes.clear();
+      this.prevAssociations.clear();
+    } else {
+      await query;
+    }
 
-      if (typeof afterUpdate === 'function') {
-        await afterUpdate(this);
-      }
+    NEW_RECORDS.delete(this);
+    this.dirtyAttributes.clear();
 
-      if (typeof afterSave === 'function') {
-        await afterSave(this);
-      }
+    if (typeof afterUpdate === 'function') {
+      await afterUpdate(this);
+    }
 
-      return this;
-    }, err => {
-      throw processWriteError(err);
-    }).then(() => this);
+    if (typeof afterSave === 'function') {
+      await afterSave(this);
+    }
+
+    return this;
   }
 
-  async update(attributes: Object = {}): Promise<Model> {
+  async update(attributes: Object = {}): Promise<this> {
     Object.assign(this, attributes);
 
     if (this.isDirty) {
@@ -393,7 +388,7 @@ class Model {
     return this;
   }
 
-  async destroy(): Promise<Model> {
+  async destroy(): Promise<this> {
     const {
       constructor: {
         primaryKey,
@@ -412,7 +407,7 @@ class Model {
     }
 
     const query = table()
-      .where({ [primaryKey]: Reflect.get(this, primaryKey) })
+      .where({ [primaryKey]: this.getPrimaryKey() })
       .del()
       .on('query', () => {
         setImmediate(() => logger.debug(sql`${query.toString()}`));
@@ -450,140 +445,140 @@ class Model {
     }
   }
 
-  static create(props = {}) {
-    return tryCatch(async () => {
-      const {
-        primaryKey,
-        logger,
-        table,
+  static async create(props = {}): Promise<this> {
+    const {
+      primaryKey,
+      logger,
+      table,
 
-        hooks: {
-          afterCreate,
-          afterSave,
-          afterValidation,
-          beforeCreate,
-          beforeSave,
-          beforeValidation
-        }
-      } = this;
-
-      const datetime = new Date();
-      const instance = Reflect.construct(this, [{
-        ...props,
-        createdAt: datetime,
-        updatedAt: datetime
-      }, false]);
-
-      if (typeof beforeValidation === 'function') {
-        await beforeValidation(instance);
+      hooks: {
+        afterCreate,
+        afterSave,
+        afterValidation,
+        beforeCreate,
+        beforeSave,
+        beforeValidation
       }
+    } = this;
 
-      validate(instance);
+    const datetime = new Date();
+    const instance = Reflect.construct(this, [{
+      ...props,
+      createdAt: datetime,
+      updatedAt: datetime
+    }, false]);
 
-      if (typeof afterValidation === 'function') {
-        await afterValidation(instance);
-      }
+    if (typeof beforeValidation === 'function') {
+      await beforeValidation(instance);
+    }
 
-      if (typeof beforeCreate === 'function') {
-        await beforeCreate(instance);
-      }
+    validate(instance);
 
-      if (typeof beforeSave === 'function') {
-        await beforeSave(instance);
-      }
+    if (typeof afterValidation === 'function') {
+      await afterValidation(instance);
+    }
 
-      const query = table()
-        .returning(primaryKey)
-        .insert(omit(getColumns(instance), primaryKey))
-        .on('query', () => {
-          setImmediate(() => logger.debug(sql`${query.toString()}`));
-        });
+    if (typeof beforeCreate === 'function') {
+      await beforeCreate(instance);
+    }
 
-      Object.assign(instance, {
-        [primaryKey]: (await query)[0]
+    if (typeof beforeSave === 'function') {
+      await beforeSave(instance);
+    }
+
+    const query = table()
+      .returning(primaryKey)
+      .insert(omit(getColumns(instance), primaryKey))
+      .on('query', () => {
+        setImmediate(() => logger.debug(sql`${query.toString()}`));
       });
 
-      Reflect.defineProperty(instance, 'initialized', {
-        value: true,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      });
+    const [primaryKeyValue] = await query;
 
-      Object.freeze(instance);
-      NEW_RECORDS.delete(instance);
-
-      if (typeof afterCreate === 'function') {
-        await afterCreate(instance);
-      }
-
-      if (typeof afterSave === 'function') {
-        await afterSave(instance);
-      }
-
-      return instance;
-    }, err => {
-      throw processWriteError(err);
+    Object.assign(instance, {
+      [primaryKey]: primaryKeyValue
     });
+
+    Reflect.set(instance.rawColumnData, primaryKey, primaryKeyValue);
+
+    Reflect.defineProperty(instance, 'initialized', {
+      value: true,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    });
+
+    Object.freeze(instance);
+    NEW_RECORDS.delete(instance);
+
+    if (typeof afterCreate === 'function') {
+      await afterCreate(instance);
+    }
+
+    if (typeof afterSave === 'function') {
+      await afterSave(instance);
+    }
+
+    return instance;
   }
 
-  static all() {
+  static all(): Query<Array<this>> {
     return new Query(this).all();
   }
 
-  static find(primaryKey: any) {
+  static find(primaryKey: any): Query<this> {
     return new Query(this).find(primaryKey);
   }
 
-  static page(num: number) {
+  static page(num: number): Query<Array<this>> {
     return new Query(this).page(num);
   }
 
-  static limit(amount: number) {
+  static limit(amount: number): Query<Array<this>> {
     return new Query(this).limit(amount);
   }
 
-  static offset(amount: number) {
+  static offset(amount: number): Query<Array<this>> {
     return new Query(this).offset(amount);
   }
 
-  static count() {
+  static count(): Query<number> {
     return new Query(this).count();
   }
 
-  static order(attr: string, direction?: string) {
+  static order(attr: string, direction?: string): Query<Array<this>> {
     return new Query(this).order(attr, direction);
   }
 
-  static where(conditions: Object) {
+  static where(conditions: Object): Query<Array<this>> {
     return new Query(this).where(conditions);
   }
 
-  static not(conditions: Object) {
+  static not(conditions: Object): Query<Array<this>> {
     return new Query(this).not(conditions);
   }
 
-  static first() {
+  static first(): Query<this> {
     return new Query(this).first();
   }
 
-  static last() {
+  static last(): Query<this> {
     return new Query(this).last();
   }
 
-  static select(...params: Array<string>) {
+  static select(...params: Array<string>): Query<Array<this>> {
     return new Query(this).select(...params);
   }
 
-  static distinct(...params: Array<string>) {
+  static distinct(...params: Array<string>): Query<Array<this>> {
     return new Query(this).distinct(...params);
   }
 
-  static include(...relationships: Array<Object|string>) {
+  static include(...relationships: Array<string | Object>): Query<Array<this>> {
     return new Query(this).include(...relationships);
   }
 
-  static unscope(...scopes: Array<string>) {
+  static unscope(...scopes: Array<string>): Query<Array<this>> {
     return new Query(this).unscope(...scopes);
   }
 

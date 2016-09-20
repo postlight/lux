@@ -1,15 +1,15 @@
 // @flow
-import type { Validation$Validator, Validation$opts } from './interfaces';
+import type { Validation$opts } from './interfaces';
 
 /**
  * @private
  */
-class Validation<T: Validation$Validator> {
+class Validation<T> {
   key: string;
 
-  value: mixed;
+  value: T;
 
-  validator: Validation$Validator;
+  validator: (value?: T) => boolean;
 
   constructor(opts: Validation$opts<T>) {
     Object.defineProperties(this, {
@@ -36,9 +36,10 @@ class Validation<T: Validation$Validator> {
     });
   }
 
-  isValid() {
+  isValid(): boolean {
     return this.validator(this.value);
   }
 }
 
 export default Validation;
+export { ValidationError } from './errors';

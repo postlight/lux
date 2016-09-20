@@ -44,5 +44,8 @@ before_script:
 install:
   - bash -e scripts/travis/install.sh
 
+after_success:
+  - npm run test:codecov
+
 notifications:
   email: false

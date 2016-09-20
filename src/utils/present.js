@@ -1,6 +1,6 @@
 // @flow
 import isNull from './is-null';
-import isUndefined from './is-null';
+import isUndefined from './is-undefined';
 
 /**
  * @private
