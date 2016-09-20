@@ -179,7 +179,7 @@ describe('module "controller"', () => {
       });
 
       it('throws an error if the record is not found', async () => {
-        const request = createRequest({ d: Number.MAX_SAFE_INTEGER });
+        const request = createRequest({ id: 10000 });
 
         await subject.show(request).catch(err => {
           expect(err).to.be.an.instanceof(Error);
@@ -466,7 +466,7 @@ describe('module "controller"', () => {
 
       it('throws an error if the record is not found', async () => {
         const request = createRequest({
-          id: Number.MAX_SAFE_INTEGER,
+          id: 10000,
           type: 'posts',
           data: {
             attributes: {
@@ -543,7 +543,7 @@ describe('module "controller"', () => {
       });
 
       it('throws an error if the record is not found', async () => {
-        const request = createRequest({ id: Number.MAX_SAFE_INTEGER });
+        const request = createRequest({ id: 10000 });
 
         await subject.destroy(request).catch(err => {
           expect(err).to.be.an.instanceof(Error);
