@@ -2,6 +2,7 @@ import faker from 'faker';
 
 import Categorization from '../app/models/categorization';
 import Comment from '../app/models/comment';
+import Image from '../app/models/image';
 import Post from '../app/models/post';
 import Reaction from '../app/models/reaction';
 import Tag from '../app/models/tag';
@@ -15,7 +16,9 @@ const {
   lorem,
   random,
   internet,
-
+  image: {
+    imageUrl
+  },
   helpers: {
     randomize
   }
@@ -43,6 +46,13 @@ export default async function seed() {
       title: lorem.sentence(),
       userId: randomize([...range(1, 100)]),
       isPublic: random.boolean()
+    }))
+  );
+
+  await Promise.all(
+    Array.from(range(1, 100)).map(() => Image.create({
+      url: imageUrl(),
+      postId: randomize([...range(1, 100)])
     }))
   );
 

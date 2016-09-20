@@ -4,8 +4,9 @@ export function up(schema) {
 
     table.enum('type', [
       ':+1:',
+      ':-1:',
       ':heart:',
-      ':confetti_ball:',
+      ':tada:',
       ':laughing:',
       ':disappointed:'
     ]).index().notNullable();

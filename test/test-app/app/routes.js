@@ -13,6 +13,8 @@ export default function routes() {
     only: ['index']
   });
 
+  this.resource('images');
+
   this.resource('notifications', {
     only: ['show', 'index']
   });
@@ -31,6 +33,7 @@ export default function routes() {
     this.resource('actions');
     this.resource('comments');
     this.resource('friendships');
+    this.resource('images');
     this.resource('notifications');
     this.resource('posts');
     this.resource('reactions');

@@ -5,6 +5,7 @@ class PostsController extends Controller {
     'user',
     'body',
     'title',
+    'image',
     'isPublic'
   ];
 

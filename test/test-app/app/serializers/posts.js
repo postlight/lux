@@ -9,7 +9,8 @@ class PostsSerializer extends Serializer {
   ];
 
   hasOne = [
-    'user'
+    'user',
+    'image'
   ];
 
   hasMany = [

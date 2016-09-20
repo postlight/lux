@@ -3,9 +3,9 @@ import { Model } from 'LUX_LOCAL';
 import track from '../utils/track';
 
 class Post extends Model {
-  static belongsTo = {
-    user: {
-      inverse: 'posts'
+  static hasOne = {
+    image: {
+      inverse: 'post'
     }
   };
 
@@ -21,6 +21,12 @@ class Post extends Model {
     tags: {
       inverse: 'posts',
       through: 'categorization'
+    }
+  };
+
+  static belongsTo = {
+    user: {
+      inverse: 'posts'
     }
   };
 
