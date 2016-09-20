@@ -2,7 +2,8 @@
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
 
-import transformKeys, {
+import {
+  transformKeys,
   camelizeKeys,
   dasherizeKeys,
   underscoreKeys

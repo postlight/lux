@@ -8,7 +8,7 @@ import underscore from './underscore';
 /**
  * @private
  */
-export default function transformKeys<T: Object | Array<mixed>>(
+export function transformKeys<T: Object | Array<mixed>>(
   source: T,
   transformer: (key: string) => string,
   deep: boolean = false
