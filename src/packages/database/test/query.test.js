@@ -742,26 +742,38 @@ describe('module "database/query"', () => {
       });
 
       it('properly modifies #snapshots when using an array of strings', () => {
-        const result = subject.include('user', 'comments');
+        const {
+          snapshots,
+          relationships
+        } = subject.include('user', 'comments');
 
-        expect(result.snapshots).to.deep.equal([
-          ['includeSelect', [
+        expect(snapshots)
+          .to.have.deep.property('[0][0]', 'includeSelect');
+
+        expect(snapshots)
+          .to.have.deep.property('[0][1]')
+          .and.include.all.members([
             'users.id AS user.id',
             'users.name AS user.name',
             'users.email AS user.email',
             'users.password AS user.password',
             'users.created_at AS user.createdAt',
             'users.updated_at AS user.updatedAt'
-          ]],
-          ['leftOuterJoin', [
+          ]);
+
+        expect(snapshots)
+          .to.have.deep.property('[1][0]', 'leftOuterJoin');
+
+        expect(snapshots)
+          .to.have.deep.property('[1][1]')
+          .and.include.all.members([
             'users',
             'posts.user_id',
             '=',
             'users.id'
-          ]]
-        ]);
+          ]);
 
-        assertRelationships(result.relationships);
+        assertRelationships(relationships);
       });
 
       it('properly modifies #snapshots when using an object', () => {
@@ -778,22 +790,31 @@ describe('module "database/query"', () => {
           ]
         };
 
-        const result = subject.include(params);
+        const { snapshots, relationships } = subject.include(params);
 
-        expect(result.snapshots).to.deep.equal([
-          ['includeSelect', [
+        expect(snapshots)
+          .to.have.deep.property('[0][0]', 'includeSelect');
+
+        expect(snapshots)
+          .to.have.deep.property('[0][1]')
+          .and.include.all.members([
             'users.id AS user.id',
             'users.name AS user.name'
-          ]],
-          ['leftOuterJoin', [
+          ]);
+
+        expect(snapshots)
+          .to.have.deep.property('[1][0]', 'leftOuterJoin');
+
+        expect(snapshots)
+          .to.have.deep.property('[1][1]')
+          .and.include.all.members([
             'users',
             'posts.user_id',
             '=',
             'users.id'
-          ]]
-        ]);
+          ]);
 
-        assertRelationships(result.relationships, params.comments);
+        assertRelationships(relationships, params.comments);
       });
 
       it('resolves with the correct array of `Model` instances', async () => {
