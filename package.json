@@ -59,7 +59,7 @@
     "chai": "3.5.0",
     "codecov": "1.0.1",
     "documentation": "4.0.0-beta9",
-    "eslint-plugin-flowtype": "2.18.2",
+    "eslint-plugin-flowtype": "2.19.0",
     "flow-bin": "0.32.0",
     "mocha": "3.0.2",
     "node-fetch": "1.6.1",
