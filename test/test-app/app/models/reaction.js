@@ -2,6 +2,15 @@ import { Model } from 'LUX_LOCAL';
 
 import track from '../utils/track';
 
+export const REACTION_TYPES = [
+  ':+1:',
+  ':-1:',
+  ':heart:',
+  ':tada:',
+  ':laughing:',
+  ':disappointed:'
+];
+
 class Reaction extends Model {
   static belongsTo = {
     comment: {
