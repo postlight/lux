@@ -14,28 +14,26 @@ async function getHasManyThrough(owner: Model, {
   foreignKey: baseKey
 }: Relationship$opts): Promise<Array<Model>> {
   const inverseOpts = model.relationshipFor(inverse);
+  let value = [];
 
   if (through && inverseOpts) {
-    let { foreignKey } = inverseOpts;
+    const foreignKey = camelize(inverseOpts.foreignKey, true);
+    const records = await through
+      .select(baseKey, foreignKey)
+      .where({
+        [baseKey]: owner.getPrimaryKey()
+      });
 
-    foreignKey = camelize(foreignKey, true);
-
-    const records = await through.select(baseKey, foreignKey).where({
-      [baseKey]: owner.getPrimaryKey()
-    });
-
-    if (!records.length) {
-      return [];
+    if (records.length) {
+      value = await model.where({
+        [model.primaryKey]: records
+          .map(record => Reflect.get(record, foreignKey))
+          .filter(Boolean)
+      });
     }
-
-    return await model.where({
-      [model.primaryKey]: records
-        .map(record => Reflect.get(record, foreignKey))
-        .filter(Boolean)
-    });
-  } else {
-    return [];
   }
+
+  return value;
 }
 
 /**
