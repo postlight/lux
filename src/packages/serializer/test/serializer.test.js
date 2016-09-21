@@ -180,7 +180,9 @@ describe('module "serializer"', () => {
       };
     });
 
-    describe('#format()', () => {
+    describe('#format()', function () {
+      this.timeout(15000);
+
       beforeEach(setup);
       afterEach(teardown);
 
@@ -307,9 +309,7 @@ describe('module "serializer"', () => {
         });
       });
 
-      it('works with an array of `Model` instances', async function () {
-        this.timeout(15000);
-
+      it('works with an array of `Model` instances', async () => {
         const posts = await Promise.all(
           Array.from(range(1, 25)).map(() => {
             return createPost();
