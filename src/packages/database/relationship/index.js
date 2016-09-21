@@ -15,43 +15,42 @@ export async function get(
   key: string
 ): Promise<Array<Model> | ?Model> {
   const opts = owner.constructor.relationshipFor(key);
+  let value = null;
 
-  if (!opts) {
-    return null;
-  }
+  if (opts) {
+    const related = relatedFor(owner);
+    const { type } = opts;
+    let { foreignKey } = opts;
 
-  const related = relatedFor(owner);
-  const { type } = opts;
-  let { foreignKey } = opts;
-  let value = related.get(key);
+    value = related.get(key);
+    foreignKey = camelize(foreignKey, true);
 
-  foreignKey = camelize(foreignKey, true);
+    if (!value) {
+      switch (type) {
+        case 'hasOne':
+          value = await getHasOne(owner, {
+            ...opts,
+            foreignKey
+          });
+          break;
 
-  if (!value) {
-    switch (type) {
-      case 'hasOne':
-        value = await getHasOne(owner, {
-          ...opts,
-          foreignKey
-        });
-        break;
+        case 'hasMany':
+          value = await getHasMany(owner, {
+            ...opts,
+            foreignKey
+          });
+          break;
 
-      case 'hasMany':
-        value = await getHasMany(owner, {
-          ...opts,
-          foreignKey
-        });
-        break;
+        case 'belongsTo':
+          value = await getBelongsTo(owner, {
+            ...opts,
+            foreignKey
+          });
+          break;
+      }
 
-      case 'belongsTo':
-        value = await getBelongsTo(owner, {
-          ...opts,
-          foreignKey
-        });
-        break;
+      set(owner, key, value);
     }
-
-    set(owner, key, value);
   }
 
   return value;
