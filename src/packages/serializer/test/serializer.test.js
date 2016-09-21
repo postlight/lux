@@ -74,10 +74,10 @@ describe('module "serializer"', () => {
         ];
       }
 
-      createSerializer = () => new TestSerializer({
+      createSerializer = (namespace = '') => new TestSerializer({
+        namespace,
         model: Post,
-        parent: null,
-        namespace: ''
+        parent: null
       });
 
       createPost = async ({
@@ -186,7 +186,11 @@ describe('module "serializer"', () => {
       beforeEach(setup);
       afterEach(teardown);
 
-      const expectResourceToBeCorrect = async (post, result) => {
+      const expectResourceToBeCorrect = async (
+        post,
+        result,
+        includeImage = true
+      ) => {
         const { attributes, relationships } = result;
         const {
           body,
@@ -247,16 +251,20 @@ describe('module "serializer"', () => {
           }
         });
 
-        expect(relationships).to.have.property('image').and.be.an('object');
-        expect(relationships.image).to.deep.equal({
-          data: {
-            id: `${image.getPrimaryKey()}`,
-            type: 'images'
-          },
-          links: {
-            self: linkFor('images', imageId)
-          }
-        });
+        if (includeImage) {
+          expect(relationships).to.have.property('image').and.be.an('object');
+          expect(relationships.image).to.deep.equal({
+            data: {
+              id: `${image.getPrimaryKey()}`,
+              type: 'images'
+            },
+            links: {
+              self: linkFor('images', imageId)
+            }
+          });
+        } else {
+          expect(relationships.image).to.be.null;
+        }
 
         expect(relationships)
           .to.have.property('tags')
@@ -343,6 +351,70 @@ describe('module "serializer"', () => {
 
         expect(result).to.have.property('links').and.deep.equal({
           self: linkFor('posts')
+        });
+
+        expect(result).to.have.property('jsonapi').and.deep.equal({
+          version: JSONAPI_VERSION
+        });
+      });
+
+      it('can build namespaced links', async () => {
+        subject = createSerializer('admin');
+
+        const post = await createPost();
+        const result = await subject.format({
+          data: post,
+          domain: DOMAIN,
+          include: [],
+          links: {
+            self: linkFor('admin/posts', post.getPrimaryKey())
+          }
+        });
+
+        expect(result).to.have.all.keys([
+          'data',
+          'links',
+          'jsonapi'
+        ]);
+
+        await expectResourceToBeCorrect(post, result.data);
+
+        expect(result).to.have.property('links').and.deep.equal({
+          self: linkFor('admin/posts', post.getPrimaryKey())
+        });
+
+        expect(result).to.have.property('jsonapi').and.deep.equal({
+          version: JSONAPI_VERSION
+        });
+      });
+
+      it('supports empty one-to-one relationships', async () => {
+        const post = await createPost({
+          includeUser: true,
+          includeTags: true,
+          includeImage: false,
+          includeComments: true
+        });
+
+        const result = await subject.format({
+          data: post,
+          domain: DOMAIN,
+          include: [],
+          links: {
+            self: linkFor('posts', post.getPrimaryKey())
+          }
+        });
+
+        expect(result).to.have.all.keys([
+          'data',
+          'links',
+          'jsonapi'
+        ]);
+
+        await expectResourceToBeCorrect(post, result.data, false);
+
+        expect(result).to.have.property('links').and.deep.equal({
+          self: linkFor('posts', post.getPrimaryKey())
         });
 
         expect(result).to.have.property('jsonapi').and.deep.equal({
