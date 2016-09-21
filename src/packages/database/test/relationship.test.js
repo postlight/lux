@@ -182,7 +182,7 @@ describe('module "database/relationship"', () => {
 
     const setup = async () => {
       subject = await Post.create({
-        title: '#get() test'
+        title: '#set() test'
       });
 
       subjectId = subject.getPrimaryKey();
