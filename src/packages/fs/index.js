@@ -2,6 +2,8 @@
 import fs from 'fs';
 import { join as joinPath, resolve as resolvePath } from 'path';
 
+import Watcher from './watcher';
+
 import createResolver from './utils/create-resolver';
 import createPathRemover from './utils/create-path-remover';
 
@@ -19,7 +21,9 @@ export type { fs$ParsedPath } from './interfaces';
 /**
  * @private
  */
-export const { watch } = fs;
+export function watch(path: string): Promise<Watcher> {
+  return new Watcher(path);
+}
 
 /**
  * @private

@@ -1,11 +1,11 @@
 // @flow
 import { Client } from 'fb-watchman';
 import { join as joinPath } from 'path';
+import { watch as nativeWatch } from 'fs';
 
-import * as fs from '../fs';
-
-import exec from '../../utils/exec';
-import tryCatch from '../../utils/try-catch';
+import exec from '../../../utils/exec';
+import tryCatch from '../../../utils/try-catch';
+import isJSFile from '../utils/is-js-file';
 
 import type { FSWatcher } from 'fs';
 
@@ -18,10 +18,10 @@ const SUBSCRIPTION_NAME = 'lux-watcher';
  * @private
  */
 function fallback(instance: Watcher, path: string): FSWatcher {
-  return fs.watch(path, {
+  return nativeWatch(path, {
     recursive: true
   }, (type, name) => {
-    if (fs.isJSFile(name)) {
+    if (isJSFile(name)) {
       instance.emit('change', [{ name, type }]);
     }
   });
