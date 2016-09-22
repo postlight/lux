@@ -1,16 +1,18 @@
 // @flow
+import * as faker from 'faker';
 import { expect } from 'chai';
-import { it, before, describe } from 'mocha';
+import { it, describe, before, beforeEach, afterEach } from 'mocha';
 import { dasherize, underscore } from 'inflection';
 
-import { FIXTURES } from './fixtures/data';
+import Serializer from '../index';
+import { VERSION as JSONAPI_VERSION } from '../../jsonapi';
 
-import entries from '../../../utils/entries';
+import range from '../../../utils/range';
 import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
-import type Serializer from '../index';
 import type Application from '../../application';
+import type { Model } from '../../database';
 
 import type {
   JSONAPI$DocumentLinks,
@@ -19,182 +21,435 @@ import type {
 } from '../../jsonapi';
 
 const DOMAIN = 'http://localhost:4000';
-const JSONAPI_VERSION = '1.0';
 
-const assertLinks = (subject: JSONAPI$DocumentLinks = {}) => {
-  expect(subject).to.have.all.keys(['self']);
-  expect(subject.self).to.be.a('string');
-
-  if (typeof subject.self === 'string') {
-    expect(subject.self.startsWith(DOMAIN)).to.be.true;
-  }
-};
-
-const assertIdentifier = (
-  subject: JSONAPI$IdentifierObject,
-  { id, type }: {
-    id?: string;
-    type?: string;
-  } = {}
-) => {
-  if (id) {
-    expect(subject.id).to.equal(id);
-  } else {
-    expect(subject.id).to.be.a('string');
-  }
-
-  if (type) {
-    expect(subject.type).to.equal(type);
-  } else {
-    expect(subject.type).to.be.a('string');
-  }
-};
-
-const createAssertion = ({ attributes, hasOne, hasMany }: Serializer<*>) => (
-  subject: JSONAPI$ResourceObject,
-  id?: string,
-  type?: string
-) => {
-  hasOne = hasOne.map(str => dasherize(underscore(str)));
-  hasMany = hasMany.map(str => dasherize(underscore(str)));
-  attributes = attributes.map(str => dasherize(underscore(str)));
-
-  assertIdentifier(subject, {
-    id,
-    type
-  });
-
-  if (subject.attributes) {
-    expect(subject.attributes).to.have.all.keys(attributes);
-  }
-
-  if (subject.relationships) {
-    const { relationships } = subject;
-
-    expect(relationships).to.have.all.keys([...hasOne, ...hasMany]);
-    entries(relationships).forEach(([, relationship]) => {
-      if (!relationship) {
-        expect(relationship).to.be.null;
-      } else {
-        expect(relationship).to.have.any.keys([
-          'id',
-          'type',
-          'data',
-          'links'
-        ]);
-
-        expect(relationship).to.have.property('data');
-
-        if (Array.isArray(relationship.data)) {
-          relationship.data.forEach(item => assertIdentifier(item));
-        } else {
-          assertIdentifier(relationship.data);
-        }
-
-        if (relationship.links) {
-          assertLinks(relationship.links);
-        }
-      }
-    });
-  }
-
-  if (subject.links) {
-    assertLinks(subject.links);
-  }
-};
+const linkFor = (type, id) => (
+  id ? `${DOMAIN}/${type}/${id}` : `${DOMAIN}/${type}`
+);
 
 describe('module "serializer"', () => {
   describe('class Serializer', () => {
-    let data;
-    let subject: Serializer<*>;
-    let assertPost: Function;
-    let assertUser: Function;
+    let subject;
+    let createPost;
+    let createSerializer;
+    const instances = new Set();
+
+    const setup = () => {
+      subject = createSerializer();
+    };
+
+    const teardown = async () => {
+      await Promise.all(
+        Array.from(instances).map(record => {
+          return record.destroy();
+        })
+      );
+    };
 
     before(async () => {
-      const app: Application = await getTestApp();
-      const Post = app.models.get('post');
-      const User = app.models.get('user');
-      const PostsSerializer = app.serializers.get('posts');
-      const UsersSerializer = app.serializers.get('users');
+      const { models } = await getTestApp();
+      const Tag = setType(() => models.get('tag'));
+      const Post = setType(() => models.get('post'));
+      const User = setType(() => models.get('user'));
+      const Image = setType(() => models.get('image'));
+      const Comment = setType(() => models.get('comment'));
+      const Categorization = setType(() => models.get('categorization'));
 
-      if (!Post || !User || !PostsSerializer || !UsersSerializer) {
-        throw new Error('TestApp is invalid');
+      class TestSerializer extends Serializer {
+        attributes = [
+          'body',
+          'title',
+          'isPublic',
+          'createdAt',
+          'updatedAt'
+        ];
+
+        hasOne = [
+          'user',
+          'image'
+        ];
+
+        hasMany = [
+          'comments',
+          'tags'
+        ];
       }
 
-      subject = PostsSerializer;
-      assertPost = createAssertion(PostsSerializer);
-      assertUser = createAssertion(UsersSerializer);
+      createSerializer = (namespace = '') => new TestSerializer({
+        namespace,
+        model: Post,
+        parent: null
+      });
 
-      data = FIXTURES.map(({ user, ...attrs }) => new Post({
-        ...attrs,
-        user: user ? new User(user) : null
-      }));
+      createPost = async ({
+        includeUser = true,
+        includeTags = true,
+        includeImage = true,
+        includeComments = true
+      } = {}) => {
+        let include = [];
+
+        const post = await Post.create({
+          body: faker.lorem.paragraphs(),
+          title: faker.lorem.sentence(),
+          isPublic: faker.random.boolean()
+        });
+
+        const postId = post.getPrimaryKey();
+
+        if (includeUser) {
+          const user = await User.create({
+            name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+            email: faker.internet.email(),
+            password: faker.internet.password(8)
+          });
+
+          instances.add(user);
+          include = [...include, 'user'];
+
+          Reflect.set(post, 'user', user);
+        }
+
+        if (includeImage) {
+          const image = await Image.create({
+            postId,
+            url: faker.image.imageUrl()
+          });
+
+          instances.add(image);
+          include = [...include, 'image'];
+        }
+
+        if (includeTags) {
+          const tags = await Promise.all([
+            Tag.create({
+              name: faker.lorem.word()
+            }),
+            Tag.create({
+              name: faker.lorem.word()
+            }),
+            Tag.create({
+              name: faker.lorem.word()
+            })
+          ]);
+
+          const categorizations = await Promise.all(
+            tags.map(tag => {
+              return Categorization.create({
+                postId,
+                tagId: tag.getPrimaryKey()
+              });
+            })
+          );
+
+          tags.forEach(tag => {
+            instances.add(tag);
+          });
+
+          categorizations.forEach(categorization => {
+            instances.add(categorization);
+          });
+
+          include = [...include, 'tags'];
+        }
+
+        if (includeComments) {
+          const comments = await Promise.all([
+            Comment.create({
+              postId,
+              message: faker.lorem.sentence()
+            }),
+            Comment.create({
+              postId,
+              message: faker.lorem.sentence()
+            }),
+            Comment.create({
+              postId,
+              message: faker.lorem.sentence()
+            })
+          ]);
+
+          comments.forEach(comment => {
+            instances.add(comment);
+          });
+
+          include = [...include, 'comments'];
+        }
+
+        await post.save(true);
+
+        return await Post
+          .find(postId)
+          .include(...include);
+      };
     });
 
-    describe('#format()', () => {
-      it('converts a single of model to a JSONAPI document', async () => {
-        const [record] = data;
-        const result = await subject.format({
-          data: record,
-          domain: DOMAIN,
-          include: [],
-          links: {
-            self: `${DOMAIN}/posts/${record.id}`
-          }
-        });
+    describe('#format()', function () {
+      this.timeout(15000);
 
-        expect(result).to.have.all.keys([
-          'data',
-          'links',
-          'jsonapi'
+      beforeEach(setup);
+      afterEach(teardown);
+
+      const expectResourceToBeCorrect = async (
+        post,
+        result,
+        includeImage = true
+      ) => {
+        const { attributes, relationships } = result;
+        const {
+          body,
+          title,
+          isPublic,
+          createdAt,
+          updatedAt
+        } = post.getAttributes(
+          'body',
+          'title',
+          'isPublic',
+          'createdAt',
+          'updatedAt'
+        );
+
+        const [
+          user,
+          tags,
+          image,
+          comments
+        ] = await Promise.all([
+          Reflect.get(post, 'user'),
+          Reflect.get(post, 'tags'),
+          Reflect.get(post, 'image'),
+          Reflect.get(post, 'comments')
         ]);
 
-        expect(result.data).to.be.an('object');
-        expect(result.jsonapi).to.deep.equal({ version: JSONAPI_VERSION });
+        const postId = post.getPrimaryKey();
+        const userId = user.getPrimaryKey();
+        const imageId = image ? image.getPrimaryKey() : null;
 
-        assertLinks(result.links);
+        const tagIds = tags
+          .map(tag => tag.getPrimaryKey())
+          .map(String);
 
-        if (result.data && !Array.isArray(result.data)) {
-          assertPost(result.data, String(record.id), record.resourceName);
+        const commentIds = comments
+          .map(comment => comment.getPrimaryKey())
+          .map(String);
+
+        expect(result).to.have.property('id', `${postId}`);
+        expect(result).to.have.property('type', 'posts');
+        expect(attributes).to.be.an('object');
+        expect(relationships).to.be.an('object');
+        expect(attributes).to.have.property('body', body);
+        expect(attributes).to.have.property('title', title);
+        expect(attributes).to.have.property('is-public', isPublic);
+        expect(attributes).to.have.property('created-at', createdAt);
+        expect(attributes).to.have.property('updated-at', updatedAt);
+
+        let userLink;
+
+        if (subject.namespace) {
+          userLink = linkFor(`${subject.namespace}/users`, userId);
+        } else {
+          userLink = linkFor('users', userId);
         }
-      });
 
-      it('converts an `Array` of models to a JSONAPI document', async () => {
-        const result = await subject.format({
-          data: setType(() => data),
-          domain: DOMAIN,
-          include: [],
+        expect(relationships).to.have.property('user').and.be.an('object');
+        expect(relationships.user).to.deep.equal({
+          data: {
+            id: `${userId}`,
+            type: 'users'
+          },
           links: {
-            self: `${DOMAIN}/posts`
+            self: userLink
           }
         });
 
-        expect(result).to.have.all.keys([
-          'data',
-          'links',
-          'jsonapi'
-        ]);
+        if (includeImage) {
+          let imageLink;
 
-        expect(result.data).to.be.an('array').with.length.above(0);
-        expect(result.jsonapi).to.deep.equal({ version: JSONAPI_VERSION });
+          if (subject.namespace) {
+            imageLink = linkFor(`${subject.namespace}/images`, imageId);
+          } else {
+            imageLink = linkFor('images', imageId);
+          }
 
-        assertLinks(result.links);
-
-        if (Array.isArray(result.data)) {
-          result.data.forEach(item => {
-            assertPost(item);
+          expect(relationships).to.have.property('image').and.be.an('object');
+          expect(relationships.image).to.deep.equal({
+            data: {
+              id: `${image.getPrimaryKey()}`,
+              type: 'images'
+            },
+            links: {
+              self: imageLink
+            }
           });
+        } else {
+          expect(relationships.image).to.be.null;
         }
+
+        expect(relationships)
+          .to.have.property('tags')
+          .and.have.property('data')
+          .and.be.an('array')
+          .with.lengthOf(tags.length);
+
+        relationships.tags.data.forEach(tag => {
+          expect(tag).to.have.property('id').and.be.oneOf(tagIds);
+          expect(tag).to.have.property('type').and.equal('tags');
+        });
+
+        expect(relationships)
+          .to.have.property('comments')
+          .and.have.property('data')
+          .and.be.an('array')
+          .with.lengthOf(comments.length);
+
+        relationships.comments.data.forEach(comment => {
+          expect(comment).to.have.property('id').and.be.oneOf(commentIds);
+          expect(comment).to.have.property('type').and.equal('comments');
+        });
+      };
+
+      it('works with a single instance of `Model`', async () => {
+        const post = await createPost();
+        const result = await subject.format({
+          data: post,
+          domain: DOMAIN,
+          include: [],
+          links: {
+            self: linkFor('posts', post.getPrimaryKey())
+          }
+        });
+
+        expect(result).to.have.all.keys([
+          'data',
+          'links',
+          'jsonapi'
+        ]);
+
+        await expectResourceToBeCorrect(post, result.data);
+
+        expect(result).to.have.property('links').and.deep.equal({
+          self: linkFor('posts', post.getPrimaryKey())
+        });
+
+        expect(result).to.have.property('jsonapi').and.deep.equal({
+          version: JSONAPI_VERSION
+        });
       });
 
-      it('can include relationships for a single model', async () => {
-        const [record] = data;
+      it('works with an array of `Model` instances', async () => {
+        const posts = await Promise.all(
+          Array.from(range(1, 25)).map(() => {
+            return createPost();
+          })
+        );
+
+        const postIds = posts
+          .map(post => post.getPrimaryKey())
+          .map(String);
+
         const result = await subject.format({
-          data: record,
+          data: posts,
           domain: DOMAIN,
-          include: ['user'],
+          include: [],
           links: {
-            self: `${DOMAIN}/posts/${record.id}`
+            self: linkFor('posts')
+          }
+        });
+
+        expect(result).to.have.all.keys([
+          'data',
+          'links',
+          'jsonapi'
+        ]);
+
+        expect(result.data).to.be.an('array').with.lengthOf(posts.length);
+
+        for (let i = 0; i < result.data.length; i++) {
+          await expectResourceToBeCorrect(posts[i], result.data[i]);
+        }
+
+        expect(result).to.have.property('links').and.deep.equal({
+          self: linkFor('posts')
+        });
+
+        expect(result).to.have.property('jsonapi').and.deep.equal({
+          version: JSONAPI_VERSION
+        });
+      });
+
+      it('can build namespaced links', async () => {
+        subject = createSerializer('admin');
+
+        const post = await createPost();
+        const result = await subject.format({
+          data: post,
+          domain: DOMAIN,
+          include: [],
+          links: {
+            self: linkFor('admin/posts', post.getPrimaryKey())
+          }
+        });
+
+        expect(result).to.have.all.keys([
+          'data',
+          'links',
+          'jsonapi'
+        ]);
+
+        await expectResourceToBeCorrect(post, result.data);
+
+        expect(result).to.have.property('links').and.deep.equal({
+          self: linkFor('admin/posts', post.getPrimaryKey())
+        });
+
+        expect(result).to.have.property('jsonapi').and.deep.equal({
+          version: JSONAPI_VERSION
+        });
+      });
+
+      it('supports empty one-to-one relationships', async () => {
+        const post = await createPost({
+          includeUser: true,
+          includeTags: true,
+          includeImage: false,
+          includeComments: true
+        });
+
+        const result = await subject.format({
+          data: post,
+          domain: DOMAIN,
+          include: [],
+          links: {
+            self: linkFor('posts', post.getPrimaryKey())
+          }
+        });
+
+        expect(result).to.have.all.keys([
+          'data',
+          'links',
+          'jsonapi'
+        ]);
+
+        await expectResourceToBeCorrect(post, result.data, false);
+
+        expect(result).to.have.property('links').and.deep.equal({
+          self: linkFor('posts', post.getPrimaryKey())
+        });
+
+        expect(result).to.have.property('jsonapi').and.deep.equal({
+          version: JSONAPI_VERSION
+        });
+      });
+
+      it('supports including a has-one relationship', async () => {
+        const post = await createPost();
+        const image = await Reflect.get(post, 'image');
+        const result = await subject.format({
+          data: post,
+          domain: DOMAIN,
+          include: ['image'],
+          links: {
+            self: linkFor('posts', post.getPrimaryKey())
           }
         });
 
@@ -205,30 +460,27 @@ describe('module "serializer"', () => {
           'included'
         ]);
 
-        expect(result.data).to.be.an('object');
-        expect(result.jsonapi).to.deep.equal({ version: JSONAPI_VERSION });
-        expect(result.included).to.be.an('array').with.length.above(0);
+        await expectResourceToBeCorrect(post, result.data);
 
-        assertLinks(result.links);
+        expect(result.included).to.be.an('array').with.lengthOf(1);
 
-        if (result.data && !Array.isArray(result.data)) {
-          assertPost(result.data, String(record.id), record.resourceName);
-        }
+        const { included: [item] } = result;
 
-        if (Array.isArray(result.included)) {
-          result.included.forEach(item => {
-            assertUser(item);
-          });
-        }
+        expect(item).to.have.property('id', `${image.getPrimaryKey()}`);
+        expect(item).to.have.property('type', 'images');
+        expect(item).to.have.property('attributes').and.be.an('object');
+        expect(item.attributes).to.have.property('url', image.url);
       });
 
-      it('can include relationships for an `Array` of models', async () => {
+      it('supports including belongs-to relationships', async () => {
+        const post = await createPost();
+        const user = await Reflect.get(post, 'user');
         const result = await subject.format({
-          data: setType(() => data),
+          data: post,
           domain: DOMAIN,
           include: ['user'],
           links: {
-            self: `${DOMAIN}/posts`
+            self: linkFor('posts', post.getPrimaryKey())
           }
         });
 
@@ -239,52 +491,95 @@ describe('module "serializer"', () => {
           'included'
         ]);
 
-        expect(result.data).to.be.an('array').with.length.above(0);
-        expect(result.jsonapi).to.deep.equal({ version: JSONAPI_VERSION });
-        expect(result.included).to.be.an('array').with.length.above(0);
+        await expectResourceToBeCorrect(post, result.data);
 
-        assertLinks(result.links);
+        expect(result.included).to.be.an('array').with.lengthOf(1);
 
-        if (Array.isArray(result.data)) {
-          result.data.forEach(item => {
-            assertPost(item);
-          });
-        }
+        const { included: [item] } = result;
 
-        if (Array.isArray(result.included)) {
-          result.included.forEach(item => {
-            assertUser(item);
-          });
-        }
+        expect(item).to.have.property('id', `${user.getPrimaryKey()}`);
+        expect(item).to.have.property('type', 'users');
+        expect(item).to.have.property('attributes').and.be.an('object');
+        expect(item.attributes).to.have.property('name', user.name);
+        expect(item.attributes).to.have.property('email', user.email);
       });
-    });
 
-    describe('#formatOne()', () => {
-      it('converts a single model to a JSONAPI resource object', async () => {
-        const [record] = data;
-        const result = await subject.formatOne({
-          item: record,
-          links: false,
+      it('supports including a one-to-many relationship', async () => {
+        const post = await createPost();
+        const comments = await Reflect.get(post, 'comments');
+        const result = await subject.format({
+          data: post,
           domain: DOMAIN,
-          include: [],
-          included: []
+          include: ['comments'],
+          links: {
+            self: linkFor('posts', post.getPrimaryKey())
+          }
         });
 
-        assertPost(result, String(record.id), record.resourceName);
-      });
-    });
+        expect(result).to.have.all.keys([
+          'data',
+          'links',
+          'jsonapi',
+          'included'
+        ]);
 
-    describe('#formatRelationship()', () => {
-      it('can build a JSONAPI relationship object', async () => {
-        const record = await Reflect.get(data[0], 'user');
-        const result = await subject.formatRelationship({
-          item: record,
+        await expectResourceToBeCorrect(post, result.data);
+
+        expect(result.included)
+          .to.be.an('array')
+          .with.lengthOf(comments.length);
+
+        result.included.forEach(item => {
+          expect(item).to.have.all.keys([
+            'id',
+            'type',
+            'links',
+            'attributes'
+          ]);
+
+          expect(item).to.have.property('id').and.be.a('string');
+          expect(item).to.have.property('type', 'comments');
+          expect(item).to.have.property('attributes').and.be.an('object');
+        });
+      });
+
+      it('supports including a many-to-many relationship', async () => {
+        const post = await createPost();
+        const tags = await Reflect.get(post, 'tags');
+        const result = await subject.format({
+          data: post,
           domain: DOMAIN,
-          include: false,
-          included: []
+          include: ['tags'],
+          links: {
+            self: linkFor('posts', post.getPrimaryKey())
+          }
         });
 
-        assertUser(result.data, String(record.id), record.resourceName);
+        expect(result).to.have.all.keys([
+          'data',
+          'links',
+          'jsonapi',
+          'included'
+        ]);
+
+        await expectResourceToBeCorrect(post, result.data);
+
+        expect(result.included)
+          .to.be.an('array')
+          .with.lengthOf(tags.length);
+
+        result.included.forEach(item => {
+          expect(item).to.have.all.keys([
+            'id',
+            'type',
+            'links',
+            'attributes'
+          ]);
+
+          expect(item).to.have.property('id').and.be.a('string');
+          expect(item).to.have.property('type', 'tags');
+          expect(item).to.have.property('attributes').and.be.an('object');
+        });
       });
     });
   });
