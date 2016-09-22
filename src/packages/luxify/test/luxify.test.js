@@ -4,13 +4,21 @@ import { it, describe } from 'mocha';
 
 import luxify from '../index';
 
+import K from '../../../utils/k';
 import setType from '../../../utils/set-type';
 
 describe('module "luxify"', () => {
   describe('#luxify()', () => {
-    const [request, response] = setType(() => [{}, {}]);
+    const [request, response] = setType(() => [
+      {},
+      {
+        getHeader: K,
+        setHeader: K,
+        removeHeader: K
+      }
+    ]);
 
-    it('promisifies a callback based function', () => {
+    it('promisifies a callback based middleware function', () => {
       const subject = luxify((req, res, next) => {
         next();
       });
@@ -59,6 +67,14 @@ describe('module "luxify"', () => {
 
       return subject(request, response).catch(err => {
         expect(err).to.be.a('error');
+      });
+    });
+
+    it('properly proxies untrapped response properties', () => {
+      luxify((req, res) => {
+        expect(res.getHeader).to.be.a('function');
+        expect(res.setHeader).to.be.a('function');
+        expect(res.removeHeader).to.be.a('function');
       });
     });
   });
