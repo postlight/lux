@@ -86,6 +86,8 @@ describe('module "serializer"', () => {
         includeImage = true,
         includeComments = true
       } = {}) => {
+        let include = [];
+
         const post = await Post.create({
           body: faker.lorem.paragraphs(),
           title: faker.lorem.sentence(),
@@ -102,6 +104,7 @@ describe('module "serializer"', () => {
           });
 
           instances.add(user);
+          include = [...include, 'user'];
 
           Reflect.set(post, 'user', user);
         }
@@ -113,6 +116,7 @@ describe('module "serializer"', () => {
           });
 
           instances.add(image);
+          include = [...include, 'image'];
         }
 
         if (includeTags) {
@@ -144,6 +148,8 @@ describe('module "serializer"', () => {
           categorizations.forEach(categorization => {
             instances.add(categorization);
           });
+
+          include = [...include, 'tags'];
         }
 
         if (includeComments) {
@@ -165,18 +171,15 @@ describe('module "serializer"', () => {
           comments.forEach(comment => {
             instances.add(comment);
           });
+
+          include = [...include, 'comments'];
         }
 
         await post.save(true);
 
         return await Post
           .find(postId)
-          .include(
-            'user',
-            'tags',
-            'image',
-            'comments'
-          );
+          .include(...include);
       };
     });
 
@@ -220,7 +223,7 @@ describe('module "serializer"', () => {
 
         const postId = post.getPrimaryKey();
         const userId = user.getPrimaryKey();
-        const imageId = image.getPrimaryKey();
+        const imageId = image ? image.getPrimaryKey() : null;
 
         const tagIds = tags
           .map(tag => tag.getPrimaryKey())
