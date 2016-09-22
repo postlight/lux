@@ -8,10 +8,11 @@ export default function createChildrenBuilder<T>(
 ): Builder$ChildrenBuilder<T> {
   return target => target.map(({ key, value, parent }) => {
     return Array.from(value).map(([name, constructor]) => {
-      if (parent && name === 'application') {
+      name = key === 'root' ? name : `${key}/${name}`;
+
+      if (parent && name.endsWith('application')) {
         return [name, setType(() => constructor)];
       } else {
-        name = key === 'root' ? name : `${key}/${name}`;
         return [name, construct(name, constructor, parent)];
       }
     });
