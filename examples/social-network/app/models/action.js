@@ -6,6 +6,10 @@ import Post from 'app/models/post';
 import Reaction from 'app/models/reaction';
 import User from 'app/models/user';
 
+const createMessageTemplate = resourceType => (name, reactionType) => (
+  `${name} reacted to your ${resourceType} with ${reactionType}`
+);
+
 /* TODO: Add support for polymorphic relationship to a 'trackable'.
  * https://github.com/postlight/lux/issues/75
  */
@@ -18,70 +22,70 @@ class Action extends Model {
 
   async notifyOwner() {
     const { trackableId, trackableType } = this;
-    let params;
 
     if (trackableType === 'Comment') {
-      const {
-        postId,
-        userId
-      } = await Comment.find(trackableId, {
-        select: ['postId', 'userId']
-      });
+      const trackable = await Comment
+        .first()
+        .select('postId', 'userId')
+        .where({ id: trackableId });
 
-      const [
-        { name: userName },
-        { userId: recipientId }
-      ] = await Promise.all([
-        User.find(userId, { select: ['name'] }),
-        Post.find(postId, { select: ['userId'] })
-      ]);
+      if (trackable) {
+        const [user, post] = await Promise.all([
+          User
+            .first()
+            .select('name')
+            .where({ id: trackable.userId }),
+          Post
+            .first()
+            .select('userId')
+            .where({ id: trackable.postId })
+        ]);
 
-      params = {
-        recipientId,
-        message: `${userName} commented on your post!`
-      };
+        if (user && post) {
+          await Notification.create({
+            message: `${user.name} commented on your post!`,
+            recipientId: post.userId
+          });
+        }
+      }
     } else if (trackableType === 'Reaction') {
       let reactableId;
-      let reactableModel = Post;
+      let createMessage;
+      let ReactableModel;
 
-      const {
-        commentId,
-        postId,
-        type,
-        userId
-      } = await Reaction.find(trackableId, {
-        select: [
-          'commentId',
-          'postId',
-          'type',
-          'userId'
-        ]
-      });
+      const reaction = await Reaction
+        .first()
+        .where({ id: trackableId });
 
-      if (!postId) {
-        reactableId = commentId;
-        reactableModel = Comment;
-      } else {
-        reactableId = postId;
+      if (reaction) {
+        if (!reaction.postId) {
+          ReactableModel = Comment;
+          createMessage = createMessageTemplate('comment');
+          reactableId = reaction.commentId;
+        } else {
+          ReactableModel = Post;
+          createMessage = createMessageTemplate('post');
+          reactableId = reaction.postId;
+        }
+
+        const [user, reactable] = await Promise.all([
+          User
+            .first()
+            .select('name')
+            .where({ id: reaction.userId }),
+          ReactableModel
+            .first()
+            .select('userId')
+            .where({ id: reactableId })
+        ]);
+
+        if (user && reactable) {
+          await Notification.create({
+            message: createMessage(user.name, reaction.type),
+            recipientId: reactable.userId
+          });
+        }
       }
-
-      const [
-        { name: userName },
-        { userId: recipientId }
-      ] = await Promise.all([
-        User.find(userId, { select: ['name'] }),
-        reactableModel.find(reactableId, { select: ['userId'] })
-      ]);
-
-      params = {
-        recipientId,
-        message: `${userName} reacted with ${type} to your ` +
-          `${reactableModel.name.toLowerCase()}!`
-      };
-    }
-
-    if (params) {
-      return await Notification.create(params);
     }
   }
 }
