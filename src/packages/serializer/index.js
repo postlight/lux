@@ -164,7 +164,157 @@ import type {
  * response, the fields **MUST** be declared in the `attributes` property array
  * of the resources Serializer or they will be ignored.
  *
- * ### TODO: Namespaces
+ * ### Namespaces
+ *
+ * When using namespaces, you are not required to have a Serializer for each
+ * resource as long as a Serializer for the given resource can be resolved
+ * upstream.
+ *
+ * For example, if you have a `posts` resource and you decide to implement an
+ * admin namespace. You will only need to export an `AdminPostsSerializer` from
+ * `app/serializers/admin/posts.js` if you want to specify different attributes
+ * or relationships than the `PostsSerializer` exported from
+ * `app/serializers/posts.js`.
+ *
+ * In the event that you do want to specify different attributes or
+ * relationships that the `PostsSerializer` exported from
+ * `app/serializers/posts.js`. You are not required to extend `PostsSerializer`.
+ *
+ * ```javascript
+ * import { Serializer } from 'lux-framework';
+ *
+ * class PostsSerializer extends Serializer {
+ *   attributes = [
+ *     'body',
+ *     'title',
+ *     'createdAt'
+ *   ];
+ *
+ *   hasOne = [
+ *     'user',
+ *     'image'
+ *   ];
+ *
+ *   hasMany = [
+ *     'tags',
+ *     'comments'
+ *   ];
+ * }
+ *
+ * export default PostsSerializer;
+ * ```
+ *
+ * To add the `isPublic` attribute to the response payload of a requests to a
+ * `/admin/posts` endpoint we can do either of the folowing.
+ *
+ * ```javascript
+ * // app/serializers/admin/posts.js
+ * import PostsSerializer from 'app/serializers/posts';
+ *
+ * class AdminPostsSerializer extends PostsSerializer {
+ *   attributes = [
+ *     'body',
+ *     'title',
+ *     'isPublic',
+ *     'createdAt'
+ *   ];
+ * }
+ *
+ * export default AdminPostsSerializer;
+ * ```
+ *
+ * ```javascript
+ * // app/serializers/admin/posts.js
+ * import { Serializer } from 'lux-framework';
+ *
+ * class AdminPostsSerializer extends Serializer {
+ *   attributes = [
+ *     'body',
+ *     'title',
+ *     'isPublic',
+ *     'createdAt'
+ *   ];
+ *
+ *   hasOne = [
+ *     'user',
+ *     'image'
+ *   ];
+ *
+ *   hasMany = [
+ *     'tags',
+ *     'comments'
+ *   ];
+ * }
+ *
+ * export default AdminPostsSerializer;
+ * ```
+ *
+ * Even with inheritence, the examples above are a tad repetative. We can
+ * imporve this code by exporting constants from `app/serializers/posts.js`.
+ *
+ * ```javascript
+ * import { Serializer } from 'lux-framework';
+ *
+ * export const HAS_ONE = [
+ *   'user',
+ *   'image'
+ * ];
+ *
+ * export const HAS_MANY = [
+ *   'tags',
+ *   'comments'
+ * ];
+ *
+ * export const ATTRIBUTES = [
+ *   'body',
+ *   'title',
+ *   'createdAt'
+ * ];
+ *
+ * class PostsSerializer extends Serializer {
+ *   hasOne = HAS_ONE;
+ *   hasMany = HAS_MANY;
+ *   attributes = ATTRIBUTES;
+ * }
+ *
+ * export default PostsSerializer;
+ * ```
+ *
+ * If we choose to use inheritence our code can look like this:
+ *
+ * ```javascript
+ * // app/serializers/admin/posts.js
+ * import PostsSerializer, { ATTRIBUTES } from 'app/serializers/posts';
+ *
+ * class AdminPostsSerializer extends PostsSerializer {
+ *   attributes = [
+ *     ...ATTRIBUTES,
+ *     'isPublic'
+ *   ];
+ * }
+ *
+ * export default AdminPostsSerializer;
+ * ```
+ *
+ * If we choose not use inheritence our code can look like this:
+ *
+ * ```javascript
+ * // app/serializers/admin/posts.js
+ * import { Serializer } from 'lux-framework';
+ * import { HAS_ONE, HAS_MANY, ATTRIBUTES } from 'app/serializers/posts';
+ *
+ * class AdminPostsSerializer extends PostsSerializer {
+ *   hasOne = HAS_ONE;
+ *   hasMany = HAS_MANY;
+ *
+ *   attributes = [
+ *     ...ATTRIBUTES,
+ *     'isPublic'
+ *   ];
+ * }
+ *
+ * export default AdminPostsSerializer;
+ * ```
  *
  * @module lux-framework
  * @namespace Lux
@@ -221,8 +371,8 @@ class Serializer<T: Model> {
    * ```javscript
    * class PostsSerializer extends Serializer {
    *   attributes = [
-   *     'title',
-   *     'isPublic'
+   *     'body',
+   *     'title'
    *   ];
    * }
    * ```
