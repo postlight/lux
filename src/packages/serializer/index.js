@@ -9,7 +9,7 @@ import underscore from '../../utils/underscore';
 import promiseHash from '../../utils/promise-hash';
 import { dasherizeKeys } from '../../utils/transform-keys';
 
-import type { Model } from '../database'; // eslint-disable-line no-unused-vars
+import type { Model } from '../database';
 import type { Serializer$opts } from './interfaces';
 
 import type {
@@ -20,214 +20,249 @@ import type {
 } from '../jsonapi';
 
 /**
- * The `Serializer` class is where you declare the specific attributes and
- * relationships you would like to include for a particular resource (`Model`).
+ * ## Overview
+ *
+ * The Serializer class is where you declare the attributes and
+ * relationships you would like to include for a particular resource.
+ *
+ * The attributes and relationships you declare in a Serializer will determine
+ * the attributes and relationships that will be included in the response from
+ * the resource that the Serializer represents.
+ *
+ * Since the attributes required for a resource are declared ahead of time in a
+ * Serializer, Lux will optimize SQL queries for the resource to only include
+ * what the Serializer needs to build the response.
+ *
+ * ```javascript
+ * import { Serializer } from 'lux-framework';
+ *
+ * class PostsSerializer extends Serializer {
+ *   attributes = [
+ *     'body',
+ *     'title',
+ *     'createdAt'
+ *   ];
+ * }
+ *
+ * export default PostsSerializer;
+ * ```
+ *
+ * The Serializer above would result in resources returned from the `/posts`
+ * endpoint to only include the `body`, `title`, and `createdAt` attributes. If
+ * we wanted include an additional attribute such as `isPublic`, we would have
+ * to add `'isPublic'` to the `attributes` property.
+ *
+ * ```javascript
+ * import { Serializer } from 'lux-framework';
+ *
+ * class PostsSerializer extends Serializer {
+ *   attributes = [
+ *     'body',
+ *     'title',
+ *     'isPublic',
+ *     'createdAt'
+ *   ];
+ * }
+ *
+ * export default PostsSerializer;
+ * ```
+ *
+ * ### Associations
+ *
+ * Similar to `attributes`, declaring associations are done by adding
+ * relationship names to either the `hasOne` property array or the `hasMany`
+ * property array on a Serializer.
+ *
+ * Serializers are not concerned with ownership when it comes to associations so
+ * both `hasOne` and `belongsTo` associations can be specified in the `hasOne`
+ * array property.
+ *
+ * ```javsacript
+ * import { Model } from 'lux-framework';
+ *
+ * class Post extends Model {
+ *   static hasOne = {
+ *     image: {
+ *       inverse: 'post'
+ *     }
+ *   };
+ *
+ *   static hasMany = {
+ *     tags: {
+ *       inverse: 'posts',
+ *       through: 'categorization'
+ *     },
+ *
+ *     comments: {
+ *       inverse: 'post'
+ *     }
+ *   };
+ *
+ *   static belongsTo = {
+ *     user: {
+ *       inverse: 'posts'
+ *     }
+ *   };
+ * }
+ *
+ * export default Post;
+ * ```
+ *
+ * To include the `user` and `image` associations in the response returned from
+ * the `/posts` endpoint, we must specify both associations in the `hasOne`
+ * property array of the Serializer.
+ *
+ * ```javascript
+ * import { Serializer } from 'lux-framework';
+ *
+ * class PostsSerializer extends Serializer {
+ *   hasOne = [
+ *     'user',
+ *     'image'
+ *   ];
+ * }
+ *
+ * export default PostsSerializer;
+ * ```
+ *
+ * If we wanted to also include the `tags` and `comments` in the response, we
+ * have to add a `hasMany` array property containing `'tags'` and `'comments'`.
+ * No need to specify that `tags` is a many to many relationship using the
+ * `Categorization` model as a join table.
+ *
+ * ```javascript
+ * import { Serializer } from 'lux-framework';
+ *
+ * class PostsSerializer extends Serializer {
+ *   hasOne = [
+ *     'user',
+ *     'image'
+ *   ];
+ *
+ *   hasMany = [
+ *     'tags',
+ *     'comments'
+ *   ];
+ * }
+ *
+ * export default PostsSerializer;
+ * ```
+ *
+ * ### Including Related Resources
+ *
+ * When requesting related resources for an endpoint, the included resource will
+ * follow the serialization rules defined by the included resources Serializer.
+ *
+ * If we were to request that the `posts` association were to be included from
+ * the `/users` endpoint, we will only get the `attributes` that the
+ * `PostsSerializer` has defined even though the response is processed by the
+ * `UsersSerializer`.
+ *
+ * ### Sparse Fieldsets
+ *
+ * When a request specifies the fields that it would like to be included in the
+ * response, the fields **MUST** be declared in the `attributes` property array
+ * of the resources Serializer or they will be ignored.
+ *
+ * ### TODO: Namespaces
+ *
+ * @module lux-framework
+ * @namespace Lux
+ * @class Serializer
+ * @constructor
+ * @public
  */
 class Serializer<T: Model> {
   /**
-   * The resolved `Model` that a `Serializer` instance represents.
+   * An Array of the `hasOne` or `belongsTo` relationships on a Serializer
+   * instance's {{#crossLink 'Lux.Model'}}Model{{/crossLink}} to include in the
+   * `relationships` resource object of a serialized payload.
    *
-   * @example
-   * PostsSerializer.model
-   * // => Post
-   *
-   * @property model
-   * @memberof Serializer
-   * @instance
-   */
-  model: Class<T>;
-
-  /**
-   * A reference to the root `Serializer` for the namespace that a `Serializer`
-   * instance is a member of.
-   *
-   * @property parent
-   * @memberof Serializer
-   * @instance
-   */
-  parent: ?Serializer<*>;
-
-  /**
-   * The namespace that a `Serializer` instance is a member of.
-   *
-   * @property namespace
-   * @memberof Serializer
-   * @instance
-   */
-  namespace: string;
-
-  /**
-   * An Array of the `hasOne` or `belongsTo` relationships on a `Serializer`
-   * instance's model to include in the `relationships` resource object of a
-   * serialized payload.
-   *
-   * @example
+   * ```javascript
    * class PostsSerializer extends Serializer {
    *   hasOne = [
-   *     'author'
+   *     'user'
    *   ];
    * }
-   *
-   * // A request to `/posts` would result in the following payload:
-   *
-   * {
-   *   "data": [
-   *     {
-   *       "id": 1,
-   *       "type": "posts",
-   *       "attributes": {},
-   *       "relationships": [
-   *         {
-   *           "data": {
-   *             "id": 1,
-   *             "type": "authors"
-   *           },
-   *            "links": {
-   *              "self": "http://localhost:4000/authors/1"
-   *           }
-   *         }
-   *       ],
-   *       "links": {
-   *         "self": "http://localhost:4000/posts/1"
-   *       }
-   *     }
-   *   ],
-   *   "links": {
-   *     "self": "http://localhost:4000/posts",
-   *     "first": "http://localhost:4000/posts",
-   *     "last": "http://localhost:4000/posts",
-   *     "prev": null,
-   *     "next": null
-   *   }
-   *   "jsonapi": {
-   *     "version": "1.0"
-   *   }
-   * }
+   * ```
    *
    * @property hasOne
-   * @memberof Serializer
-   * @instance
+   * @type {Array}
+   * @default []
+   * @public
    */
   hasOne: Array<string> = [];
 
   /**
-   * An Array of the `hasMany` relationships on a `Serializer` instance's model
-   * to include in the `relationships` resource object of a serialized payload.
+   * An Array of the `hasMany` relationships on a Serializer instance's
+   * {{#crossLink 'Lux.Model'}}Model{{/crossLink}} to include in the
+   * `relationships` resource object of a serialized payload.
    *
-   * @example
+   * ```javscript
    * class PostsSerializer extends Serializer {
    *   hasMany = [
    *     'comments'
    *   ];
    * }
-   *
-   * // A request to `/posts` would result in the following payload:
-   *
-   * {
-   *   "data": [
-   *     {
-   *       "id": 1,
-   *       "type": "posts",
-   *       "attributes": {},
-   *       "relationships": [
-   *         {
-   *           "data": {
-   *             "id": 1,
-   *             "type": "comments"
-   *           },
-   *            "links": {
-   *              "self": "http://localhost:4000/comments/1"
-   *           }
-   *         },
-   *         {
-   *           "data": {
-   *             "id": 2,
-   *             "type": "comments"
-   *           },
-   *            "links": {
-   *              "self": "http://localhost:4000/comments/2"
-   *           }
-   *         }
-   *       ],
-   *       "links": {
-   *         "self": "http://localhost:4000/posts/1"
-   *       }
-   *     }
-   *   ],
-   *   "links": {
-   *     "self": "http://localhost:4000/posts",
-   *     "first": "http://localhost:4000/posts",
-   *     "last": "http://localhost:4000/posts",
-   *     "prev": null,
-   *     "next": null
-   *   }
-   *   "jsonapi": {
-   *     "version": "1.0"
-   *   }
-   * }
+   * ```
    *
    * @property hasMany
-   * @memberof Serializer
-   * @instance
+   * @type {Array}
+   * @default []
+   * @public
    */
   hasMany: Array<string> = [];
 
   /**
-   * An Array of the `attributes` on a `Serializer` instance's model to include
-   * in the `attributes` resource object of a serialized payload.
+   * An array of the `attributes` on a Serializer instance's
+   * {{#crossLink 'Lux.Model'}}Model{{/crossLink}} to include in the
+   * `attributes` resource object of a serialized payload.
    *
-   * @example
+   * ```javscript
    * class PostsSerializer extends Serializer {
    *   attributes = [
    *     'title',
    *     'isPublic'
    *   ];
    * }
-   *
-   * // A request to `/posts` would result in the following payload:
-   *
-   * {
-   *   "data": [
-   *     {
-   *       "id": 1,
-   *       "type": "posts",
-   *       "attributes": {
-   *         "title": "Not another Node.js framework...",
-   *         "is-public": true
-   *       },
-   *       "links": {
-   *         "self": "http://localhost:4000/posts/1"
-   *       }
-   *     }
-   *   ],
-   *   "links": {
-   *     "self": "http://localhost:4000/posts",
-   *     "first": "http://localhost:4000/posts",
-   *     "last": "http://localhost:4000/posts",
-   *     "prev": null,
-   *     "next": null
-   *   }
-   *   "jsonapi": {
-   *     "version": "1.0"
-   *   }
-   * }
+   * ```
    *
    * @property attributes
-   * @memberof Serializer
-   * @instance
+   * @type {Array}
+   * @default []
+   * @public
    */
   attributes: Array<string> = [];
 
   /**
-   * Create an instance of `Serializer`.
+   * The resolved {{#crossLink 'Lux.Model'}}Model{{/crossLink}} that a
+   * Serializer instance represents.
    *
-   * WARNING:
-   * This is a private constructor and you should not instantiate a `Serializer`
-   * manually. Serializers are instantiated automatically by your application
-   * when it is started.
-   *
+   * @property model
+   * @type {Model}
    * @private
    */
+  model: Class<T>;
+
+  /**
+   * A reference to the root Serializer for the namespace that a Serializer
+   * instance is a member of.
+   *
+   * @property parent
+   * @type {?Serializer}
+   * @private
+   */
+  parent: ?Serializer<*>;
+
+  /**
+   * The namespace that a Serializer instance is a member of.
+   *
+   * @property namespace
+   * @type {String}
+   * @private
+   */
+  namespace: string;
+
   constructor({ model, parent, namespace }: Serializer$opts<T>) {
     Object.assign(this, {
       model,
@@ -243,6 +278,33 @@ class Serializer<T: Model> {
   }
 
   /**
+   * Transform an array of Model instances or a single Model instance into a
+   * [JSONAPI](http://jsonapi.org) document object.
+   *
+   * @method format
+   *
+   * @param {Object} options - An options object used for building the
+   * returned [JSONAPI](http://jsonapi.org) document object.
+   *
+   * @param {Model|Array} options.data - The Model instance or array of
+   * Model instances to transform into the returned
+   * [JSONAPI](http://jsonapi.org) document object.
+   *
+   * @param {Object} options.links - An object containing links to include in
+   * the top level links object of the returned [JSONAPI](http://jsonapi.org)
+   * document object.
+   *
+   * @param {String} options.domain - A string used to build links included in
+   * the resource and relationship objects in the returned
+   * [JSONAPI](http://jsonapi.org) document object.
+   *
+   * @param {Array} options.include - An array of strings containing the
+   * relationship keys that should be added to the top level included object of
+   * the returned [JSONAPI](http://jsonapi.org) document object.
+   *
+   * @return {Promise} A Promise that resolves with a
+   * [JSONAPI](http://jsonapi.org) document object.
+   *
    * @private
    */
   async format({
@@ -300,6 +362,40 @@ class Serializer<T: Model> {
   }
 
   /**
+   * Transform a single Model instance into a [JSONAPI](http://jsonapi.org)
+   * resource object.
+   *
+   * @method formatOne
+   *
+   * @param {Object} options - An options object used for building the
+   * returned [JSONAPI](http://jsonapi.org) resource object.
+   *
+   * @param {Model} options.item - The Model instance to transform into the
+   * returned [JSONAPI](http://jsonapi.org) resource object.
+   *
+   * @param {Object} options.links - An object containing links to include in
+   * the top level links object of the returned [JSONAPI](http://jsonapi.org)
+   * resource object.
+   *
+   * @param {String} options.domain - A string used to build links included in
+   * the top level links object or relationship links objects in the returned
+   * [JSONAPI](http://jsonapi.org) resource object.
+   *
+   * @param {Array} options.include - An array of strings containing the
+   * relationship keys that should be added to the top level included object of
+   * a [JSONAPI](http://jsonapi.org) document object.
+   *
+   * @param {Array} options.included - An array of [JSONAPI](http://jsonapi.org)
+   * resource objects that will be added to the top level included array of a
+   * [JSONAPI](http://jsonapi.org) document object.
+   *
+   * @param {Boolean} options.formatRelationships - Wether or not
+   * relationships should be formatted and included in the returned
+   * [JSONAPI](http://jsonapi.org) resource object.
+   *
+   * @return {Promise} A `Promise` that resolves with a
+   * [JSONAPI](http://jsonapi.org) resource object.
+   *
    * @private
    */
   async formatOne({
@@ -395,6 +491,31 @@ class Serializer<T: Model> {
   }
 
   /**
+   * Transform a single Model instance into a [JSONAPI](http://jsonapi.org)
+   * relationship object.
+   *
+   * @method formatRelationship
+   *
+   * @param {Object} options - An options object used for building the
+   * returned [JSONAPI](http://jsonapi.org) relationship object.
+   *
+   * @param {Model} options.item - The Model instance to transform into the
+   * returned [JSONAPI](http://jsonapi.org) relationship object.
+   *
+   * @param {String} options.domain - A string used to build links included in
+   * the returned [JSONAPI](http://jsonapi.org) relationship object.
+   *
+   * @param {Array} options.include - An array of strings containing the
+   * relationship keys that should be added to the top level included object of
+   * a [JSONAPI](http://jsonapi.org) document object.
+   *
+   * @param {Array} options.included - An array of [JSONAPI](http://jsonapi.org)
+   * resource objects that will be added to the top level included array of a
+   * [JSONAPI](http://jsonapi.org) document object.
+   *
+   * @return {Promise} A `Promise` that resolves with a
+   * [JSONAPI](http://jsonapi.org) relationship object.
+   *
    * @private
    */
   async formatRelationship({

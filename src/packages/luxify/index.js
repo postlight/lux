@@ -7,6 +7,10 @@ import type { Request, Response } from '../server';
 /**
  * Convert traditional node HTTP server middleware into a lux compatible
  * function for use in Controller#beforeAction.
+ *
+ * @module lux-framework
+ * @namespace Lux
+ * @function luxify
  */
 export default function luxify(
   middleware: (
@@ -14,7 +18,7 @@ export default function luxify(
     res: Response,
     next: (err?: Error) => void
   ) => void
-): Action<void|?mixed> {
+): Action<any> {
   const result = function (req, res) {
     return new Promise((resolve, reject) => {
       res = createResponseProxy(res, resolve);

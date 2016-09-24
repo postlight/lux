@@ -21,22 +21,21 @@ import type Database from '../../database';
 import type Serializer from '../../serializer';
 import type { Relationship$opts } from '../relationship';
 
+/**
+ * @module lux-framework
+ * @namespace Lux
+ * @class Model
+ * @constructor
+ * @public
+ */
 class Model {
   /**
    * The canonical name of a `Model`'s constructor.
-   *
-   * @property modelName
-   * @memberof Model
-   * @instance
    */
   modelName: string;
 
   /**
    * The name of the API resource a `Model` instance's constructor represents.
-   *
-   * @property resourceName
-   * @memberof Model
-   * @instance
    */
   resourceName: string;
 
@@ -68,33 +67,21 @@ class Model {
   /**
    * A reference to the instance of the `Logger` used for the `Application` the
    * `Model` is a part of.
-   *
-   * @property logger
-   * @memberof Model
    */
   static logger: Logger;
 
   /**
    * The column name to use for a `Model`'s primaryKey.
-   *
-   * @property primaryKey
-   * @memberof Model
    */
   static primaryKey: string = 'id';
 
   /**
    * The canonical name of a `Model`.
-   *
-   * @property modelName
-   * @memberof Model
    */
   static modelName: string;
 
   /**
    * The name of the API resource a `Model` represents.
-   *
-   * @property resourceName
-   * @memberof Model
    */
   static resourceName: string;
 

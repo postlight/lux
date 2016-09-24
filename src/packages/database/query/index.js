@@ -10,7 +10,13 @@ import formatSelect from './utils/format-select';
 import type Model from '../model';
 
 /**
- * @private
+ * I am a Query.
+ *
+ * @module lux-framework/src/packages/database
+ * @namespace Database
+ * @class Query
+ * @constructor
+ * @extends Promise
  */
 class Query<+T: any> extends Promise {
   /**

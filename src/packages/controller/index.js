@@ -13,47 +13,61 @@ import type { Request, Response } from '../server';
 import type { Controller$opts, Controller$Middleware } from './interfaces';
 
 /**
- * The `Controller` class is responsible for taking in requests from the outside
+ * ## Overview
+ *
+ * The Controller class is responsible for taking in requests from the outside
  * world and returning the appropriate response.
  *
- * You can think of a `Controller` like a waiter or waitress at a restaurant.
+ * You can think of a Controller like a waiter or waitress at a restaurant.
  * A client makes a request to an application, that request is routed to the
- * appropriate `Controller` and then the `Controller` interprets the request
+ * appropriate Controller and then the Controller interprets the request
  * and returns data relative to what the client has request.
+ *
+ * @module lux-framework
+ * @namespace Lux
+ * @class Controller
+ * @constructor
+ * @public
  */
 class Controller {
   /**
+   * The resolved {{#crossLink 'Lux.Model'}}Model{{/crossLink}} that a
+   * Controller instance represents.
+   *
    * @property model
-   * @memberof Controller
-   * @instance
+   * @type {Model}
+   * @private
    */
   model: Class<Model>;
 
   /**
+   * A reference to the root Controller for the namespace that a Controller
+   * instance is a member of.
+   *
    * @property parent
-   * @memberof Controller
-   * @instance
+   * @type {?Controller}
+   * @private
    */
   parent: ?Controller;
 
   /**
-   * The namespace that a `Controller` instance is a member of.
+   * The namespace that a Controller instance is a member of.
    *
    * @property namespace
-   * @memberof Controller
-   * @instance
+   * @type {String}
+   * @private
    */
   namespace: string;
 
   /**
-   * Use this property to let Lux know what custom query parameters you want to
-   * allow for this controller.
+   * An array of custom query parameter keys that are allowed to reach a
+   * Controller instance from an incoming `HTTP` request.
    *
    * For security reasons, query parameters passed to Controller actions from an
    * incoming request other than sort, filter, and page must have their key
    * whitelisted.
    *
-   * @example
+   * ```javascript
    * class UsersController extends Controller {
    *   // Allow the following custom query parameters to be used for this
    *   // Controller's actions.
@@ -61,153 +75,105 @@ class Controller {
    *     'cache'
    *   ];
    * }
+   * ```
    *
-   * @property params
-   * @memberof Controller
-   * @instance
+   * @property query
+   * @type {Array}
+   * @default []
+   * @public
    */
   query: Array<string> = [];
 
   /**
-   * Whitelisted `?sort` parameter values.
+   * An array of sort query parameter values that are allowed to reach a
+   * Controller instance from an incoming `HTTP` request.
    *
-   * If you do not override this property all of the attributes specified in an
-   * instance's `Serializer` will be whitelisted.
+   * If you do not override this property all of the attributes specified in the
+   * {{#crossLink 'Lux.Serializer'}}Serializer{{/crossLink}} that represents a
+   * Controller's resource. If the
+   * {{#crossLink 'Lux.Serializer'}}Serializer{{/crossLink}} cannot be resolved,
+   * this property will default to an empty array.
    *
    * @property sort
-   * @memberof Controller
-   * @instance
+   * @type {Array}
+   * @default []
+   * @public
    */
   sort: Array<string> = [];
 
   /**
-   * Whitelisted `?filter[{key}]` parameter keys.
+   * An array of filter query parameter keys that are allowed to reach a
+   * Controller instance from an incoming `HTTP` request.
    *
-   * If you do not override this property all of the attributes specified in an
-   * instance's `Serializer` will be whitelisted.
+   * If you do not override this property all of the attributes specified in the
+   * {{#crossLink 'Lux.Serializer'}}Serializer{{/crossLink}} that represents a
+   * Controller's resource. If the
+   * {{#crossLink 'Lux.Serializer'}}Serializer{{/crossLink}} cannot be resolved,
+   * this property will default to an empty array.
    *
    * @property filter
-   * @memberof Controller
-   * @instance
+   * @type {Array}
+   * @default []
+   * @public
    */
   filter: Array<string> = [];
 
   /**
-   * Whitelisted parameter keys to allow in incoming PATCH and POST requests.
+   * An array of parameter keys that are allowed to reach a
+   * Controller instance from an incoming `POST` or `PATCH` request body.
    *
-   * For security reasons, parameters passed to controller actions from an
-   * incoming request must have their key whitelisted.
-   *
-   * @example
-   * class UsersController extends Controller {
-   *   // Do not allow incoming PATCH or POST requests to modify User#isAdmin.
-   *   params = [
-   *     'name',
-   *     'email',
-   *     'password',
-   *     // 'isAdmin'
-   *   ];
-   * }
+   * If you do not override this property all of the attributes specified in the
+   * {{#crossLink 'Lux.Serializer'}}Serializer{{/crossLink}} that represents a
+   * Controller's resource. If the
+   * {{#crossLink 'Lux.Serializer'}}Serializer{{/crossLink}} cannot be resolved,
+   * this property will default to an empty array.
    *
    * @property params
-   * @memberof Controller
-   * @instance
+   * @type {Array}
+   * @default []
+   * @public
    */
   params: Array<string> = [];
 
   /**
-   * Middleware functions to execute on each request handled by a `Controller`.
+   * Middleware functions to execute on each request handled by a Controller.
    *
-   * Middleware functions declared in beforeAction on an `ApplicationController`
-   * will be executed before ALL route handlers.
+   * Middleware functions declared in beforeAction on a root Controller will be
+   * executed before ALL Controller actions within the root Controller's
+   * namespace.
    *
    * @property beforeAction
-   * @memberof Controller
-   * @instance
+   * @type {Array}
+   * @default []
+   * @public
    */
   beforeAction: Array<Controller$Middleware> = [];
 
   /**
-   * The number of records to return for the #index action when a `?limit`
-   * parameter is not specified.
+   * The default amount of items to include per each response of the index
+   * action if a `?page[size]` query parameter is not specified.
    *
-   * @property defaultPerPage
-   * @memberof Controller
-   * @instance
+   * @property size
+   * @type {Number}
+   * @default 25
+   * @public
    */
   defaultPerPage: number = 25;
 
-  /**
-   * A boolean value representing whether or not a `Controller` has a backing
-   * `Model`.
-   *
-   * @property hasModel
-   * @memberof Controller
-   * @instance
-   * @private
-   */
   hasModel: boolean;
 
-  /**
-   * A boolean value representing whether or not a `Controller` is a member of
-   * a namespace.
-   *
-   * @property hasNamespace
-   * @memberof Controller
-   * @instance
-   * @private
-   */
   hasNamespace: boolean;
 
-  /**
-   * A boolean value representing whether or not a `Controller` has a backing
-   * `Serializer`.
-   *
-   * @property hasSerializer
-   * @memberof Controller
-   * @instance
-   * @private
-   */
   hasSerializer: boolean;
 
-  /**
-   * @property modelName
-   * @memberof Controller
-   * @instance
-   * @private
-   */
   modelName: string;
 
-  /**
-   * @property attributes
-   * @memberof Controller
-   * @instance
-   * @private
-   */
   attributes: Array<string>;
 
-  /**
-   * @property relationships
-   * @memberof Controller
-   * @instance
-   * @private
-   */
   relationships: Array<string>;
 
-  /**
-   * @property serializer
-   * @memberof Controller
-   * @instance
-   * @private
-   */
   serializer: Serializer<*>;
 
-  /**
-   * @property controllers
-   * @memberof Controller
-   * @instance
-   * @private
-   */
   controllers: Map<string, Controller>;
 
   constructor({ model, namespace, serializer }: Controller$opts) {
@@ -276,8 +242,9 @@ class Controller {
    * This method supports filtering, sorting, pagination, including
    * relationships, and sparse fieldsets via query parameters.
    *
-   * @param  {Request} request
-   * @param  {Response} response
+   * @param {Request} request
+   * @param {Response} response
+   * @returns {Query<Array<Model>>}
    */
   index(req: Request): Query<Array<Model>> {
     return findMany(req);
@@ -290,8 +257,9 @@ class Controller {
    * This method supports including relationships, and sparse fieldsets via
    * query parameters.
    *
-   * @param  {Request} request
-   * @param  {Response} response
+   * @param {Request} request
+   * @param {Response} response
+   * @returns {Query<Model>}
    */
   show(req: Request): Query<Model> {
     return findOne(req);
@@ -301,8 +269,9 @@ class Controller {
    * Create and return a single `Model` instance that the `Controller` instance
    * represents.
    *
-   * @param  {Request} request
-   * @param  {Response} response
+   * @param {Request} request
+   * @param {Response} response
+   * @returns {Promise<Model>}
    */
   create(req: Request, res: Response): Promise<Model> {
     const {
@@ -349,9 +318,10 @@ class Controller {
       .then(record => {
         const { url: { pathname } } = req;
         const id = record.getPrimaryKey();
+        const location = `${getDomain(req) + pathname}/${id}`;
 
         res.statusCode = 201;
-        res.setHeader('Location', `${getDomain(req) + pathname}/${id}`);
+        res.setHeader('Location', location);
 
         return record;
       });
@@ -361,8 +331,9 @@ class Controller {
    * Update and return a single `Model` instance that the `Controller` instance
    * represents.
    *
-   * @param  {Request} request
-   * @param  {Response} response
+   * @param {Request} request
+   * @param {Response} response
+   * @returns {Promise<(number|Model)>}
    */
   update(req: Request): Promise<number | Model> {
     return findOne(req).then(record => {
@@ -386,10 +357,7 @@ class Controller {
           }
         } = req;
 
-        return findRelated(
-          controllers,
-          relationships
-        ).then(related => {
+        return findRelated(controllers, relationships).then(related => {
           Object.assign(record, related);
           return record.save(true);
         });
@@ -403,8 +371,9 @@ class Controller {
    * Destroy a single `Model` instance that the `Controller` instance
    * represents.
    *
-   * @param  {Request} request
-   * @param  {Response} response
+   * @param {Request} request
+   * @param {Response} response
+   * @returns {Promise<number>}
    */
   destroy(req: Request): Promise<number> {
     return findOne(req)
@@ -415,9 +384,9 @@ class Controller {
   /**
    * An action handler used for responding to HEAD or OPTIONS requests.
    *
-   * @param  {Request} request
-   * @param  {Response} response
-   * @private
+   * @param {Request} request
+   * @param {Response} response
+   * @returns {Promise<number>}
    */
   preflight(): Promise<number> {
     return Promise.resolve(204);
