@@ -19,7 +19,7 @@
   "scripts": {
     "build": "npm run clean && npm run flow && npm run lint && npm run build:cli",
     "build:cli": "node scripts/build/cli.js",
-    "build:docs": "yuidoc . -o docs",
+    "build:docs": "yuidoc src -o docs",
     "build:test": "node scripts/build/test.js",
     "clean": "node scripts/clean.js",
     "docs": "npm run clean && npm run build:docs",
