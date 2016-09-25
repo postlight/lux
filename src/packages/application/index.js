@@ -15,7 +15,11 @@ import type { Application$opts } from './interfaces';
  * The `Application` class is responsible for constructing an application and
  * putting all the moving parts (`Model`, `Controller`, `Serializer`) together.
  *
- * @memberof Lux
+ * @module lux-framework
+ * @namespace Lux
+ * @class Application
+ * @constructor
+ * @public
  */
 class Application {
   path: string;
@@ -37,7 +41,9 @@ class Application {
   server: Server;
 
   /**
-   * @return {Promise<Application>}
+   * @method constructor
+   * @param {Object} config
+   * @return {Promise}
    */
   constructor(opts: Application$opts): Promise<Application> {
     return initialize(this, merge(createDefaultConfig(), opts));

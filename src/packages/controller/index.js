@@ -31,35 +31,6 @@ import type { Controller$opts, Controller$Middleware } from './interfaces';
  */
 class Controller {
   /**
-   * The resolved {{#crossLink 'Lux.Model'}}Model{{/crossLink}} that a
-   * Controller instance represents.
-   *
-   * @property model
-   * @type {Model}
-   * @private
-   */
-  model: Class<Model>;
-
-  /**
-   * A reference to the root Controller for the namespace that a Controller
-   * instance is a member of.
-   *
-   * @property parent
-   * @type {?Controller}
-   * @private
-   */
-  parent: ?Controller;
-
-  /**
-   * The namespace that a Controller instance is a member of.
-   *
-   * @property namespace
-   * @type {String}
-   * @private
-   */
-  namespace: string;
-
-  /**
    * An array of custom query parameter keys that are allowed to reach a
    * Controller instance from an incoming `HTTP` request.
    *
@@ -153,17 +124,90 @@ class Controller {
    * The default amount of items to include per each response of the index
    * action if a `?page[size]` query parameter is not specified.
    *
-   * @property size
+   * @property defaultPerPage
    * @type {Number}
    * @default 25
    * @public
    */
   defaultPerPage: number = 25;
 
+  /**
+   * The resolved {{#crossLink 'Lux.Model'}}Model{{/crossLink}} for a Controller
+   * instance.
+   *
+   * @property model
+   * @type {Model}
+   * @private
+   */
+  model: Class<Model>;
+
+  /**
+   * A reference to the root Controller for the namespace that a Controller
+   * instance is a member of.
+   *
+   * @property parent
+   * @type {?Controller}
+   * @private
+   */
+  parent: ?Controller;
+
+  /**
+   * The namespace that a Controller instance is a member of.
+   *
+   * @property namespace
+   * @type {String}
+   * @private
+   */
+  namespace: string;
+
+  /**
+   * The resolved {{#crossLink 'Lux.Serializer'}}Serializer{{/crossLink}} for a
+   * Controller instance.
+   *
+   * @property serializer
+   * @type {?Serializer}
+   * @private
+   */
+  serializer: Serializer<*>;
+
+  /**
+   * A Map instance containing a reference to all the Controller within a Lux
+   * {{#crossLink 'Lux.Application'}}Application{{/crossLink}} instance.
+   *
+   * @property controllers
+   * @type {Map}
+   * @private
+   */
+  controllers: Map<string, Controller>;
+
+  /**
+   * A boolean value representing whether or not a Controller instance has a
+   * {{#crossLink 'Lux.Model'}}Model{{/crossLink}}.
+   *
+   * @property hasModel
+   * @type {Boolean}
+   * @private
+   */
   hasModel: boolean;
 
+  /**
+   * A boolean value representing whether or not a Controller instance is within
+   * a namespace.
+   *
+   * @property hasNamespace
+   * @type {Boolean}
+   * @private
+   */
   hasNamespace: boolean;
 
+  /**
+   * A boolean value representing whether or not a Controller instance has a
+   * {{#crossLink 'Lux.Serializer'}}Serializer{{/crossLink}}.
+   *
+   * @property hasSerializer
+   * @type {Boolean}
+   * @private
+   */
   hasSerializer: boolean;
 
   modelName: string;
@@ -171,10 +215,6 @@ class Controller {
   attributes: Array<string>;
 
   relationships: Array<string>;
-
-  serializer: Serializer<*>;
-
-  controllers: Map<string, Controller>;
 
   constructor({ model, namespace, serializer }: Controller$opts) {
     const hasModel = Boolean(model);
