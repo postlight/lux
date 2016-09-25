@@ -1,7 +1,7 @@
 // @flow
 import { ID_PATTERN } from './constants';
 
-import { FreezeableSet } from '../../freezeable';
+import { FreezeableSet, freezeProps, deepFreezeProps } from '../../freezeable';
 
 import { createAction } from './action';
 import { paramsFor, defaultParamsFor, validateResourceId } from './params';
@@ -33,6 +33,8 @@ class Route extends FreezeableSet<Action<any>> {
 
   staticPath: string;
 
+  defaultParams: Object;
+
   dynamicSegments: Array<string>;
 
   constructor({
@@ -55,65 +57,44 @@ class Route extends FreezeableSet<Action<any>> {
           dynamicSegments
         });
 
+        const staticPath = getStaticPath(path, dynamicSegments);
+
+        const defaultParams = defaultParamsFor({
+          type,
+          controller
+        });
+
         super(createAction(type, handler, controller));
 
-        Object.defineProperties(this, {
-          type: {
-            value: type,
-            writable: false,
-            enumerable: true,
-            configurable: false
-          },
-
-          path: {
-            value: path,
-            writable: false,
-            enumerable: true,
-            configurable: false
-          },
-
-          params: {
-            value: params,
-            writable: false,
-            enumerable: false,
-            configurable: false
-          },
-
-          action: {
-            value: action,
-            writable: false,
-            enumerable: true,
-            configurable: false
-          },
-
-          method: {
-            value: method,
-            writable: false,
-            enumerable: true,
-            configurable: false
-          },
-
-          controller: {
-            value: controller,
-            writable: false,
-            enumerable: false,
-            configurable: false
-          },
-
-          dynamicSegments: {
-            value: dynamicSegments,
-            writable: false,
-            enumerable: false,
-            configurable: false
-          },
-
-          staticPath: {
-            value: getStaticPath(path, dynamicSegments),
-            writable: false,
-            enumerable: false,
-            configurable: false
-          }
+        Object.assign(this, {
+          type,
+          path,
+          params,
+          action,
+          method,
+          controller,
+          staticPath,
+          defaultParams,
+          dynamicSegments
         });
+
+        freezeProps(this, true,
+          'type',
+          'path'
+        );
+
+        freezeProps(this, false,
+          'action',
+          'params',
+          'method',
+          'controller',
+          'staticPath'
+        );
+
+        deepFreezeProps(this, false,
+          'defaultParams',
+          'dynamicSegments'
+        );
       } else {
         const {
           constructor: {
@@ -151,15 +132,6 @@ class Route extends FreezeableSet<Action<any>> {
     }, {});
   }
 
-  getDefaultParams() {
-    const { type, controller } = this;
-
-    return defaultParamsFor({
-      type,
-      controller
-    });
-  }
-
   async execHandlers(req: Request, res: Response): Promise<any> {
     for (const handler of this) {
       const data = await handler(req, res);
@@ -171,9 +143,10 @@ class Route extends FreezeableSet<Action<any>> {
   }
 
   async visit(req: Request, res: Response): Promise<any> {
-    Object.assign(req, {
-      defaultParams: this.getDefaultParams(),
+    const { defaultParams } = this;
 
+    Object.assign(req, {
+      defaultParams,
       params: this.params.validate({
         ...req.params,
         ...this.parseParams(req.url.pathname)
