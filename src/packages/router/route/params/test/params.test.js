@@ -11,18 +11,22 @@ import type Controller from '../../../../controller';
 
 describe('module "router/route/params"', () => {
   describe('#defaultParamsFor()', () => {
-    let controller: Controller;
+    let getController;
 
     before(async () => {
       const { controllers } = await getTestApp();
 
-      controller = setType(() => controllers.get('posts'));
+      getController = (name: string): Controller => setType(() => {
+        return controllers.get(name);
+      });
     });
 
     describe('with collection route', () => {
       let params;
+      let controller;
 
       before(() => {
+        controller = getController('posts');
         params = defaultParamsFor({
           controller,
           type: 'collection'
@@ -47,9 +51,11 @@ describe('module "router/route/params"', () => {
     });
 
     describe('with member route', () => {
-      let params: Object;
+      let params;
+      let controller;
 
       before(() => {
+        controller = getController('posts');
         params = defaultParamsFor({
           controller,
           type: 'member'
@@ -61,6 +67,36 @@ describe('module "router/route/params"', () => {
 
         expect(params.fields).to.include.keys(model.resourceName);
         expect(params.fields[model.resourceName]).to.deep.equal(attributes);
+      });
+    });
+
+    describe('with custom route', () => {
+      let params;
+
+      before(() => {
+        params = defaultParamsFor({
+          type: 'custom',
+          controller: getController('posts')
+        });
+      });
+
+      it('is an empty object literal', () => {
+        expect(params).to.deep.equal({});
+      });
+    });
+
+    describe('with model-less controller', () => {
+      let params;
+
+      before(() => {
+        params = defaultParamsFor({
+          type: 'custom',
+          controller: getController('health')
+        });
+      });
+
+      it('is an empty object literal', () => {
+        expect(params).to.deep.equal({});
       });
     });
   });
