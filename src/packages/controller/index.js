@@ -1,7 +1,7 @@
 // @flow
 import { Model } from '../database';
 import { getDomain } from '../server';
-import { freezeProps, deepFreezeProps } from '../freezeable';
+import { freezeProps } from '../freezeable';
 
 import findOne from './utils/find-one';
 import findMany from './utils/find-many';
@@ -453,44 +453,14 @@ class Controller {
    */
   hasSerializer: boolean;
 
-  modelName: string;
-
-  attributes: Array<string>;
-
-  relationships: Array<string>;
-
   constructor({ model, namespace, serializer }: Controller$opts) {
-    const hasModel = Boolean(model);
-    const hasNamespace = Boolean(namespace);
-    const hasSerializer = Boolean(serializer);
-    let attributes = [];
-    let relationships = [];
-
-    if (hasModel && hasSerializer) {
-      const { primaryKey, attributeNames, relationshipNames } = model;
-      const { attributes: serializedAttributes } = serializer;
-
-      const serializedRelationships = [
-        ...serializer.hasOne,
-        ...serializer.hasMany
-      ];
-
-      attributes = attributeNames.filter(attr => {
-        return attr === primaryKey || serializedAttributes.indexOf(attr) >= 0;
-      });
-
-      relationships = relationshipNames.filter(relationship => {
-        return serializedRelationships.indexOf(relationship) >= 0;
-      });
-
-      Object.freeze(attributes);
-      Object.freeze(relationships);
-    }
-
     Object.assign(this, {
       model,
       namespace,
-      serializer
+      serializer,
+      hasModel: Boolean(model),
+      hasNamespace: Boolean(namespace),
+      hasSerializer: Boolean(serializer)
     });
 
     freezeProps(this, true,
@@ -499,22 +469,10 @@ class Controller {
       'serializer'
     );
 
-    Object.assign(this, {
-      hasModel,
-      hasNamespace,
-      hasSerializer,
-      attributes,
-      relationships,
-      modelName: hasModel ? model.modelName : '',
-    });
-
-    deepFreezeProps(this, false,
+    freezeProps(this, false,
       'hasModel',
       'hasNamespace',
-      'hasSerializer',
-      'attributes',
-      'relationships',
-      'modelName'
+      'hasSerializer'
     );
   }
 
