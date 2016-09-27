@@ -77,6 +77,7 @@ import type { Controller$opts, Controller$Middleware } from './interfaces';
  * the functionality that the built-in `index` action provides.
  *
  * ```javascript
+ * // app/controllers/posts.js
  * import { Controller } from 'lux-framework';
  *
  * class PostsController extends Controller {
@@ -99,6 +100,7 @@ import type { Controller$opts, Controller$Middleware } from './interfaces';
  * application so we are going to want to return the `Number` literal `204`.
  *
  * ```javascript
+ * // app/controllers/health.js
  * import { Controller } from 'lux-framework';
  *
  * class HealthController extends Controller {
@@ -114,6 +116,7 @@ import type { Controller$opts, Controller$Middleware } from './interfaces';
  * Arrow `Function`.
  *
  * ```javascript
+ * // app/controllers/health.js
  * import { Controller } from 'lux-framework';
  *
  * class HealthController extends Controller {
@@ -134,6 +137,7 @@ import type { Controller$opts, Controller$Middleware } from './interfaces';
  * `PostsController`.
  *
  * ```javacript
+ * // app/controllers/posts.js
  * import { Controller } from 'lux-framework';
  * import Post from 'app/models/posts';
  *
@@ -154,6 +158,7 @@ import type { Controller$opts, Controller$Middleware } from './interfaces';
  * chain a `.where()` to it.
  *
  * ```javacript
+ * // app/controllers/posts.js
  * import { Controller } from 'lux-framework';
  *
  * class PostsController extends Controller {
@@ -239,7 +244,6 @@ import type { Controller$opts, Controller$Middleware } from './interfaces';
  *
  * ```javascript
  * // app/middleware/authenticate.js
- *
  * export default async function authenticate(request) {
  *   if (!request.currentUser) {
  *     // 401 Unauthorized
