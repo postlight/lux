@@ -55,9 +55,14 @@ function getFilterParam({
  */
 function getFieldsParam({
   model,
-  attributes,
-  relationships
+  serializer: {
+    hasOne,
+    hasMany,
+    attributes
+  }
 }: Controller): [string, ParameterLike] {
+  const relationships = [...hasOne, ...hasMany];
+
   return ['fields', new ParameterGroup([
     [model.resourceName, new Parameter({
       path: `fields.${model.resourceName}`,
@@ -65,7 +70,6 @@ function getFieldsParam({
       values: attributes,
       sanitize: true
     })],
-
     ...relationships.reduce((result, relationship) => {
       const opts = model.relationshipFor(relationship);
 
@@ -98,8 +102,13 @@ function getFieldsParam({
  * @private
  */
 function getIncludeParam({
-  relationships
+  serializer: {
+    hasOne,
+    hasMany
+  }
 }: Controller): [string, ParameterLike] {
+  const relationships = [...hasOne, ...hasMany];
+
   return ['include', new Parameter({
     path: 'include',
     type: 'array',
