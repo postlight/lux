@@ -6,31 +6,31 @@ import type Controller from '../../../../controller';
  */
 export default function getDefaultCollectionParams({
   model,
-  attributes,
-  relationships,
-  defaultPerPage
+  defaultPerPage,
+  serializer: {
+    hasOne,
+    hasMany,
+    attributes
+  }
 }: Controller): Object {
   return {
     sort: 'createdAt',
     filter: {},
-
     fields: {
       [model.resourceName]: attributes,
-
-      ...relationships.reduce((include, key) => {
+      ...[...hasOne, ...hasMany].reduce((include, key) => {
         const opts = model.relationshipFor(key);
 
-        if (opts) {
-          return {
-            ...include,
-            [opts.model.resourceName]: [opts.model.primaryKey]
-          };
-        } else {
+        if (!opts) {
           return include;
         }
+
+        return {
+          ...include,
+          [opts.model.resourceName]: [opts.model.primaryKey]
+        };
       }, {})
     },
-
     page: {
       size: defaultPerPage,
       number: 1

@@ -56,58 +56,5 @@ describe('module "router/route"', () => {
         expect(dynamicRoute.parseParams('/posts/1/2')).to.deep.equal({ id: 1 });
       });
     });
-
-    describe('#getDefaultParams()', () => {
-      describe('with collection route', () => {
-        let params: Object;
-
-        before(() => {
-          params = staticRoute.getDefaultParams();
-        });
-
-        it('contains sort', () => {
-          expect(params).to.include.keys('sort');
-        });
-
-        it('contains page cursor', () => {
-          expect(params).to.include.keys('page');
-          expect(params.page).to.include.keys('size', 'number');
-        });
-
-        it('contains model fields', () => {
-          const { controller: { attributes, model } } = staticRoute;
-          expect(params.fields).to.include.keys(model.resourceName);
-          expect(params.fields[model.resourceName]).to.deep.equal(attributes);
-        });
-      });
-
-      describe('with member route', () => {
-        let params: Object;
-
-        before(() => {
-          params = dynamicRoute.getDefaultParams();
-        });
-
-        it('contains model fields', () => {
-          const { controller: { attributes, model } } = staticRoute;
-          expect(params.fields).to.include.keys(model.resourceName);
-          expect(params.fields[model.resourceName]).to.deep.equal(attributes);
-        });
-      });
-
-      describe('with data route', () => {
-        let params: Object;
-
-        before(() => {
-          params = dynamicRoute.getDefaultParams();
-        });
-
-        it('contains model fields', () => {
-          const { controller: { attributes, model } } = dataRoute;
-          expect(params.fields).to.include.keys(model.resourceName);
-          expect(params.fields[model.resourceName]).to.deep.equal(attributes);
-        });
-      });
-    });
   });
 });
