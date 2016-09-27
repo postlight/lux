@@ -44,6 +44,7 @@ class Application {
    * @method constructor
    * @param {Object} config
    * @return {Promise}
+   * @public
    */
   constructor(opts: Application$opts): Promise<Application> {
     return initialize(this, merge(createDefaultConfig(), opts));
