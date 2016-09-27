@@ -62,7 +62,7 @@
     "eslint-plugin-flowtype": "2.19.0",
     "faker": "3.1.0",
     "flow-bin": "0.32.0",
-    "mocha": "3.0.2",
+    "mocha": "3.1.0",
     "node-fetch": "1.6.3",
     "nyc": "8.3.0",
     "sinon": "1.17.6"
