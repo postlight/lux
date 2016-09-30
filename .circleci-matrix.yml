@@ -3,5 +3,7 @@ env:
   - DATABASE_DRIVER=mysql2
   - DATABASE_DRIVER=sqlite3
 command:
-  - bash -e scripts/circle-ci/before-script.sh
+  - bash -e scripts/circle/install.sh
+  - bash -e scripts/circle/before-script.sh
   - npm test
+  - npm run test:codecov
