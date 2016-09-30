@@ -7,8 +7,11 @@ import { createServerError } from '../../../../server';
 class ResourceMismatchError extends TypeError {
   constructor(path: string, expected: mixed, actual: mixed) {
     if (typeof actual === 'string') {
-      actual = `'${actual}'`;
+      actual = `'${String(actual)}'`;
     }
+
+    actual = String(actual);
+    expected = String(expected);
 
     super(`Expected '${expected}' for parameter '${path}' but got ${actual}.`);
   }
