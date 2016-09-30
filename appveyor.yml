@@ -16,10 +16,6 @@ environment:
 services:
   - mysql
 
-cache:
-  - C:\projects\lux\node_modules
-  - C:\projects\lux\test\test-app\node_modules
-
 install:
   - ps: C:\projects\lux\scripts\appveyor\install.ps1
 
