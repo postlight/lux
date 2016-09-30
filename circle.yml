@@ -8,7 +8,9 @@ machine:
     NODE_ENV: test
     DATABASE_USERNAME: ubuntu
 dependencies:
-  override:
+  pre:
     - mkdir -p ~/.local/bin
     - curl -fsSL https://git.io/v2Ifs -o ~/.local/bin/circleci-matrix
     - chmod +x ~/.local/bin/circleci-matrix
+  override:
+    - bash -e scripts/circle/install.sh
