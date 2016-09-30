@@ -2,7 +2,7 @@ test:
   post:
     - npm run test:codecov
   override:
-    - circleci-matrix
+    - ~/.local/bin/circleci-matrix
 machine:
   node:
     version: 6
@@ -11,6 +11,8 @@ machine:
     DATABASE_USERNAME: ubuntu
 dependencies:
   pre:
-    - curl -fsSL https://git.io/v2Ifn | bash
+    - mkdir -p ~/.local/bin
+    - curl -fsSL https://git.io/v2Ifs -o ~/.local/bin/circleci-matrix
+    - chmod +x ~/.local/bin/circleci-matrix
   override:
     - bash -e scripts/circle-ci/install.sh
