@@ -19,6 +19,7 @@ interface JSONAPI$LinkObject {
 type JSONAPI$Link = ?(string | JSONAPI$LinkObject);
 
 interface JSONAPI$ResourceLinksObject {
+  // $FlowIgnore
   self?: JSONAPI$Link;
   related?: JSONAPI$Link;
 }
@@ -74,7 +75,8 @@ export interface JSONAPI$ErrorObject {
 }
 
 export interface JSONAPI$Document {
-  data?: JSONAPI$ResourceObject | Array<JSONAPI$ResourceObject>;
+  // $FlowIgnore
+  data?: Array<JSONAPI$ResourceObject> | JSONAPI$ResourceObject;
   links?: JSONAPI$DocumentLinks;
   errors?: Array<JSONAPI$ErrorObject>;
   included?: Array<JSONAPI$ResourceObject>;

@@ -1,0 +1,8 @@
+env:
+  - export DATABASE_DRIVER=pg
+  - export DATABASE_DRIVER=mysql2
+  - export DATABASE_DRIVER=sqlite3
+command:
+  - bash -e scripts/circle/before-script.sh
+  - npm test
+  - npm run test:codecov

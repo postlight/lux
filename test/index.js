@@ -7,7 +7,7 @@ import tryCatch from '../src/utils/try-catch';
 
 import { getTestApp } from './utils/get-test-app';
 
-const { env: { APPVEYOR, TRAVIS } } = process;
+const { env: { APPVEYOR, CIRCLECI } } = process;
 
 before(function (done) {
   this.timeout(120000);
@@ -18,7 +18,7 @@ before(function (done) {
     const path = resolvePath(__dirname, 'test-app');
     const execOpts = { cwd: path };
 
-    if (!APPVEYOR && !TRAVIS) {
+    if (!APPVEYOR && !CIRCLECI) {
       await exec('lux db:reset', execOpts);
     }
 

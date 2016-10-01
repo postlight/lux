@@ -1,0 +1,16 @@
+test:
+  override:
+    - ~/.local/bin/circleci-matrix
+machine:
+  node:
+    version: 6
+  environment:
+    NODE_ENV: test
+    DATABASE_USERNAME: ubuntu
+dependencies:
+  pre:
+    - mkdir -p ~/.local/bin
+    - curl -fsSL https://git.io/v2Ifs -o ~/.local/bin/circleci-matrix
+    - chmod +x ~/.local/bin/circleci-matrix
+  override:
+    - bash -e scripts/circle/install.sh
