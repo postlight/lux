@@ -1,15 +1,15 @@
 // @flow
 import { WriteStream } from 'tty';
+
 import { dim, red, yellow } from 'chalk';
 
-import { DEBUG, INFO, WARN, ERROR } from '../constants';
-import { STDOUT, STDERR } from './constants';
-
+import { WARN, ERROR } from '../constants';
 import omit from '../../../utils/omit';
-import formatMessage from './utils/format-message';
-
-import type { Logger$Writer } from './interfaces';
 import type { Logger$format } from '../interfaces';
+
+import { STDOUT, STDERR } from './constants';
+import formatMessage from './utils/format-message';
+import type { Logger$Writer } from './interfaces';
 
 /**
  * @private
@@ -48,17 +48,16 @@ export function createWriter(format: Logger$format): Logger$Writer {
       message = formatMessage(message, 'text');
 
       switch (level) {
-        case DEBUG:
-        case INFO:
-          timestamp = dim(`[${timestamp}]`);
-          break;
-
         case WARN:
           timestamp = yellow(`[${timestamp}]`);
           break;
 
         case ERROR:
           timestamp = red(`[${timestamp}]`);
+          break;
+
+        default:
+          timestamp = dim(`[${timestamp}]`);
           break;
       }
 

@@ -2,9 +2,7 @@
 import path from 'path';
 
 import { CWD } from '../../../constants';
-
 import chain from '../../../utils/chain';
-
 import type { fs$ParsedPath } from '../index';
 
 /**

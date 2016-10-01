@@ -1,8 +1,8 @@
 // @flow
-import filterParams from './filter-params';
-
 import type Logger from '../../index';
 import type { Request, Response } from '../../../server';
+
+import filterParams from './filter-params';
 
 const MESSAGE = 'Processed Request';
 

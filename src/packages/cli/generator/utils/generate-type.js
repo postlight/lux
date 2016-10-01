@@ -1,14 +1,13 @@
 // @flow
-import { green } from 'chalk';
 import { join as joinPath } from 'path';
+
+import { green } from 'chalk';
 import { pluralize, singularize } from 'inflection';
 
 import { NAMESPACED_RESOURCE_MESSAGE } from '../constants';
-
 import { stripNamespaces, getNamespaceKey } from '../../../loader';
 import { generateTimestamp } from '../../../database';
 import { exists, readFile, writeFile } from '../../../fs';
-
 import modelTemplate from '../../templates/model';
 import serializerTemplate from '../../templates/serializer';
 import controllerTemplate from '../../templates/controller';
@@ -16,22 +15,20 @@ import emptyMigrationTemplate from '../../templates/empty-migration';
 import modelMigrationTemplate from '../../templates/model-migration';
 import middlewareTemplate from '../../templates/middleware';
 import utilTemplate from '../../templates/util';
+import chain from '../../../../utils/chain';
+import type { Generator$opts } from '../index';
 
 import log from './log';
-import chain from '../../../../utils/chain';
 import createGenerator from './create-generator';
 import { createConflictResolver, detectConflict } from './migration-conflict';
-
-import type { Generator$opts } from '../index';
 
 /**
  * @private
  */
-export async function controller({
-  cwd,
-  name,
-  ...opts
-}: Generator$opts): Promise<void> {
+export async function controller(opts: Generator$opts): Promise<void> {
+  const { cwd } = opts;
+  let { name } = opts;
+
   const dir = joinPath('app', 'controllers');
   const generate = createGenerator({
     dir,
@@ -43,9 +40,9 @@ export async function controller({
   }
 
   await generate({
+    ...opts,
     cwd,
-    name,
-    ...opts
+    name
   });
 
   const namespace = getNamespaceKey(name);
@@ -57,8 +54,8 @@ export async function controller({
 
     if (!hasParent) {
       await controller({
-        cwd,
         ...opts,
+        cwd,
         name: `${namespace}/application`,
         attrs: []
       });
@@ -69,11 +66,10 @@ export async function controller({
 /**
  * @private
  */
-export async function serializer({
-  cwd,
-  name,
-  ...opts
-}: Generator$opts): Promise<void> {
+export async function serializer(opts: Generator$opts): Promise<void> {
+  const { cwd } = opts;
+  let { name } = opts;
+
   const dir = joinPath('app', 'serializers');
   const generate = createGenerator({
     dir,
@@ -85,9 +81,9 @@ export async function serializer({
   }
 
   await generate({
+    ...opts,
     cwd,
-    name,
-    ...opts
+    name
   });
 
   const namespace = getNamespaceKey(name);
@@ -99,8 +95,8 @@ export async function serializer({
 
     if (!hasParent) {
       await serializer({
-        cwd,
         ...opts,
+        cwd,
         name: `${namespace}/application`,
         attrs: []
       });
@@ -111,7 +107,10 @@ export async function serializer({
 /**
  * @private
  */
-export function migration({ cwd, name, onConflict, ...opts }: Generator$opts) {
+export function migration(opts: Generator$opts) {
+  const { cwd, onConflict } = opts;
+  let { name } = opts;
+
   const dir = joinPath('db', 'migrate');
   const generate = createGenerator({
     dir,
@@ -125,9 +124,9 @@ export function migration({ cwd, name, onConflict, ...opts }: Generator$opts) {
     .value();
 
   return generate({
+    ...opts,
     cwd,
     name,
-    ...opts,
     onConflict: createConflictResolver({
       cwd,
       onConflict
@@ -138,12 +137,10 @@ export function migration({ cwd, name, onConflict, ...opts }: Generator$opts) {
 /**
  * @private
  */
-export function modelMigration({
-  cwd,
-  name,
-  onConflict,
-  ...opts
-}: Generator$opts) {
+export function modelMigration(opts: Generator$opts) {
+  const { cwd, onConflict } = opts;
+  let { name } = opts;
+
   const dir = joinPath('db', 'migrate');
   const generate = createGenerator({
     dir,
@@ -158,9 +155,9 @@ export function modelMigration({
     .value();
 
   return generate({
+    ...opts,
     cwd,
     name,
-    ...opts,
     onConflict: createConflictResolver({
       cwd,
       onConflict
@@ -171,7 +168,8 @@ export function modelMigration({
 /**
  * @private
  */
-export async function model({ name, ...opts }: Generator$opts): Promise<void> {
+export async function model(opts: Generator$opts): Promise<void> {
+  let { name } = opts;
   const generate = createGenerator({
     dir: joinPath('app', 'models'),
     template: modelTemplate
@@ -185,16 +183,18 @@ export async function model({ name, ...opts }: Generator$opts): Promise<void> {
     .value();
 
   return generate({
-    name,
-    ...opts
+    ...opts,
+    name
   });
 }
 
 /**
  * @private
  */
-export function middleware({ name, ...opts }: Generator$opts) {
+export function middleware(opts: Generator$opts) {
+  let { name } = opts;
   const parts = name.split('/');
+
   name = parts.pop() || name;
 
   const generate = createGenerator({
@@ -203,16 +203,18 @@ export function middleware({ name, ...opts }: Generator$opts) {
   });
 
   return generate({
-    name,
-    ...opts
+    ...opts,
+    name
   });
 }
 
 /**
  * @private
  */
-export function util({ name, ...opts }: Generator$opts) {
+export function util(opts: Generator$opts) {
+  let { name } = opts;
   const parts = name.split('/');
+
   name = parts.pop() || name;
 
   const generate = createGenerator({
@@ -221,8 +223,8 @@ export function util({ name, ...opts }: Generator$opts) {
   });
 
   return generate({
-    name,
-    ...opts
+    ...opts,
+    name
   });
 }
 
@@ -243,16 +245,17 @@ export async function resource(opts: Generator$opts) {
       .pipe(str => str.split('\n'))
       .pipe(lines => lines.reduce((result, line, index, arr) => {
         const closeIndex = arr.lastIndexOf('}');
+        let str = result;
 
         if (index <= closeIndex) {
-          result += `${line}\n`;
+          str += `${line}\n`;
         }
 
         if (index + 1 === closeIndex) {
-          result += `\n  this.resource('${pluralize(opts.name)}');\n`;
+          str += `\n  this.resource('${pluralize(opts.name)}');\n`;
         }
 
-        return result;
+        return str;
       }, ''))
       .value();
 

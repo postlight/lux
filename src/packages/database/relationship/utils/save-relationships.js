@@ -1,7 +1,7 @@
 // @flow
-import relatedFor from './related-for';
-
 import type { Model } from '../../index';
+
+import relatedFor from './related-for';
 
 /**
  * @private

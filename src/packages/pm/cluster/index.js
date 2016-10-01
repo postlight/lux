@@ -3,18 +3,16 @@ import EventEmitter from 'events';
 import os from 'os';
 import cluster from 'cluster';
 import { join as joinPath } from 'path';
+import type { Worker } from 'cluster'; // eslint-disable-line max-len, no-duplicate-imports
+
 import { red, green } from 'chalk';
 
 import { NODE_ENV } from '../../../constants';
-
 import { line } from '../../logger';
-
 import omit from '../../../utils/omit';
 import range from '../../../utils/range';
+import type Logger from '../../logger'; // eslint-disable-line max-len, no-duplicate-imports
 
-import type { Worker } from 'cluster';
-
-import type Logger from '../../logger';
 import type { Cluster$opts } from './interfaces';
 
 /**
@@ -94,14 +92,6 @@ class Cluster extends EventEmitter {
           PORT: this.port
         });
 
-        const timeout = setTimeout(() => {
-          handleError();
-
-          if (retry) {
-            this.fork(false);
-          }
-        }, 30000);
-
         const handleExit = (code: ?number) => {
           const { process: { pid } } = worker;
 
@@ -133,8 +123,9 @@ class Cluster extends EventEmitter {
           resolve(worker);
         };
 
-        const handleMessage = (message: string | Object) => {
+        const handleMessage = (msg: string | Object) => {
           let data = {};
+          let message = msg;
 
           if (typeof message === 'object') {
             data = omit(message, 'message');
@@ -156,8 +147,19 @@ class Cluster extends EventEmitter {
             case 'error':
               handleError(data.error);
               break;
+
+            default:
+              break;
           }
         };
+
+        const timeout = setTimeout(() => {
+          handleError();
+
+          if (retry) {
+            this.fork(false);
+          }
+        }, 30000);
 
         const cleanUp = (remove: boolean) => {
           clearTimeout(timeout);

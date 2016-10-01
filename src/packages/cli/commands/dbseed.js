@@ -1,5 +1,4 @@
 import { CWD } from '../../../constants';
-
 import Logger from '../../logger';
 import Database from '../../database';
 import { createLoader } from '../../loader';

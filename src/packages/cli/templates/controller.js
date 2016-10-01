@@ -2,51 +2,56 @@
 import { classify, camelize, pluralize } from 'inflection';
 
 import template from '../../template';
-
 import indent from '../utils/indent';
+import chain from '../../../utils/chain';
 import underscore from '../../../utils/underscore';
 
 /**
  * @private
  */
 export default (name: string, attrs: Array<string>): string => {
-  name = classify(underscore(name));
+  let normalized = chain(name)
+    .pipe(underscore)
+    .pipe(classify)
+    .value();
 
-  if (!attrs) {
-    attrs = [];
+  if (!normalized.endsWith('Application')) {
+    normalized = pluralize(name);
   }
 
-  if (!name.endsWith('Application')) {
-    name = pluralize(name);
-  }
-
-  const body = attrs
+  const body = (attrs || [])
     .filter(attr => /^(\w|-)+:(\w|-)+$/g.test(attr))
     .map(attr => attr.split(':'))
     .filter(([, type]) => !/^belongs-to|has-(one|many)$/g.test(type))
-    .reduce((str, [attr, type], index, array) => {
-      if (index === 0) {
-        str += (indent(2) + `params = [\n`);
-      }
+    .reduce((result, [attr, type], index, array) => (
+      chain(attr)
+        .pipe(str => {
+          if (index === 0) {
+            return `${str}${indent(2)}params = [\n}`;
+          }
 
-      str += (indent(8) + `'${camelize(underscore(attr), true)}'`);
+          return str;
+        })
+        .pipe(underscore)
+        .pipe(str => `${str}${camelize(underscore(attr), true)}`)
+        .pipe(str => `${indent(8)}'${str}'`)
+        .pipe(str => {
+          if (index === array.length - 1) {
+            return `${str}\n${indent(6)}`;
+          }
 
-      if (index === array.length - 1) {
-        str += `\n${indent(6)}];`;
-      } else {
-        str += ',\n';
-      }
-
-      return str;
-    }, '');
+          return `${str},\n`;
+        })
+        .value()
+    ), '');
 
   return template`
     import { Controller } from 'lux-framework';
 
-    class ${name}Controller extends Controller {
+    class ${normalized}Controller extends Controller {
     ${body}
     }
 
-    export default ${name}Controller;
+    export default ${normalized}Controller;
   `;
 };

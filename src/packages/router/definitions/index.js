@@ -1,4 +1,4 @@
-//@flow
+// @flow
 import Route from '../route';
 import Resource from '../resource';
 

@@ -1,6 +1,8 @@
 // @flow
 import { insertValues } from '../../template';
 
+const PATTERN = /(?:,?`|'|").+(?:`|'|"),?/g;
+
 /**
  * @private
  */
@@ -10,6 +12,12 @@ export default function sql(
 ): string {
   return insertValues(strings, ...values)
     .split(' ')
-    .map(part => /(,?`|'|").+(`|'|"),?/g.test(part) ? part : part.toUpperCase())
+    .map(part => {
+      if (PATTERN.test(part)) {
+        return part;
+      }
+
+      return part.toUpperCase();
+    })
     .join(' ');
 }

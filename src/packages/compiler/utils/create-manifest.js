@@ -1,13 +1,14 @@
 // @flow
 import { join as joinPath } from 'path';
+
 import { camelize, capitalize, pluralize } from 'inflection';
 
 import { BACKSLASH } from '../../../constants';
 import { mkdir, writeFile, appendFile } from '../../fs';
-
 import chain from '../../../utils/chain';
 import tryCatch from '../../../utils/try-catch';
 import underscore from '../../../utils/underscore';
+
 import stripExt from './strip-ext';
 import formatName from './format-name';
 
@@ -19,13 +20,13 @@ function createExportStatement(
   path: string,
   isDefault: boolean = true
 ): string {
-  path = path.replace(BACKSLASH, '/');
+  const normalized = path.replace(BACKSLASH, '/');
 
   if (isDefault) {
-    return `export {\n  default as ${name}\n} from '../${path}';\n\n`;
-  } else {
-    return `export {\n  ${name}\n} from '../${path}';\n\n`;
+    return `export {\n  default as ${name}\n} from '../${normalized}';\n\n`;
   }
+
+  return `export {\n  ${name}\n} from '../${normalized}';\n\n`;
 }
 
 /**
@@ -43,7 +44,13 @@ function createWriter(file: string) {
         const path = joinPath('app', pluralize(type), item);
         const name = chain(item)
           .pipe(formatName)
-          .pipe(str => str.endsWith('Application') ? str : pluralize(str))
+          .pipe(str => {
+            if (str.endsWith('Application')) {
+              return str;
+            }
+
+            return pluralize(str);
+          })
           .pipe(str => str + capitalize(type))
           .value();
 

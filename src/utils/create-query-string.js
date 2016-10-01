@@ -14,11 +14,11 @@ export default function createQueryString(src: Object, prop?: string): string {
 
     if (prop) {
       result += (
-        prop
+        `${prop
         + encodeURIComponent('[')
         + key
         + encodeURIComponent(']')
-        + '='
+         }=`
       );
     } else {
       result += `${key}=`;

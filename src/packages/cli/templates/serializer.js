@@ -1,31 +1,38 @@
 // @flow
 import { classify, camelize, pluralize } from 'inflection';
 
-import template from '../../template';
-
-import indent from '../utils/indent';
+import chain from '../../../utils/chain';
 import entries from '../../../utils/entries';
 import underscore from '../../../utils/underscore';
+import template from '../../template';
+import indent from '../utils/indent';
 
 /**
  * @private
  */
 export default (name: string, attrs: Array<string>): string => {
-  name = classify(underscore(name));
+  let normalized = chain(name)
+    .pipe(underscore)
+    .pipe(classify)
+    .value();
 
-  if (!attrs) {
-    attrs = [];
-  }
-
-  if (!name.endsWith('Application')) {
-    name = pluralize(name);
+  if (!normalized.endsWith('Application')) {
+    normalized = pluralize(name);
   }
 
   const body = entries(
     attrs
       .filter(attr => /^(\w|-)+:(\w|-)+$/g.test(attr))
       .map(attr => attr.split(':'))
-      .reduce(({ attributes, hasOne, hasMany }, [attr, type]) => {
+      .reduce((obj, parts) => {
+        const [, type] = parts;
+        let [attr] = parts;
+        let {
+          hasOne,
+          hasMany,
+          attributes
+        } = obj;
+
         attr = `${indent(8)}'${camelize(underscore(attr), true)}'`;
 
         switch (type) {
@@ -53,7 +60,11 @@ export default (name: string, attrs: Array<string>): string => {
         hasOne: [],
         hasMany: []
       })
-  ).reduce((str, [key, value], index) => {
+  ).reduce((result, group, index) => {
+    const [key] = group;
+    let [, value] = group;
+    let str = result;
+
     if (value.length) {
       value = value.join(',\n');
 

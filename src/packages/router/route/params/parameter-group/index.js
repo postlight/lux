@@ -40,7 +40,7 @@ class ParameterGroup extends FreezeableMap<string, ParameterLike> {
     this.freeze();
   }
 
-  validate<V: Object>(params: V): V  {
+  validate<V: Object>(params: V): V {
     return setType(() => {
       const validated = {};
 
