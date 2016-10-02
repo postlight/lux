@@ -2,6 +2,7 @@
 import { classify, camelize, pluralize } from 'inflection';
 
 import template from '../../template';
+import entries from '../../../utils/entries';
 import indent from '../utils/indent';
 import chain from '../../../utils/chain';
 import underscore from '../../../utils/underscore';
@@ -16,34 +17,38 @@ export default (name: string, attrs: Array<string>): string => {
     .value();
 
   if (!normalized.endsWith('Application')) {
-    normalized = pluralize(name);
+    normalized = pluralize(normalized);
   }
 
-  const body = (attrs || [])
-    .filter(attr => /^(\w|-)+:(\w|-)+$/g.test(attr))
-    .map(attr => attr.split(':'))
-    .filter(([, type]) => !/^belongs-to|has-(one|many)$/g.test(type))
-    .reduce((result, [attr, type], index, array) => (
-      chain(attr)
-        .pipe(str => {
-          if (index === 0) {
-            return `${str}${indent(2)}params = [\n}`;
-          }
+  const body = entries(
+    attrs
+      .filter(attr => /^(\w|-)+:(\w|-)+$/g.test(attr))
+      .map(attr => attr.split(':')[0])
+      .reduce((obj, attr) => ({
+        ...obj,
+        params: [
+          ...obj.params,
+          `${indent(8)}'${camelize(underscore(attr), true)}'`
+        ]
+      }), { params: [] })
+  ).reduce((result, group, index) => {
+    const [key] = group;
+    let [, value] = group;
+    let str = result;
 
-          return str;
-        })
-        .pipe(underscore)
-        .pipe(str => `${str}${camelize(underscore(attr), true)}`)
-        .pipe(str => `${indent(8)}'${str}'`)
-        .pipe(str => {
-          if (index === array.length - 1) {
-            return `${str}\n${indent(6)}`;
-          }
+    if (value.length) {
+      value = value.join(',\n');
 
-          return `${str},\n`;
-        })
-        .value()
-    ), '');
+      if (index && str.length) {
+        str += '\n\n';
+      }
+
+      str += `${indent(index === 0 ? 2 : 6)}${key} = ` +
+        `[\n${value}\n${indent(6)}];`;
+    }
+
+    return str;
+  }, '');
 
   return template`
     import { Controller } from 'lux-framework';

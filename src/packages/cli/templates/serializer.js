@@ -17,7 +17,7 @@ export default (name: string, attrs: Array<string>): string => {
     .value();
 
   if (!normalized.endsWith('Application')) {
-    normalized = pluralize(name);
+    normalized = pluralize(normalized);
   }
 
   const body = entries(
@@ -82,10 +82,10 @@ export default (name: string, attrs: Array<string>): string => {
   return template`
     import { Serializer } from 'lux-framework';
 
-    class ${name}Serializer extends Serializer {
+    class ${normalized}Serializer extends Serializer {
     ${body}
     }
 
-    export default ${name}Serializer;
+    export default ${normalized}Serializer;
   `;
 };

@@ -247,12 +247,12 @@ export async function resource(opts: Generator$opts) {
         const closeIndex = arr.lastIndexOf('}');
         let str = result;
 
-        if (index <= closeIndex) {
+        if (line && index <= closeIndex) {
           str += `${line}\n`;
         }
 
         if (index + 1 === closeIndex) {
-          str += `\n  this.resource('${pluralize(opts.name)}');\n`;
+          str += `  this.resource('${pluralize(opts.name)}');\n`;
         }
 
         return str;
