@@ -15,6 +15,14 @@
       "onlyFilesWithFlowAnnotation": true
     }
   },
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "impliedStrict": true,
+      "experimentalObjectRestSpread": true
+    }
+  },
   "rules": {
     "max-len": ["error", 80],
     "arrow-parens": 0,
