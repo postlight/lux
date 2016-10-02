@@ -1,16 +1,16 @@
 // @flow
-import { Client } from 'fb-watchman';
 import { join as joinPath } from 'path';
+import type { FSWatcher } from 'fs';
+
+import { Client } from 'fb-watchman';
 
 import * as fs from '../fs';
-
 import exec from '../../utils/exec';
 import tryCatch from '../../utils/try-catch';
 
-import type { FSWatcher } from 'fs';
+import type { Watcher$Client } from './interfaces'; // eslint-disable-line max-len, no-unused-vars
 
 import type Watcher from './index'; // eslint-disable-line no-unused-vars
-import type { Watcher$Client } from './interfaces'; // eslint-disable-line max-len, no-unused-vars
 
 const SUBSCRIPTION_NAME = 'lux-watcher';
 
@@ -36,7 +36,8 @@ function setupWatchmen(instance: Watcher, path: string): Promise<Client> {
 
     client.capabilityCheck({}, (capabilityErr) => {
       if (capabilityErr) {
-        return reject(capabilityErr);
+        reject(capabilityErr);
+        return;
       }
 
       client.command(['watch-project', path], (watchErr, {
@@ -44,12 +45,14 @@ function setupWatchmen(instance: Watcher, path: string): Promise<Client> {
         relative_path: relativePath
       } = {}) => {
         if (watchErr) {
-          return reject(watchErr);
+          reject(watchErr);
+          return;
         }
 
         client.command(['clock', watch], (clockErr, { clock: since }) => {
           if (clockErr) {
-            return reject(clockErr);
+            reject(clockErr);
+            return;
           }
 
           client.command(['subscribe', watch, SUBSCRIPTION_NAME, {
@@ -71,7 +74,8 @@ function setupWatchmen(instance: Watcher, path: string): Promise<Client> {
             ]
           }], (subscribeErr) => {
             if (subscribeErr) {
-              return reject(subscribeErr);
+              reject(subscribeErr);
+              return;
             }
 
             client.on('subscription', ({
@@ -101,21 +105,20 @@ export default async function initialize<T: Watcher>(
   instance: T,
   path: string
 ): Promise<T> {
+  const appPath = joinPath(path, 'app');
   let client;
-
-  path = joinPath(path, 'app');
 
   await tryCatch(async () => {
     await exec('which watchman');
-    client = await setupWatchmen(instance, path);
+    client = await setupWatchmen(instance, appPath);
   }, () => {
-    client = fallback(instance, path);
+    client = fallback(instance, appPath);
   });
 
   if (client) {
     Object.defineProperties(instance, {
       path: {
-        value: path,
+        value: appPath,
         writable: false,
         enumerable: true,
         configurable: false

@@ -1,7 +1,7 @@
 // @flow
 import { insertValues } from '../../template';
 
-const PATTERN = /(?:,?`|'|").+(?:`|'|"),?/g;
+const PATTERN = /(?:,?`|'|").+(?:`|'|"),?/;
 
 /**
  * @private

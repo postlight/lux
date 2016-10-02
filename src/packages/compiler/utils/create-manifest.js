@@ -3,7 +3,6 @@ import { join as joinPath } from 'path';
 
 import { camelize, capitalize, pluralize } from 'inflection';
 
-import { BACKSLASH } from '../../../constants';
 import { mkdir, writeFile, appendFile } from '../../fs';
 import chain from '../../../utils/chain';
 import tryCatch from '../../../utils/try-catch';
@@ -11,6 +10,7 @@ import underscore from '../../../utils/underscore';
 
 import stripExt from './strip-ext';
 import formatName from './format-name';
+import normalizePath from './normalize-path';
 
 /**
  * @private
@@ -20,7 +20,7 @@ function createExportStatement(
   path: string,
   isDefault: boolean = true
 ): string {
-  const normalized = path.replace(BACKSLASH, '/');
+  const normalized = normalizePath(path);
 
   if (isDefault) {
     return `export {\n  default as ${name}\n} from '../${normalized}';\n\n`;

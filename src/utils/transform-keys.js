@@ -18,9 +18,16 @@ export function transformKeys<T: Object | Array<mixed>>(
       return source.slice(0);
     } else if (source && typeof source === 'object') {
       return entries(source).reduce((result, [key, value]) => {
-        if (deep && value && typeof value === 'object'
-            && !Array.isArray(value)) {
-          value = transformKeys(value, transformer, true);
+        const recurse = deep
+          && value
+          && typeof value === 'object'
+          && !Array.isArray(value);
+
+        if (recurse) {
+          return {
+            ...result,
+            [transformer(key)]: transformKeys(value, transformer, true)
+          };
         }
 
         return {
@@ -28,9 +35,9 @@ export function transformKeys<T: Object | Array<mixed>>(
           [transformer(key)]: value
         };
       }, {});
-    } else {
-      return {};
     }
+
+    return {};
   });
 }
 

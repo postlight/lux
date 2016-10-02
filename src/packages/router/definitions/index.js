@@ -1,10 +1,9 @@
 // @flow
 import Route from '../route';
 import Resource from '../resource';
+import type Router, { Router$Namespace } from '../index'; // eslint-disable-line max-len, no-unused-vars
 
 import { contextFor } from './context';
-
-import type Router, { Router$Namespace } from '../index'; // eslint-disable-line max-len, no-unused-vars
 
 /**
  * @private
@@ -15,7 +14,7 @@ export function build<T: Router$Namespace>(builder?: () => void, namespace: T) {
   if (namespace instanceof Resource) {
     const { only } = namespace;
 
-    context.member(function () {
+    context.member(function member() {
       if (only.has('show')) {
         this.get('/', 'show');
       }
@@ -29,7 +28,7 @@ export function build<T: Router$Namespace>(builder?: () => void, namespace: T) {
       }
     });
 
-    context.collection(function () {
+    context.collection(function collection() {
       if (only.has('index')) {
         this.get('/', 'index');
       }

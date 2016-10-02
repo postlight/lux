@@ -1,7 +1,7 @@
 // @flow
 import { STATUS_CODES } from '../../constants';
-
 import stringify from '../../../../utils/stringify';
+
 import dataFor from './data-for';
 
 /**

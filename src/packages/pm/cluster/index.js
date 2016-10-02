@@ -92,23 +92,24 @@ class Cluster extends EventEmitter {
           PORT: this.port
         });
 
-        const handleExit = (code: ?number) => {
-          const { process: { pid } } = worker;
+        const timeout = setTimeout(() => {
+          this.logger.info(line`
+            Removing worker process: ${red(`${worker.process.pid}`)}
+          `);
 
-          worker.removeListener('message', handleMessage);
+          clearTimeout(timeout);
 
-          if (typeof code === 'number') {
-            this.logger.info(line`
-              Worker process: ${red(`${pid}`)} exited with code ${code}
-            `);
+          worker.removeAllListeners();
+          worker.kill();
+
+          this.workers.delete(worker);
+
+          resolve(worker);
+
+          if (retry) {
+            this.fork(false);
           }
-
-          this.logger.info(`Removing worker process: ${red(`${pid}`)}`);
-
-          cleanUp(true);
-
-          this.fork();
-        };
+        }, 30000);
 
         const handleError = (err?: string) => {
           if (err) {
@@ -119,11 +120,17 @@ class Cluster extends EventEmitter {
             Removing worker process: ${red(`${worker.process.pid}`)}
           `);
 
-          cleanUp(true);
+          clearTimeout(timeout);
+
+          worker.removeAllListeners();
+          worker.kill();
+
+          this.workers.delete(worker);
+
           resolve(worker);
         };
 
-        const handleMessage = (msg: string | Object) => {
+        worker.on('message', (msg: string | Object) => {
           let data = {};
           let message = msg;
 
@@ -140,7 +147,9 @@ class Cluster extends EventEmitter {
 
               this.workers.add(worker);
 
-              cleanUp(false);
+              clearTimeout(timeout);
+              worker.removeListener('error', handleError);
+
               resolve(worker);
               break;
 
@@ -151,32 +160,27 @@ class Cluster extends EventEmitter {
             default:
               break;
           }
-        };
+        });
 
-        const timeout = setTimeout(() => {
-          handleError();
+        worker.once('error', handleError);
+        worker.once('exit', (code: ?number) => {
+          const { process: { pid } } = worker;
 
-          if (retry) {
-            this.fork(false);
+          if (typeof code === 'number') {
+            this.logger.info(line`
+              Worker process: ${red(`${pid}`)} exited with code ${code}
+            `);
           }
-        }, 30000);
 
-        const cleanUp = (remove: boolean) => {
+          this.logger.info(`Removing worker process: ${red(`${pid}`)}`);
+
           clearTimeout(timeout);
 
-          if (remove) {
-            worker.kill();
-            worker.removeAllListeners();
+          worker.removeAllListeners();
+          this.workers.delete(worker);
 
-            this.workers.delete(worker);
-          } else {
-            worker.removeListener('error', handleError);
-          }
-        };
-
-        worker.on('exit', handleExit);
-        worker.on('message', handleMessage);
-        worker.once('error', handleError);
+          this.fork();
+        });
       }
     });
   }
@@ -202,7 +206,11 @@ class Cluster extends EventEmitter {
       const workers = Array
         .from(this.workers)
         .reduce((arr, item, idx, src) => {
-          return (idx + 1) % 2 ? [...arr, src.slice(idx, idx + 2)] : arr;
+          if ((idx + 1) % 2) {
+            return [...arr, src.slice(idx, idx + 2)];
+          }
+
+          return arr;
         }, []);
 
       for (const group of workers) {
@@ -214,9 +222,9 @@ class Cluster extends EventEmitter {
   }
 
   forkAll() {
-    return Promise.race(Array.from(range(1, this.maxWorkers)).map(() => {
-      return this.fork();
-    }));
+    return Promise.race(
+      Array.from(range(1, this.maxWorkers)).map(() => this.fork())
+    );
   }
 }
 

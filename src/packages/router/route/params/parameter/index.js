@@ -1,9 +1,8 @@
 // @flow
 import { FreezeableSet } from '../../../../freezeable';
-
 import validateType from '../utils/validate-type';
-import validateValue from './utils/validate-value';
 
+import validateValue from './utils/validate-value';
 import type { Parameter$opts } from './interfaces';
 
 /**
@@ -41,7 +40,7 @@ class Parameter extends FreezeableSet<mixed> {
     validateType(this, value);
 
     if (this.size > 0) {
-      value = validateValue(this, value);
+      return validateValue(this, value);
     }
 
     return value;

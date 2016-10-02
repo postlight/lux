@@ -26,9 +26,9 @@ export function resolve<T>(
       }
 
       return [
-        'root',
+        key,
         value,
-        namespace
+        'root'
       ];
     })
     .reduce((map, [key, value, namespace]) => {

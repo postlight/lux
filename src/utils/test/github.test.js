@@ -22,7 +22,7 @@ describe('util github', () => {
           branch: 'branch-name'
         });
 
-        expect(result).to.equal(`${baseURL}/branch-name/src/packages/index.js`);
+        expect(result).to.equal(`${baseURL}/branch-name/src/index.js`);
       });
     });
 
@@ -32,7 +32,7 @@ describe('util github', () => {
           line: 2
         });
 
-        expect(result).to.equal(`${baseURL}/master/src/packages/index.js#2`);
+        expect(result).to.equal(`${baseURL}/master/src/index.js#2`);
       });
 
       it('ignores line if it is not a number', () => {
@@ -41,7 +41,7 @@ describe('util github', () => {
           line: [1, 2, 3]
         });
 
-        expect(result).to.equal(`${baseURL}/master/src/packages/index.js`);
+        expect(result).to.equal(`${baseURL}/master/src/index.js`);
       });
 
       it('ignores line if it is > 0', () => {
@@ -49,7 +49,7 @@ describe('util github', () => {
           line: -10
         });
 
-        expect(result).to.equal(`${baseURL}/master/src/packages/index.js`);
+        expect(result).to.equal(`${baseURL}/master/src/index.js`);
       });
     });
   });

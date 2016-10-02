@@ -1,9 +1,7 @@
 // @flow
 import { FINAL_HANDLER } from '../constants';
-
 import getActionName from '../utils/get-action-name';
 import getControllerName from '../utils/get-controller-name';
-
 import type { Action } from '../interfaces';
 
 /**
@@ -23,12 +21,12 @@ export default function trackPerf<T, U: Action<T>>(action: U): Action<T> {
       name = 'anonymous';
     }
 
-    res.stats[res.stats.length] = {
+    res.stats.push({
       type,
       name,
       duration: Date.now() - start,
       controller: getControllerName(req)
-    };
+    });
 
     return result;
   };

@@ -107,7 +107,7 @@ export function readdirRec(
 
       return [
         ...arr,
-        file,
+        basename,
         ...children.map(child => joinPath(basename, stripPath(child)))
       ];
     }, []));

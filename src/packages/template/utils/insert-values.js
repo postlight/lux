@@ -19,7 +19,7 @@ export default function insertValues(
 
       return result + part + value;
     }, '');
-  } else {
-    return strings.join('');
   }
+
+  return strings.join('');
 }

@@ -1,15 +1,13 @@
 // @flow
 import { FreezeableMap } from '../../../../freezeable';
-
 import { InvalidParameterError } from '../errors';
-
 import isNull from '../../../../../utils/is-null';
 import entries from '../../../../../utils/entries';
 import setType from '../../../../../utils/set-type';
 import validateType from '../utils/validate-type';
-import hasRequiredParams from './utils/has-required-params';
-
 import type { ParameterLike, ParameterLike$opts } from '../index';
+
+import hasRequiredParams from './utils/has-required-params';
 
 /**
  * @private

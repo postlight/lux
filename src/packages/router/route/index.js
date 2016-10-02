@@ -1,18 +1,15 @@
 // @flow
-import { ID_PATTERN } from './constants';
-
 import { FreezeableSet, freezeProps, deepFreezeProps } from '../../freezeable';
-
-import { createAction } from './action';
-import { paramsFor, defaultParamsFor, validateResourceId } from './params';
-
-import getStaticPath from './utils/get-static-path';
-import getDynamicSegments from './utils/get-dynamic-segments';
-
 import type Controller from '../../controller';
 import type { Request, Response, Request$method } from '../../server';
-import type { Action } from './action';
-import type { ParameterGroup } from './params';
+
+import { ID_PATTERN } from './constants';
+import { createAction } from './action';
+import { paramsFor, defaultParamsFor, validateResourceId } from './params';
+import getStaticPath from './utils/get-static-path';
+import getDynamicSegments from './utils/get-dynamic-segments';
+import type { Action } from './action'; // eslint-disable-line max-len, no-duplicate-imports
+import type { ParameterGroup } from './params'; // eslint-disable-line max-len, no-duplicate-imports
 import type { Route$opts } from './interfaces';
 
 /**
@@ -122,7 +119,7 @@ class Route extends FreezeableSet<Action<any>> {
       const key = this.dynamicSegments[index];
 
       if (key) {
-        params = {
+        return {
           ...params,
           [key]: parseInt(val, 10)
         };
@@ -140,6 +137,8 @@ class Route extends FreezeableSet<Action<any>> {
         return data;
       }
     }
+
+    return undefined;
   }
 
   async visit(req: Request, res: Response): Promise<any> {

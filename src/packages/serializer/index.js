@@ -3,21 +3,19 @@ import { dasherize } from 'inflection';
 
 import { VERSION } from '../jsonapi';
 import { freezeProps } from '../freezeable';
-
 import uniq from '../../utils/uniq';
 import underscore from '../../utils/underscore';
 import promiseHash from '../../utils/promise-hash';
 import { dasherizeKeys } from '../../utils/transform-keys';
-
 import type { Model } from '../database'; // eslint-disable-line no-unused-vars
-import type { Serializer$opts } from './interfaces';
-
-import type {
+import type { // eslint-disable-line no-duplicate-imports
   JSONAPI$Document,
   JSONAPI$DocumentLinks,
   JSONAPI$ResourceObject,
   JSONAPI$RelationshipObject
 } from '../jsonapi';
+
+import type { Serializer$opts } from './interfaces';
 
 /**
  * The `Serializer` class is where you declare the specific attributes and
@@ -322,9 +320,11 @@ class Serializer<T: Model> {
     let relationships = {};
 
     const attributes = dasherizeKeys(
-      item.getAttributes(...Object.keys(item.rawColumnData).filter(key => {
-        return this.attributes.includes(key);
-      }))
+      item.getAttributes(
+        ...Object
+          .keys(item.rawColumnData)
+          .filter(key => this.attributes.includes(key))
+      )
     );
 
     const serialized: JSONAPI$ResourceObject = {
@@ -365,9 +365,9 @@ class Serializer<T: Model> {
                 item: related,
                 include: include.includes(name)
               });
-            } else {
-              return null;
             }
+
+            return null;
           })()
         }), {})
       );

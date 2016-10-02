@@ -7,7 +7,9 @@ import entries from './entries';
  * @private
  */
 export default function createQueryString(src: Object, prop?: string): string {
-  return entries(src).reduce((result, [key, value], index) => {
+  return entries(src).reduce((str, [key, value], index) => {
+    let result = str;
+
     if (index > 0) {
       result += '&';
     }

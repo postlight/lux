@@ -1,9 +1,8 @@
 // @flow
 import { Route } from '../../../index';
 import { normalizeName, normalizePath } from '../../../namespace';
-
 import type { Request$method } from '../../../../server';
-import type { Router$Namespace, Route$type } from '../../../index';
+import type { Router$Namespace, Route$type } from '../../../index'; // eslint-disable-line max-len, no-duplicate-imports
 
 /**
  * @private
@@ -13,20 +12,15 @@ export default function createDefinition({ type, method, namespace }: {
   method: Request$method;
   namespace: Router$Namespace;
 }) {
-  return function define(name: string, action?: string) {
+  return function define(name: string, action?: string = normalizeName(name)) {
+    const normalized = normalizeName(name);
     const { controller } = namespace;
     let { path } = namespace;
 
-    name = normalizeName(name);
-
-    if (!action) {
-      action = name;
-    }
-
     if (type === 'member') {
-      path += `/:id/${name}`;
+      path += `/:id/${normalized}`;
     } else {
-      path += `/${name}`;
+      path += `/${normalized}`;
     }
 
     path = normalizePath(path);

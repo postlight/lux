@@ -1,13 +1,12 @@
 // @flow
 import Resource from '../../resource';
 import Namespace from '../../namespace';
-
 import K from '../../../../utils/k';
-import createDefinitionGroup from './utils/create-definition-group';
-import normalizeResourceArgs from './utils/normalize-resource-args';
-
 import type { Router$Namespace } from '../../index'; // eslint-disable-line max-len, no-unused-vars
 import type { Router$DefinitionBuilder } from '../interfaces';
+
+import createDefinitionGroup from './utils/create-definition-group';
+import normalizeResourceArgs from './utils/normalize-resource-args';
 
 /**
  * @private
@@ -44,8 +43,11 @@ export function contextFor(build: Router$DefinitionBuilder<*>) {
           ...context,
 
           namespace(name: string, builder?: () => void) {
-            const { controllers } = namespace;
-            const path = namespace.isRoot ? `/${name}` : `${path}/${name}`;
+            const { isRoot, controllers } = namespace;
+            let { path } = namespace;
+
+            path = isRoot ? `/${name}` : `${path}/${name}`;
+
             let controller = controllers.get(`${path.substr(1)}/application`);
 
             if (!controller) {
