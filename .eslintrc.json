@@ -3,7 +3,6 @@
   "plugins": ["flowtype"],
   "extends": "airbnb-base",
   "env": {
-    "es6": true,
     "node": true
   },
   "globals": {
@@ -17,16 +16,32 @@
     }
   },
   "rules": {
+    "max-len": ["error", 80],
     "arrow-parens": 0,
     "comma-dangle": [2, "only-multiline"],
+    "prefer-reflect": 2,
     "class-methods-use-this": 0,
-    "max-len": ["error", 80],
-    "import/prefer-default-export": 0,
     "import/order": ["warn", {
-      "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
+      "groups": [
+        "builtin",
+        "external",
+        "internal",
+        "parent",
+        "sibling",
+        "index"
+      ],
       "newlines-between": "always"
     }],
+    "import/prefer-default-export": 0,
+    "flowtype/semi": 2,
+    "flowtype/no-dupe-keys": 2,
+    "flowtype/boolean-style": [2, "boolean"],
+    "flowtype/generic-spacing": 2,
+    "flowtype/define-flow-type": 0,
     "flowtype/space-after-type-colon": [2, "always"],
-    "flowtype/space-before-type-colon": [2, "never"]
+    "flowtype/space-before-type-colon": [2, "never"],
+    "flowtype/union-intersection-spacing": [2, "always"],
+    "flowtype/space-before-generic-bracket": [2, "never"],
+    "flowtype/require-valid-file-annotation": [2, "always"]
   }
 }

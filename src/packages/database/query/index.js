@@ -289,7 +289,7 @@ class Query<+T: any> extends Promise {
     return this.select();
   }
 
-  include(...relationships: Array<Object|string>): this {
+  include(...relationships: Array<Object | string>): this {
     let included;
 
     if (!this.shouldCount) {
