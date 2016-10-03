@@ -1,6 +1,6 @@
 test:
   override:
-    - bash -e scripts/circle/before-script.sh
+    - CIRCLE_NODE_INDEX=$CIRCLE_NODE_INDEX bash -e scripts/circle/before-script.sh
     - npm test && npm run test:codecov
 machine:
   node:
