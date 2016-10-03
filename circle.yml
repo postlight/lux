@@ -1,7 +1,9 @@
 test:
   override:
-    - CIRCLE_NODE_INDEX=$CIRCLE_NODE_INDEX bash -e scripts/circle/before-script.sh
-    - npm test && npm run test:codecov
+    - bash -e scripts/circle/before-script.sh:
+        parallel: true
+    - npm test && npm run test:codecov:
+        parallel: true
 machine:
   node:
     version: 6
