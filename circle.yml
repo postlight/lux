@@ -1,9 +1,7 @@
 test:
   override:
-    - bash -e scripts/circle/before-script.sh:
-      parallel: true
-    - npm test && npm run test:codecov:
-      parallel: true
+    - bash -e scripts/circle/before-script.sh
+    - npm test && npm run test:codecov
 machine:
   node:
     version: 6
