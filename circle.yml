@@ -1,6 +1,9 @@
 test:
   override:
-    - ~/.local/bin/circleci-matrix
+    - bash -e scripts/circle/before-script.sh:
+      parallel: true
+    - npm test && npm run test:codecov:
+      parallel: true
 machine:
   node:
     version: 6
@@ -8,9 +11,5 @@ machine:
     NODE_ENV: test
     DATABASE_USERNAME: ubuntu
 dependencies:
-  pre:
-    - mkdir -p ~/.local/bin
-    - curl -fsSL https://git.io/v2Ifs -o ~/.local/bin/circleci-matrix
-    - chmod +x ~/.local/bin/circleci-matrix
   override:
     - bash -e scripts/circle/install.sh
