@@ -6,6 +6,7 @@ decl
 .*/dist/.*
 .*/docs/.*
 .*/scripts/.*
+.*/examples/.*
 .*/node_modules/bcryptjs/*
 
 [options]
