@@ -33,7 +33,7 @@ import type { Controller$opts, Controller$Middleware } from './interfaces';
  * that return a value. If an action returns a Query or Promise the resolved
  * value will be used rather than the immediate return value of the action.
  * Below you will find a table showing the diffrent types of responses you can
- * get from different action return values. Keep in mind that Lux is agnostic to
+ * get from different action return values. Keep in mind, Lux is agnostic to
  * wether or not the value is returned syncronously or resolved from a Promise.
  *
  * | Return/Resolved Value        | Response                                   |
@@ -268,7 +268,18 @@ import type { Controller$opts, Controller$Middleware } from './interfaces';
  * export default ApplicationController;
  * ```
  *
- * ### Security
+ * ### Parameters
+ *
+ * For security purposes, Lux requires you to whitelist parameters coming in
+ * from the outside world.
+ *
+ * The following properties are used to whitelist parameters:
+ *
+ * - `sort`
+ * - `filter`
+ * - `query`
+ * - `params`
+ *
  *
  * @module lux-framework
  * @namespace Lux
@@ -487,15 +498,14 @@ class Controller {
    * This method supports filtering, sorting, pagination, including
    * relationships, and sparse fieldsets via query parameters.
    *
+   * For more information, see the [fetching resources](https://goo.gl/q7FVgZ)
+   * section of the JSON API specification.
+   *
    * @method index
-   *
-   * @param {Request} request
-   *
-   * @param {Response} response
-   *
+   * @param {Request} request - The request object.
+   * @param {Response} response - The response object.
    * @return {Query} - Resolves with an array of {{#crossLink 'Lux.Model'}}Model
    * {{/crossLink}} instances.
-   *
    * @public
    */
   index(req: Request): Query<Array<Model>> {
@@ -503,21 +513,20 @@ class Controller {
   }
 
   /**
-   * Returns a single Model instance that the Controller instance
-   * represents.
+   * Returns a single {{#crossLink 'Lux.Model'}}Model{{/crossLink}} instance
+   * that the Controller instance represents.
    *
    * This method supports including relationships, and sparse fieldsets via
    * query parameters.
    *
+   * For more information, see the [fetching resources](https://goo.gl/q7FVgZ)
+   * section of the JSON API specification.
+   *
    * @method show
-   *
-   * @param {Request} request
-   *
-   * @param {Response} response
-   *
+   * @param {Request} request - The request object.
+   * @param {Response} response - The response object.
    * @return {Query} - Resolves with a {{#crossLink 'Lux.Model'}}Model
    * {{/crossLink}} instance with the `id` equal to the `id` url parameter.
-   *
    * @public
    */
   show(req: Request): Query<Model> {
@@ -525,13 +534,17 @@ class Controller {
   }
 
   /**
-   * Create and return a single Model instance that the Controller instance
-   * represents.
+   * Create and return a single {{#crossLink 'Lux.Model'}}Model{{/crossLink}}
+   * instance that the Controller instance represents.
+   *
+   * For more information, see the [creating resources](https://goo.gl/4Obc9t)
+   * section of the JSON API specification.
    *
    * @method create
-   * @param {Request} request
-   * @param {Response} response
-   * @return {Promise}
+   * @param {Request} request - The request object.
+   * @param {Response} response - The response object.
+   * @return {Promise} - Resolves with the newly created
+   * {{#crossLink 'Lux.Model'}}Model{{/crossLink}} instance.
    * @public
    */
   create(req: Request, res: Response): Promise<Model> {
@@ -589,13 +602,18 @@ class Controller {
   }
 
   /**
-   * Update and return a single Model instance that the Controller instance
-   * represents.
+   * Update and return a single {{#crossLink 'Lux.Model'}}Model{{/crossLink}}
+   * instance that the Controller instance represents.
+   *
+   * For more information, see the [updating resources](https://goo.gl/o2ZdOR)
+   * section of the JSON API specification.
    *
    * @method update
-   * @param {Request} request
-   * @param {Response} response
-   * @return {Promise}
+   * @param {Request} request - The request object.
+   * @param {Response} response - The response object.
+   * @return {Promise} - Resolves with the updated {{#crossLink 'Lux.Model'}}
+   * Model{{/crossLink}} if changes occur. Resolves with the number `204` if no
+   * changes occur.
    * @public
    */
   update(req: Request): Promise<number | Model> {
@@ -634,10 +652,13 @@ class Controller {
    * Destroy a single Model instance that the Controller instance
    * represents.
    *
+   * For more information, see the [deleting resources](https://goo.gl/nUZn8t)
+   * section of the JSON API specification.
+   *
    * @method destroy
-   * @param {Request} request
-   * @param {Response} response
-   * @return {Promise}
+   * @param {Request} request - The request object.
+   * @param {Response} response - The response object.
+   * @return {Promise} - Resolves with the number `204`.
    * @public
    */
   destroy(req: Request): Promise<number> {
@@ -647,12 +668,12 @@ class Controller {
   }
 
   /**
-   * An action handler used for responding to HEAD or OPTIONS requests.
+   * Respond to `HEAD` or `OPTIONS` requests.
    *
    * @method preflight
-   * @param {Request} request
-   * @param {Response} response
-   * @return {Promise}
+   * @param {Request} request - The request object.
+   * @param {Response} response - The response object.
+   * @return {Promise} - Resolves with the number `204`.
    * @public
    */
   preflight(): Promise<number> {
