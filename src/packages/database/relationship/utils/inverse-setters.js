@@ -1,9 +1,9 @@
 // @flow
 import setType from '../../../../utils/set-type';
-import relatedFor from './related-for';
-
 import type { Model } from '../../index';
 import type { Relationship$opts } from '../index';
+
+import relatedFor from './related-for';
 
 /**
  * @private
@@ -54,15 +54,13 @@ export function setHasOneInverse(owner: Model, value?: ?Model, {
       if (!inverseValue.includes(owner)) {
         inverseValue.push(owner);
       }
-    } else {
-      if (owner !== inverseValue) {
-        const primaryKey = Reflect.get(owner, owner.constructor.primaryKey);
+    } else if (inverseType !== 'hasMany' && owner !== inverseValue) {
+      const primaryKey = Reflect.get(owner, owner.constructor.primaryKey);
 
-        inverseValue = owner;
+      inverseValue = owner;
 
-        if (inverseType === 'belongsTo') {
-          Reflect.set(value, foreignKey, primaryKey);
-        }
+      if (inverseType === 'belongsTo') {
+        Reflect.set(value, foreignKey, primaryKey);
       }
     }
 

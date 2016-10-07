@@ -9,10 +9,12 @@ export default function closestAncestor<T>(
 
   if (parts.length > 2) {
     const name = parts.pop();
+    const part = `${parts.slice(0, parts.length - 1).join('/')}/${name}`;
 
-    key = `${parts.slice(0, parts.length - 1).join('/')}/${name}`;
-    return source.get(key) || closestAncestor(source, key);
+    return source.get(part) || closestAncestor(source, part);
   } else if (parts.length === 2) {
     return source.get(parts.pop());
   }
+
+  return undefined;
 }

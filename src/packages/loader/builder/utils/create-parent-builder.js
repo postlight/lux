@@ -1,6 +1,5 @@
 // @flow
 import { getParentKey } from '../../resolver';
-
 import type { Builder$Construct, Builder$ParentBuilder } from '../interfaces';
 
 export default function createParentBuilder<T>(
@@ -16,9 +15,9 @@ export default function createParentBuilder<T>(
         let grandparent = null;
 
         if (key !== 'root') {
-          grandparent = result.find(namespace => {
-            return namespace.key === getParentKey(key);
-          });
+          grandparent = result.find(namespace => (
+            namespace.key === getParentKey(key)
+          ));
 
           if (grandparent) {
             grandparent = grandparent.parent;

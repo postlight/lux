@@ -1,6 +1,5 @@
 // @flow
 import { LUX_CONSOLE } from '../../constants';
-
 import Database from '../database';
 import Logger from '../logger';
 import Router from '../router';
@@ -9,7 +8,7 @@ import { build, createLoader } from '../loader';
 import { freezeProps, deepFreezeProps } from '../freezeable';
 
 import { ControllerMissingError } from './errors';
-
+import normalizePort from './utils/normalize-port';
 import createController from './utils/create-controller';
 import createSerializer from './utils/create-serializer';
 
@@ -28,8 +27,8 @@ export default async function initialize<T: Application>(app: T, {
   const load = createLoader(path);
   const routes = load('routes');
   const models = load('models');
-
   const logger = new Logger(logging);
+  const normalizedPort = normalizePort(port);
 
   const store = await new Database({
     path,
@@ -39,15 +38,14 @@ export default async function initialize<T: Application>(app: T, {
     checkMigrations: true
   });
 
-  port = parseInt(port, 10);
-
-  const serializers = build(load('serializers'), (key, value, parent) => {
-    return createSerializer(value, {
+  const serializers = build(
+    load('serializers'),
+    (key, value, parent) => createSerializer(value, {
       key,
       store,
       parent
-    });
-  });
+    })
+  );
 
   models.forEach(model => {
     Reflect.defineProperty(model, 'serializer', {
@@ -58,14 +56,15 @@ export default async function initialize<T: Application>(app: T, {
     });
   });
 
-  const controllers = build(load('controllers'), (key, value, parent) => {
-    return createController(value, {
+  const controllers = build(
+    load('controllers'),
+    (key, value, parent) => createController(value, {
       key,
       store,
       parent,
       serializers
-    });
-  });
+    })
+  );
 
   controllers.forEach(controller => {
     Reflect.defineProperty(controller, 'controllers', {
@@ -95,7 +94,7 @@ export default async function initialize<T: Application>(app: T, {
   });
 
   if (!LUX_CONSOLE) {
-    server.instance.listen(port).once('listening', () => {
+    server.instance.listen(normalizedPort).once('listening', () => {
       if (typeof process.send === 'function') {
         process.send('ready');
       } else {
@@ -120,10 +119,10 @@ export default async function initialize<T: Application>(app: T, {
 
   Object.assign(app, {
     path,
-    port,
     store,
     router,
-    server
+    server,
+    port: normalizedPort
   });
 
   freezeProps(app, false,

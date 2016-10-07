@@ -2,9 +2,7 @@
 import { camelize, singularize } from 'inflection';
 
 import { NEW_RECORDS } from '../../../constants';
-
 import Model from '../../../model';
-
 import entries from '../../../../../utils/entries';
 import underscore from '../../../../../utils/underscore';
 import promiseHash from '../../../../../utils/promise-hash';
@@ -31,7 +29,8 @@ export default async function buildResults<T: Model>({
 
   if (Object.keys(relationships).length) {
     related = entries(relationships)
-      .reduce((hash, [name, relationship]) => {
+      .reduce((obj, entry) => {
+        const [name, relationship] = entry;
         let foreignKey = camelize(relationship.foreignKey, true);
 
         if (relationship.through) {
@@ -63,22 +62,26 @@ export default async function buildResults<T: Model>({
             ]]
           );
 
-          hash[name] = query;
-        } else {
-          hash[name] = relationship.model
+          return {
+            ...obj,
+            [name]: query
+          };
+        }
+
+        return {
+          ...obj,
+          [name]: relationship.model
             .select(...relationship.attrs)
             .where({
               [foreignKey]: results.map(({ id }) => id)
-            });
-        }
-
-        return hash;
+            })
+        };
       }, {});
 
     related = await promiseHash(related);
   }
 
-  return results.map((record) => {
+  return results.map(record => {
     if (related) {
       entries(related)
         .forEach(([name, relatedResults]: [string, Array<Model>]) => {
@@ -101,32 +104,34 @@ export default async function buildResults<T: Model>({
         });
     }
 
-    record = entries(record)
-      .reduce((r, [key, value]) => {
-        if (!value && pkPattern.test(key)) {
-          return r;
-        } else if (key.indexOf('.') >= 0) {
-          const [a, b] = key.split('.');
-          let parent: ?Object = r[a];
+    const instance = Reflect.construct(model, [
+      entries(record)
+        .reduce((r, entry) => {
+          let [key, value] = entry;
 
-          if (!parent) {
-            parent = {};
+          if (!value && pkPattern.test(key)) {
+            return r;
+          } else if (key.indexOf('.') >= 0) {
+            const [a, b] = key.split('.');
+            let parent: ?Object = r[a];
+
+            if (!parent) {
+              parent = {};
+            }
+
+            key = a;
+            value = {
+              ...parent,
+              [b]: value
+            };
           }
 
-          key = a;
-          value = {
-            ...parent,
-            [b]: value
+          return {
+            ...r,
+            [key]: value
           };
-        }
-
-        return {
-          ...r,
-          [key]: value
-        };
-      }, {});
-
-    const instance = Reflect.construct(model, [record]);
+        }, {})
+    ]);
 
     NEW_RECORDS.delete(instance);
     return instance;

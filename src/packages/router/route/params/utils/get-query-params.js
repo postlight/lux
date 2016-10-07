@@ -1,7 +1,6 @@
 // @flow
 import Parameter from '../parameter';
 import ParameterGroup from '../parameter-group';
-
 import type Controller from '../../../../controller';
 import type { ParameterLike } from '../interfaces';
 
@@ -88,9 +87,9 @@ function getFieldsParam({
             ]
           })]
         ];
-      } else {
-        return result;
       }
+
+      return result;
     }, [])
   ], {
     path: 'fields',
@@ -139,9 +138,9 @@ export function getMemberQueryParams(
       getIncludeParam(controller),
       ...getCustomParams(controller)
     ];
-  } else {
-    return getCustomParams(controller);
   }
+
+  return getCustomParams(controller);
 }
 
 /**
@@ -159,7 +158,7 @@ export function getCollectionQueryParams(
       getIncludeParam(controller),
       ...getCustomParams(controller)
     ];
-  } else {
-    return getCustomParams(controller);
   }
+
+  return getCustomParams(controller);
 }

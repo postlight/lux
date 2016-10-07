@@ -1,6 +1,5 @@
 // @flow
 import setType from '../../../utils/set-type';
-
 import type { Server$Error } from '../interfaces';
 
 /**

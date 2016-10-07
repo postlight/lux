@@ -1,10 +1,11 @@
 // @flow
-import * as generators from './generate-type';
 import type { Generator } from '../index';
 
+import * as generators from './generate-type';
+
 export default function generatorFor(type: string): Generator {
-  type = type.toLowerCase();
-  const generator: void | Generator = Reflect.get(generators, type);
+  const normalized = type.toLowerCase();
+  const generator: void | Generator = Reflect.get(generators, normalized);
 
   if (!generator) {
     throw new Error(`Could not find a generator for '${type}'.`);

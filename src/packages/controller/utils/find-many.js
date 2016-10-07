@@ -1,23 +1,18 @@
 // @flow
 import merge from '../../../utils/merge';
-import paramsToQuery from './params-to-query';
-
 import type { Model, Query } from '../../database';
 import type { Request } from '../../server';
+
+import paramsToQuery from './params-to-query';
 
 /**
  * @private
  */
-export default function findMany({
-  params,
-  defaultParams,
-
-  route: {
-    controller: {
-      model
-    }
-  }
-}: Request): Query<Array<Model>> {
+export default function findMany<T: Model>(
+  model: Class<T>,
+  req: Request
+): Query<Array<Model>> {
+  const params = merge(req.defaultParams, req.params);
   const {
     sort,
     page,
@@ -25,7 +20,7 @@ export default function findMany({
     select,
     filter,
     include
-  } = paramsToQuery(model, merge(defaultParams, params));
+  } = paramsToQuery(model, params);
 
   return model.select(...select)
     .include(include)

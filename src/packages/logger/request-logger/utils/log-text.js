@@ -2,13 +2,11 @@
 import chalk from 'chalk';
 
 import { DEBUG } from '../../constants';
-
-import filterParams from './filter-params';
-
 import { infoTemplate, debugTemplate } from '../templates';
-
 import type Logger from '../../index';
 import type { Request, Response } from '../../../server';
+
+import filterParams from './filter-params';
 
 /**
  * @private

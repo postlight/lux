@@ -1,14 +1,13 @@
 // @flow
 import omit from '../../../utils/omit';
 import entries from '../../../utils/entries';
-
-import typeof { Model } from '../../database';
+import type { Model } from '../../database';
 import type { Request$params } from '../../server';
 
 /**
  * @private
  */
-export default function paramsToQuery(model: Model, {
+export default function paramsToQuery(model: Class<Model>, {
   id,
   page,
   sort,
@@ -47,13 +46,16 @@ export default function paramsToQuery(model: Model, {
     }
   }
 
-  includedFields = entries(includedFields).reduce((result, [key, value]) => {
+  includedFields = entries(includedFields).reduce((result, field) => {
+    const [key] = field;
+    let [, value] = field;
+
     const [
       name,
       relationship
-    ] = relationships.find(([, { model: related }]) => {
-      return key === related.resourceName;
-    }) || [];
+    ] = relationships.find(([, { model: related }]) => (
+      key === related.resourceName
+    )) || [];
 
     if (!name || !relationship) {
       return result;

@@ -1,13 +1,10 @@
 // @flow
-import { ModelMissingError } from './errors';
-
-import Model from './model';
-
-import initialize from './initialize';
-
-import normalizeModelName from './utils/normalize-model-name';
-
 import type Logger from '../logger';
+
+import { ModelMissingError } from './errors';
+import Model from './model';
+import initialize from './initialize';
+import normalizeModelName from './utils/normalize-model-name';
 import type { Database$opts } from './interfaces';
 
 /**

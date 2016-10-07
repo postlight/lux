@@ -1,26 +1,28 @@
 // @flow
 import Namespace from '../namespace';
+import { FreezeableSet } from '../../freezeable';
+import type { Controller$builtIn } from '../../controller';
 
 import normalizeOnly from './utils/normalize-only';
-
-import type { Controller$builtIn } from '../../controller';
 import type { Resource$opts } from './interfaces';
 
 /**
  * @private
  */
 class Resource extends Namespace {
-  only: Set<Controller$builtIn>;
+  only: FreezeableSet<Controller$builtIn>;
 
   constructor({ only, ...opts }: Resource$opts) {
     super(opts);
 
     Reflect.defineProperty(this, 'only', {
-      value: new Set(normalizeOnly(only)),
+      value: new FreezeableSet(normalizeOnly(only)),
       writable: false,
       enumerable: false,
       configurable: false
     });
+
+    this.only.freeze();
   }
 }
 

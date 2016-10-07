@@ -1,11 +1,10 @@
 // @flow
-import { FreezeableSet } from '../../freezeable';
+import { FreezeableSet, freezeProps } from '../../freezeable';
+import type Controller from '../../controller';
+import type { Route, Router$Namespace } from '../index';
 
 import normalizeName from './utils/normalize-name';
 import normalizePath from './utils/normalize-path';
-
-import type Controller from '../../controller';
-import type { Route, Router$Namespace } from '../index';
 import type { Namespace$opts } from './interfaces';
 
 /**
@@ -33,49 +32,26 @@ class Namespace extends FreezeableSet<Route | Router$Namespace> {
   }: Namespace$opts) {
     super();
 
-    Object.defineProperties(this, {
-      name: {
-        value: normalizeName(name),
-        writable: false,
-        enumerable: true,
-        configurable: false
-      },
-
-      path: {
-        value: normalizePath(path),
-        writable: false,
-        enumerable: true,
-        configurable: false
-      },
-
-      namespace: {
-        value: namespace || this,
-        writable: false,
-        enumerable: true,
-        configurable: false
-      },
-
-      controller: {
-        value: controller,
-        writable: false,
-        enumerable: true,
-        configurable: false
-      },
-
-      isRoot: {
-        value: path === '/',
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      controllers: {
-        value: controllers,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      }
+    Object.assign(this, {
+      controller,
+      controllers,
+      name: normalizeName(name),
+      path: normalizePath(path),
+      isRoot: path === '/',
+      namespace: namespace || this
     });
+
+    freezeProps(this, true,
+      'name',
+      'path',
+      'controller',
+      'namespace'
+    );
+
+    freezeProps(this, false,
+      'isRoot',
+      'controllers'
+    );
   }
 }
 

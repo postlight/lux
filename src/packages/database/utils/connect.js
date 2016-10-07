@@ -2,9 +2,7 @@ import { join as joinPath } from 'path';
 
 import { NODE_ENV, DATABASE_URL } from '../../../constants';
 import { VALID_DRIVERS } from '../constants';
-
 import { tryCatchSync } from '../../../utils/try-catch';
-
 import { ModuleMissingError } from '../../../errors';
 import { InvalidDriverError } from '../errors';
 
@@ -39,7 +37,9 @@ export default function connect(path, config = {}) {
   }
 
   tryCatchSync(() => {
-    knex = require(joinPath(path, 'node_modules', 'knex'));
+    knex = Reflect.apply(require, null, [
+      joinPath(path, 'node_modules', 'knex')
+    ]);
   }, () => {
     throw new ModuleMissingError('knex');
   });

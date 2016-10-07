@@ -1,6 +1,5 @@
 // @flow
 import { MIME_TYPE } from '../constants';
-
 import { line } from '../../logger';
 import { createServerError } from '../../server';
 
@@ -8,13 +7,11 @@ import { createServerError } from '../../server';
  * @private
  */
 class InvalidContentTypeError extends TypeError {
-  constructor(contentType?: string = 'undefined'): InvalidContentTypeError {
+  constructor(contentType?: string = 'undefined') {
     super(line`
       Content-Type: '${contentType}' is not supported. Try your request again
       with Content-Type: '${MIME_TYPE}'.
     `);
-
-    return this;
   }
 }
 

@@ -3,7 +3,9 @@
 /**
  * @private
  */
-export default function normalizePath(path: string) {
+export default function normalizePath(str: string) {
+  let path = str;
+
   if (!path.startsWith('/')) {
     path = `/${path}`;
   }

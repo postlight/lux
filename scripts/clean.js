@@ -1,8 +1,9 @@
-'use strict';
+'use strict'; // eslint-disable-line strict, lines-around-directive
 
 require('../lib/babel-hook');
 
 const path = require('path');
+
 const rmrf = require('../src/packages/fs').rmrf;
 
 Promise.all([

@@ -1,19 +1,22 @@
 // @flow
 import { createServerError } from '../../../../server';
+import { line } from '../../../../logger';
 
 /**
  * @private
  */
 class ResourceMismatchError extends TypeError {
   constructor(path: string, expected: mixed, actual: mixed) {
-    if (typeof actual === 'string') {
-      actual = `'${String(actual)}'`;
+    let normalized = actual;
+
+    if (typeof normalized === 'string') {
+      normalized = `'${String(normalized)}'`;
     }
 
-    actual = String(actual);
-    expected = String(expected);
-
-    super(`Expected '${expected}' for parameter '${path}' but got ${actual}.`);
+    super(line`
+      Expected '${String(expected)}' for parameter '${path}' but got
+      ${String(normalized)}.
+    `);
   }
 }
 

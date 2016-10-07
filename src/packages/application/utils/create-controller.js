@@ -5,26 +5,24 @@ import {
   stripNamespaces,
   closestAncestor
 } from '../../loader';
-
 import { tryCatchSync } from '../../../utils/try-catch';
-
 import type Database from '../../database';
-import type Controller from '../../controller'; // eslint-disable-line max-len, no-unused-vars
+import type Controller from '../../controller';
 import type Serializer from '../../serializer';
-import type { Bundle$Namespace } from '../../loader';
+import type { Bundle$Namespace } from '../../loader'; // eslint-disable-line max-len, no-duplicate-imports
 
-export default function createController<T: Controller>(constructor: Class<T>, {
-  key,
-  store,
-  parent,
-  serializers
-}: {
-  key: string;
-  store: Database;
-  parent: ?Controller;
-  serializers: Bundle$Namespace<Serializer<*>>;
-}): T {
+export default function createController<T: Controller>(
+  constructor: Class<T>,
+  opts: {
+    key: string;
+    store: Database;
+    parent: ?Controller;
+    serializers: Bundle$Namespace<Serializer<*>>;
+  }
+): T {
+  const { key, store, serializers } = opts;
   const namespace = getNamespaceKey(key).replace('root', '');
+  let { parent } = opts;
   let model = tryCatchSync(() => store.modelFor(stripNamespaces(key)));
   let serializer = serializers.get(key);
 
@@ -59,8 +57,8 @@ export default function createController<T: Controller>(constructor: Class<T>, {
 
   if (parent) {
     instance.beforeAction = [
-      ...parent.beforeAction,
-      ...instance.beforeAction
+      ...parent.beforeAction.map(fn => fn.bind(parent)),
+      ...instance.beforeAction.map(fn => fn.bind(instance))
     ];
   }
 

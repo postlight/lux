@@ -2,7 +2,6 @@
 import { cyan } from 'chalk';
 
 import { CWD, PORT, NODE_ENV } from '../../../constants';
-
 import Logger from '../../logger';
 import { createLoader } from '../../loader';
 import { createCluster } from '../../pm';
@@ -28,7 +27,7 @@ export async function serve({
   if (hot) {
     const watcher = await watch(CWD);
 
-    watcher.on('change', async function handleChange(changed) {
+    watcher.on('change', async (changed) => {
       await build(useStrict);
       process.emit('update', changed);
     });

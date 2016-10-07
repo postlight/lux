@@ -2,51 +2,61 @@
 import { classify, camelize, pluralize } from 'inflection';
 
 import template from '../../template';
-
+import entries from '../../../utils/entries';
 import indent from '../utils/indent';
+import chain from '../../../utils/chain';
 import underscore from '../../../utils/underscore';
 
 /**
  * @private
  */
 export default (name: string, attrs: Array<string>): string => {
-  name = classify(underscore(name));
+  let normalized = chain(name)
+    .pipe(underscore)
+    .pipe(classify)
+    .value();
 
-  if (!attrs) {
-    attrs = [];
+  if (!normalized.endsWith('Application')) {
+    normalized = pluralize(normalized);
   }
 
-  if (!name.endsWith('Application')) {
-    name = pluralize(name);
-  }
+  const body = entries(
+    attrs
+      .filter(attr => /^(\w|-)+:(\w|-)+$/g.test(attr))
+      .map(attr => attr.split(':')[0])
+      .reduce((obj, attr) => ({
+        ...obj,
+        params: [
+          ...obj.params,
+          `${indent(8)}'${camelize(underscore(attr), true)}'`
+        ]
+      }), { params: [] })
+  ).reduce((result, group, index) => {
+    const [key] = group;
+    let [, value] = group;
+    let str = result;
 
-  const body = attrs
-    .filter(attr => /^(\w|-)+:(\w|-)+$/g.test(attr))
-    .map(attr => attr.split(':'))
-    .filter(([, type]) => !/^belongs-to|has-(one|many)$/g.test(type))
-    .reduce((str, [attr, type], index, array) => {
-      if (index === 0) {
-        str += (indent(2) + `params = [\n`);
+    if (value.length) {
+      value = value.join(',\n');
+
+      if (index && str.length) {
+        str += '\n\n';
       }
 
-      str += (indent(8) + `'${camelize(underscore(attr), true)}'`);
+      str += `${indent(index === 0 ? 2 : 6)}${key} = ` +
+        `[\n${value}\n${indent(6)}];`;
+    }
 
-      if (index === array.length - 1) {
-        str += `\n${indent(6)}];`;
-      } else {
-        str += ',\n';
-      }
-
-      return str;
-    }, '');
+    return str;
+  }, '');
 
   return template`
     import { Controller } from 'lux-framework';
 
-    class ${name}Controller extends Controller {
+    class ${normalized}Controller extends Controller {
     ${body}
     }
 
-    export default ${name}Controller;
+    export default ${normalized}Controller;
   `;
 };

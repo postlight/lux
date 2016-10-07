@@ -1209,7 +1209,7 @@ describe('module "database/model"', () => {
         };
 
         static validates = {
-          title: str => Boolean(str)
+          title: str => str.split(' ').length > 1
         };
       }
 
@@ -1276,12 +1276,12 @@ describe('module "database/model"', () => {
       });
 
       it('fails if a validation is not met', async () => {
-        instance.title = '';
+        instance.title = 'Test';
         await instance.save().catch(err => {
           expect(err).to.be.an.instanceof(ValidationError);
         });
 
-        expect(instance).to.have.property('title', 'Test Post');
+        expect(instance).to.have.property('title', 'Test');
 
         const result = await Subject.find(instance.id);
 
@@ -1300,7 +1300,7 @@ describe('module "database/model"', () => {
         static tableName = 'posts';
 
         static validates = {
-          title: str => Boolean(str)
+          title: str => str.split(' ').length > 1
         };
       }
 
@@ -1341,14 +1341,14 @@ describe('module "database/model"', () => {
       it('fails if a validation is not met', async () => {
         await instance
           .update({
-            title: '',
+            title: 'Test',
             isPublic: true
           })
           .catch(err => {
             expect(err).to.be.an.instanceof(ValidationError);
           });
 
-        expect(instance).to.have.property('title', 'Test Post');
+        expect(instance).to.have.property('title', 'Test');
         expect(instance).to.have.property('isPublic', true);
 
         const result = await Subject.find(instance.id);

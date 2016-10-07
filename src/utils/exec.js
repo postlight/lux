@@ -1,5 +1,5 @@
 // @flow
-import { exec as execute } from 'child_process';
+import { exec as nativeExec } from 'child_process';
 
 /**
  * @private
@@ -16,9 +16,10 @@ export default function exec(cmd: string, opts?: {
   killSignal?: string;
 }): Promise<[string | Buffer, string | Buffer]> {
   return new Promise((resolve, reject) => {
-    execute(cmd, opts, (err, stdout, stderr) => {
+    nativeExec(cmd, opts, (err, stdout, stderr) => {
       if (err) {
-        return reject(err);
+        reject(err);
+        return;
       }
 
       resolve([stdout, stderr]);

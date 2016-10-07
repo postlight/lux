@@ -11,9 +11,7 @@ export default async function pendingMigrations(
   const migrations = await readdir(`${appPath}/db/migrate`);
   const versions = await table().select().map(({ version }) => version);
 
-  return migrations.filter(migration => {
-    return versions.indexOf(
-      migration.replace(/^(\d{16})-.+$/g, '$1')
-    ) < 0;
-  });
+  return migrations.filter(migration => versions.indexOf(
+    migration.replace(/^(\d{16})-.+$/g, '$1')
+  ) < 0);
 }

@@ -1,14 +1,12 @@
 // @flow
 import fs from 'fs';
 import { join as joinPath, resolve as resolvePath } from 'path';
+import type { Stats } from 'fs'; // eslint-disable-line no-duplicate-imports
 
 import Watcher from './watcher';
 
 import createResolver from './utils/create-resolver';
 import createPathRemover from './utils/create-path-remover';
-
-import type { Stats } from 'fs';
-
 import type { fs$readOpts, fs$writeOpts } from './interfaces';
 
 export { default as rmrf } from './utils/rmrf';
@@ -23,6 +21,15 @@ export type { fs$ParsedPath } from './interfaces';
  */
 export function watch(path: string): Promise<Watcher> {
   return new Watcher(path);
+}
+
+/**
+ * @private
+ */
+export function stat(path: string): Promise<Stats> {
+  return new Promise((resolve, reject) => {
+    fs.stat(path, createResolver(resolve, reject));
+  });
 }
 
 /**
@@ -44,15 +51,17 @@ export function mkdirRec(path: string, mode: number = 511): Promise<void> {
     .catch(err => {
       if (err.code === 'ENOENT') {
         return mkdirRec(parent, mode);
-      } else {
-        return Promise.reject(err);
       }
+
+      return Promise.reject(err);
     })
     .then(() => mkdir(path, mode))
     .catch(err => {
       if (err.code !== 'EEXIST') {
         return Promise.reject(err);
       }
+
+      return Promise.resolve();
     });
 }
 
@@ -86,9 +95,9 @@ export function readdirRec(
   return readdir(path, opts)
     .then(files => Promise.all(
       files.map(file => {
-        file = joinPath(path, file);
+        const filePath = joinPath(path, file);
 
-        return Promise.all([file, stat(file)]);
+        return Promise.all([filePath, stat(filePath)]);
       })
     ))
     .then(files => Promise.all(
@@ -98,12 +107,12 @@ export function readdirRec(
       ]))
     ))
     .then(files => files.reduce((arr, [file, children]) => {
-      file = stripPath(file);
+      const basename = stripPath(file);
 
       return [
         ...arr,
-        file,
-        ...children.map(child => joinPath(file, stripPath(child)))
+        basename,
+        ...children.map(child => joinPath(basename, stripPath(child)))
       ];
     }, []));
 }
@@ -116,11 +125,11 @@ export function readFile(
   opts?: fs$readOpts
 ): Promise<string | Buffer> {
   return new Promise((resolve, reject) => {
-    if (typeof opts !== 'object') {
-      opts = {};
-    }
-
-    fs.readFile(path, opts, createResolver(resolve, reject));
+    fs.readFile(
+      path,
+      typeof opts === 'object' ? opts : {},
+      createResolver(resolve, reject)
+    );
   });
 }
 
@@ -146,20 +155,12 @@ export function appendFile(
   opts?: fs$writeOpts
 ) {
   return new Promise((resolve, reject) => {
-    if (typeof opts !== 'object') {
-      opts = {};
-    }
-
-    fs.appendFile(path, data, opts, createResolver(resolve, reject));
-  });
-}
-
-/**
- * @private
- */
-export function stat(path: string): Promise<Stats> {
-  return new Promise((resolve, reject) => {
-    fs.stat(path, createResolver(resolve, reject));
+    fs.appendFile(
+      path,
+      data,
+      typeof opts === 'object' ? opts : {},
+      createResolver(resolve, reject)
+    );
   });
 }
 

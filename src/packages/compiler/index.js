@@ -1,5 +1,6 @@
 // @flow
 import path from 'path';
+
 import json from 'rollup-plugin-json';
 import alias from 'rollup-plugin-alias';
 import babel from 'rollup-plugin-babel';
@@ -36,21 +37,23 @@ export async function compile(dir: string, env: string, {
   const external = await Promise.all([
     readdir(nodeModules),
     readdir(luxNodeModules)
-  ]).then(([a, b]: [Array<string>, Array<string>]) => {
-    return a.concat(b).filter(name => name !== 'lux-framework');
-  });
+  ]).then(([a, b]: [Array<string>, Array<string>]) => (
+    a.concat(b).filter(name => name !== 'lux-framework')
+  ));
 
   const assets = await Promise.all([
     readdir(path.join(dir, 'app', 'models')),
     readdir(path.join(dir, 'db', 'migrate')),
     readdirRec(path.join(dir, 'app', 'controllers')),
     readdirRec(path.join(dir, 'app', 'serializers'))
-  ]).then(([
-    models,
-    migrations,
-    controllers,
-    serializers,
-  ]) => {
+  ]).then(types => {
+    let [
+      models,
+      migrations,
+      controllers,
+      serializers
+    ] = types;
+
     models = models.filter(isJSFile);
     migrations = migrations.filter(isJSFile);
     controllers = controllers.filter(isJSFile);

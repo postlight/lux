@@ -2,7 +2,6 @@
 import { pluralize } from 'inflection';
 
 import template from '../../template';
-
 import chain from '../../../utils/chain';
 import indent from '../utils/indent';
 import underscore from '../../../utils/underscore';
@@ -18,16 +17,16 @@ export default (name: string, attrs: Array<string> | string): string => {
     .pipe(pluralize)
     .value();
 
-  if (!attrs) {
-    attrs = [];
-  }
+  let body = '';
 
   if (Array.isArray(attrs)) {
-    attrs = attrs
+    body = attrs
       .filter(attr => /^(\w|-)+:(\w|-)+$/g.test(attr))
       .map(attr => attr.split(':'))
       .filter(([, type]) => !/^has-(one|many)$/g.test(type))
-      .map(([column, type]) => {
+      .map(attr => {
+        let [column, type] = attr;
+
         column = underscore(column);
 
         if (type === 'belongs-to') {
@@ -41,7 +40,9 @@ export default (name: string, attrs: Array<string> | string): string => {
 
         return [column, type];
       })
-      .map(([column, type], index) => {
+      .map((attr, index) => {
+        let [column] = attr;
+        const [, type] = attr;
         const shouldIndex = indices.indexOf(column) >= 0;
 
         column = `${indent(index > 0 ? 8 : 0)}table.${type}('${column}')`;
@@ -54,7 +55,7 @@ export default (name: string, attrs: Array<string> | string): string => {
     export function up(schema) {
       return schema.createTable('${table}', table => {
         table.increments('id');
-        ${attrs}
+        ${body}
         table.timestamps();
 
         table.index([

@@ -3,7 +3,9 @@
 /**
  * @private
  */
-export default function normalizeName(name: string) {
+export default function normalizeName(str: string) {
+  let name = str;
+
   if (name.startsWith('/')) {
     name = name.substr(1);
   }

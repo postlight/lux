@@ -2,18 +2,15 @@
 import { camelize, dasherize, pluralize, singularize } from 'inflection';
 
 import { line } from '../../logger';
-
 import {
   get as getRelationship,
   set as setRelationship
 } from '../relationship';
-
 import entries from '../../../utils/entries';
 import underscore from '../../../utils/underscore';
-
 import type Database, { Model } from '../index'; // eslint-disable-line no-unused-vars, max-len
 
-const REFS = new WeakMap();
+import { createAttribute } from './attribute';
 
 const VALID_HOOKS = [
   'afterCreate',
@@ -31,87 +28,22 @@ const VALID_HOOKS = [
 /**
  * @private
  */
-function refsFor(instance) {
-  let table = REFS.get(instance);
-
-  if (!table) {
-    table = Object.create(null);
-    REFS.set(instance, table);
-  }
-
-  return table;
-}
-
-/**
- * @private
- */
 function initializeProps(prototype, attributes, relationships) {
   Object.defineProperties(prototype, {
-    ...entries(attributes)
-      .reduce((hash, [key, { type, nullable, defaultValue }]) => {
-        if (/^(boolean|tinyint)$/.test(type)) {
-          defaultValue = Boolean(
-            typeof defaultValue === 'string' ?
-              parseInt(defaultValue, 10) : defaultValue
-          );
-        } else if (type === 'datetime' && typeof defaultValue === 'number') {
-          defaultValue = new Date(defaultValue);
-        }
+    ...entries(attributes).reduce((obj, [key, value]) => ({
+      ...obj,
+      [key]: createAttribute({
+        key,
+        ...value
+      })
+    }), {}),
 
-        hash[key] = {
-          get() {
-            const refs = refsFor(this);
-
-            return Reflect.get(refs, key) || defaultValue;
-          },
-
-          set(nextValue) {
-            const refs = refsFor(this);
-            const currentValue = Reflect.get(refs, key) || defaultValue;
-
-            if (nextValue !== currentValue) {
-              const { initialized, initialValues } = this;
-
-              if (/^(boolean|tinyint)$/.test(type)) {
-                nextValue = Boolean(
-                  typeof nextValue === 'string' ?
-                    parseInt(nextValue, 10) : nextValue
-                );
-              } else if (type === 'datetime' && typeof nextValue === 'number') {
-                nextValue = new Date(nextValue);
-              } else if (!nextValue && !nullable) {
-                return;
-              }
-
-              Reflect.set(refs, key, nextValue);
-
-              if (initialized) {
-                const { dirtyAttributes } = this;
-                const initialValue = initialValues.get(key) || defaultValue;
-
-                if (nextValue !== initialValue) {
-                  dirtyAttributes.add(key);
-                } else {
-                  dirtyAttributes.delete(key);
-                }
-              } else {
-                initialValues.set(key, nextValue);
-              }
-            }
-          }
-        };
-
-        return hash;
-      }, {}),
-
-    ...Object.keys(relationships).reduce((hash, key) => ({
-      ...hash,
-
+    ...Object.keys(relationships).reduce((obj, key) => ({
+      ...obj,
       [key]: {
         get() {
           return getRelationship(this, key);
         },
-
         set(val) {
           setRelationship(this, key, val);
         }
@@ -123,12 +55,11 @@ function initializeProps(prototype, attributes, relationships) {
 /**
  * @private
  */
-function initializeHooks({
-  model,
-  hooks,
-  logger
-}) {
-  hooks = entries({ ...hooks })
+function initializeHooks(opts) {
+  const { model, logger } = opts;
+  let { hooks } = opts;
+
+  hooks = entries(hooks)
     .filter(([key]) => {
       const isValid = VALID_HOOKS.indexOf(key) >= 0;
 
@@ -152,13 +83,10 @@ function initializeHooks({
 /**
  * @private
  */
-function initializeValidations({
-  model,
-  logger,
-  validates,
-  attributes
-}) {
+function initializeValidations(opts) {
+  const { model, logger, attributes } = opts;
   const attributeNames = Object.keys(attributes);
+  let { validates } = opts;
 
   validates = entries(validates)
     .filter(([key, value]) => {
@@ -182,12 +110,10 @@ function initializeValidations({
 
       return isValid;
     })
-    .reduce((hash, [key, value]) => {
-      return {
-        ...hash,
-        [key]: value
-      };
-    }, {});
+    .reduce((obj, [key, value]) => ({
+      ...obj,
+      [key]: value
+    }), {});
 
   return Object.freeze(validates);
 }
@@ -210,21 +136,17 @@ export default async function initializeClass<T: Class<Model>>({
   const resourceName = pluralize(modelName);
 
   const attributes = entries(await table().columnInfo())
-    .reduce((hash, [columnName, value]) => {
-      return {
-        ...hash,
-
-        [camelize(columnName, true)]: {
-          ...value,
-          columnName,
-
-          docName: dasherize(columnName)
-        }
-      };
-    }, {});
+    .reduce((obj, [columnName, value]) => ({
+      ...obj,
+      [camelize(columnName, true)]: {
+        ...value,
+        columnName,
+        docName: dasherize(columnName)
+      }
+    }), {});
 
   const belongsTo = entries(model.belongsTo || {})
-    .reduce((hash, [relatedName, { inverse, model: relatedModel }]) => {
+    .reduce((obj, [relatedName, { inverse, model: relatedModel }]) => {
       const relationship = {};
 
       Object.defineProperties(relationship, {
@@ -258,13 +180,13 @@ export default async function initializeClass<T: Class<Model>>({
       });
 
       return {
-        ...hash,
+        ...obj,
         [relatedName]: relationship
       };
     }, {});
 
   const hasOne = entries(model.hasOne || {})
-    .reduce((hash, [relatedName, { inverse, model: relatedModel }]) => {
+    .reduce((obj, [relatedName, { inverse, model: relatedModel }]) => {
       const relationship = {};
 
       Object.defineProperties(relationship, {
@@ -298,17 +220,16 @@ export default async function initializeClass<T: Class<Model>>({
       });
 
       return {
-        ...hash,
+        ...obj,
         [relatedName]: relationship
       };
     }, {});
 
   const hasMany = entries(model.hasMany || {})
-    .reduce((hash, [relatedName, {
-      inverse,
-      through, model: relatedModel
-    }]) => {
+    .reduce((hash, [relatedName, opts]) => {
+      const { inverse } = opts;
       const relationship = {};
+      let { through, model: relatedModel } = opts;
       let foreignKey;
 
       if (typeof relatedModel === 'string') {
@@ -499,18 +420,17 @@ export default async function initializeClass<T: Class<Model>>({
       configurable: false
     },
 
-    ...Object.freeze(entries(scopes).reduce((hash, [name, scope]) => {
-      return {
-        ...hash,
-
+    ...Object.freeze(
+      entries(scopes).reduce((obj, [name, scope]) => ({
+        ...obj,
         [name]: {
           value: scope,
           writable: false,
           enumerable: false,
           configurable: false
         }
-      };
-    }, {}))
+      }), {})
+    )
   });
 
   initializeProps(model.prototype, attributes, {

@@ -1,12 +1,11 @@
 // @flow
 import { FreezeableMap } from '../../freezeable';
 import { resolve } from '../resolver';
-
 import chain from '../../../utils/chain';
+import type { Bundle$Namespace, Bundle$NamespaceGroup } from '../index'; // eslint-disable-line max-len, no-unused-vars
+
 import createParentBuilder from './utils/create-parent-builder';
 import createChildrenBuilder from './utils/create-children-builder';
-
-import type { Bundle$Namespace, Bundle$NamespaceGroup } from '../index'; // eslint-disable-line max-len, no-unused-vars
 import type { Builder$Construct } from './interfaces';
 
 /**

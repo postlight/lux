@@ -1,9 +1,7 @@
 // @flow
 import { Model, Query } from '../../../../database';
 import { getDomain } from '../../../../server';
-
 import createPageLinks from '../utils/create-page-links';
-
 import type { Action } from '../interfaces';
 
 /**
@@ -13,10 +11,11 @@ export default function resource(action: Action<any>): Action<any> {
   return async function resourceAction(req, res) {
     const { route: { action: actionName } } = req;
     const result = action(req, res);
+    let links = {};
     let data;
     let total;
 
-    if (actionName == 'index') {
+    if (actionName === 'index') {
       [data, total] = await Promise.all([
         result,
         Query.from(result).count()
@@ -45,40 +44,32 @@ export default function resource(action: Action<any>): Action<any> {
         }
       } = req;
 
+      const include = params.include || [];
+
       if (actionName === 'index') {
-        return await serializer.format({
-          data,
+        links = createPageLinks({
+          params,
           domain,
-          include: params.include || [],
-
-          links: createPageLinks({
-            params,
-            domain,
-            pathname,
-            defaultPerPage,
-            total: total || 0
-          })
+          pathname,
+          defaultPerPage,
+          total: total || 0
         });
-      } else {
-        let links;
-
-        if (namespace) {
-          links = {
-            self: domain.replace(`/${namespace}`, '') + path
-          };
-        } else {
-          links = {
-            self: domain + path
-          };
-        }
-
-        return await serializer.format({
-          data,
-          links,
-          domain,
-          include: params.include || []
-        });
+      } else if (actionName !== 'index' && namespace) {
+        links = {
+          self: domain.replace(`/${namespace}`, '') + path
+        };
+      } else if (actionName !== 'index' && !namespace) {
+        links = {
+          self: domain + path
+        };
       }
+
+      return await serializer.format({
+        data,
+        links,
+        domain,
+        include
+      });
     }
 
     return data;

@@ -14,9 +14,15 @@ export default function formatKey(
   formatter?: (source: string) => string
 ) {
   return chain(key)
-    .pipe(str => formatter ? formatter(str) : str)
+    .pipe(str => {
+      if (formatter) {
+        return formatter(str);
+      }
+
+      return str;
+    })
     .pipe(underscore)
     .pipe(dasherize)
-    .pipe(str => str.replace(NAMESPACE_DELIMITER, '\/'))
+    .pipe(str => str.replace(NAMESPACE_DELIMITER, '/'))
     .value();
 }

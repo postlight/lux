@@ -1,7 +1,6 @@
 // @flow
 import { line } from '../../../../logger';
 import { createServerError } from '../../../../server';
-
 import type { ParameterLike } from '../index';
 
 /**

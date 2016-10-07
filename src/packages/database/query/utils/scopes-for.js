@@ -8,17 +8,20 @@ export default function scopesFor<T>(target: Query<T>): {
     ...scopes,
     [name]: {
       get() {
+        // eslint-disable-next-line func-names
         const scope = function (...args: Array<any>) {
           const fn = Reflect.get(target.model, name);
           const { snapshots } = Reflect.apply(fn, target.model, args);
 
-          target.snapshots = [
-            ...target.snapshots,
-            ...snapshots.map(snapshot => [
-              ...snapshot,
-              name
-            ])
-          ];
+          Object.assign(target, {
+            snapshots: [
+              ...target.snapshots,
+              ...snapshots.map(snapshot => [
+                ...snapshot,
+                name
+              ])
+            ]
+          });
 
           return target;
         };
