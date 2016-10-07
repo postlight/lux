@@ -1,4 +1,4 @@
-Install-Product node $env:nodejs_version
+Install-Product node $env:nodejs_version x64
 
 npm install
 npm link
