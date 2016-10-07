@@ -23,7 +23,7 @@
     "build:test": "node scripts/build/test.js",
     "clean": "node scripts/clean.js",
     "docs": "npm run clean && npm run build:docs",
-    "flow": "node scripts/flow.js",
+    "flow": "flow check",
     "lint": "eslint .",
     "start": "lux serve",
     "test": "npm run build && nyc -i ./lib/babel-hook.js --instrument false --source-map false mocha -r ./lib/babel-hook.js test/index.js src/**/*.test.js",
