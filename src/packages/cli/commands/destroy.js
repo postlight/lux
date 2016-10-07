@@ -1,48 +1,59 @@
-import { CWD } from '../../../constants';
+import { EOL } from 'os';
+
 import { red, green } from 'chalk';
 import { pluralize, singularize } from 'inflection';
 
+import { CWD } from '../../../constants';
 import { rmrf, exists, readdir, readFile, writeFile } from '../../fs';
 
 /**
  * @private
  */
 export async function destroyType(type, name) {
+  const normalizedType = type.toLowerCase();
+  let normalizedName = name;
   let path;
   let migrations;
 
-  type = type.toLowerCase();
-
-  switch (type) {
+  switch (normalizedType) {
     case 'model':
-      name = singularize(name);
-      path = `app/${pluralize(type)}/${name}.js`;
+      normalizedName = singularize(normalizedName);
+      path = `app/${pluralize(normalizedType)}/${normalizedName}.js`;
       break;
 
     case 'migration':
       migrations = await readdir(`${CWD}/db/migrate`);
-      name = migrations.find(file => `${name}.js` === file.substr(17));
-      path = `db/migrate/${name}`;
+
+      normalizedName = migrations.find(
+        file => `${normalizedName}.js` === file.substr(17)
+      );
+
+      path = `db/migrate/${normalizedName}`;
       break;
 
     case 'controller':
     case 'serializer':
-      name = pluralize(name);
-      path = `app/${pluralize(type)}/${name}.js`;
+      normalizedName = pluralize(normalizedName);
+      path = `app/${pluralize(normalizedType)}/${normalizedName}.js`;
       break;
 
     case 'middleware':
-      path = `app/${type}/${name}.js`;
+      path = `app/${normalizedType}/${normalizedName}.js`;
       break;
 
     case 'util':
-      path = `app/${pluralize(type)}/${name}.js`;
+      path = `app/${pluralize(normalizedType)}/${normalizedName}.js`;
       break;
+
+    default:
+      return;
   }
 
   if (await exists(`${CWD}/${path}`)) {
     await rmrf(`${CWD}/${path}`);
-    console.log(`${red('remove')} ${path}`);
+
+    process.stdout.write(`${red('remove')} ${path}`);
+    process.stdout.write(EOL);
   }
 }
 
@@ -74,7 +85,9 @@ export async function destroy({ type, name }: {
     ]);
 
     await writeFile(`${CWD}/app/routes.js`, routes);
-    console.log(`${green('update')} app/routes.js`);
+
+    process.stdout.write(`${green('update')} app/routes.js`);
+    process.stdout.write(EOL);
   } else if (type === 'model') {
     await Promise.all([
       destroyType(type, name),

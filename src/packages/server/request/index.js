@@ -23,7 +23,7 @@ export function createRequest(req: any, {
     method: headers.get('x-http-method-override') || req.method
   });
 
-  req.route = router.match(req);
+  Reflect.set(req, 'route', router.match(req));
 
   return req;
 }

@@ -12,8 +12,8 @@ export default function formatSelect(
   prefix: string = ''
 ) {
   return attrs.map(attr => {
-    attr = model.columnNameFor(attr) || 'undefined';
+    const name = model.columnNameFor(attr) || 'undefined';
 
-    return `${model.tableName}.${attr} AS ${prefix + camelize(attr, true)}`;
+    return `${model.tableName}.${name} AS ${prefix}${camelize(name, true)}`;
   });
 }

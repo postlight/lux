@@ -2,7 +2,6 @@
 import omit from '../../../../../utils/omit';
 import merge from '../../../../../utils/merge';
 import createQueryString from '../../../../../utils/create-query-string';
-
 import type { Request$params } from '../../../../server';
 import type { JSONAPI$DocumentLinks } from '../../../../jsonapi';
 
@@ -57,9 +56,9 @@ function createLinkTemplate({
       });
 
       return queryURL + createQueryString(paramsForPage);
-    } else {
-      return hasParams ? queryURL + createQueryString(baseParams) : baseURL;
     }
+
+    return hasParams ? queryURL + createQueryString(baseParams) : baseURL;
   };
 }
 

@@ -2,24 +2,21 @@
 import { pluralize } from 'inflection';
 
 import { NEW_RECORDS } from '../constants';
-
 import Query from '../query';
 import { sql } from '../../logger';
 import { saveRelationships } from '../relationship';
-
-import initializeClass from './initialize-class';
-
 import pick from '../../../utils/pick';
 import omit from '../../../utils/omit';
 import setType from '../../../utils/set-type';
 import underscore from '../../../utils/underscore';
-import validate from './utils/validate';
-import getColumns from './utils/get-columns';
-
-import type Logger from '../../logger';
+import type Logger from '../../logger'; // eslint-disable-line max-len, no-duplicate-imports
 import type Database from '../../database';
 import type Serializer from '../../serializer';
-import type { Relationship$opts } from '../relationship';
+import type { Relationship$opts } from '../relationship'; // eslint-disable-line max-len, no-duplicate-imports
+
+import initializeClass from './initialize-class';
+import getColumns from './utils/get-columns';
+import validate from './utils/validate';
 
 class Model {
   /**
@@ -171,8 +168,9 @@ class Model {
       }
     });
 
-    attrs = pick(attrs, ...attributeNames.concat(relationshipNames));
-    Object.assign(this, attrs);
+    const props = pick(attrs, ...attributeNames.concat(relationshipNames));
+
+    Object.assign(this, props);
 
     if (initialize) {
       Reflect.defineProperty(this, 'initialized', {
@@ -436,13 +434,13 @@ class Model {
   static initialize(store, table): Promise<Class<this>> {
     if (this.initialized) {
       return Promise.resolve(this);
-    } else {
-      return initializeClass({
-        store,
-        table,
-        model: this
-      });
     }
+
+    return initializeClass({
+      store,
+      table,
+      model: this
+    });
   }
 
   static async create(props = {}): Promise<this> {
@@ -600,9 +598,7 @@ class Model {
   static columnNameFor(key: string): void | string {
     const column = this.columnFor(key);
 
-    if (column) {
-      return column.columnName;
-    }
+    return column ? column.columnName : undefined;
   }
 
   static relationshipFor(key: string): void | Relationship$opts {

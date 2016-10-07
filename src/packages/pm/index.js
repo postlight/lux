@@ -1,7 +1,6 @@
 // @flow
 import Cluster from './cluster';
-
-import type { Cluster$opts } from './cluster';
+import type { Cluster$opts } from './cluster'; // eslint-disable-line max-len, no-duplicate-imports
 
 /**
  * @private

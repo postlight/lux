@@ -1,6 +1,5 @@
 // @flow
 import { exists, readdir, parsePath } from '../../../fs';
-
 import type { Generator$opts } from '../index';
 
 export function detectConflict(path: string): Promise<boolean> {
@@ -19,9 +18,9 @@ export function createConflictResolver({ cwd, onConflict }: {
       const parsed = parsePath(cwd, path);
       const migrations = await readdir(parsed.dir);
 
-      return migrations.find(file => {
-        return file.substr(17) === parsed.base.substr(17);
-      }) || false;
+      return migrations.find(
+        file => file.substr(17) === parsed.base.substr(17)
+      ) || false;
     }
 
     return false;

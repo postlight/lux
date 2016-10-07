@@ -1,6 +1,5 @@
 // @flow
 import { ParameterValueError, ResourceMismatchError } from '../../errors';
-
 import type Parameter from '../index';
 
 /**
@@ -30,10 +29,10 @@ export default function validateValue<V>(param: Parameter, value: V): V {
   if (Array.isArray(value)) {
     if (param.sanitize) {
       return value.filter(item => param.has(item));
-    } else {
-      for (const item of value) {
-        validateOne(param, item);
-      }
+    }
+
+    for (const item of value) {
+      validateOne(param, item);
     }
   } else {
     validateOne(param, value);

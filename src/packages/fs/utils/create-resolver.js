@@ -11,7 +11,8 @@ export default function createResolver(
     const [data] = args;
 
     if (err) {
-      return reject(err);
+      reject(err);
+      return;
     }
 
     resolve(args.length > 1 ? args : data);

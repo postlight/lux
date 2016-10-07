@@ -1,8 +1,8 @@
 // @flow
+import type Logger from '../index';
+
 import logText from './utils/log-text';
 import logJSON from './utils/log-json';
-
-import type Logger from '../index';
 import type { Logger$RequestLogger } from './interfaces';
 
 /**

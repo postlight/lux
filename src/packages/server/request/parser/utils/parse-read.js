@@ -1,9 +1,9 @@
 // @flow
 import isObject from '../../../../../utils/is-object';
+import type { Request } from '../../interfaces';
+
 import parseNestedObject from './parse-nested-object';
 import format, { formatSort, formatFields, formatInclude } from './format';
-
-import type { Request } from '../../interfaces';
 
 /**
  * @private

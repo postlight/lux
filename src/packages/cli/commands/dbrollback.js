@@ -1,5 +1,6 @@
-import { CWD } from '../../../constants';
+import { EOL } from 'os';
 
+import { CWD } from '../../../constants';
 import Database from '../../database';
 import Logger, { sql } from '../../logger';
 import { readdir } from '../../fs';
@@ -48,7 +49,8 @@ export async function dbrollback() {
         const query = migration.run(schema());
 
         await query.on('query', () => {
-          process.stdout.write(sql`${query.toString()}\n`);
+          process.stdout.write(sql`${query.toString()}`);
+          process.stdout.write(EOL);
         });
 
         await connection('migrations').where({

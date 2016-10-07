@@ -13,9 +13,9 @@ export default function uniq<T: any, U: Array<T>>(
     let lastIdx;
 
     if (hasKeys) {
-      lastIdx = arr.findIndex((y, yIdx) => {
-        return yIdx > xIdx || keys.every(key => x[key] === y[key]);
-      });
+      lastIdx = arr.findIndex((y, yIdx) => (
+        yIdx > xIdx || keys.every(key => x[key] === y[key])
+      ));
     } else {
       lastIdx = src.lastIndexOf(x);
     }

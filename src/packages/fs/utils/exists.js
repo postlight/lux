@@ -1,6 +1,5 @@
 // @flow
 import { stat, readdir } from '../index';
-
 import tryCatch from '../../../utils/try-catch';
 
 /**
@@ -19,9 +18,9 @@ export default async function exists(
     }
 
     return files.some(file => pattern.test(file));
-  } else {
-    const str = path;
-
-    return Boolean(await tryCatch(() => stat(str)));
   }
+
+  const str = path;
+
+  return Boolean(await tryCatch(() => stat(str)));
 }

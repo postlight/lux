@@ -1,10 +1,8 @@
 // @flow
 import Parameter from '../parameter';
 import ParameterGroup from '../parameter-group';
-
 import isNull from '../../../../../utils/is-null';
 import { typeForColumn } from '../../../../database';
-
 import type Controller from '../../../../controller';
 import type { ParameterLike } from '../interfaces';
 
@@ -59,9 +57,9 @@ function getAttributesParam({
         ...group,
         [param, new Parameter({ type, path, required })]
       ];
-    } else {
-      return group;
     }
+
+    return group;
   }, []), {
     path: 'data.attributes',
     sanitize: true
@@ -97,41 +95,41 @@ function getRelationshipsParam({
           path
         })]
       ];
-    } else {
-      const primaryKeyColumn = opts.model.columnFor(opts.model.primaryKey);
-      let primaryKeyType = 'number';
+    }
 
-      if (primaryKeyColumn) {
-        primaryKeyType = typeForColumn(primaryKeyColumn);
-      }
+    const primaryKeyColumn = opts.model.columnFor(opts.model.primaryKey);
+    let primaryKeyType = 'number';
 
-      return [
-        ...group,
+    if (primaryKeyColumn) {
+      primaryKeyType = typeForColumn(primaryKeyColumn);
+    }
 
-        [param, new ParameterGroup([
-          ['data', new ParameterGroup([
-            ['id', new Parameter({
-              type: primaryKeyType,
-              path: `${path}.data.id`,
-              required: true
-            })],
+    return [
+      ...group,
 
-            ['type', new Parameter({
-              type: 'string',
-              path: `${path}.data.type`,
-              values: [opts.model.resourceName],
-              required: true
-            })]
-          ], {
-            type: 'array',
-            path: `${path}.data`,
+      [param, new ParameterGroup([
+        ['data', new ParameterGroup([
+          ['id', new Parameter({
+            type: primaryKeyType,
+            path: `${path}.data.id`,
+            required: true
+          })],
+
+          ['type', new Parameter({
+            type: 'string',
+            path: `${path}.data.type`,
+            values: [opts.model.resourceName],
             required: true
           })]
         ], {
-          path
+          type: 'array',
+          path: `${path}.data`,
+          required: true
         })]
-      ];
-    }
+      ], {
+        path
+      })]
+    ];
   }, []), {
     path: 'data.relationships'
   })];

@@ -1,22 +1,19 @@
 // @flow
 import { createServer } from 'http';
+import type { Writable } from 'stream';
+import type { IncomingMessage, Server as HTTPServer } from 'http'; // eslint-disable-line max-len, no-duplicate-imports
+
+import { tryCatchSync } from '../../utils/try-catch';
+import type Logger from '../logger';
+import type Router from '../router';
 
 import { HAS_BODY } from './constants';
-
 import { createRequest, parseRequest } from './request';
 import { createResponse } from './response';
 import { createResponder } from './responder';
-
-import { tryCatchSync } from '../../utils/try-catch';
 import validateAccept from './utils/validate-accept';
 import validateContentType from './utils/validate-content-type';
 import setCORSHeaders from './utils/set-cors-headers';
-
-import type { Writable } from 'stream';
-import type { IncomingMessage, Server as HTTPServer } from 'http';
-
-import type Logger from '../logger';
-import type Router from '../router';
 import type { Request } from './request/interfaces';
 import type { Response } from './response/interfaces';
 import type { Server$opts, Server$cors } from './interfaces';
@@ -107,9 +104,7 @@ class Server {
       startTime: Date.now()
     });
 
-    const isValid = tryCatchSync(() => {
-      return this.validateRequest(request);
-    }, respond);
+    const isValid = tryCatchSync(() => this.validateRequest(request), respond);
 
     if (isValid) {
       parseRequest(request)
@@ -123,6 +118,8 @@ class Server {
           if (route) {
             return route.visit(request, response);
           }
+
+          return undefined;
         })
         .then(respond)
         .catch(err => {

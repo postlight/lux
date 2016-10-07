@@ -1,9 +1,7 @@
 // @flow
 import Validation, { ValidationError } from '../../validation';
-
 import pick from '../../../../utils/pick';
 import entries from '../../../../utils/entries';
-
 import type { Model } from '../../index';
 
 /**

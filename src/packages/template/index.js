@@ -23,13 +23,13 @@ export default function template(
   return body.split('\n')
     .slice(1)
     .map(line => {
-      line = line.replace(indentLevel, '$1');
+      let str = line.replace(indentLevel, '$1');
 
-      if (trailingWhitespace.test(line)) {
-        line = line.replace(trailingWhitespace, '');
+      if (trailingWhitespace.test(str)) {
+        str = str.replace(trailingWhitespace, '');
       }
 
-      return line;
+      return str;
     })
     .join('\n');
 }

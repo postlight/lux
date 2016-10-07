@@ -1,5 +1,5 @@
 // @flow
-const PATTERN = /^application\/vnd.api\+json;charset\=.+$/;
+const PATTERN = /^application\/vnd.api\+json;charset=.+$/;
 
 /**
  * @private

@@ -1,6 +1,5 @@
 // @flow
 import { BACKSLASH, PLATFORM } from '../../../constants';
-
 import type { fs$PathRemover } from '../interfaces';
 
 /**
@@ -12,8 +11,7 @@ export default function createPathRemover(path: string): fs$PathRemover {
   if (PLATFORM.startsWith('win')) {
     const sep = '\\\\';
 
-    path = path.replace(BACKSLASH, sep);
-    pattern = new RegExp(`${path}(${sep})?(.+)`);
+    pattern = new RegExp(`${path.replace(BACKSLASH, sep)}(${sep})?(.+)`);
   }
 
   return source => source.replace(pattern, '$2');

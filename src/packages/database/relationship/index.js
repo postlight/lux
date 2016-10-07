@@ -1,11 +1,44 @@
 // @flow
 import { camelize } from 'inflection';
 
+import type { Model } from '../index';
+
 import relatedFor from './utils/related-for';
 import { getHasOne, getHasMany, getBelongsTo } from './utils/getters';
 import { setHasOne, setHasMany, setBelongsTo } from './utils/setters';
 
-import type { Model } from '../index';
+/**
+ * @private
+ */
+export function set(owner: Model, key: string, value?: Array<Model> | ?Model) {
+  const opts = owner.constructor.relationshipFor(key);
+
+  if (opts) {
+    const { type } = opts;
+    let { foreignKey } = opts;
+
+    foreignKey = camelize(foreignKey, true);
+
+    if (Array.isArray(value)) {
+      if (type === 'hasMany') {
+        setHasMany(owner, key, value, {
+          ...opts,
+          foreignKey
+        });
+      }
+    } else if (type === 'hasOne') {
+      setHasOne(owner, key, value, {
+        ...opts,
+        foreignKey
+      });
+    } else if (type === 'belongsTo') {
+      setBelongsTo(owner, key, value, {
+        ...opts,
+        foreignKey
+      });
+    }
+  }
+}
 
 /**
  * @private
@@ -47,6 +80,9 @@ export async function get(
             foreignKey
           });
           break;
+
+        default:
+          throw new Error(`Unknown relationship type '${type}'.`);
       }
 
       set(owner, key, value);
@@ -54,39 +90,6 @@ export async function get(
   }
 
   return value;
-}
-
-/**
- * @private
- */
-export function set(owner: Model, key: string, value?: Array<Model> | ?Model) {
-  const opts = owner.constructor.relationshipFor(key);
-
-  if (opts) {
-    const { type } = opts;
-    let { foreignKey } = opts;
-
-    foreignKey = camelize(foreignKey, true);
-
-    if (Array.isArray(value)) {
-      if (type === 'hasMany') {
-        setHasMany(owner, key, value, {
-          ...opts,
-          foreignKey
-        });
-      }
-    } else if (type === 'hasOne') {
-      setHasOne(owner, key, value, {
-        ...opts,
-        foreignKey
-      });
-    } else if (type === 'belongsTo') {
-      setBelongsTo(owner, key, value, {
-        ...opts,
-        foreignKey
-      });
-    }
-  }
 }
 
 export { default as saveRelationships } from './utils/save-relationships';

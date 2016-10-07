@@ -1,6 +1,5 @@
 // @flow
 import { DYNAMIC_PATTERN } from '../constants';
-
 import insert from '../../../../utils/insert';
 
 /**

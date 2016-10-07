@@ -1,5 +1,5 @@
 // @flow
-import type Database, { Model } from '../database';
+import type Database, { Model, Query } from '../database';
 import type { Request, Response } from '../server';
 import type Serializer from '../serializer';
 import type Controller from './index';
@@ -21,3 +21,11 @@ export type Controller$Middleware = (
   request: Request,
   response: Response
 ) => Promise<any>;
+
+export type Controller$findOne<T: Model> = (
+  request: Request
+) => Query<T>;
+
+export type Controller$findMany<T: Model> = (
+  request: Request
+) => Query<Array<T>>;
