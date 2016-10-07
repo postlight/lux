@@ -1,8 +1,8 @@
 // @flow
-import createResponseProxy from './utils/create-response-proxy';
-
 import type { Action } from '../router';
 import type { Request, Response } from '../server';
+
+import createResponseProxy from './utils/create-response-proxy';
 
 /**
  * Convert traditional node HTTP server middleware into a lux compatible
@@ -19,17 +19,19 @@ export default function luxify(
     next: (err?: Error) => void
   ) => void
 ): Action<any> {
-  const result = function (req, res) {
+  const result = function (req, res) { // eslint-disable-line func-names
     return new Promise((resolve, reject) => {
-      res = createResponseProxy(res, resolve);
-
-      Reflect.apply(middleware, null, [req, res, (err) => {
-        if (err && err instanceof Error) {
-          reject(err);
-        } else {
-          resolve();
+      Reflect.apply(middleware, null, [
+        req,
+        createResponseProxy(res, resolve),
+        (err) => {
+          if (err && err instanceof Error) {
+            reject(err);
+          } else {
+            resolve();
+          }
         }
-      }]);
+      ]);
     });
   };
 

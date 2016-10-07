@@ -1,10 +1,8 @@
 // @flow
 import { ParameterTypeError } from '../errors';
-
 import isNull from '../../../../../utils/is-null';
 import isObject from '../../../../../utils/is-object';
 import isBuffer from '../../../../../utils/is-buffer';
-
 import type { Parameter, ParameterGroup } from '../index';
 
 /**

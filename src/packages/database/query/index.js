@@ -1,13 +1,12 @@
 // @flow
 import { camelize } from 'inflection';
 
-import { runQuery, createRunner } from './runner';
-
 import entries from '../../../utils/entries';
+import type Model from '../model';
+
 import scopesFor from './utils/scopes-for';
 import formatSelect from './utils/format-select';
-
-import type Model from '../model';
+import { runQuery, createRunner } from './runner';
 
 /**
  * I am a Query.
@@ -136,21 +135,21 @@ class Query<+T: any> extends Promise {
   page(num: number): this {
     if (this.shouldCount) {
       return this;
-    } else {
-      let limit = this.snapshots.find(([name]) => name === 'limit');
-
-      if (limit) {
-        [, limit] = limit;
-      }
-
-      if (typeof limit !== 'number') {
-        limit = 25;
-      }
-
-      this.limit(limit);
-
-      return this.offset(Math.max(parseInt(num, 10) - 1, 0) * limit);
     }
+
+    let limit = this.snapshots.find(([name]) => name === 'limit');
+
+    if (limit) {
+      [, limit] = limit;
+    }
+
+    if (typeof limit !== 'number') {
+      limit = 25;
+    }
+
+    this.limit(limit);
+
+    return this.offset(Math.max(parseInt(num, 10) - 1, 0) * limit);
   }
 
   limit(amount: number): this {
@@ -187,7 +186,8 @@ class Query<+T: any> extends Promise {
       }
     } = this;
 
-    const where = entries(conditions).reduce((hash, [key, value]) => {
+    const where = entries(conditions).reduce((obj, condition) => {
+      let [key, value] = condition;
       const columnName = this.model.columnNameFor(key);
 
       if (columnName) {
@@ -201,14 +201,20 @@ class Query<+T: any> extends Promise {
           if (value.length > 1) {
             this.snapshots.push([not ? 'whereNotIn' : 'whereIn', [key, value]]);
           } else {
-            hash[key] = value[0];
+            return {
+              ...obj,
+              [key]: value[0]
+            };
           }
         } else {
-          hash[key] = value;
+          return {
+            ...obj,
+            [key]: value
+          };
         }
       }
 
-      return hash;
+      return obj;
     }, {});
 
     if (Object.keys(where).length) {
@@ -289,13 +295,15 @@ class Query<+T: any> extends Promise {
     return this.select();
   }
 
-  include(...relationships: Array<Object|string>): this {
+  include(...relationships: Array<Object | string>): this {
     let included;
 
     if (!this.shouldCount) {
       if (relationships.length === 1 && typeof relationships[0] === 'object') {
-        included = entries(relationships[0]).reduce((arr, [name, attrs]) => {
+        included = entries(relationships[0]).reduce((arr, relationship) => {
+          const [name] = relationship;
           const opts = this.model.relationshipFor(name);
+          let [, attrs] = relationship;
 
           if (opts) {
             if (!attrs.length) {
@@ -307,38 +315,39 @@ class Query<+T: any> extends Promise {
               attrs,
               relationship: opts
             }];
-          } else {
-            return arr;
           }
+
+          return arr;
         }, []);
       } else {
         included = relationships.reduce((arr, name) => {
-          if (typeof name !== 'string') {
-            name = name.toString();
+          let str = name;
+
+          if (typeof str !== 'string') {
+            str = String(str);
           }
 
-          const opts = this.model.relationshipFor(name);
+          const opts = this.model.relationshipFor(str);
 
           if (opts) {
             const attrs = opts.model.attributeNames;
 
             return [...arr, {
-              name,
               attrs,
+              name: str,
               relationship: opts
             }];
-          } else {
-            return arr;
           }
+
+          return arr;
         }, []);
       }
 
       const willInclude = included
-        .filter(({
-          name,
-          attrs,
-          relationship
-        }) => {
+        .filter(opts => {
+          const { name, relationship } = opts;
+          let { attrs } = opts;
+
           if (relationship.type === 'hasMany') {
             attrs = relationship.through ? attrs : [
               ...attrs,
@@ -354,9 +363,9 @@ class Query<+T: any> extends Promise {
             };
 
             return false;
-          } else {
-            return true;
           }
+
+          return true;
         })
         .reduce((arr, { name, attrs, relationship }) => {
           arr.push([
@@ -392,12 +401,20 @@ class Query<+T: any> extends Promise {
 
   unscope(...scopes: Array<string>): this {
     if (scopes.length) {
-      scopes = scopes.filter(scope => {
-        return scope === 'order' ? 'orderBy' : scope;
+      const keys = scopes.map(scope => {
+        if (scope === 'order') {
+          return 'orderBy';
+        }
+
+        return scope;
       });
 
       this.snapshots = this.snapshots.filter(([, , scope]) => {
-        return typeof scope === 'string' ? scopes.indexOf(scope) < 0 : true;
+        if (typeof scope === 'string') {
+          return keys.indexOf(scope) < 0;
+        }
+
+        return true;
       });
     } else {
       this.snapshots = this.snapshots.filter(([, , scope]) => !scope);

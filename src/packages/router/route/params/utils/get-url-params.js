@@ -1,6 +1,5 @@
 // @flow
 import Parameter from '../parameter';
-
 import type { ParameterLike } from '../interfaces';
 
 /**

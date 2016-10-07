@@ -1,17 +1,9 @@
 {
   "parser": "babel-eslint",
   "plugins": ["flowtype"],
-  "extends": "eslint:recommended",
+  "extends": "airbnb-base",
   "env": {
-    "es6": true,
     "node": true
-  },
-  "parserOptions": {
-    "ecmaVersion": 2017,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "impliedStrict": true
-    }
   },
   "globals": {
     "Class": true,
@@ -23,38 +15,41 @@
       "onlyFilesWithFlowAnnotation": true
     }
   },
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "impliedStrict": true,
+      "experimentalObjectRestSpread": true
+    }
+  },
   "rules": {
-    "no-console": 0,
-    "semi": 2,
-    "semi-spacing": [2, { "before": false, "after": true }],
-    "quotes": [2, "single", { "allowTemplateLiterals": true }],
-    "indent": [2, 2, { "SwitchCase": 1 }],
-    "max-len": [2, 80],
-    "eol-last": 2,
-    "camelcase": 2,
-    "comma-style": [2, "last"],
-    "quote-props": [2, "as-needed"],
-    "new-parens": 2,
-    "no-var": 2,
-    "no-shadow": 2,
-    "no-useless-rename": 2,
-    "no-useless-constructor": 2,
-    "no-nested-ternary": 2,
-    "no-unneeded-ternary": 2,
-    "no-trailing-spaces": 2,
-    "prefer-const": 2,
+    "max-len": ["error", 80],
+    "arrow-parens": 0,
+    "comma-dangle": [2, "only-multiline"],
     "prefer-reflect": 2,
-    "object-shorthand": 2,
-    "prefer-rest-params": 2,
-    "key-spacing": [2, { "beforeColon": false }],
-    "block-spacing": 2,
-    "comma-spacing": [2, { "before": false, "after": true }],
-    "keyword-spacing": [2, { "before": true }],
-    "object-curly-spacing": [2, "always"],
-    "array-bracket-spacing": [2, "never"],
-    "yield-star-spacing": [2, "after"],
-    "rest-spread-spacing": 2,
+    "class-methods-use-this": 0,
+    "import/order": ["warn", {
+      "groups": [
+        "builtin",
+        "external",
+        "internal",
+        "parent",
+        "sibling",
+        "index"
+      ],
+      "newlines-between": "always"
+    }],
+    "import/prefer-default-export": 0,
+    "flowtype/semi": 2,
+    "flowtype/no-dupe-keys": 2,
+    "flowtype/boolean-style": [2, "boolean"],
+    "flowtype/generic-spacing": 2,
+    "flowtype/define-flow-type": 0,
     "flowtype/space-after-type-colon": [2, "always"],
-    "flowtype/space-before-type-colon": [2, "never"]
+    "flowtype/space-before-type-colon": [2, "never"],
+    "flowtype/union-intersection-spacing": [2, "always"],
+    "flowtype/space-before-generic-bracket": [2, "never"],
+    "flowtype/require-valid-file-annotation": [2, "always"]
   }
 }

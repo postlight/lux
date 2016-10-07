@@ -1,14 +1,12 @@
 // @flow
-import { ID_PATTERN } from './route';
-
 import { FreezeableMap } from '../freezeable';
+import type { Request } from '../server';
 
+import { ID_PATTERN } from './route';
 import Namespace from './namespace';
 import { build, define } from './definitions';
-
-import type { Request } from '../server';
 import type { Router$opts } from './interfaces';
-import type Route from './route';
+import type Route from './route'; // eslint-disable-line no-duplicate-imports
 
 /**
  * @private

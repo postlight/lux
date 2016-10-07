@@ -2,8 +2,8 @@
 import { red, green } from 'chalk';
 
 import createPrompt from '../utils/create-prompt';
-import generatorFor from './utils/generator-for';
 
+import generatorFor from './utils/generator-for';
 import type { Generator$opts } from './interfaces';
 
 /**

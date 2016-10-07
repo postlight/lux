@@ -2,14 +2,13 @@
 import { Model } from '../database';
 import { getDomain } from '../server';
 import { freezeProps } from '../freezeable';
+import type Serializer from '../serializer';
+import type { Query } from '../database'; // eslint-disable-line max-len, no-duplicate-imports
+import type { Request, Response } from '../server'; // eslint-disable-line max-len, no-duplicate-imports
 
 import findOne from './utils/find-one';
 import findMany from './utils/find-many';
 import findRelated from './utils/find-related';
-
-import type Serializer from '../serializer';
-import type { Query } from '../database';
-import type { Request, Response } from '../server';
 import type { Controller$opts, Controller$Middleware } from './interfaces';
 
 /**
@@ -509,7 +508,7 @@ class Controller {
    * @public
    */
   index(req: Request): Query<Array<Model>> {
-    return findMany(req);
+    return findMany(this.model, req);
   }
 
   /**
@@ -530,7 +529,7 @@ class Controller {
    * @public
    */
   show(req: Request): Query<Model> {
-    return findOne(req);
+    return findOne(this.model, req);
   }
 
   /**
@@ -551,50 +550,30 @@ class Controller {
     const {
       params: {
         data: {
-          attributes
-        }
-      },
-      route: {
-        controller: {
-          model
+          attributes,
+          relationships
         }
       }
     } = req;
 
-    return model
+    return this.model
       .create(attributes)
       .then(record => {
-        const {
-          params: {
-            data: {
-              relationships
-            }
-          },
-          route: {
-            controller: {
-              controllers
-            }
-          }
-        } = req;
-
         if (relationships) {
-          return findRelated(
-            controllers,
-            relationships
-          ).then(related => {
+          return findRelated(this.controllers, relationships).then(related => {
             Object.assign(record, related);
             return record.save(true);
           });
-        } else {
-          return record;
         }
+
+        return record;
       })
       .then(record => {
         const { url: { pathname } } = req;
         const id = record.getPrimaryKey();
         const location = `${getDomain(req) + pathname}/${id}`;
 
-        res.statusCode = 201;
+        res.statusCode = 201; // eslint-disable-line no-param-reassign
         res.setHeader('Location', location);
 
         return record;
@@ -617,7 +596,7 @@ class Controller {
    * @public
    */
   update(req: Request): Promise<number | Model> {
-    return findOne(req).then(record => {
+    return findOne(this.model, req).then(record => {
       const {
         params: {
           data: {
@@ -662,7 +641,7 @@ class Controller {
    * @public
    */
   destroy(req: Request): Promise<number> {
-    return findOne(req)
+    return findOne(this.model, req)
       .then(record => record.destroy())
       .then(() => 204);
   }

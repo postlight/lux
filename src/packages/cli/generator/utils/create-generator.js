@@ -1,12 +1,12 @@
 // @flow
 import { join as joinPath } from 'path';
+
 import { red, green, yellow } from 'chalk';
 
 import { rmrf, exists, mkdirRec, writeFile, parsePath } from '../../../fs';
+import type { Generator, Generator$template } from '../index';
 
 import log from './log';
-
-import type { Generator, Generator$template } from '../index';
 
 const FORWARD_SLASH = /\//g;
 
@@ -22,11 +22,10 @@ export default function createGenerator({
   template: Generator$template;
   hasConflict?: (path: string) => Promise<boolean>;
 }): Generator {
-  return async ({ cwd, name, attrs, onConflict }) => {
-    const path = parsePath(cwd, dir, `${name}.js`);
+  return async ({ cwd, attrs, onConflict, ...opts }) => {
+    const path = parsePath(cwd, dir, `${opts.name}.js`);
+    const name = opts.name.replace(FORWARD_SLASH, '-');
     let action = green('create');
-
-    name = name.replace(FORWARD_SLASH, '-');
 
     await mkdirRec(path.dir);
 
@@ -40,7 +39,8 @@ export default function createGenerator({
         action = yellow('overwrite');
         await rmrf(path.absolute);
       } else {
-        return log(`${yellow('skip')} ${path.relative}`);
+        log(`${yellow('skip')} ${path.relative}`);
+        return;
       }
     }
 

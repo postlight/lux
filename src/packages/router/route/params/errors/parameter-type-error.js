@@ -1,7 +1,6 @@
 // @flow
 import { line } from '../../../../logger';
 import { createServerError } from '../../../../server';
-
 import type { ParameterLike } from '../index';
 
 /**
@@ -12,7 +11,7 @@ class ParameterTypeError extends TypeError {
     const { type, path } = param;
 
     super(line`
-      Expected type '${type ? type : ''}' for parameter '${path}' but got
+      Expected type '${type || 'undefined'}' for parameter '${path}' but got
       '${actual}'.
     `);
   }

@@ -4,7 +4,7 @@ function formatInt(int: number) {
 }
 
 function* padding(char: string, amount: number) {
-  for (let i = 0; i < amount; i++) {
+  for (let i = 0; i < amount; i += 1) {
     yield char;
   }
 }

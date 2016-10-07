@@ -1,11 +1,11 @@
 // @flow
+import type { Model } from '../../index';
+import type { Relationship$opts } from '../index';
+
 import relatedFor from './related-for';
 import unassociate from './unassociate';
 import validateType from './validate-type';
 import { setHasOneInverse, setHasManyInverse } from './inverse-setters';
-
-import type { Model } from '../../index';
-import type { Relationship$opts } from '../index';
 
 /**
  * @private
@@ -26,9 +26,9 @@ export function setHasMany(owner: Model, key: string, value: Array<Model>, {
 
       if (Array.isArray(prevValue)) {
         prevValue
-          .filter(prev => !value.find(next => {
-            return prev.getPrimaryKey() === next.getPrimaryKey();
-          }))
+          .filter(prev => (
+            !value.find(next => prev.getPrimaryKey() === next.getPrimaryKey())
+          ))
           .forEach(record => owner.prevAssociations.add(record));
       }
     }
@@ -55,21 +55,22 @@ export function setHasOne(owner: Model, key: string, value?: ?Model, {
   foreignKey
 }: Relationship$opts) {
   const related = relatedFor(owner);
+  let valueToSet = value;
 
   if (value && typeof value === 'object' && !model.isInstance(value)) {
-    value = Reflect.construct(model, [value]);
+    valueToSet = Reflect.construct(model, [valueToSet]);
   }
 
-  if (value) {
-    if (validateType(model, value)) {
-      related.set(key, value);
+  if (valueToSet) {
+    if (validateType(model, valueToSet)) {
+      related.set(key, valueToSet);
     }
   } else {
-    value = null;
+    valueToSet = null;
     related.delete(key);
   }
 
-  setHasOneInverse(owner, value, {
+  setHasOneInverse(owner, valueToSet, {
     type,
     model,
     inverse,

@@ -6,7 +6,7 @@ import type Serializer from '../serializer';
 
 export type Application$opts = Config & {
   path: string;
-  port: number;
+  port: string | number;
   database: Database$config;
 };
 

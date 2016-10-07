@@ -4,7 +4,6 @@ import { worker, isMaster } from 'cluster';
 import { NODE_ENV } from '../../constants';
 
 import { ConfigMissingError, MigrationsPendingError } from './errors';
-
 import connect from './utils/connect';
 import createMigrations from './utils/create-migrations';
 import pendingMigrations from './utils/pending-migrations';
@@ -14,13 +13,13 @@ import type Database, { Database$opts } from './index'; // eslint-disable-line n
 /**
  * @private
  */
-export default async function initialize<T: Database>(instance: T, {
-  path,
-  models,
-  config,
-  logger,
-  checkMigrations
-}: Database$opts): Promise<T> {
+export default async function initialize<T: Database>(
+  instance: T,
+  opts: Database$opts
+): Promise<T> {
+  const { path, models, logger, checkMigrations } = opts;
+  let { config } = opts;
+
   config = Reflect.get(config, NODE_ENV);
 
   if (!config) {
@@ -84,13 +83,13 @@ export default async function initialize<T: Database>(instance: T, {
     }
   });
 
-  if (isMaster || worker && worker.id === 1) {
+  if (isMaster || (worker && worker.id === 1)) {
     await createMigrations(instance.schema);
 
     if (checkMigrations) {
-      const pending = await pendingMigrations(path, () => {
-        return instance.connection('migrations');
-      });
+      const pending = await pendingMigrations(path, () => (
+        instance.connection('migrations')
+      ));
 
       if (pending.length) {
         throw new MigrationsPendingError(pending);
@@ -101,11 +100,9 @@ export default async function initialize<T: Database>(instance: T, {
   await Promise.all(
     Array
       .from(models.values())
-      .map(model => {
-        return model.initialize(instance, () => {
-          return instance.connection(model.tableName);
-        });
-      })
+      .map(model => (
+        model.initialize(instance, () => instance.connection(model.tableName))
+      ))
   );
 
   return instance;

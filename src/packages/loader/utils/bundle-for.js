@@ -4,10 +4,10 @@ import { join as joinPath } from 'path';
 import { Migration } from '../../database';
 import { FreezeableMap } from '../../freezeable';
 import { createDefaultConfig } from '../../config';
-
 import merge from '../../../utils/merge';
 import chain from '../../../utils/chain';
 import entries from '../../../utils/entries';
+
 import formatKey from './format-key';
 
 const SUFFIX_PATTERN = /^.+(Controller|Down|Serializer|Up)/;
@@ -32,8 +32,13 @@ function normalize(manifest: Object) {
 
         case 'Up':
         case 'Down':
-          value = Reflect.construct(Migration, [value]);
-          obj.migrations.set(formatKey(key), value);
+          obj.migrations.set(
+            formatKey(key),
+            Reflect.construct(Migration, [value])
+          );
+          break;
+
+        default:
           break;
       }
     } else {
@@ -45,17 +50,19 @@ function normalize(manifest: Object) {
           break;
 
         case 'config':
-          obj.config = merge(createDefaultConfig(), {
-            ...obj.config,
-            ...value
+          Reflect.set(obj, 'config', {
+            ...merge(createDefaultConfig(), {
+              ...obj.config,
+              ...value
+            })
           });
           break;
 
         case 'database':
-          obj.config = {
+          Reflect.set(obj, 'config', {
             ...obj.config,
             database: value
-          };
+          });
           break;
 
         default:

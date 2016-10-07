@@ -11,13 +11,13 @@ export default function compact<T: Object | Array<mixed>>(source: T): T {
   return setType(() => {
     if (Array.isArray(source)) {
       return source.filter(value => !isNull(value) && !isUndefined(value));
-    } else {
-      return entries(source)
-        .filter(([, value]) => !isNull(value) && !isUndefined(value))
-        .reduce((result, [key, value]) => ({
-          ...result,
-          [key]: value
-        }), {});
     }
+
+    return entries(source)
+      .filter(([, value]) => !isNull(value) && !isUndefined(value))
+      .reduce((result, [key, value]) => ({
+        ...result,
+        [key]: value
+      }), {});
   });
 }

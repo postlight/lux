@@ -1,18 +1,16 @@
 // @flow
-import ParameterGroup from './parameter-group';
+import type Controller from '../../../controller';
 
+import ParameterGroup from './parameter-group';
 import getURLParams from './utils/get-url-params';
 import getDataParams from './utils/get-data-params';
 import getDefaultMemberParams from './utils/get-default-member-params';
 import getDefaultCollectionParams from './utils/get-default-collection-params';
-
+import type { Params$opts } from './interfaces';
 import {
   getMemberQueryParams,
   getCollectionQueryParams
 } from './utils/get-query-params';
-
-import type Controller from '../../../controller';
-import type { Params$opts } from './interfaces';
 
 /**
  * @private
@@ -67,17 +65,15 @@ export function defaultParamsFor({
   type: string;
   controller: Controller
 }): Object {
-  if (controller.hasModel) {
-    if (type === 'member') {
-      return getDefaultMemberParams(controller);
-    } else if (type === 'collection') {
-      return getDefaultCollectionParams(controller);
-    } else {
-      return {};
-    }
-  } else {
-    return {};
+  const { hasModel } = controller;
+
+  if (hasModel && type === 'member') {
+    return getDefaultMemberParams(controller);
+  } else if (hasModel && type === 'collection') {
+    return getDefaultCollectionParams(controller);
   }
+
+  return {};
 }
 
 export { default as validateResourceId } from './utils/validate-resource-id';

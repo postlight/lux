@@ -1,16 +1,13 @@
+import { EOL } from 'os';
+
 import Ora from 'ora';
 import { green } from 'chalk';
 
 import { CWD } from '../../../constants';
-
 import { mkdir, writeFile } from '../../fs';
 import template from '../../template';
-
 import exec from '../../../utils/exec';
 import driverFor from '../utils/driver-for';
-
-import { generate } from './generate';
-
 import appTemplate from '../templates/application';
 import configTemplate from '../templates/config';
 import routesTemplate from '../templates/routes';
@@ -22,6 +19,8 @@ import eslintrcTemplate from '../templates/eslintrc';
 import readmeTemplate from '../templates/readme';
 import licenseTemplate from '../templates/license';
 import gitignoreTemplate from '../templates/gitignore';
+
+import { generate } from './generate';
 
 /**
  * @private
@@ -133,7 +132,8 @@ export async function create(name, database) {
     ${green('create')} .gitignore
   `;
 
-  console.log(logOutput.substr(0, logOutput.length - 1));
+  process.stdout.write(logOutput.substr(0, logOutput.length - 1));
+  process.stdout.write(EOL);
 
   await Promise.all([
     generate({
@@ -153,7 +153,8 @@ export async function create(name, database) {
     cwd: project
   });
 
-  console.log(`${green('initialize')} git`);
+  process.stdout.write(`${green('initialize')} git`);
+  process.stdout.write(EOL);
 
   const spinner = new Ora({
     text: 'Installing dependencies from npm...',

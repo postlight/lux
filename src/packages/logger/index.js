@@ -1,12 +1,11 @@
 // @flow
 import { LUX_CONSOLE } from '../../constants';
-import { LEVELS } from './constants';
-
-import { createWriter } from './writer';
-import { createRequestLogger } from './request-logger';
-
 import K from '../../utils/k';
 
+import { LEVELS } from './constants';
+import { createWriter } from './writer';
+import { createRequestLogger } from './request-logger';
+import type { Logger$RequestLogger } from './request-logger/interfaces';
 import type {
   Logger$config,
   Logger$format,
@@ -14,8 +13,6 @@ import type {
   Logger$logFn,
   Logger$filter
 } from './interfaces';
-
-import type { Logger$RequestLogger } from './request-logger/interfaces';
 
 /**
  * The `Logger` class is responsible for logging messages from an application

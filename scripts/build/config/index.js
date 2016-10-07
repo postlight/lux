@@ -1,4 +1,4 @@
-'use strict';
+'use strict'; // eslint-disable-line strict, lines-around-directive
 
 require('../../../lib/babel-hook');
 

@@ -32,15 +32,19 @@ import K from './k';
  *
  * @private
  */
-export default async function tryCatch<T, F: () => Promise<T>>(
+export default async function tryCatch<T, F:() => Promise<T>>(
   fn: F,
   rescue: Function = K
 ): Promise<void | T> {
+  let result;
+
   try {
-    return await fn();
+    result = await fn();
   } catch (err) {
-    await rescue(err);
+    result = await rescue(err);
   }
+
+  return result;
 }
 
 /**
@@ -65,13 +69,17 @@ export default async function tryCatch<T, F: () => Promise<T>>(
  *
  * @private
  */
-export function tryCatchSync<T, F: () => T>(
+export function tryCatchSync<T, F:() => T>(
   fn: F,
   rescue: Function = K
 ): void | T {
+  let result;
+
   try {
-    return fn();
+    result = fn();
   } catch (err) {
-    rescue(err);
+    result = rescue(err);
   }
+
+  return result;
 }

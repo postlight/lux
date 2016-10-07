@@ -1,10 +1,11 @@
 // @flow
 import { EOL } from 'os';
+
 import { classify, camelize } from 'inflection';
 
 import template from '../../template';
-
 import indent from '../utils/indent';
+import chain from '../../../utils/chain';
 import entries from '../../../utils/entries';
 import underscore from '../../../utils/underscore';
 
@@ -15,67 +16,71 @@ const RELATIONSHIP = /^belongs-to|has-(one|many)$/;
  * @private
  */
 export default (name: string, attrs: Array<string>) => {
-  name = classify(underscore(name));
-
-  if (!attrs) {
-    attrs = [];
-  }
+  const normalized = chain(name)
+    .pipe(underscore)
+    .pipe(classify)
+    .value();
 
   return template`
     import { Model } from 'lux-framework';
 
-    class ${name} extends Model {
-    ${entries(attrs
+    class ${normalized} extends Model {
+    ${entries((attrs || [])
       .filter(attr => VALID_ATTR.test(attr))
       .map(attr => attr.split(':'))
       .filter(([, type]) => RELATIONSHIP.test(type))
       .reduce((types, [related, type]) => {
-        type = camelize(underscore(type), true);
+        const key = chain(type)
+          .pipe(underscore)
+          .pipe(str => camelize(str, true))
+          .value();
 
-        const value = Reflect.get(types, type);
-
+        const value = Reflect.get(types, key);
 
         if (value) {
-          const inverse = camelize(name, true);
-
-          related = camelize(underscore(related), true);
+          const inverse = camelize(normalized, true);
+          const relatedKey = chain(related)
+            .pipe(underscore)
+            .pipe(str => camelize(str, true))
+            .value();
 
           return {
             ...types,
-
-            [type]: [
+            [key]: [
               ...value,
-
-              indent(8)
-                + `${related}: {${EOL}`
-                + indent(10)
-                + `inverse: '${inverse}'${EOL}`
-                + indent(8)
-                + '}'
+              `${indent(8)}${relatedKey}: {${EOL}`
+              + `${indent(10)}inverse: '${inverse}'${EOL}`
+              + `${indent(8)}}`
             ]
           };
-        } else {
-          return types;
         }
+
+        return types;
       }, {
         hasOne: [],
         hasMany: [],
         belongsTo: []
       }))
       .filter(([, value]) => value.length)
-      .reduce((str, [key, value], index) => {
-        value = value.join(',' + EOL.repeat(2));
+      .reduce((result, [key, value], index) => (
+        chain(result)
+          .pipe(str => {
+            if (index && str.length) {
+              return `${str}${EOL.repeat(2)}`;
+            }
 
-        if (index && str.length) {
-          str += EOL.repeat(2);
-        }
-
-        return str
-          + `${indent(index === 0 ? 2 : 6)}static ${key} = `
-          + `{${EOL}${value}${EOL}${indent(6)}};`;
-      }, '')}
+            return str;
+          })
+          .pipe(str => (
+            str // eslint-disable-line prefer-template
+            + `${indent(index === 0 ? 2 : 6)}static ${key} = {${EOL}`
+            + `${value.join(`,${EOL.repeat(2)}`)}${EOL}` // eslint-disable-line max-len, comma-spacing
+            + `${indent(6)}};`
+          ))
+          .value()
+      ), '')}
     }
 
-    export default ${name};
+    export default ${normalized};
   `;
 };

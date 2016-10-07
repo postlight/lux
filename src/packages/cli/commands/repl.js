@@ -1,30 +1,48 @@
+// @flow
 import path from 'path';
 import { start as startRepl } from 'repl';
 
 import { CWD } from '../../../constants';
+import type Application from '../../application';
 
 export function repl(): Promise<void> {
   return new Promise(async (resolve) => {
-    const app = await require(path.join(CWD, 'dist', 'boot'));
-    const { context } = startRepl('> ').on('exit', () => resolve());
+    const app: Application = await Reflect.apply(require, null, [
+      path.join(CWD, 'dist', 'boot')
+    ]);
 
-    Object.assign(context, {
+    const instance = startRepl({
+      prompt: '> '
+    });
+
+    instance.once('exit', resolve);
+
+    Object.assign(instance.context, {
       app,
       logger: app.logger,
       routes: app.router,
-      [app.constructor.name]: app
-    });
+      [app.constructor.name]: app,
 
-    app.models.forEach(model => {
-      context[model.name] = model;
-    });
+      ...Array
+        .from(app.models)
+        .reduce((context, [, model]) => ({
+          ...context,
+          [model.name]: model
+        }), {}),
 
-    app.controllers.forEach(controller => {
-      context[controller.constructor.name] = controller;
-    });
+      ...Array
+        .from(app.controllers)
+        .reduce((context, [, controller]) => ({
+          ...context,
+          [controller.constructor.name]: controller
+        }), {}),
 
-    app.serializers.forEach(serializer => {
-      context[serializer.constructor.name] = serializer;
+      ...Array
+        .from(app.serializers)
+        .reduce((context, [, serializer]) => ({
+          ...context,
+          [serializer.constructor.name]: serializer
+        }), {})
     });
   });
 }

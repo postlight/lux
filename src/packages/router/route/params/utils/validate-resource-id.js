@@ -1,6 +1,5 @@
 // @flow
 import { ResourceMismatchError } from '../errors';
-
 import type { Request } from '../../../../server';
 
 /**
@@ -9,20 +8,13 @@ import type { Request } from '../../../../server';
 export default function validateResourceId({
   params: {
     id,
-
     data: {
       id: resourceId
     }
   }
 }: Request): true {
   if (id !== resourceId) {
-    id = id.toString();
-
-    if (resourceId) {
-      resourceId = resourceId.toString();
-    }
-
-    throw new ResourceMismatchError('data.id', id, resourceId);
+    throw new ResourceMismatchError('data.id', String(id), String(resourceId));
   }
 
   return true;

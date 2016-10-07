@@ -2,11 +2,10 @@
 import { camelize } from 'inflection';
 
 import { INT, BOOL, DATE, TRUE, BRACKETS } from '../constants';
-
+import isNull from '../../../../../utils/is-null';
 import entries from '../../../../../utils/entries';
 import underscore from '../../../../../utils/underscore';
 import { camelizeKeys } from '../../../../../utils/transform-keys';
-
 import type { Request$method } from '../../interfaces';
 
 /**
@@ -24,21 +23,17 @@ function makeArray(source: string | Array<string>): Array<string> {
  * @private
  */
 function formatString(source: string, method: Request$method): mixed {
-  let result = source;
-
   if (method === 'GET' && source.indexOf(',') >= 0) {
-    result = source.split(',').map(str => camelize(underscore(str), true));
-  } else {
-    if (INT.test(source)) {
-      result = parseInt(source, 10);
-    } else if (BOOL.test(source)) {
-      result = TRUE.test(source);
-    } else if (DATE.test(source)) {
-      result = new Date(source);
-    }
+    return source.split(',').map(str => camelize(underscore(str), true));
+  } else if (INT.test(source)) {
+    return Number.parseInt(source, 10);
+  } else if (BOOL.test(source)) {
+    return TRUE.test(source);
+  } else if (DATE.test(source)) {
+    return new Date(source);
   }
 
-  return result;
+  return source;
 }
 
 /**
@@ -46,29 +41,31 @@ function formatString(source: string, method: Request$method): mixed {
  */
 function formatObject(
   source: Object | Array<any>,
-  method: Request$method
+  method: Request$method,
+  formatter: (params: Object, method: Request$method) => Object
 ): Object | Array<any> {
   if (Array.isArray(source)) {
-    return source.map(value => INT.test(value) ? parseInt(value, 10) : value);
-  } else {
-    return format(source, method);
+    return source.map(value => {
+      if (INT.test(value)) {
+        return Number.parseInt(value, 10);
+      }
+
+      return value;
+    });
   }
+
+  return formatter(source, method);
 }
 
 /**
  * @private
  */
 export function formatSort(sort: string): string {
-  let result = '';
-
   if (sort.startsWith('-')) {
-    sort = sort.substr(1);
-    result += '-';
+    return `-${camelize(underscore(sort.substr(1)), true)}`;
   }
 
-  result += camelize(underscore(sort), true);
-
-  return result;
+  return camelize(underscore(sort), true);
 }
 
 /**
@@ -92,25 +89,31 @@ export function formatInclude(include: string | Array<string>): Array<string> {
  * @private
  */
 export default function format(params: Object, method: Request$method): Object {
-  const result = entries(params).reduce((obj, [key, value]) => {
+  const result = entries(params).reduce((obj, param) => {
+    const [, value] = param;
+    let [key] = param;
+
     key = key.replace(BRACKETS, '');
 
-    if (value) {
-      switch (typeof value) {
-        case 'object':
-          value = formatObject(value, method);
-          break;
+    switch (typeof value) {
+      case 'object':
+        return {
+          ...obj,
+          [key]: isNull(value) ? null : formatObject(value, method, format)
+        };
 
-        case 'string':
-          value = formatString(value, method);
-          break;
-      }
+      case 'string':
+        return {
+          ...obj,
+          [key]: formatString(value, method)
+        };
+
+      default:
+        return {
+          ...obj,
+          [key]: value
+        };
     }
-
-    return {
-      ...obj,
-      [key]: value
-    };
   }, {});
 
   return camelizeKeys(result, true);

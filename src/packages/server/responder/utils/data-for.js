@@ -1,8 +1,7 @@
 // @flow
 import { VERSION } from '../../../jsonapi';
 import { STATUS_CODES } from '../../constants';
-
-import type { JSONAPI$Document, JSONAPI$ErrorObject } from '../../../jsonapi';
+import type { JSONAPI$Document, JSONAPI$ErrorObject } from '../../../jsonapi'; // eslint-disable-line max-len, no-duplicate-imports
 
 /**
  * @private

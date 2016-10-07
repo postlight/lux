@@ -1,5 +1,6 @@
-import { CWD } from '../../../constants';
+import { EOL } from 'os';
 
+import { CWD } from '../../../constants';
 import Database, { pendingMigrations } from '../../database';
 import Logger, { sql } from '../../logger';
 import { createLoader } from '../../loader';
@@ -29,16 +30,17 @@ export async function dbmigrate() {
 
   if (pending.length) {
     await Promise.all(
-      pending.map(async (migration) => {
+      pending.map(async migration => {
         const version = migration.replace(/^(\d{16})-.+$/g, '$1');
-        migration = migration.replace(new RegExp(`${version}-(.+)\.js`), '$1');
-        migration = migrations.get(`${migration}-up`);
+        const key = migration.replace(new RegExp(`${version}-(.+)\.js`), '$1');
+        const value = migrations.get(`${key}-up`);
 
-        if (migration) {
-          const query = migration.run(schema());
+        if (value) {
+          const query = value.run(schema());
 
           await query.on('query', () => {
-            process.stdout.write(sql`${query.toString()}\n`);
+            process.stdout.write(sql`${query.toString()}`);
+            process.stdout.write(EOL);
           });
 
           await connection('migrations').insert({

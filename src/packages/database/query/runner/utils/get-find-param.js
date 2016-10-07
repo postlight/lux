@@ -1,12 +1,10 @@
 // @flow
 import isObject from '../../../../../utils/is-object';
-
 import type Query from '../../index';
 
 export default function getFindParam({
   isFind,
   snapshots,
-
   model: {
     tableName,
     primaryKey
@@ -23,4 +21,6 @@ export default function getFindParam({
       }
     }
   }
+
+  return undefined;
 }

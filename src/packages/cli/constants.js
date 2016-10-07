@@ -1,5 +1,6 @@
 // @flow
 import template from '../template';
+import { fileLink } from '../../utils/github';
 
 export const VALID_DATABASES = [
   'postgres',
@@ -9,8 +10,9 @@ export const VALID_DATABASES = [
   'oracle'
 ];
 
-const dbInterfaceUrl = 'https://github.com/postlight/lux/blob/master/src/\
-packages/database/interfaces.js#L17';
+const DB_INTERFACE_URL = fileLink('src/packages/database/interfaces.js', {
+  line: 17
+});
 
 export const CONNECTION_STRING_MESSAGE = template`
 
@@ -21,5 +23,5 @@ export const CONNECTION_STRING_MESSAGE = template`
     without the url.
 
     For guidance, see:
-    ${dbInterfaceUrl}
+    ${DB_INTERFACE_URL}
 `;

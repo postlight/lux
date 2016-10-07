@@ -1,6 +1,5 @@
 // @flow
 import { FreezeableMap } from '../../freezeable';
-
 import type { Bundle$Namespace, Bundle$NamespaceGroup } from '../index';
 
 /**
@@ -19,12 +18,18 @@ export function resolve<T>(
         .join('/');
 
       if (namespace) {
-        key = key.substr(namespace.length + 1);
-      } else {
-        namespace = 'root';
+        return [
+          key.substr(namespace.length + 1),
+          value,
+          namespace
+        ];
       }
 
-      return [key, value, namespace];
+      return [
+        key,
+        value,
+        'root'
+      ];
     })
     .reduce((map, [key, value, namespace]) => {
       let nsValue = map.get(namespace);

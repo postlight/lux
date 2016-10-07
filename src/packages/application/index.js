@@ -1,14 +1,14 @@
 // @flow
-import initialize from './initialize';
 import { createDefaultConfig } from '../config';
 import merge from '../../utils/merge';
-
 import type Logger from '../logger';
 import type Router from '../router';
 import type Server from '../server';
 import type Controller from '../controller';
 import type Serializer from '../serializer';
 import type Database, { Model } from '../database';
+
+import initialize from './initialize';
 import type { Application$opts } from './interfaces';
 
 /**

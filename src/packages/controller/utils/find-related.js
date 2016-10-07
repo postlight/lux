@@ -3,7 +3,6 @@ import isNull from '../../../utils/is-null';
 import entries from '../../../utils/entries';
 import isObject from '../../../utils/is-object';
 import promiseHash from '../../../utils/promise-hash';
-
 import type { JSONAPI$IdentifierObject } from '../../jsonapi';
 import type Controller from '../index';
 
@@ -33,6 +32,8 @@ export default function findRelated(
               if (controller) {
                 return controller.model.find(id);
               }
+
+              return Promise.resolve(undefined);
             })
           )
         };
@@ -48,9 +49,9 @@ export default function findRelated(
           ...result,
           [key]: controller.model.find(id)
         };
-      } else {
-        return result;
       }
+
+      return result;
     }, {})
   );
 }

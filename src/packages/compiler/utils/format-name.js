@@ -3,6 +3,7 @@ import { classify } from 'inflection';
 
 import chain from '../../../utils/chain';
 import underscore from '../../../utils/underscore';
+
 import stripExt from './strip-ext';
 import normalizePath from './normalize-path';
 

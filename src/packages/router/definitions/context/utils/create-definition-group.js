@@ -1,9 +1,8 @@
 // @flow
 import { REQUEST_METHODS } from '../../../../server';
+import type { Route$type, Router$Namespace } from '../../../index'; // eslint-disable-line max-len, no-unused-vars
 
 import createDefinition from './create-definition';
-
-import type { Route$type, Router$Namespace } from '../../../index'; // eslint-disable-line max-len, no-unused-vars
 
 /**
  * @private

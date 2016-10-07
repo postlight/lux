@@ -1,8 +1,8 @@
 // @flow
+import type { Request } from '../interfaces';
+
 import parseRead from './utils/parse-read';
 import parseWrite from './utils/parse-write';
-
-import type { Request } from '../interfaces';
 
 /**
  * @private

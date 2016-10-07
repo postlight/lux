@@ -1,13 +1,11 @@
 // @flow
-import { RUNNERS } from './constants';
-
 import { RecordNotFoundError } from '../errors';
-
 import { sql } from '../../../logger';
+import type Query from '../index';
+
+import { RUNNERS } from './constants';
 import getFindParam from './utils/get-find-param';
 import buildResults from './utils/build-results';
-
-import type Query from '../index';
 
 /**
  * @private
@@ -20,7 +18,7 @@ export function createRunner(target: Query<*>, opts: {
     const { resolve, reject } = opts;
     let didRun = false;
 
-    RUNNERS.set(target, async function queryRunner() {
+    RUNNERS.set(target, async () => {
       let results;
       const {
         model,
@@ -33,9 +31,9 @@ export function createRunner(target: Query<*>, opts: {
 
       if (didRun) {
         return;
-      } else {
-        didRun = true;
       }
+
+      didRun = true;
 
       if (!shouldCount && !snapshots.some(([name]) => name === 'select')) {
         target.select(...target.model.attributeNames);
@@ -43,8 +41,10 @@ export function createRunner(target: Query<*>, opts: {
 
       const records: any = snapshots.reduce((
         query,
-        [name, params]
+        snapshot
       ) => {
+        let [name, params] = snapshot;
+
         if (!shouldCount && name === 'includeSelect') {
           name = 'select';
         }

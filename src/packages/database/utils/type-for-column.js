@@ -1,6 +1,5 @@
 // @flow
 import { TYPE_ALIASES } from '../constants';
-
 import type { Database$column } from '../interfaces';
 
 /**

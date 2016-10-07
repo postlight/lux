@@ -8,6 +8,24 @@ import type { RequestLogger$templateData } from './interfaces';
 /**
  * @private
  */
+function countDigits(num: number) {
+  const digits = Math.floor(Math.log10(num) + 1);
+
+  return digits > 0 && Number.isFinite(digits) ? digits : 1;
+}
+
+/**
+ * @private
+ */
+function pad(startTime: number, endTime: number, duration: number) {
+  const maxLength = countDigits(endTime - startTime);
+
+  return ' '.repeat(maxLength - countDigits(duration)) + duration;
+}
+
+/**
+ * @private
+ */
 export const debugTemplate = ({
   path,
   stats,
@@ -37,7 +55,10 @@ ${JSON.stringify(params, null, 2)}
 
 ${magenta('Stats')}
 
-${stats.map(({ type, name, duration, controller }) => {
+${stats.map(stat => {
+  const { type, duration, controller } = stat;
+  let { name } = stat;
+
   name = blue(name);
 
   if (type === 'action') {
@@ -79,21 +100,3 @@ Processed ${cyan(`${method}`)} "${path}" ${magenta('Params')} ${
   : null
 }
 `;
-
-/**
- * @private
- */
-function countDigits(num: number) {
-  const digits = Math.floor(Math.log10(num) + 1);
-
-  return digits > 0 && Number.isFinite(digits) ? digits : 1;
-}
-
-/**
- * @private
- */
-function pad(startTime: number, endTime: number, duration: number) {
-  const maxLength = countDigits(endTime - startTime);
-
-  return ' '.repeat(maxLength - countDigits(duration)) + duration;
-}
