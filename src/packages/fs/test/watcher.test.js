@@ -5,6 +5,7 @@ import { expect } from 'chai';
 import { it, describe, after, before } from 'mocha';
 
 import Watcher from '../watcher';
+import { APPVEYOR } from '../../../constants';
 
 import { rmrf, mkdirRec, writeFile } from '../index';
 
@@ -21,29 +22,31 @@ describe('module "fs"', () => {
   });
 
   describe('class Watcher', () => {
-    describe('- client Watchman', () => {
-      let subject;
+    if (!APPVEYOR) {
+      describe('- client Watchman', () => {
+        let subject;
 
-      before(async () => {
-        subject = await new Watcher(tmpDirPath);
-      });
+        before(async () => {
+          subject = await new Watcher(tmpDirPath);
+        });
 
-      describe('event "change"', () => {
-        it('is called when a file is modified', async () => {
-          subject.once('change', files => {
-            expect(files).to.be.an('array');
+        describe('event "change"', () => {
+          it('is called when a file is modified', async () => {
+            subject.once('change', files => {
+              expect(files).to.be.an('array');
+            });
+
+            await writeFile(joinPath(tmpAppPath, 'index.js'), '');
           });
+        });
 
-          await writeFile(joinPath(tmpAppPath, 'index.js'), '');
+        describe('#destroy()', () => {
+          it('does not throw an error', () => {
+            expect(() => subject.destroy()).to.not.throw(Error);
+          });
         });
       });
-
-      describe('#destroy()', () => {
-        it('does not throw an error', () => {
-          expect(() => subject.destroy()).to.not.throw(Error);
-        });
-      });
-    });
+    }
 
     describe('- client FSWatcher', () => {
       let subject;
