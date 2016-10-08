@@ -1,5 +1,5 @@
 // @flow
-import { join } from 'path';
+import { sep, join } from 'path';
 
 import { expect } from 'chai';
 import { it, describe, before, after, beforeEach, afterEach } from 'mocha';
@@ -162,7 +162,7 @@ describe('module "fs"', () => {
   });
 
   describe('#watch()', () => {
-    const watchPath = join('tmp', `lux-${Date.now()}`);
+    const watchPath = join(sep, 'tmp', `lux-${Date.now()}`);
     let result;
 
     before(async () => {
