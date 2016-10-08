@@ -19,12 +19,13 @@ export function createAction(
     fn = resource(fn);
   }
 
-  // eslint-disable-next-line no-underscore-dangle
-  function __FINAL__HANDLER__(req, res) {
-    return fn(req, res);
-  }
-
-  return [...controller.beforeAction, __FINAL__HANDLER__].map(trackPerf);
+  return [
+    ...controller.beforeAction,
+    // eslint-disable-next-line no-underscore-dangle
+    function __FINAL_HANDLER__(req, res) {
+      return fn(req, res);
+    }
+  ].map(trackPerf);
 }
 
 export { default as createPageLinks } from './utils/create-page-links';
