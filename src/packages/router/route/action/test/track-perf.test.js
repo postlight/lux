@@ -80,7 +80,7 @@ describe('module "router/route/action"', () => {
 
       expect(stat)
         .to.have.property('duration')
-        .and.be.within(50, 60);
+        .and.be.at.least(50);
     });
 
     it('works with middleware', async () => {
@@ -99,7 +99,7 @@ describe('module "router/route/action"', () => {
 
       expect(stat)
         .to.have.property('duration')
-        .and.be.within(2, 10);
+        .and.be.at.least(2);
     });
 
     it('works with anonymous functions', async () => {
@@ -118,7 +118,7 @@ describe('module "router/route/action"', () => {
 
       expect(stat)
         .to.have.property('duration')
-        .and.be.within(20, 30);
+        .and.be.at.least(20);
     });
   });
 });
