@@ -42,7 +42,7 @@ describe('module "router/route/action"', () => {
     }
 
     async function middleware(req, res) {
-      await sleep(2);
+      await sleep(5);
     }
 
     before(async () => {
@@ -77,7 +77,7 @@ describe('module "router/route/action"', () => {
 
       expect(stat)
         .to.have.property('duration')
-        .and.be.at.least(50);
+        .and.be.at.least(49);
     });
 
     it('works with middleware', async () => {
@@ -96,7 +96,7 @@ describe('module "router/route/action"', () => {
 
       expect(stat)
         .to.have.property('duration')
-        .and.be.at.least(2);
+        .and.be.at.least(4);
     });
 
     it('works with anonymous functions', async () => {
@@ -115,7 +115,7 @@ describe('module "router/route/action"', () => {
 
       expect(stat)
         .to.have.property('duration')
-        .and.be.at.least(20);
+        .and.be.at.least(19);
     });
   });
 });
