@@ -4,7 +4,6 @@ import { it, describe, before } from 'mocha';
 
 import type { Action } from '../../../index';
 import type { Request, Response } from '../../../../server';
-import setType from '../../../../../utils/set-type';
 import trackPerf from '../enhancers/track-perf';
 import { getTestApp } from '../../../../../../test/utils/get-test-app';
 
@@ -49,18 +48,16 @@ describe('module "router/route/action"', () => {
     before(async () => {
       const { router } = await getTestApp();
 
-      createRequest = (): Request => setType(() => {
-        return {
-          route: router.get('GET:/posts'),
-          method: 'GET',
-          params: {}
-        };
+      // $FlowIgnore
+      createRequest = (): Request => ({
+        route: router.get('GET:/posts'),
+        method: 'GET',
+        params: {}
       });
 
-      createResponse = (): Response => setType(() => {
-        return {
-          stats: []
-        };
+      // $FlowIgnore
+      createResponse = (): Response => ({
+        stats: []
       });
     });
 

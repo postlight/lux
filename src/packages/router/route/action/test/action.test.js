@@ -1,14 +1,58 @@
 // @flow
 import { expect } from 'chai';
-import { it, describe } from 'mocha';
+import { it, describe, before } from 'mocha';
 
-import createPageLinks from '../utils/create-page-links';
+import type Controller from '../../../../controller';
+import type { Request, Response } from '../../../../server';
+import { getTestApp } from '../../../../../../test/utils/get-test-app';
+
+import { createAction, createPageLinks } from '../index';
+import type { Action } from '../index';
 
 const DOMAIN = 'http://localhost:4000';
 const RESOURCE = 'posts';
 
 describe('module "router/route/action"', () => {
-  describe('util createPageLinks()', () => {
+  describe('#createAction()', () => {
+    let result;
+    let createRequest;
+    let createResponse;
+
+    before(async () => {
+      const { router, controllers } = await getTestApp();
+
+      // $FlowIgnore
+      const controller: Controller = controllers.get('health');
+      const action: Action<any> = controller.index;
+
+      // $FlowIgnore
+      createRequest = (): Request => ({
+        route: router.get('GET:/health'),
+        method: 'GET',
+        params: {}
+      });
+
+      // $FlowIgnore
+      createResponse = (): Response => ({
+        stats: []
+      });
+
+      result = createAction('custom', action, controller);
+    });
+
+    it('returns an array of functions', () => {
+      expect(result).to.be.an('array').with.lengthOf(1);
+    });
+
+    it('resolves with the expected value', async () => {
+      const fn = result.slice().pop();
+      const data = await fn(createRequest(), createResponse());
+
+      expect(data).to.equal(204);
+    });
+  });
+
+  describe('#createPageLinks()', () => {
     const getOptions = ({
       total = 100,
       params = {}
