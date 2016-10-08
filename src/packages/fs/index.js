@@ -3,6 +3,7 @@ import fs from 'fs';
 import { join as joinPath, resolve as resolvePath } from 'path';
 import type { Stats } from 'fs'; // eslint-disable-line no-duplicate-imports
 
+import Watcher from './watcher';
 import createResolver from './utils/create-resolver';
 import createPathRemover from './utils/create-path-remover';
 import type { fs$readOpts, fs$writeOpts } from './interfaces';
@@ -17,7 +18,9 @@ export type { fs$ParsedPath } from './interfaces';
 /**
  * @private
  */
-export const { watch } = fs;
+export function watch(path: string): Promise<Watcher> {
+  return new Watcher(path);
+}
 
 /**
  * @private

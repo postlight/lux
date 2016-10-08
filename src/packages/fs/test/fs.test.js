@@ -1,14 +1,15 @@
 // @flow
+import { join } from 'path';
 
 import { expect } from 'chai';
 import { it, describe, before, after, beforeEach, afterEach } from 'mocha';
-import { join } from 'path';
 import { spy } from 'sinon';
+import type { Spy } from 'sinon';
 
-import { createTmpDir, getTmpFile, createTmpFiles } from './utils';
+import Watcher from '../watcher';
 import * as fs from '../index';
 
-import type { Spy } from 'sinon';
+import { createTmpDir, getTmpFile, createTmpFiles } from './utils';
 
 describe('module "fs"', () => {
 
@@ -57,7 +58,7 @@ describe('module "fs"', () => {
     }
   });
 
-  describe('#mkdir', () => {
+  describe('#mkdir()', () => {
     it('delegates to node fs#mkdir', async () => {
       const dirPath = join(tmpDirPath, 'test-mkdir');
       await fs.mkdir(dirPath);
@@ -69,7 +70,7 @@ describe('module "fs"', () => {
     });
   });
 
-  describe('#rmdir', () => {
+  describe('#rmdir()', () => {
     it('delegates to node fs#rmdir', async () => {
       await fs.rmdir(tmpDirPath);
       expect(spies['rmdir'].calledWith(tmpDirPath)).to.be.true;
@@ -77,7 +78,7 @@ describe('module "fs"', () => {
     it('returns a promise', returnsPromiseSpec('rmdir', tmpDirPath));
   });
 
-  describe('#readdir', () => {
+  describe('#readdir()', () => {
     it('delegates to node fs#readdir', async () => {
       await fs.readdir(tmpDirPath);
       expect(spies['readdir'].calledWith(tmpDirPath)).to.be.true;
@@ -85,7 +86,7 @@ describe('module "fs"', () => {
     it('returns a promise', returnsPromiseSpec('readdir', tmpDirPath));
   });
 
-  describe('#readFile', () => {
+  describe('#readFile()', () => {
     let tmpFilePath: string;
 
     beforeEach(async () => {
@@ -100,7 +101,7 @@ describe('module "fs"', () => {
     it('returns a promise', returnsPromiseSpec('readFile', tmpFilePath));
   });
 
-  describe('#writeFile', () => {
+  describe('#writeFile()', () => {
     let tmpFilePath: string;
 
     beforeEach(async () => {
@@ -115,7 +116,7 @@ describe('module "fs"', () => {
     it('returns a promise', returnsPromiseSpec('writeFile', tmpFilePath));
   });
 
-  describe('#appendFile', () => {
+  describe('#appendFile()', () => {
     let tmpFilePath: string;
 
     beforeEach(async () => {
@@ -130,7 +131,7 @@ describe('module "fs"', () => {
     it('returns a promise', returnsPromiseSpec('appendFile', tmpFilePath));
   });
 
-  describe('#stat', () => {
+  describe('#stat()', () => {
     let tmpFilePath: string;
 
     beforeEach(async () => {
@@ -145,7 +146,7 @@ describe('module "fs"', () => {
     it('returns a promise', returnsPromiseSpec('stat', tmpFilePath));
   });
 
-  describe('#unlink', () => {
+  describe('#unlink()', () => {
     let tmpFilePath: string;
 
     beforeEach(async () => {
@@ -158,6 +159,26 @@ describe('module "fs"', () => {
       expect(spies['unlink'].calledWith(tmpFilePath));
     });
     it('returns a promise', returnsPromiseSpec('unlink', tmpFilePath));
+  });
+
+  describe('#watch()', () => {
+    const watchPath = join('tmp', `lux-${Date.now()}`);
+    let result;
+
+    before(async () => {
+      await fs.mkdirRec(join(watchPath, 'app'));
+    });
+
+    after(async () => {
+      result.destroy();
+      await fs.rmrf(watchPath);
+    });
+
+    it('resolves with an instance of Watcher', async () => {
+      result = await fs.watch(watchPath);
+
+      expect(result).to.be.an.instanceof(Watcher);
+    });
   });
 });
 

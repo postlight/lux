@@ -3,9 +3,9 @@ import { cyan } from 'chalk';
 
 import { CWD, PORT, NODE_ENV } from '../../../constants';
 import Logger from '../../logger';
-import Watcher from '../../watcher';
 import { createLoader } from '../../loader';
 import { createCluster } from '../../pm';
+import { watch } from '../../fs';
 
 import { build } from './build';
 
@@ -26,7 +26,7 @@ export async function serve({
   const logger = new Logger(logging);
 
   if (hot) {
-    const watcher = await new Watcher(CWD);
+    const watcher = await watch(CWD);
 
     watcher.on('change', async (changed) => {
       await build(useStrict);
