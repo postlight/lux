@@ -8,6 +8,7 @@ import { Client } from 'fb-watchman';
 import exec from '../../../utils/exec';
 import tryCatch from '../../../utils/try-catch';
 import isJSFile from '../utils/is-js-file';
+import { freezeProps } from '../../freezeable';
 
 import type { Watcher$Client } from './interfaces'; // eslint-disable-line max-len, no-unused-vars
 
@@ -104,35 +105,28 @@ function setupWatchmen(instance: Watcher, path: string): Promise<Client> {
  */
 export default async function initialize<T: Watcher>(
   instance: T,
-  path: string
+  path: string,
+  useWatchman: boolean
 ): Promise<T> {
   const appPath = joinPath(path, 'app');
   let client;
 
-  await tryCatch(async () => {
-    await exec('which watchman');
-    client = await setupWatchmen(instance, appPath);
-  }, () => {
-    client = fallback(instance, appPath);
-  });
-
-  if (client) {
-    Object.defineProperties(instance, {
-      path: {
-        value: appPath,
-        writable: false,
-        enumerable: true,
-        configurable: false
-      },
-
-      client: {
-        value: client,
-        writable: false,
-        enumerable: true,
-        configurable: false
-      }
+  if (useWatchman) {
+    await tryCatch(async () => {
+      await exec('which watchman');
+      client = await setupWatchmen(instance, appPath);
     });
   }
+
+  Object.assign(instance, {
+    path: appPath,
+    client: client || fallback(instance, appPath)
+  });
+
+  freezeProps(instance, true,
+    'path',
+    'client'
+  );
 
   return instance;
 }
