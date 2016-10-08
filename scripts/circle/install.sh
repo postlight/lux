@@ -5,7 +5,7 @@ set -e
 cd ../
 
 # Install Watchman
-if [ -f watchman ]; then
+if [ -d watchman ]; then
   cd watchman
   sudo make install
 else
