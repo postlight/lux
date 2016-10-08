@@ -13,3 +13,5 @@ machine:
 dependencies:
   override:
     - bash -e scripts/circle/install.sh
+  cache_directories:
+    - /home/ubuntu/watchman

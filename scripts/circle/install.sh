@@ -2,8 +2,13 @@
 set -x
 set -e
 
+cd ../
+
 # Install Watchman
-if ! which watchman > /dev/null; then
+if [ -f watchman ]; then
+  cd watchman
+  sudo make install
+else
   git clone https://github.com/facebook/watchman.git
   cd watchman
   git checkout v4.7.0
@@ -12,9 +17,9 @@ if ! which watchman > /dev/null; then
   ./configure
   make
   sudo make install
-
-  which watchman
 fi
+
+cd ../lux
 
 # Install Node Modules
 rm -rf node_modules
