@@ -22,22 +22,29 @@ export default function findRelated(
           ...result,
           [key]: value
         };
-      } else if (Array.isArray(value)) {
+      }
+
+      if (Array.isArray(value)) {
         return {
           ...result,
           [key]: Promise.all(
-            value.map(({ id, type }) => {
+            value.reduce((arr, { id, type }) => {
               const controller = controllers.get(type);
 
               if (controller) {
-                return controller.model.find(id);
+                return [
+                  ...arr,
+                  controller.model.find(id)
+                ];
               }
 
-              return Promise.resolve(undefined);
-            })
+              return arr;
+            }, [])
           )
         };
-      } else if (isObject(value)) {
+      }
+
+      if (isObject(value)) {
         const { id, type } = value;
         const controller = controllers.get(type);
 
