@@ -7,7 +7,7 @@ import type { Controller$builtIn } from '../../../../controller'; // eslint-disa
  */
 export default function normalizeResourceArgs(args: [
   string,
-  ?{ path: string, only: Array<Controller$builtIn> },
+  { path: string, only: Array<Controller$builtIn> },
   Function
 ]): [{
   name: string,

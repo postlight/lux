@@ -41,17 +41,16 @@ export default function createController<T: Controller>(
   const instance: T = Reflect.construct(constructor, [{
     model,
     namespace,
-    serializer,
-    serializers
+    serializer
   }]);
 
   if (serializer) {
     if (!instance.filter.length) {
-      instance.filter = [].concat(serializer.attributes);
+      instance.filter = [...serializer.attributes];
     }
 
     if (!instance.sort.length) {
-      instance.sort = [].concat(serializer.attributes);
+      instance.sort = [...serializer.attributes];
     }
   }
 

@@ -1,5 +1,4 @@
 // @flow
-import setType from '../../../../utils/set-type';
 import type { Builder$Construct, Builder$ChildrenBuilder } from '../interfaces';
 
 export default function createChildrenBuilder<T>(
@@ -15,13 +14,13 @@ export default function createChildrenBuilder<T>(
     if (parent && normalized.endsWith('application')) {
       return [
         normalized,
-        setType(() => constructor)
+        parent
       ];
     }
 
     return [
       normalized,
-      construct(name, constructor, parent)
+      construct(normalized, constructor, parent)
     ];
   }));
 }
