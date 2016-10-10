@@ -3,8 +3,8 @@ import { join as joinPath } from 'path';
 import { NODE_ENV, DATABASE_URL } from '../../../constants';
 import { VALID_DRIVERS } from '../constants';
 import { tryCatchSync } from '../../../utils/try-catch';
-import { ModuleMissingError } from '../../../errors';
 import { InvalidDriverError } from '../errors';
+import ModuleMissingError from '../../../errors/module-missing-error';
 
 /**
  * @private

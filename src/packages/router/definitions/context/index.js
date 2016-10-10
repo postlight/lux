@@ -4,6 +4,9 @@ import Namespace from '../../namespace';
 import K from '../../../../utils/k';
 import type { Router$Namespace } from '../../index'; // eslint-disable-line max-len, no-unused-vars
 import type { Router$DefinitionBuilder } from '../interfaces';
+import {
+  default as ControllerMissingError
+} from '../../../../errors/controller-missing-error';
 
 import createDefinitionGroup from './utils/create-definition-group';
 import normalizeResourceArgs from './utils/normalize-resource-args';
@@ -48,10 +51,11 @@ export function contextFor(build: Router$DefinitionBuilder<*>) {
 
             path = isRoot ? `/${name}` : `${path}/${name}`;
 
-            let controller = controllers.get(`${path.substr(1)}/application`);
+            const controllerKey = `${path.substr(1)}/application`;
+            const controller = controllers.get(controllerKey);
 
             if (!controller) {
-              controller = namespace.controller;
+              throw new ControllerMissingError(controllerKey);
             }
 
             const child = new Namespace({
@@ -77,10 +81,11 @@ export function contextFor(build: Router$DefinitionBuilder<*>) {
               path = namespace.path + opts.path;
             }
 
-            let controller = controllers.get(path.substr(1));
+            const controllerKey = path.substr(1);
+            const controller = controllers.get(controllerKey);
 
             if (!controller) {
-              controller = namespace.controller;
+              throw new ControllerMissingError(controllerKey);
             }
 
             const child = new Resource({

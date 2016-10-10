@@ -6,8 +6,8 @@ import Router from '../router';
 import Server from '../server';
 import { build, createLoader } from '../loader';
 import { freezeProps, deepFreezeProps } from '../freezeable';
+import ControllerMissingError from '../../errors/controller-missing-error';
 
-import { ControllerMissingError } from './errors';
 import normalizePort from './utils/normalize-port';
 import createController from './utils/create-controller';
 import createSerializer from './utils/create-serializer';
