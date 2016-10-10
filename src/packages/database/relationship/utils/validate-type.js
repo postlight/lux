@@ -3,7 +3,7 @@ import isNull from '../../../../utils/is-null';
 import type { Model } from '../../index';
 
 function validateOne(model: Class<Model>, value: void | ?mixed) {
-  return isNull(value) || value instanceof model;
+  return isNull(value) || model.isInstance(value);
 }
 
 export default function validateType(model: Class<Model>, value: mixed) {

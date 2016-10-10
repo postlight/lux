@@ -80,6 +80,11 @@ class Model {
    * @type {Set}
    * @private
    */
+  isModelInstance: boolean;
+
+  /**
+   * @private
+   */
   prevAssociations: Set<Model>;
 
   /**
@@ -197,21 +202,24 @@ class Model {
         enumerable: false,
         configurable: false
       },
-
       initialValues: {
         value: new Map(),
         writable: false,
         enumerable: false,
         configurable: false
       },
-
       dirtyAttributes: {
         value: new Set(),
         writable: false,
         enumerable: false,
         configurable: false
       },
-
+      isModelInstance: {
+        value: true,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
       prevAssociations: {
         value: new Set(),
         writable: false,

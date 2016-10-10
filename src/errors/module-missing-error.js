@@ -6,7 +6,7 @@ import { line } from '../packages/logger';
 /**
  * @private
  */
-class ModuleMissingError extends Error {
+class ModuleMissingError extends ReferenceError {
   constructor(name: string) {
     super(line`
       ${red(`Could not find required module '${name}'.`)}

@@ -1,5 +1,5 @@
 // @flow
-import { Model, Query } from '../../../../database';
+import { Query } from '../../../../database';
 import { getDomain } from '../../../../server';
 import createPageLinks from '../utils/create-page-links';
 import type { Action } from '../interfaces';
@@ -24,17 +24,15 @@ export default function resource(action: Action<any>): Action<any> {
       data = await result;
     }
 
-    if (Array.isArray(data) || data instanceof Model) {
+    if (Array.isArray(data) || (data && data.isModelInstance)) {
       const domain = getDomain(req);
 
       const {
         params,
-
         url: {
           path,
           pathname
         },
-
         route: {
           controller: {
             namespace,
