@@ -1,5 +1,5 @@
 // @flow
-import { classify } from 'inflection';
+import { camelize } from 'inflection';
 
 import chain from '../../../utils/chain';
 import underscore from '../../../utils/underscore';
@@ -7,11 +7,13 @@ import underscore from '../../../utils/underscore';
 import stripExt from './strip-ext';
 import normalizePath from './normalize-path';
 
+const DOUBLE_COLON = /::/g;
+
 /**
  * @private
  */
 function applyNamespace(source: string) {
-  return source.replace('::', '$');
+  return source.replace(DOUBLE_COLON, '$');
 }
 
 /**
@@ -22,7 +24,7 @@ export default function formatName(source: string) {
     .pipe(normalizePath)
     .pipe(stripExt)
     .pipe(underscore)
-    .pipe(classify)
+    .pipe(camelize)
     .pipe(applyNamespace)
     .value();
 }
