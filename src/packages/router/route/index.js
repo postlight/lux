@@ -3,7 +3,6 @@ import { FreezeableSet, freezeProps, deepFreezeProps } from '../../freezeable';
 import type Controller from '../../controller';
 import type { Request, Response, Request$method } from '../../server';
 
-import { ID_PATTERN } from './constants';
 import { createAction } from './action';
 import { paramsFor, defaultParamsFor, validateResourceId } from './params';
 import getStaticPath from './utils/get-static-path';
@@ -112,20 +111,18 @@ class Route extends FreezeableSet<Action<any>> {
     this.freeze();
   }
 
-  parseParams(pathname: string) {
-    const parts = pathname.match(ID_PATTERN) || [];
-
-    return parts.reduce((params, val, index) => {
-      const key = this.dynamicSegments[index];
+  parseParams(params: Array<string>): Object {
+    return params.reduce((result, value, idx) => {
+      const key = this.dynamicSegments[idx];
 
       if (key) {
         return {
-          ...params,
-          [key]: parseInt(val, 10)
+          ...result,
+          [key]: Number.parseInt(value, 10)
         };
       }
 
-      return params;
+      return result;
     }, {});
   }
 
@@ -148,7 +145,7 @@ class Route extends FreezeableSet<Action<any>> {
       defaultParams,
       params: this.params.validate({
         ...req.params,
-        ...this.parseParams(req.url.pathname)
+        ...this.parseParams(req.url.params)
       })
     });
 
@@ -161,7 +158,7 @@ class Route extends FreezeableSet<Action<any>> {
 }
 
 export default Route;
-export { ID_PATTERN, DYNAMIC_PATTERN, RESOURCE_PATTERN } from './constants';
+export { DYNAMIC_PATTERN } from './constants';
 
 export type { Action } from './action';
 export type { Route$opts, Route$type } from './interfaces';

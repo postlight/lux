@@ -45,15 +45,15 @@ describe('module "router/route"', () => {
 
     describe('#parseParams()', () => {
       it('is empty for static paths', () => {
-        expect(staticRoute.parseParams('/posts/1')).to.be.empty;
+        expect(staticRoute.parseParams(['1'])).to.be.empty;
       });
 
       it('contains params matching dynamic segments', () => {
-        expect(dynamicRoute.parseParams('/posts/1')).to.deep.equal({ id: 1 });
+        expect(dynamicRoute.parseParams(['1'])).to.deep.equal({ id: 1 });
       });
 
       it('does not contain params for unmatched dynamic segments', () => {
-        expect(dynamicRoute.parseParams('/posts/1/2')).to.deep.equal({ id: 1 });
+        expect(dynamicRoute.parseParams(['1', '2'])).to.deep.equal({ id: 1 });
       });
     });
   });

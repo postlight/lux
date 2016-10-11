@@ -16,6 +16,7 @@ type Request$url = {
   hostname?: string;
   hash?: string;
   search?: string;
+  params: Array<string>;
   query: Object;
   pathname: string;
   path: string;
