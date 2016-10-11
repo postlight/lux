@@ -2,20 +2,14 @@
 import { getParentKey } from '../../resolver';
 import type { Builder$Construct, Builder$ParentBuilder } from '../interfaces';
 
+import sortByNamespace from './sort-by-namespace';
+
 export default function createParentBuilder<T>(
   construct: Builder$Construct<T>
 ): Builder$ParentBuilder<T> {
   return target => Array
     .from(target)
-    .sort(([a], [b]) => {
-      if (a === 'root') {
-        return -1;
-      } else if (b === 'root') {
-        return 1;
-      }
-
-      return Math.min(Math.max(a.length - b.length, -1), 1);
-    })
+    .sort(sortByNamespace)
     .reduce((result, [key, value]) => {
       let parent = value.get('application') || null;
 
