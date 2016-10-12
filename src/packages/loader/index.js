@@ -21,6 +21,7 @@ export { build } from './builder';
 export {
   stripNamespaces,
   closestAncestor,
+  closestChild,
   getParentKey as getNamespaceKey
 } from './resolver';
 
