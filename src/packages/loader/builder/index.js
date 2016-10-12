@@ -23,5 +23,3 @@ export function build<T>(
     .construct(FreezeableMap)
     .value();
 }
-
-export { default as sortByNamespace } from './utils/sort-by-namespace';
