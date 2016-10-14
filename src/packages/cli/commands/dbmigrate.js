@@ -32,7 +32,7 @@ export async function dbmigrate() {
     await Promise.all(
       pending.map(async migration => {
         const version = migration.replace(/^(\d{16})-.+$/g, '$1');
-        const key = migration.replace(new RegExp(`${version}-(.+)\.js`), '$1');
+        const key = migration.replace(new RegExp(`${version}-(.+)\\.js`), '$1');
         const value = migrations.get(`${key}-up`);
 
         if (value) {

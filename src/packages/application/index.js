@@ -7,6 +7,7 @@ import type Server from '../server';
 import type Controller from '../controller';
 import type Serializer from '../serializer';
 import type Database, { Model } from '../database';
+import type { FreezeableMap } from '../freezeable';
 
 import initialize from './initialize';
 import type { Application$opts } from './interfaces';
@@ -58,7 +59,7 @@ class Application {
    * @instance
    * @readonly
    */
-  models: Map<string, Class<Model>>;
+  models: FreezeableMap<string, Class<Model>>;
 
   /**
    * A reference to the instance of `Logger`.
@@ -78,7 +79,7 @@ class Application {
    * @instance
    * @readonly
    */
-  controllers: Map<string, Controller>;
+  controllers: FreezeableMap<string, Controller>;
 
   /**
    * A map containing each `Serializer` class in an application instance.
@@ -88,7 +89,7 @@ class Application {
    * @instance
    * @readonly
    */
-  serializers: Map<string, Serializer<*>>;
+  serializers: FreezeableMap<string, Serializer<*>>;
 
   /**
    * A reference to the instance of `Router`.
