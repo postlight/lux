@@ -15,6 +15,65 @@ import Route from '../index';
 
 describe('module "router/route"', () => {
   describe('class Route', () => {
+    describe('#constructor()', () => {
+      let controller: Controller;
+
+      before(async () => {
+        const { controllers } = await getTestApp();
+
+        // $FlowIgnore
+        controller = controllers.get('posts');
+      });
+
+      it('creates an instance of route', () => {
+        const result = new Route({
+          controller,
+          type: 'collection',
+          path: 'posts',
+          action: 'index',
+          method: 'GET'
+        });
+
+        expect(result).to.be.an.instanceOf(Route);
+      });
+
+      it('throws when a handler is not found', () => {
+        expect(() => {
+          new Route({
+            controller,
+            type: 'collection',
+            path: 'posts',
+            action: 'invalidHandler',
+            method: 'GET'
+          });
+        }).to.throw(TypeError);
+      });
+
+      it('throws when an an action is not provided', () => {
+        expect(() => {
+          // $FlowIgnore
+          new Route({
+            controller,
+            type: 'collection',
+            path: 'posts',
+            method: 'GET'
+          });
+        }).to.throw(TypeError);
+      });
+
+      it('throws when an an controller is not provided', () => {
+        expect(() => {
+          // $FlowIgnore
+          new Route({
+            type: 'collection',
+            path: 'posts',
+            action: 'index',
+            method: 'GET'
+          });
+        }).to.throw(TypeError);
+      });
+    });
+
     describe('#parseParams()', () => {
       let staticRoute: Route;
       let dynamicRoute: Route;
@@ -112,7 +171,9 @@ describe('module "router/route"', () => {
           class TestController extends Controller {
             beforeAction = [
               async () => ({
-                beforeSuccess: true
+                meta: {
+                  beforeSuccess: true
+                }
               })
             ];
 
