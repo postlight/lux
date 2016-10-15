@@ -4,7 +4,7 @@ import { dasherize } from 'inflection';
 import chain from '../../../utils/chain';
 import underscore from '../../../utils/underscore';
 
-const NAMESPACE_DELIMITER = /\$\-/;
+const NAMESPACE_DELIMITER = /\$\-/g;
 
 /**
  * @private

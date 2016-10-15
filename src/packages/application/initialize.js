@@ -4,7 +4,7 @@ import Database from '../database';
 import Logger from '../logger';
 import Router from '../router';
 import Server from '../server';
-import { build, createLoader } from '../loader';
+import { build, createLoader, closestChild } from '../loader';
 import { freezeProps, deepFreezeProps } from '../freezeable';
 import ControllerMissingError from '../../errors/controller-missing-error';
 
@@ -49,7 +49,7 @@ export default async function initialize<T: Application>(app: T, {
 
   models.forEach(model => {
     Reflect.defineProperty(model, 'serializer', {
-      value: serializers.get(model.resourceName),
+      value: closestChild(serializers, model.resourceName),
       writable: false,
       enumerable: false,
       configurable: false

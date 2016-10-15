@@ -12,7 +12,7 @@ export function createRequest(req: any, {
   logger,
   router
 }: Request$opts): Request {
-  const url = parseURL(req.url, true);
+  const url = { ...parseURL(req.url, true), params: [] };
   const headers: Map<string, string> = new Map(entries(req.headers));
 
   Object.assign(req, {
