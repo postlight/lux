@@ -108,18 +108,12 @@ describe('module "router/route"', () => {
       });
 
       describe('- with `beforeAction`', () => {
-        let beforeSpy;
-
         before(async () => {
-          const beforeHooks = {
-            call: async () => undefined
-          };
-
-          beforeSpy = spy(beforeHooks, 'call');
-
           class TestController extends Controller {
             beforeAction = [
-              beforeHooks.call
+              async () => ({
+                beforeSuccess: true
+              })
             ];
 
             // $FlowIgnore
@@ -153,10 +147,9 @@ describe('module "router/route"', () => {
             createResponse()
           );
 
-          expect(beforeSpy.calledOnce).to.be.true;
           expect(result).to.deep.equal({
             meta: {
-              success: true
+              beforeSuccess: true
             }
           });
         });
