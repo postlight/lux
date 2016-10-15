@@ -93,6 +93,14 @@ class Model {
   static modelName: string;
 
   /**
+   * The name of the corresponding database table for a `Model`.
+   *
+   * @property tableName
+   * @memberof Model
+   */
+  static tableName: string;
+
+  /**
    * The name of the API resource a `Model` represents.
    *
    * @property resourceName
@@ -299,21 +307,6 @@ class Model {
     }
   }
 
-  static get tableName(): string {
-    return pluralize(underscore(this.name));
-  }
-
-  static set tableName(value: string): void {
-    if (value && value.length) {
-      Reflect.defineProperty(this, 'tableName', {
-        value,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      });
-    }
-  }
-
   async save(deep?: boolean): Promise<this> {
     const {
       constructor: {
@@ -442,6 +435,15 @@ class Model {
   static initialize(store, table): Promise<Class<this>> {
     if (this.initialized) {
       return Promise.resolve(this);
+    }
+
+    if (!this.tableName) {
+      Reflect.defineProperty(this, 'tableName', {
+        value: pluralize(underscore(this.name)),
+        writable: false,
+        enumerable: true,
+        configurable: false
+      });
     }
 
     return initializeClass({
