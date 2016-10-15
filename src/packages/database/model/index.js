@@ -7,6 +7,7 @@ import { sql } from '../../logger';
 import { saveRelationships } from '../relationship';
 import pick from '../../../utils/pick';
 import omit from '../../../utils/omit';
+import chain from '../../../utils/chain';
 import setType from '../../../utils/set-type';
 import underscore from '../../../utils/underscore';
 import type Logger from '../../logger'; // eslint-disable-line max-len, no-duplicate-imports
@@ -19,6 +20,15 @@ import getColumns from './utils/get-columns';
 import validate from './utils/validate';
 
 class Model {
+  /**
+   * The name of the corresponding database table for a `Model` instance's
+   * constructor.
+   *
+   * @property tableName
+   * @memberof Model
+   */
+  tableName: string;
+
   /**
    * The canonical name of a `Model`'s constructor.
    *
@@ -85,20 +95,20 @@ class Model {
   static primaryKey: string = 'id';
 
   /**
-   * The canonical name of a `Model`.
-   *
-   * @property modelName
-   * @memberof Model
-   */
-  static modelName: string;
-
-  /**
    * The name of the corresponding database table for a `Model`.
    *
    * @property tableName
    * @memberof Model
    */
   static tableName: string;
+
+  /**
+   * The canonical name of a `Model`.
+   *
+   * @property modelName
+   * @memberof Model
+   */
+  static modelName: string;
 
   /**
    * The name of the API resource a `Model` represents.
@@ -438,10 +448,22 @@ class Model {
     }
 
     if (!this.tableName) {
+      const tableName = chain(this.name)
+        .pipe(underscore)
+        .pipe(pluralize)
+        .value();
+
       Reflect.defineProperty(this, 'tableName', {
-        value: pluralize(underscore(this.name)),
+        value: tableName,
         writable: false,
         enumerable: true,
+        configurable: false
+      });
+
+      Reflect.defineProperty(this.prototype, 'tableName', {
+        value: tableName,
+        writable: false,
+        enumerable: false,
         configurable: false
       });
     }
