@@ -3,7 +3,7 @@ import { FreezeableSet, freezeProps, deepFreezeProps } from '../../freezeable';
 import type Controller from '../../controller';
 import type { Request, Response, Request$method } from '../../server';
 
-import { createAction } from './action';
+import { FINAL_HANDLER, createAction } from './action';
 import { paramsFor, defaultParamsFor, validateResourceId } from './params';
 import getStaticPath from './utils/get-static-path';
 import getDynamicSegments from './utils/get-dynamic-segments';
@@ -127,15 +127,22 @@ class Route extends FreezeableSet<Action<any>> {
   }
 
   async execHandlers(req: Request, res: Response): Promise<any> {
-    for (const handler of this) {
-      const data = await handler(req, res);
+    let calledFinal = false;
+    let data;
 
-      if (typeof data !== 'undefined') {
-        return data;
+    for (const handler of this) {
+      data = await handler(req, res, data);
+
+      if (handler.name === FINAL_HANDLER) {
+        calledFinal = true;
+      }
+
+      if (!calledFinal && typeof data !== 'undefined') {
+        break;
       }
     }
 
-    return undefined;
+    return data;
   }
 
   async visit(req: Request, res: Response): Promise<any> {

@@ -17,9 +17,15 @@ export type Controller$builtIn =
   | 'update'
   | 'destroy';
 
-export type Controller$Middleware = (
+export type Controller$beforeAction = (
   request: Request,
   response: Response
+) => Promise<any>;
+
+export type Controller$afterAction = (
+  request: Request,
+  response: Response,
+  responseData: any
 ) => Promise<any>;
 
 export type Controller$findOne<T: Model> = (
