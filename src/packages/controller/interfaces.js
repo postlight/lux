@@ -5,9 +5,9 @@ import type Serializer from '../serializer';
 import type Controller from './index';
 
 export type Controller$opts = {
-  model: Class<Model>;
-  namespace: string;
-  serializer: Serializer<*>;
+  model?: Class<Model>;
+  namespace?: string;
+  serializer?: Serializer<*>;
 };
 
 export type Controller$builtIn =
@@ -17,9 +17,15 @@ export type Controller$builtIn =
   | 'update'
   | 'destroy';
 
-export type Controller$Middleware = (
+export type Controller$beforeAction = (
   request: Request,
   response: Response
+) => Promise<any>;
+
+export type Controller$afterAction = (
+  request: Request,
+  response: Response,
+  responseData: any
 ) => Promise<any>;
 
 export type Controller$findOne<T: Model> = (

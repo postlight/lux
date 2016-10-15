@@ -1,6 +1,7 @@
 // @flow
 import type Logger from '../../logger';
 import type Router, { Route } from '../../router';
+import type Controller from '../../controller';
 
 export type Request$opts = {
   logger: Logger;
@@ -61,6 +62,8 @@ declare export class Request extends stream$Readable {
   params: Request$params;
   defaultParams: Request$params;
   route: Route;
+  action: string;
+  controller: Controller;
   url: Request$url;
 
   connection: {

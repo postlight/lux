@@ -8,9 +8,11 @@ import type { Action } from '../interfaces';
  * @private
  */
 export default function trackPerf<T, U: Action<T>>(action: U): Action<T> {
-  return async function trackedAction(req, res) {
+  // eslint-disable-next-line func-names
+  const trackedAction = async function (...args: Array<any>) {
+    const [req, res] = args;
     const start = Date.now();
-    const result = await action(req, res);
+    const result = await action(...args);
     let { name } = action;
     let type = 'middleware';
 
@@ -30,4 +32,10 @@ export default function trackPerf<T, U: Action<T>>(action: U): Action<T> {
 
     return result;
   };
+
+  Reflect.defineProperty(trackedAction, 'name', {
+    value: action.name
+  });
+
+  return trackedAction;
 }

@@ -9,7 +9,11 @@ import type { Request, Response } from '../server'; // eslint-disable-line max-l
 import findOne from './utils/find-one';
 import findMany from './utils/find-many';
 import findRelated from './utils/find-related';
-import type { Controller$opts, Controller$Middleware } from './interfaces';
+import type {
+  Controller$opts,
+  Controller$beforeAction,
+  Controller$afterAction
+} from './interfaces';
 
 /**
  * The `Controller` class is responsible for taking in requests from the outside
@@ -124,7 +128,19 @@ class Controller {
    * @memberof Controller
    * @instance
    */
-  beforeAction: Array<Controller$Middleware> = [];
+  beforeAction: Array<Controller$beforeAction> = [];
+
+  /**
+   * Middleware functions to execute on each request handled by a `Controller`.
+   *
+   * Middleware functions declared in afterAction on an `ApplicationController`
+   * will be executed after ALL route handlers.
+   *
+   * @property afterAction
+   * @memberof Controller
+   * @instance
+   */
+  afterAction: Array<Controller$afterAction> = [];
 
   /**
    * The number of records to return for the #index action when a `?limit`
@@ -349,5 +365,6 @@ export { BUILT_IN_ACTIONS } from './constants';
 export type {
   Controller$opts,
   Controller$builtIn,
-  Controller$Middleware,
+  Controller$beforeAction,
+  Controller$afterAction,
 } from './interfaces';

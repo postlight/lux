@@ -24,10 +24,12 @@ export function createAction(
     // eslint-disable-next-line no-underscore-dangle
     function __FINAL_HANDLER__(req, res) {
       return fn(req, res);
-    }
+    },
+    ...controller.afterAction,
   ].map(trackPerf);
 }
 
+export { FINAL_HANDLER } from './constants';
 export { default as createPageLinks } from './utils/create-page-links';
 
 export type { Action } from './interfaces';
