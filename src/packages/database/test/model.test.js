@@ -258,24 +258,43 @@ describe('module "database/model"', () => {
         expect(Subject.validates.title).to.be.a('function');
       });
 
-      it('adds an `modelName` property to the `Model`', () => {
-        expect(Subject.modelName).to.equal('subject');
+      it('adds a `modelName` property to the `Model`', () => {
+        expect(Subject).to.have.property('modelName', 'subject');
       });
 
-      it('adds an `modelName` property to the `prototype`', () => {
-        expect(Subject.prototype.modelName).to.equal('subject');
+      it('adds a `modelName` property to the `prototype`', () => {
+        expect(Subject).to.have.deep.property('prototype.modelName', 'subject');
       });
 
-      it('adds an `resourceName` property to the `Model`', () => {
-        expect(Subject.resourceName).to.equal('subjects');
+      it('adds a `resourceName` property to the `Model`', () => {
+        expect(Subject).to.have.property('resourceName', 'subjects');
       });
 
-      it('adds an `resourceName` property to the `prototype`', () => {
-        expect(Subject.prototype.resourceName).to.equal('subjects');
+      it('adds a `resourceName` property to the `prototype`', () => {
+        expect(Subject)
+          .to.have.deep.property('prototype.resourceName', 'subjects');
       });
 
       it('adds an `initialized` property to the `Model`', () => {
         expect(Subject.initialized).to.be.true;
+      });
+
+      describe('- without `tableName`', () => {
+        class Post extends Model {}
+
+        before(async () => {
+          await Post.initialize(store, () => {
+            return store.connection(Post.tableName);
+          });
+        });
+
+        it('adds a `tableName` property to the `prototype`', () => {
+          expect(Post).to.have.property('tableName', 'posts');
+        });
+
+        it('adds a `tableName` property to the `prototype`', () => {
+          expect(Post).to.have.deep.property('prototype.tableName', 'posts');
+        });
       });
     });
 
