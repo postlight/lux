@@ -27,7 +27,7 @@ describe('module "logger/writer"', () => {
     });
 
     FORMATS.forEach(format => {
-      describe(`format "${format}"`, () => {
+      describe(`- format "${format}"`, () => {
         let subject;
 
         before(() => {

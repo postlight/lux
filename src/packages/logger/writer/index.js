@@ -30,11 +30,6 @@ export function createWriter(format: Logger$format): Logger$Writer {
           message: message.message,
           ...omit(message, 'message')
         };
-      } else if (message instanceof Error) {
-        output = {
-          ...output,
-          stack: message.stack
-        };
       } else {
         output = {
           timestamp,

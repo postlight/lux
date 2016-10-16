@@ -46,6 +46,7 @@ export const createRequestBuilder = ({
   route,
   params,
   method: 'GET',
+  httpVersion: '1.1',
   url: {
     protocol: null,
     slashes: null,
@@ -64,6 +65,7 @@ export const createRequestBuilder = ({
     ['host', 'localhost:4000']
   ]),
   connection: {
-    encrypted: false
+    encrypted: false,
+    remoteAddress: '::1'
   }
 });
