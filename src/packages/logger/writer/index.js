@@ -21,12 +21,19 @@ export function createWriter(format: Logger$format): Logger$Writer {
     let output;
 
     if (format === 'json') {
+      output = {};
+
       if (message && typeof message === 'object' && message.message) {
         output = {
           timestamp,
           level,
           message: message.message,
           ...omit(message, 'message')
+        };
+      } else if (message instanceof Error) {
+        output = {
+          ...output,
+          stack: message.stack
         };
       } else {
         output = {

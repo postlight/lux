@@ -3,7 +3,7 @@ import { spy } from 'sinon';
 import { expect } from 'chai';
 import { it, describe, before, beforeEach, after } from 'mocha';
 
-import { WARN, ERROR, LEVELS } from '../constants';
+import { WARN, ERROR, LEVELS, FORMATS } from '../constants';
 import { createWriter } from '../writer';
 
 describe('module "logger/writer"', () => {
@@ -26,83 +26,102 @@ describe('module "logger/writer"', () => {
       stderrSpy.restore();
     });
 
-    describe('- format "text"', () => {
-      let subject;
+    FORMATS.forEach(format => {
+      describe(`format "${format}"`, () => {
+        let subject;
 
-      before(() => {
-        subject = createWriter('text');
-      });
-
-      LEVELS.forEach((num, level) => {
-        describe(`- level "${level}"`, () => {
-          it('can write message objects', () => {
-            subject({
-              level,
-              timestamp: new Date().toISOString(),
-              message: 'Hello world!'
-            });
-
-            switch (level) {
-              case WARN:
-              case ERROR:
-                expect(stderrSpy.calledOnce).to.be.true;
-                break;
-
-              default:
-                expect(stdoutSpy.calledOnce).to.be.true;
-                break;
-            }
-          });
+        before(() => {
+          subject = createWriter(format);
         });
-      });
-    });
 
-    describe('- format "json"', () => {
-      let subject;
+        LEVELS.forEach((num, level) => {
+          describe(`- level "${level}"`, () => {
+            it('can write message objects', () => {
+              const message = 'Hello world!';
+              const timestamp = new Date().toISOString();
+              let spyForLevel;
 
-      before(() => {
-        subject = createWriter('json');
-      });
+              subject({
+                level,
+                message,
+                timestamp
+              });
 
-      LEVELS.forEach((num, level) => {
-        describe(`- level "${level}"`, () => {
-          it('can write message objects', () => {
-            subject({
-              level,
-              timestamp: new Date().toISOString(),
-              message: 'Hello world!'
+              switch (level) {
+                case WARN:
+                case ERROR:
+                  spyForLevel = stderrSpy;
+                  break;
+
+                default:
+                  spyForLevel = stdoutSpy;
+                  break;
+              }
+
+              expect(spyForLevel.calledOnce).to.be.true;
+              expect(spyForLevel)
+                .to.have.deep.property('firstCall.args[0]')
+                .and.include(message);
             });
 
-            switch (level) {
-              case WARN:
-              case ERROR:
-                expect(stderrSpy.calledOnce).to.be.true;
-                break;
+            it('can write nested message objects', () => {
+              const message = { message: 'Hello world!' };
+              const timestamp = new Date().toISOString();
+              let spyForLevel;
 
-              default:
-                expect(stdoutSpy.calledOnce).to.be.true;
-                break;
-            }
-          });
+              subject({
+                level,
+                message,
+                timestamp
+              });
 
-          it('can write nested message objects', () => {
-            subject({
-              level,
-              timestamp: new Date().toISOString(),
-              message: {
-                message: 'Hello world!'
+              switch (level) {
+                case WARN:
+                case ERROR:
+                  spyForLevel = stderrSpy;
+                  break;
+
+                default:
+                  spyForLevel = stdoutSpy;
+                  break;
+              }
+
+              expect(spyForLevel).to.have.property('calledOnce', true);
+
+              if (format === 'text') {
+                expect(spyForLevel)
+                  .to.have.deep.property('firstCall.args[0]')
+                  .and.include(JSON.stringify(message, null, 2));
+              } else {
+                expect(spyForLevel)
+                  .to.have.deep.property('firstCall.args[0]')
+                  .and.include(message.message);
               }
             });
 
-            switch (level) {
-              case WARN:
-              case ERROR:
-                expect(stderrSpy.calledOnce).to.be.true;
-                break;
+            if (level === ERROR) {
+              it('can write error stack traces', () => {
+                const message = new Error('Test');
+                const timestamp = new Date().toISOString();
 
-              default:
-                expect(stdoutSpy.calledOnce).to.be.true;
-                break;
+                subject({
+                  level,
+                  message,
+                  timestamp
+                });
+
+                expect(stderrSpy).to.have.property('calledOnce', true);
+
+                if (format === 'text') {
+                  expect(stderrSpy)
+                    .to.have.deep.property('firstCall.args[0]')
+                    .and.include(message.stack);
+                } else {
+                  expect(stderrSpy)
+                    .to.have.deep.property('firstCall.args[0]')
+                    .and.include(message.message);
+                }
+              });
             }
           });
         });
