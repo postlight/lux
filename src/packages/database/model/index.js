@@ -7,6 +7,7 @@ import { sql } from '../../logger';
 import { saveRelationships } from '../relationship';
 import pick from '../../../utils/pick';
 import omit from '../../../utils/omit';
+import chain from '../../../utils/chain';
 import setType from '../../../utils/set-type';
 import underscore from '../../../utils/underscore';
 import type Logger from '../../logger'; // eslint-disable-line max-len, no-duplicate-imports
@@ -19,6 +20,15 @@ import getColumns from './utils/get-columns';
 import validate from './utils/validate';
 
 class Model {
+  /**
+   * The name of the corresponding database table for a `Model` instance's
+   * constructor.
+   *
+   * @property tableName
+   * @memberof Model
+   */
+  tableName: string;
+
   /**
    * The canonical name of a `Model`'s constructor.
    *
@@ -83,6 +93,14 @@ class Model {
    * @memberof Model
    */
   static primaryKey: string = 'id';
+
+  /**
+   * The name of the corresponding database table for a `Model`.
+   *
+   * @property tableName
+   * @memberof Model
+   */
+  static tableName: string;
 
   /**
    * The canonical name of a `Model`.
@@ -299,21 +317,6 @@ class Model {
     }
   }
 
-  static get tableName(): string {
-    return pluralize(underscore(this.name));
-  }
-
-  static set tableName(value: string): void {
-    if (value && value.length) {
-      Reflect.defineProperty(this, 'tableName', {
-        value,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      });
-    }
-  }
-
   async save(deep?: boolean): Promise<this> {
     const {
       constructor: {
@@ -442,6 +445,27 @@ class Model {
   static initialize(store, table): Promise<Class<this>> {
     if (this.initialized) {
       return Promise.resolve(this);
+    }
+
+    if (!this.tableName) {
+      const tableName = chain(this.name)
+        .pipe(underscore)
+        .pipe(pluralize)
+        .value();
+
+      Reflect.defineProperty(this, 'tableName', {
+        value: tableName,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      });
+
+      Reflect.defineProperty(this.prototype, 'tableName', {
+        value: tableName,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      });
     }
 
     return initializeClass({
