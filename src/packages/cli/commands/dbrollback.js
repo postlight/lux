@@ -42,7 +42,7 @@ export async function dbrollback() {
     const target = migrationFiles.find(m => m.indexOf(version) === 0);
 
     if (target) {
-      migration = target.replace(new RegExp(`${version}-(.+)\.js`), '$1');
+      migration = target.replace(new RegExp(`${version}-(.+)\\.js`), '$1');
       migration = migrations.get(`${migration}-down`);
 
       if (migration) {

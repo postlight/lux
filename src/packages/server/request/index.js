@@ -35,7 +35,15 @@ export function createRequest(req: any, {
     method: headers.get('x-http-method-override') || req.method
   });
 
-  Reflect.set(req, 'route', router.match(req));
+  const route = router.match(req);
+
+  if (route) {
+    Object.assign(req, {
+      route,
+      action: route.action,
+      controller: route.controller
+    });
+  }
 
   return req;
 }

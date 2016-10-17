@@ -59,6 +59,11 @@ export default function createController<T: Controller>(
       ...parent.beforeAction.map(fn => fn.bind(parent)),
       ...instance.beforeAction.map(fn => fn.bind(instance))
     ];
+
+    instance.afterAction = [
+      ...instance.afterAction.map(fn => fn.bind(instance)),
+      ...parent.afterAction.map(fn => fn.bind(parent))
+    ];
   }
 
   Reflect.defineProperty(instance, 'parent', {
@@ -73,6 +78,7 @@ export default function createController<T: Controller>(
     'sort',
     'filter',
     'params',
-    'beforeAction'
+    'beforeAction',
+    'afterAction'
   );
 }

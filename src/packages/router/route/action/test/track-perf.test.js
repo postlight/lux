@@ -4,12 +4,9 @@ import { it, describe, before } from 'mocha';
 
 import type { Action } from '../../../index';
 import type { Request, Response } from '../../../../server';
+import sleep from '../../../../../utils/sleep';
 import trackPerf from '../enhancers/track-perf';
 import { getTestApp } from '../../../../../../test/utils/get-test-app';
-
-function sleep(amount: number) {
-  return new Promise(resolve => setTimeout(resolve, amount));
-}
 
 describe('module "router/route/action"', () => {
   describe('enhancer trackPerf()', () => {

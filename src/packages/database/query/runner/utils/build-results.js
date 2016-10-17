@@ -20,7 +20,7 @@ export default async function buildResults<T: Model>({
   relationships: Object
 }): Promise<Array<T>> {
   const results = await records;
-  const pkPattern = new RegExp(`^.+\.${model.primaryKey}$`);
+  const pkPattern = new RegExp(`^.+\\.${model.primaryKey}$`);
   let related;
 
   if (!results.length) {

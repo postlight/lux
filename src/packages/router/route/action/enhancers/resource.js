@@ -8,7 +8,8 @@ import type { Action } from '../interfaces';
 * @private
 */
 export default function resource(action: Action<any>): Action<any> {
-  return async function resourceAction(req, res) {
+  // eslint-disable-next-line func-names
+  const resourceAction = async function (req, res) {
     const { route: { action: actionName } } = req;
     const result = action(req, res);
     let links = {};
@@ -72,4 +73,10 @@ export default function resource(action: Action<any>): Action<any> {
 
     return data;
   };
+
+  Reflect.defineProperty(resourceAction, 'name', {
+    value: action.name
+  });
+
+  return resourceAction;
 }
