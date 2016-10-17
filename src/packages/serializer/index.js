@@ -20,12 +20,29 @@ import type { Serializer$opts } from './interfaces';
 /**
  * ## Overview
  *
- * The Serializer class is where you declare the attributes and
- * relationships you would like to include for a particular resource.
+ * The Serializer class is used to describe which attributes and relationships
+ * to include for a particular resource.
  *
  * The attributes and relationships you declare in a Serializer will determine
  * the attributes and relationships that will be included in the response from
  * the resource that the Serializer represents.
+ *
+ * #### Attributes
+ *
+ * You can add attributes to your serializer using an array assigned to the
+ * class property `attributes` like the example below.
+ *
+ * ```javascript
+ * class UsersSerializer extends Serializer {
+ *   attributes = [
+ *     'name',
+ *     'email',
+ *     'username',
+ *     'createdAt',
+ *     'updatedAt'
+ *   ];
+ * }
+ * ```
  *
  * Since the attributes required for a resource are declared ahead of time in a
  * Serializer, Lux will optimize SQL queries for the resource to only include
@@ -65,42 +82,41 @@ import type { Serializer$opts } from './interfaces';
  * export default PostsSerializer;
  * ```
  *
- * ### Associations
+ * #### Associations
  *
- * Similar to `attributes`, declaring associations are done by adding
- * relationship names to either the `hasOne` property array or the `hasMany`
- * property array on a Serializer.
+ * Similar to `attributes` you can declare associations by adding relationship
+ * names to either the `hasOne` or `hasMany` property arrays on a Serializer.
  *
- * Serializers are not concerned with ownership when it comes to associations so
- * both `hasOne` and `belongsTo` associations can be specified in the `hasOne`
- * array property.
+ * Serializers are not concerned with ownership when it comes to associations,
+ * so both `hasOne` and `belongsTo` associations can be specified in the
+ * `hasOne` array property.
  *
- * ```javsacript
+ * ```javascript
  * import { Model } from 'lux-framework';
  *
  * class Post extends Model {
- *   static hasOne = {
- *     image: {
- *       inverse: 'post'
- *     }
- *   };
+ *  static hasOne = {
+ *    image: {
+ *      inverse: 'post'
+ *    }
+ *  };
  *
- *   static hasMany = {
- *     tags: {
- *       inverse: 'posts',
- *       through: 'categorization'
- *     },
+ *  static hasMany = {
+ *    tags: {
+ *      inverse: 'posts',
+ *      through: 'categorization'
+ *    },
  *
- *     comments: {
- *       inverse: 'post'
- *     }
- *   };
+ *    comments: {
+ *      inverse: 'post'
+ *    }
+ *  };
  *
- *   static belongsTo = {
- *     user: {
- *       inverse: 'posts'
- *     }
- *   };
+ *  static belongsTo = {
+ *    user: {
+ *      inverse: 'posts'
+ *    }
+ *  };
  * }
  *
  * export default Post;
@@ -114,10 +130,10 @@ import type { Serializer$opts } from './interfaces';
  * import { Serializer } from 'lux-framework';
  *
  * class PostsSerializer extends Serializer {
- *   hasOne = [
- *     'user',
- *     'image'
- *   ];
+ *  hasOne = [
+ *    'user',
+ *    'image'
+ *  ];
  * }
  *
  * export default PostsSerializer;
@@ -125,58 +141,58 @@ import type { Serializer$opts } from './interfaces';
  *
  * If we wanted to also include the `tags` and `comments` in the response, we
  * have to add a `hasMany` array property containing `'tags'` and `'comments'`.
- * No need to specify that `tags` is a many to many relationship using the
- * `Categorization` model as a join table.
  *
  * ```javascript
  * import { Serializer } from 'lux-framework';
  *
  * class PostsSerializer extends Serializer {
- *   hasOne = [
- *     'user',
- *     'image'
- *   ];
+ *  hasOne = [
+ *    'user',
+ *    'image'
+ *  ];
  *
- *   hasMany = [
- *     'tags',
- *     'comments'
- *   ];
+ *  hasMany = [
+ *    'tags',
+ *    'comments'
+ *  ];
  * }
  *
  * export default PostsSerializer;
  * ```
  *
- * ### Including Related Resources
+ * You no longer need to specify that `tags` is a many to many relationship
+ * using the `Categorization` model as a join table.
+ *
+ * #### Including Related Resources
  *
  * When requesting related resources for an endpoint, the included resource will
  * follow the serialization rules defined by the included resources Serializer.
  *
- * If we were to request that the `posts` association were to be included from
- * the `/users` endpoint, we will only get the `attributes` that the
- * `PostsSerializer` has defined even though the response is processed by the
- * `UsersSerializer`.
+ * If we request that the `posts` association is included from the `/users`
+ * endpoint, we will only get the `attributes` that the `PostsSerializer` has
+ * defined even though the response is processed by the `UsersSerializer`.
  *
- * ### Sparse Fieldsets
+ * #### Sparse Fieldsets
  *
- * When a request specifies the fields that it would like to be included in the
+ * When a request specifies the fields that it would like included in the
  * response, the fields **MUST** be declared in the `attributes` property array
- * of the resources Serializer or they will be ignored.
+ * of the resources Serializer, or they will be ignored.
  *
- * ### Namespaces
+ * #### Namespaces
  *
  * When using namespaces, you are not required to have a Serializer for each
  * resource as long as a Serializer for the given resource can be resolved
  * upstream.
  *
  * For example, if you have a `posts` resource and you decide to implement an
- * admin namespace. You will only need to export an `AdminPostsSerializer` from
+ * admin namespace, you only need to export an `AdminPostsSerializer` from
  * `app/serializers/admin/posts.js` if you want to specify different attributes
  * or relationships than the `PostsSerializer` exported from
  * `app/serializers/posts.js`.
  *
  * In the event that you do want to specify different attributes or
  * relationships that the `PostsSerializer` exported from
- * `app/serializers/posts.js`. You are not required to extend `PostsSerializer`.
+ * `app/serializers/posts.js`, you are not required to extend `PostsSerializer`.
  *
  * ```javascript
  * import { Serializer } from 'lux-framework';
@@ -202,8 +218,8 @@ import type { Serializer$opts } from './interfaces';
  * export default PostsSerializer;
  * ```
  *
- * To add the `isPublic` attribute to the response payload of a requests to a
- * `/admin/posts` endpoint we can do either of the folowing.
+ * To add the `isPublic` attribute to the response payload of requests to a
+ * `/admin/posts` endpoint we can do either of the following examples:
  *
  * ```javascript
  * // app/serializers/admin/posts.js
@@ -220,6 +236,8 @@ import type { Serializer$opts } from './interfaces';
  *
  * export default AdminPostsSerializer;
  * ```
+ *
+ * OR
  *
  * ```javascript
  * // app/serializers/admin/posts.js
@@ -247,8 +265,8 @@ import type { Serializer$opts } from './interfaces';
  * export default AdminPostsSerializer;
  * ```
  *
- * Even with inheritence, the examples above are a tad repetative. We can
- * imporve this code by exporting constants from `app/serializers/posts.js`.
+ * Even with inheritance, the examples above are a tad repetitive. We can
+ * improve this code by exporting constants from `app/serializers/posts.js`.
  *
  * ```javascript
  * import { Serializer } from 'lux-framework';
@@ -278,7 +296,7 @@ import type { Serializer$opts } from './interfaces';
  * export default PostsSerializer;
  * ```
  *
- * If we choose to use inheritence our code can look like this:
+ * If we choose to use inheritance, our code can look like this:
  *
  * ```javascript
  * // app/serializers/admin/posts.js
@@ -294,7 +312,7 @@ import type { Serializer$opts } from './interfaces';
  * export default AdminPostsSerializer;
  * ```
  *
- * If we choose not use inheritence our code can look like this:
+ * If we choose not use inheritance, our code can look like this:
  *
  * ```javascript
  * // app/serializers/admin/posts.js

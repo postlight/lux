@@ -20,7 +20,7 @@ import getColumns from './utils/get-columns';
 import validate from './utils/validate';
 
 /**
- * ### Overview
+ * ## Overview
  *
  *
  * @module lux-framework

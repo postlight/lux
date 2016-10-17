@@ -21,23 +21,26 @@ import type {
  * The Controller class is responsible for taking in requests from the outside
  * world and returning the appropriate response.
  *
- * You can think of a Controller like a waiter or waitress at a restaurant.
- * A client makes a request to an application, that request is routed to the
- * appropriate Controller and then the Controller interprets the request
- * and returns data relative to what the client has request.
+ * Think of a Controller as a server at a restaurant. A client makes a request
+ * to an application, that request is routed to the appropriate Controller and
+ * then the Controller interprets the request and returns data relative to what
+ * the client has request.
  *
- * ### Actions
+ * #### Actions
  *
- * Controller actions are functions that called on a Controller in response to
- * an incoming HTTP request. The job of Controller actions are to return the
- * data that should the Lux Application will respond with.
+ * Controller actions are functions that call on a Controller in response to an
+ * incoming HTTP request. The job of Controller actions are to return the data
+ * that the Lux Application will respond with.
  *
  * There is no special API for Controller actions. They are simply functions
- * that return a value. If an action returns a Query or Promise the resolved
- * value will be used rather than the immediate return value of the action.
- * Below you will find a table showing the diffrent types of responses you can
+ * that return a value. If an action returns a {{#crossLink 'Database.Query'}}
+ * `Query`{{/crossLink}} or `Promise` the resolved value will be used rather
+ * than the immediate return value of the action.
+ *
+ * Below you will find a table showing the different types of responses you can
  * get from different action return values. Keep in mind, Lux is agnostic to
- * wether or not the value is returned syncronously or resolved from a Promise.
+ * whether or not the value is returned synchronously or resolved from a
+ * Promise.
  *
  * | Return/Resolved Value        | Response                                   |
  * |------------------------------|--------------------------------------------|
@@ -50,10 +53,14 @@ import type {
  *
  * **Built-In Actions**
  *
- * Built-in actions refer to the Controller actions that you get for free when
- * extending the Controller class (`show`, `index`, `create`, `update`,
- * `destroy`). These actions are highly optimized to only load the attributes
- * and relationships that are defined in the resolved
+ * Built-in actions refer to Controller actions that you get for free when
+ * extending the Controller class ({{#crossLink 'Lux.Controller/show:method'}}
+ * `show`{{/crossLink}}, {{#crossLink 'Lux.Controller/index:method'}}`index`
+ * {{/crossLink}}, {{#crossLink 'Lux.Controller/create:method'}}`create`
+ * {{/crossLink}}, {{#crossLink 'Lux.Controller/update:method'}}`update`
+ * {{/crossLink}}, and {{#crossLink 'Lux.Controller/destroy:method'}}`destroy`
+ * {{/crossLink}}). These actions are highly optimized to load only the
+ * attributes and relationships that are defined in the resolved
  * {{#crossLink 'Lux.Serializer'}}Serializer{{/crossLink}} for a Controller.
  *
  * If applicable, built-in actions support the following features described in
@@ -68,31 +75,35 @@ import type {
  * **Extending Built-In Actions**
  *
  * Considering the amount of functionality built-in actions provide, you will
- * rarely need to overrride the default behavior of a built-in action. In the
+ * rarely need to override the default behavior of a built-in action. In the
  * event that you do need to override a built-in action, you have the ability to
  * opt back into the built-in logic by calling the `super class`.
  *
- * Read actions such as `index` and `show` return a
- * {{#crossLink 'Database.Query'}}Query{{/crossLink}} which allows us to chain
- * methods to the `super` call. In the following example we will extend the
- * default behavior of the `index` action to only match records that meet an
- * additional hard-coded set of conditions. We will still be able to use all of
- * the functionality that the built-in `index` action provides.
+ * Read actions such as {{#crossLink 'Lux.Controller/index:method'}}`index`
+ * {{/crossLink}} and {{#crossLink 'Lux.Controller/show:method'}}`show`
+ * {{/crossLink}} return a {{#crossLink 'Database.Query'}}Query{{/crossLink}}
+ * which allows us to chain methods to the `super` call. In the following
+ * example  we will extend the default behavior of the
+ * {{#crossLink 'Lux.Controller/index:method'}}`index`{{/crossLink}} action to
+ * only match records that meet an additional hard-coded set of conditions. We
+ * will still be able to use all of the functionality that the built-in
+ * {{#crossLink 'Lux.Controller/index:method'}}`index`{{/crossLink}} action
+ * provides.
  *
  * ```javascript
  * // app/controllers/posts.js
  * import { Controller } from 'lux-framework';
  *
  * class PostsController extends Controller {
- *   index(request, response) {
- *     return super.index(request, response).where({
- *       isPublic: true
- *     });
- *   }
- * }
+ *    index(request, response) {
+ *      return super.index(request, response).where({
+ *        isPublic: true
+ *      });
+ *    }
+ *  }
  *
- * export default PostsController;
- * ```
+ *  export default PostsController;
+ *  ```
  *
  * **Custom Actions**
  *
@@ -100,7 +111,7 @@ import type {
  * you to do so by adding an instance method to a Controller. In the following
  * example you will see how to add a custom action with the name `check` to a
  * Controller. We are implementing this action to use as a health check for the
- * application so we are going to want to return the `Number` literal `204`.
+ * application so we want to return the `Number` literal `204`.
  *
  * ```javascript
  * // app/controllers/health.js
@@ -131,15 +142,15 @@ import type {
  *
  * Using an Arrow Function instead of a traditional method Controller can be
  * useful when immediately returning a value. However, there are a few downsides
- * to using an Arrow `Function` for a Controller action such as not being able
- * to call the `super class` which can be an issue if you are looking to extend
+ * to using an Arrow `Function` for a Controller action, such as not being able
+ * to call the `super class`. This can be an issue if you are looking to extend
  * a built-in action.
  *
- * Another use case for a custom action could be to return a sepecific scope of
- * data from a Model. Let implement a custom `drafts` route on a
- * `PostsController`.
+ * Another use case for a custom action could be to return a specific scope of
+ * data from a {{#crossLink 'Lux.Model'}}`Model`{{/crossLink}}. Let's implement
+ * a custom `drafts` route on a `PostsController`.
  *
- * ```javacript
+ * ```javascript
  * // app/controllers/posts.js
  * import { Controller } from 'lux-framework';
  * import Post from 'app/models/posts';
@@ -156,59 +167,51 @@ import type {
  * ```
  *
  * While the example above works, we would have to implement all the custom
- * logic that we get for free with built-in actions. Since we aren't getting to
+ * logic that we get for free with built-in actions. Since we aren't getting too
  * crazy with our custom action we can likely just call the `index` action and
  * chain a `.where()` to it.
  *
- * ```javacript
- * // app/controllers/posts.js
- * import { Controller } from 'lux-framework';
+ *  ```javascript
+ *  // app/controllers/posts.js
+ *  import { Controller } from 'lux-framework';
  *
- * class PostsController extends Controller {
- *   drafts(request, response) {
- *     return this.index(request, response).where({
- *       isPublic: false
- *     });
- *   }
- * }
+ *  class PostsController extends Controller {
+ *    drafts(request, response) {
+ *      return this.index(request, response).where({
+ *        isPublic: false
+ *      });
+ *    }
+ *  }
  *
- * export default PostsController;
- * ```
+ *  export default PostsController;
+ *  ```
  *
  * Now we can sort, filter, and paginate our custom `drafts` route!
  *
- * ### Middleware
+ * #### Middleware
  *
  * Middleware can be a very powerful tool in many Node.js server frameworks. Lux
- * is no exception. Middleware can be used to execute logic before a Controller
- * action is executed.
+ * is no exception. Middleware can be used to execute logic before or after a
+ * Controller action is executed.
  *
- * Middleware functions behave similar to Controller actions however, they are
- * expected to return `undefined`. If a middleware function returns a value
- * other than `undefined` the request/response cycle will end before remaining
- * middleware and/or Controller actions are executed. This makes middleware a
- * very powerful tool for dealing with many common tasks such authentication.
+ * There are two hooks where you can execute middleware functions,
+ * {{#crossLink 'Lux.Controller/beforeAction:property'}}`beforeAction`
+ * {{/crossLink}} and {{#crossLink 'Lux.Controller/afterAction:property'}}
+ * `afterAction`{{/crossLink}}. Functions added to the
+ * {{#crossLink 'Lux.Controller/beforeAction:property'}}`beforeAction`
+ * {{/crossLink}} hook will execute before the Controller action and functions
+ * added to the {{#crossLink 'Lux.Controller/afterAction:property'}}
+ * `afterAction`{{/crossLink}} hook will be executed after the `Controller`
+ * action.
  *
- * To add a middleware function simply define an `async` `function` and add it
- * to the `beforeAction` property.
+ * **Context**
  *
- * ```javascript
- * // app/controllers/posts.js
- * import { Controller } from 'lux-framework';
+ * Middleware functions will be bound to the Controller they are added to upon
+ * the start of an {{#crossLink 'Lux.Application'}}Application{{/crossLink}}.
  *
- * class PostsController extends Controller {
- *   beforeAction = [
- *     async function authenticate(request) {
- *       if (!request.currentUser) {
- *         // 401 Unauthorized
- *         return false;
- *       }
- *     }
- *   ];
- * }
- *
- * export default PostsController;
- * ```
+ * Due to the lexical binding of arrow functions, if you need to use the `this`
+ * keyword within a middleware function, declare the middleware function using
+ * the `function` keyword and not as an arrow function.
  *
  * **Scoping Middleware**
  *
@@ -239,21 +242,34 @@ import type {
  * export default ApplicationController;
  * ```
  *
+ * **Execuation Order**
+ *
+ * Understanding the execution order of middleware functions and a `Controller`
+ * action is essential to productivity with Lux. Depending on what you use case
+ * is, you may want your function to execute at different times in the
+ * `request` / `response` cycle.
+ *
+ * 1. Parent `Controller` `beforeAction` hooks
+ * 2. `Controller` `beforeAction` hooks
+ * 3. `Controller` Action
+ * 4. `Controller` `afterAction` hooks
+ * 5. Parent `Controller` `afterAction` hooks
+ *
  * **Modules**
  *
  * It is considered a best practice to define your middleware functions in
  * separate file and export them for use throughout an Application. Typically
  * this is done within an `app/middleware` directory.
  *
- * ```javascript
- * // app/middleware/authenticate.js
- * export default async function authenticate(request) {
- *   if (!request.currentUser) {
- *     // 401 Unauthorized
- *     return false;
- *   }
- * }
- * ```
+ *  ```javascript
+ *  // app/middleware/authenticate.js
+ *  export default async function authenticate(request) {
+ *    if (!request.currentUser) {
+ *      // 401 Unauthorized
+ *      return false;
+ *    }
+ *  }
+ *  ```
  *
  * This keeps the Controller code clean, easier to read, and easier to modify.
  *
@@ -271,18 +287,17 @@ import type {
  * export default ApplicationController;
  * ```
  *
- * ### Parameters
+ * #### Parameters
  *
  * For security purposes, Lux requires you to whitelist parameters coming in
  * from the outside world.
  *
  * The following properties are used to whitelist parameters:
  *
- * - `sort`
- * - `filter`
- * - `query`
- * - `params`
- *
+ * - {{#crossLink 'Lux.Controller/sort:property'}}`sort`{{/crossLink}}
+ * - {{#crossLink 'Lux.Controller/filter:property'}}`filter`{{/crossLink}}
+ * - {{#crossLink 'Lux.Controller/query:property'}}`query`{{/crossLink}}
+ * - {{#crossLink 'Lux.Controller/params:property'}}`params`{{/crossLink}}
  *
  * @module lux-framework
  * @namespace Lux
@@ -368,11 +383,51 @@ class Controller {
   params: Array<string> = [];
 
   /**
-   * Middleware functions to execute on each request handled by a Controller.
+   * Functions to execute on each request handled by a `Controller` before the
+   * `Controller` action is executed.
    *
-   * Middleware functions declared in beforeAction on a root Controller will be
-   * executed before ALL Controller actions within the root Controller's
-   * namespace.
+   * Functions added to the `beforeAction` hook behave similarly to `Controller`
+   * actions, however, they are expected to return `undefined`. If a middleware
+   * function returns a value other than `undefined` the `request` / `response`
+   * cycle will end before remaining middleware and/or Controller actions are
+   * executed. This makes the `beforeAction` hook a very powerful tool for
+   * dealing with many common tasks, such as authentication.
+   *
+   * Functions called from the `beforeAction` hook will have `request` and
+   * `response` objects passed as arguements.
+   *
+   * **Example:**
+   *
+   * ```javascript
+   * import { Controller } from 'lux-framework';
+   *
+   * const UNSAFE_METHODS = /(?:POST|PATCH|DELETE)/i;
+   *
+   * function isAdmin(user) {
+   *   if (user) {
+   *     return user.isAdmin;
+   *   }
+   *
+   *   return false;
+   * }
+   *
+   * async function authentication(request) {
+   *   const { method, currentUser } = request;
+   *   const isUnsafe = UNSAFE_METHODS.test(method);
+   *
+   *   if (isUnsafe && !isAdmin(currentUser)) {
+   *     return false; // 401 Unauthorized if the current user is not an admin.
+   *   }
+   * }
+   *
+   * class PostsController extends Controller {
+   *   beforeAction = [
+   *     authentication
+   *   ];
+   * }
+   *
+   * export default PostsController;
+   * ```
    *
    * @property beforeAction
    * @type {Array}
@@ -382,14 +437,53 @@ class Controller {
   beforeAction: Array<Controller$beforeAction> = [];
 
   /**
-   * Middleware functions to execute on each request handled by a `Controller`.
+   * Functions to execute on each request handled by a `Controller` after the
+   * `Controller` action is executed.
    *
-   * Middleware functions declared in afterAction on an `ApplicationController`
-   * will be executed after ALL route handlers.
+   * Functions called from the `afterAction` hook will have `request` and
+   * `response` objects passed as arguments as well as a third `payload`
+   * arguements that is a reference to resolved data of the Controller action
+   * that was called within the current `request` / `response` cycle. If you
+   * return a value from a function added to the `afterAction` hook, that value
+   * will be used instead of the resolved data from the preceding Conroller
+   * action. Subsequent hooks called from an `afterAction` hook will will use
+   * the value returned or resolved from preceding hook. This makes
+   * `afterAction` a great place to modify the data you are sending back to the
+   * client.
+   *
+   * **Example:**
+   *
+   * ```javascript
+   * import { Controller } from 'lux-framework';
+   *
+   * async function addCopyright(request, response, payload) {
+   *   const { action } = request;
+   *
+   *   if (payload && action !== preflight) {
+   *     return {
+   *       ...payload,
+   *       meta: {
+   *         copyright: '2016 (c) Postlight'
+   *       }
+   *     };
+   *   }
+   *
+   *   return payload;
+   * }
+   *
+   * class ApplicationController extends Controller {
+   *   afterAction = [
+   *     addCopyright
+   *   ];
+   * }
+   *
+   * export default ApplicationController;
+   * ```
    *
    * @property afterAction
-   * @memberof Controller
-   * @instance
+   * @type {Array}
+   * @default []
+   * @public
    */
   afterAction: Array<Controller$afterAction> = [];
 
