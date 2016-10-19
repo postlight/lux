@@ -101,10 +101,12 @@ export async function compile(dir: string, env: string, {
       }),
 
       eslint({
+        cwd: dir,
+        parser: 'babel-eslint',
+        useEslintrc: false,
         include: [
           path.join(dir, 'app', '**'),
         ],
-
         exclude: [
           path.join(dir, 'package.json'),
           path.join(__dirname, '..', 'src', '**')
