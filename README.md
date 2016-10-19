@@ -1,4 +1,5 @@
-# Lux
+![Lux](https://lux.postlight.com/assets/logo-lux.svg)
+--
 
 [![CircleCI](https://circleci.com/gh/postlight/lux/tree/master.svg?style=svg)](https://circleci.com/gh/postlight/lux/tree/master) [![Build status](https://ci.appveyor.com/api/projects/status/xxwunscfe3rsxdmr/branch/master?svg=true)](https://ci.appveyor.com/project/zacharygolba/lux/branch/master) [![codecov](https://codecov.io/gh/postlight/lux/branch/master/graph/badge.svg)](https://codecov.io/gh/postlight/lux)
  [![Dependency Status](https://david-dm.org/postlight/lux.svg)](https://david-dm.org/postlight/lux) [![npm version](https://badge.fury.io/js/lux-framework.svg)](https://badge.fury.io/js/lux-framework) [![Join the chat at https://gitter.im/postlight/lux](https://badges.gitter.im/postlight/lux.svg)](https://gitter.im/postlight/lux?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
