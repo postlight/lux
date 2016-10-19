@@ -2,6 +2,8 @@
 
 ### 1.0.0 (Oct 19, 2016)
 
+##### Commits
+
 * [[`0ca4477935`](https://github.com/postlight/lux/commit/0ca4477935)] - **docs**: fix link to guides in readme (#471) (Chris Watts)
 * [[`ea471aad7f`](https://github.com/postlight/lux/commit/ea471aad7f)] - **fix**: eslint config in compiler inherits from lux .eslintrc.json (#469) (Zachary Golba)
 * [[`2c74a0cc9c`](https://github.com/postlight/lux/commit/2c74a0cc9c)] - **docs**: add logo to readme (#470) (Zachary Golba)
