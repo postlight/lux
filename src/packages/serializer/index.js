@@ -415,7 +415,7 @@ class Serializer<T: Model> {
    * instance is a member of.
    *
    * @property parent
-   * @type {?Serializer}
+   * @type {<a href="./Lux.Serializer.html">?Serializer</a>}
    * @private
    */
   parent: ?Serializer<*>;
@@ -445,31 +445,34 @@ class Serializer<T: Model> {
 
   /**
    * Transform an array of Model instances or a single Model instance into a
-   * [JSONAPI](http://jsonapi.org) document object.
+   * <a href="http://jsonapi.org" target="_blank"></a> document object.
    *
    * @method format
    *
    * @param {Object} options - An options object used for building the
-   * returned [JSONAPI](http://jsonapi.org) document object.
+   * returned <a href="http://jsonapi.org" target="_blank">JSONAPI</a> document
+   * object.
    *
    * @param {Model|Array} options.data - The Model instance or array of
    * Model instances to transform into the returned
-   * [JSONAPI](http://jsonapi.org) document object.
+   * <a href="http://jsonapi.org" target="_blank">JSONAPI</a> document object.
    *
    * @param {Object} options.links - An object containing links to include in
-   * the top level links object of the returned [JSONAPI](http://jsonapi.org)
-   * document object.
+   * the top level links object of the returned
+   * <a href="http://jsonapi.org" target="_blank">JSONAPI</a> document object.
    *
    * @param {String} options.domain - A string used to build links included in
    * the resource and relationship objects in the returned
-   * [JSONAPI](http://jsonapi.org) document object.
+   * <a href="http://jsonapi.org" target="_blank">JSONAPI</a> document object.
    *
    * @param {Array} options.include - An array of strings containing the
    * relationship keys that should be added to the top level included object of
-   * the returned [JSONAPI](http://jsonapi.org) document object.
+   * the returned <a href="http://jsonapi.org" target="_blank">JSONAPI</a>
+   * document object.
    *
-   * @return {Promise} A Promise that resolves with a
-   * [JSONAPI](http://jsonapi.org) document object.
+   * @return {<a href="https://goo.gl/f6fNGm" target="_blank">Promise</a>} -
+   * Resolves with a <a href="http://jsonapi.org" target="_blank">JSONAPI</a>
+   * document object.
    *
    * @private
    */
@@ -559,8 +562,8 @@ class Serializer<T: Model> {
    * relationships should be formatted and included in the returned
    * [JSONAPI](http://jsonapi.org) resource object.
    *
-   * @return {Promise} A `Promise` that resolves with a
-   * [JSONAPI](http://jsonapi.org) resource object.
+   * @return {<a href="https://goo.gl/f6fNGm" target="_blank">Promise</a>} -
+   * Resolves with a [JSONAPI](http://jsonapi.org) resource object.
    *
    * @private
    */

@@ -34,13 +34,14 @@ import type {
  *
  * There is no special API for Controller actions. They are simply functions
  * that return a value. If an action returns a {{#crossLink 'Database.Query'}}
- * `Query`{{/crossLink}} or `Promise` the resolved value will be used rather
- * than the immediate return value of the action.
+ * Query{{/crossLink}} or <a href="https://goo.gl/f6fNGm" target="_blank">
+ * Promise</a> the resolved value will be used rather than the immediate return
+ * value of the action.
  *
  * Below you will find a table showing the different types of responses you can
  * get from different action return values. Keep in mind, Lux is agnostic to
  * whether or not the value is returned synchronously or resolved from a
- * Promise.
+ * <a href="https://goo.gl/f6fNGm" target="_blank">Promise</a>.
  *
  * | Return/Resolved Value        | Response                                   |
  * |------------------------------|--------------------------------------------|
@@ -103,7 +104,7 @@ import type {
  *  }
  *
  *  export default PostsController;
- *  ```
+ * ```
  *
  * **Custom Actions**
  *
@@ -171,20 +172,20 @@ import type {
  * crazy with our custom action we can likely just call the `index` action and
  * chain a `.where()` to it.
  *
- *  ```javascript
- *  // app/controllers/posts.js
- *  import { Controller } from 'lux-framework';
+ * ```javascript
+ * // app/controllers/posts.js
+ * import { Controller } from 'lux-framework';
  *
- *  class PostsController extends Controller {
- *    drafts(request, response) {
- *      return this.index(request, response).where({
- *        isPublic: false
- *      });
- *    }
- *  }
+ * class PostsController extends Controller {
+ *   drafts(request, response) {
+ *     return this.index(request, response).where({
+ *       isPublic: false
+ *     });
+ *   }
+ * }
  *
- *  export default PostsController;
- *  ```
+ * export default PostsController;
+ * ```
  *
  * Now we can sort, filter, and paginate our custom `drafts` route!
  *
@@ -261,15 +262,15 @@ import type {
  * separate file and export them for use throughout an Application. Typically
  * this is done within an `app/middleware` directory.
  *
- *  ```javascript
- *  // app/middleware/authenticate.js
- *  export default async function authenticate(request) {
- *    if (!request.currentUser) {
- *      // 401 Unauthorized
- *      return false;
- *    }
- *  }
- *  ```
+ * ```javascript
+ * // app/middleware/authenticate.js
+ * export default async function authenticate(request) {
+ *   if (!request.currentUser) {
+ *     // 401 Unauthorized
+ *     return false;
+ *   }
+ * }
+ * ```
  *
  * This keeps the Controller code clean, easier to read, and easier to modify.
  *
@@ -503,7 +504,7 @@ class Controller {
    * instance.
    *
    * @property model
-   * @type {Model}
+   * @type {<a href="./Lux.Model.html">Model</a>}
    * @private
    */
   model: Class<Model>;
@@ -513,7 +514,7 @@ class Controller {
    * instance is a member of.
    *
    * @property parent
-   * @type {?Controller}
+   * @type {<a href="./Lux.Controller.html">?Controller</a>}
    * @private
    */
   parent: ?Controller;
@@ -532,7 +533,7 @@ class Controller {
    * Controller instance.
    *
    * @property serializer
-   * @type {Serializer}
+   * @type {<a href="./Lux.Serializer.html">Serializer</a>}
    * @private
    */
   serializer: Serializer<*>;
@@ -613,8 +614,8 @@ class Controller {
    * @method index
    * @param {Request} request - The request object.
    * @param {Response} response - The response object.
-   * @return {Query} - Resolves with an array of {{#crossLink 'Lux.Model'}}Model
-   * {{/crossLink}} instances.
+   * @return {<a href="./Database.Query.html">Query</a>} - Resolves with an
+   * array of {{#crossLink 'Lux.Model'}}Model{{/crossLink}} instances.
    * @public
    */
   index(req: Request): Query<Array<Model>> {
@@ -634,8 +635,9 @@ class Controller {
    * @method show
    * @param {Request} request - The request object.
    * @param {Response} response - The response object.
-   * @return {Query} - Resolves with a {{#crossLink 'Lux.Model'}}Model
-   * {{/crossLink}} instance with the `id` equal to the `id` url parameter.
+   * @return {<a href="./Database.Query.html">Query</a>} - Resolves with a
+   * {{#crossLink 'Lux.Model'}}Model{{/crossLink}} instance with the `id` equal
+   * to the `id` url parameter.
    * @public
    */
   show(req: Request): Query<Model> {
@@ -652,8 +654,9 @@ class Controller {
    * @method create
    * @param {Request} request - The request object.
    * @param {Response} response - The response object.
-   * @return {Promise} - Resolves with the newly created
-   * {{#crossLink 'Lux.Model'}}Model{{/crossLink}} instance.
+   * @return {<a href="https://goo.gl/f6fNGm" target="_blank">Promise</a>} -
+   * Resolves with the newly created {{#crossLink 'Lux.Model'}}Model
+   * {{/crossLink}} instance.
    * @public
    */
   create(req: Request, res: Response): Promise<Model> {
@@ -700,9 +703,9 @@ class Controller {
    * @method update
    * @param {Request} request - The request object.
    * @param {Response} response - The response object.
-   * @return {Promise} - Resolves with the updated {{#crossLink 'Lux.Model'}}
-   * Model{{/crossLink}} if changes occur. Resolves with the number `204` if no
-   * changes occur.
+   * @return {<a href="https://goo.gl/f6fNGm" target="_blank">Promise</a>} -
+   * Resolves with the updated {{#crossLink 'Lux.Model'}} Model{{/crossLink}} if
+   * changes occur. Resolves with the number `204` if no changes occur.
    * @public
    */
   update(req: Request): Promise<number | Model> {
@@ -747,7 +750,8 @@ class Controller {
    * @method destroy
    * @param {Request} request - The request object.
    * @param {Response} response - The response object.
-   * @return {Promise} - Resolves with the number `204`.
+   * @return {<a href="https://goo.gl/f6fNGm" target="_blank">Promise</a>} -
+   * Resolves with the number `204`.
    * @public
    */
   destroy(req: Request): Promise<number> {
@@ -762,7 +766,8 @@ class Controller {
    * @method preflight
    * @param {Request} request - The request object.
    * @param {Response} response - The response object.
-   * @return {Promise} - Resolves with the number `204`.
+   * @return {<a href="https://goo.gl/f6fNGm" target="_blank">Promise</a>} -
+   * Resolves with the number `204`.
    * @public
    */
   preflight(): Promise<number> {

@@ -15,7 +15,7 @@ import { runQuery, createRunner } from './runner';
  * @namespace Database
  * @class Query
  * @constructor
- * @extends Promise
+ * @extends {<a href="https://goo.gl/f6fNGm" target="_blank">Promise</a>}
  */
 class Query<+T: any> extends Promise {
   /**

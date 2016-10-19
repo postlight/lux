@@ -4,7 +4,6 @@
 *.lcov
 coverage/
 dist/
-docs/
 .nyc_output/
 
 # dependencies
