@@ -20,9 +20,9 @@ export default (name: string): string => template`
     "author": "",
     "license": "MIT",
     "dependencies": {
-      "babel-core": "6.9.1",
+      "babel-core": "6.17.0",
       "babel-preset-lux": "${BABEL_PRESET_VERSION}",
-      "knex": "0.11.5",
+      "knex": "0.12.6",
       "lux-framework": "${LUX_VERSION}"
     },
     "engines": {

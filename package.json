@@ -1,7 +1,7 @@
 {
   "name": "lux-framework",
-  "version": "1.0.0-rc.7",
-  "description": "A MVC style Node.js framework for building lightning fast JSON APIs",
+  "version": "1.0.0",
+  "description": "Build scalable, Node.js-powered REST APIs with almost no code.",
   "repository": "github:postlight/lux",
   "keywords": [
     "mvc",
@@ -29,6 +29,10 @@
   },
   "author": "Zachary Golba",
   "license": "MIT",
+  "homepage": "http://lux.postlight.com",
+  "bugs": {
+    "url": "https://github.com/postlight/lux/issues"
+  },
   "engines": {
     "node": ">= 6.0"
   },
