@@ -33,15 +33,13 @@ import type {
  * that the Lux Application will respond with.
  *
  * There is no special API for Controller actions. They are simply functions
- * that return a value. If an action returns a {{#crossLink 'Database.Query'}}
- * Query{{/crossLink}} or <a href="https://goo.gl/f6fNGm" target="_blank">
- * Promise</a> the resolved value will be used rather than the immediate return
- * value of the action.
+ * that return a value. If an action returns a Query or Promise the resolved
+ * value will be used rather than the immediate return value of the action.
  *
  * Below you will find a table showing the different types of responses you can
  * get from different action return values. Keep in mind, Lux is agnostic to
  * whether or not the value is returned synchronously or resolved from a
- * <a href="https://goo.gl/f6fNGm" target="_blank">Promise</a>.
+ * Promise.
  *
  * | Return/Resolved Value        | Response                                   |
  * |------------------------------|--------------------------------------------|
@@ -55,14 +53,9 @@ import type {
  * **Built-In Actions**
  *
  * Built-in actions refer to Controller actions that you get for free when
- * extending the Controller class ({{#crossLink 'Lux.Controller/show:method'}}
- * `show`{{/crossLink}}, {{#crossLink 'Lux.Controller/index:method'}}`index`
- * {{/crossLink}}, {{#crossLink 'Lux.Controller/create:method'}}`create`
- * {{/crossLink}}, {{#crossLink 'Lux.Controller/update:method'}}`update`
- * {{/crossLink}}, and {{#crossLink 'Lux.Controller/destroy:method'}}`destroy`
- * {{/crossLink}}). These actions are highly optimized to load only the
- * attributes and relationships that are defined in the resolved
- * {{#crossLink 'Lux.Serializer'}}Serializer{{/crossLink}} for a Controller.
+ * extending the Controller class (show, index, create, update, destroy). These
+ * actions are highly optimized to load only the attributes and relationships
+ * that are defined in the resolved Serializer for a Controller.
  *
  * If applicable, built-in actions support the following features described in
  * the [JSON API specification](http://jsonapi.org/):
@@ -78,18 +71,13 @@ import type {
  * Considering the amount of functionality built-in actions provide, you will
  * rarely need to override the default behavior of a built-in action. In the
  * event that you do need to override a built-in action, you have the ability to
- * opt back into the built-in logic by calling the `super class`.
+ * opt back into the built-in logic by calling the super class.
  *
- * Read actions such as {{#crossLink 'Lux.Controller/index:method'}}`index`
- * {{/crossLink}} and {{#crossLink 'Lux.Controller/show:method'}}`show`
- * {{/crossLink}} return a {{#crossLink 'Database.Query'}}Query{{/crossLink}}
- * which allows us to chain methods to the `super` call. In the following
- * example  we will extend the default behavior of the
- * {{#crossLink 'Lux.Controller/index:method'}}`index`{{/crossLink}} action to
- * only match records that meet an additional hard-coded set of conditions. We
- * will still be able to use all of the functionality that the built-in
- * {{#crossLink 'Lux.Controller/index:method'}}`index`{{/crossLink}} action
- * provides.
+ * Read actions such as index and show return a Query which allows us to chain
+ * methods to the super call. In the following example  we will extend the
+ * default behavior of the index action to only match records that meet an
+ * additional hard-coded set of conditions. We will still be able to use all of
+ * the functionality that the built-in index action provides.
  *
  * ```javascript
  * // app/controllers/posts.js
@@ -148,7 +136,7 @@ import type {
  * a built-in action.
  *
  * Another use case for a custom action could be to return a specific scope of
- * data from a {{#crossLink 'Lux.Model'}}`Model`{{/crossLink}}. Let's implement
+ * data from a `Model`. Let's implement
  * a custom `drafts` route on a `PostsController`.
  *
  * ```javascript
@@ -196,19 +184,19 @@ import type {
  * Controller action is executed.
  *
  * There are two hooks where you can execute middleware functions,
- * {{#crossLink 'Lux.Controller/beforeAction:property'}}`beforeAction`
- * {{/crossLink}} and {{#crossLink 'Lux.Controller/afterAction:property'}}
+ * {{#crossLink 'Controller/beforeAction:property'}}`beforeAction`
+ * {{/crossLink}} and {{#crossLink 'Controller/afterAction:property'}}
  * `afterAction`{{/crossLink}}. Functions added to the
- * {{#crossLink 'Lux.Controller/beforeAction:property'}}`beforeAction`
+ * {{#crossLink 'Controller/beforeAction:property'}}`beforeAction`
  * {{/crossLink}} hook will execute before the Controller action and functions
- * added to the {{#crossLink 'Lux.Controller/afterAction:property'}}
+ * added to the {{#crossLink 'Controller/afterAction:property'}}
  * `afterAction`{{/crossLink}} hook will be executed after the `Controller`
  * action.
  *
  * **Context**
  *
  * Middleware functions will be bound to the Controller they are added to upon
- * the start of an {{#crossLink 'Lux.Application'}}Application{{/crossLink}}.
+ * the start of an Application.
  *
  * Due to the lexical binding of arrow functions, if you need to use the `this`
  * keyword within a middleware function, declare the middleware function using
@@ -288,18 +276,6 @@ import type {
  * export default ApplicationController;
  * ```
  *
- * #### Parameters
- *
- * For security purposes, Lux requires you to whitelist parameters coming in
- * from the outside world.
- *
- * The following properties are used to whitelist parameters:
- *
- * - {{#crossLink 'Lux.Controller/sort:property'}}`sort`{{/crossLink}}
- * - {{#crossLink 'Lux.Controller/filter:property'}}`filter`{{/crossLink}}
- * - {{#crossLink 'Lux.Controller/query:property'}}`query`{{/crossLink}}
- * - {{#crossLink 'Lux.Controller/params:property'}}`params`{{/crossLink}}
- *
  * @module lux-framework
  * @namespace Lux
  * @class Controller
@@ -337,8 +313,8 @@ class Controller {
    * Controller instance from an incoming `HTTP` request.
    *
    * If you do not override this property all of the attributes specified in the
-   * {{#crossLink 'Lux.Serializer'}}Serializer{{/crossLink}} that represents a
-   * Controller's resource. If the {{#crossLink 'Lux.Serializer'}}Serializer
+   * Serializer that represents a
+   * Controller's resource. If the {{#crossLink 'Serializer'}}Serializer
    * {{/crossLink}} cannot be resolved, this property will default to an empty
    * array.
    *
@@ -354,8 +330,8 @@ class Controller {
    * Controller instance from an incoming `HTTP` request.
    *
    * If you do not override this property all of the attributes specified in the
-   * {{#crossLink 'Lux.Serializer'}}Serializer{{/crossLink}} that represents a
-   * Controller's resource. If the {{#crossLink 'Lux.Serializer'}}Serializer
+   * Serializer that represents a
+   * Controller's resource. If the {{#crossLink 'Serializer'}}Serializer
    * {{/crossLink}} cannot be resolved, this property will default to an empty
    * array.
    *
@@ -371,8 +347,8 @@ class Controller {
    * from an incoming `POST` or `PATCH` request body.
    *
    * If you do not override this property all of the attributes specified in the
-   * {{#crossLink 'Lux.Serializer'}}Serializer{{/crossLink}} that represents a
-   * Controller's resource. If the {{#crossLink 'Lux.Serializer'}}Serializer
+   * Serializer that represents a
+   * Controller's resource. If the {{#crossLink 'Serializer'}}Serializer
    * {{/crossLink}} cannot be resolved, this property will default to an empty
    * array.
    *
@@ -500,7 +476,7 @@ class Controller {
   defaultPerPage: number = 25;
 
   /**
-   * The resolved {{#crossLink 'Lux.Model'}}Model{{/crossLink}} for a Controller
+   * The resolved Model for a Controller
    * instance.
    *
    * @property model
@@ -529,7 +505,7 @@ class Controller {
   namespace: string;
 
   /**
-   * The resolved {{#crossLink 'Lux.Serializer'}}Serializer{{/crossLink}} for a
+   * The resolved Serializer for a
    * Controller instance.
    *
    * @property serializer
@@ -540,7 +516,7 @@ class Controller {
 
   /**
    * A Map instance containing a reference to all the Controller within a Lux
-   * {{#crossLink 'Lux.Application'}}Application{{/crossLink}} instance.
+   * Application instance.
    *
    * @property controllers
    * @type {Map}
@@ -550,7 +526,7 @@ class Controller {
 
   /**
    * A boolean value representing whether or not a Controller instance has a
-   * {{#crossLink 'Lux.Model'}}Model{{/crossLink}}.
+   * Model.
    *
    * @property hasModel
    * @type {Boolean}
@@ -570,7 +546,7 @@ class Controller {
 
   /**
    * A boolean value representing whether or not a Controller instance has a
-   * {{#crossLink 'Lux.Serializer'}}Serializer{{/crossLink}}.
+   * Serializer.
    *
    * @property hasSerializer
    * @type {Boolean}
@@ -602,20 +578,15 @@ class Controller {
   }
 
   /**
-   * Returns a list of {{#crossLink 'Lux.Model'}}Model{{/crossLink}} instances
-   * that the Controller instance represents.
-   *
    * This method supports filtering, sorting, pagination, including
-   * relationships, and sparse fieldsets via query parameters.
-   *
-   * For more information, see the [fetching resources](https://goo.gl/q7FVgZ)
-   * section of the JSON API specification.
+   * relationships, and sparse fieldsets via query parameters. For more
+   * information, see the <a href="https://goo.gl/q7FVgZ" target="_blank">
+   * fetching resources</a> section of the JSON API specification.
    *
    * @method index
    * @param {Request} request - The request object.
    * @param {Response} response - The response object.
-   * @return {<a href="./Database.Query.html">Query</a>} - Resolves with an
-   * array of {{#crossLink 'Lux.Model'}}Model{{/crossLink}} instances.
+   * @return {Promise} Resolves with an array of Model instances.
    * @public
    */
   index(req: Request): Query<Array<Model>> {
@@ -623,21 +594,16 @@ class Controller {
   }
 
   /**
-   * Returns a single {{#crossLink 'Lux.Model'}}Model{{/crossLink}} instance
-   * that the Controller instance represents.
-   *
    * This method supports including relationships, and sparse fieldsets via
-   * query parameters.
-   *
-   * For more information, see the [fetching resources](https://goo.gl/q7FVgZ)
-   * section of the JSON API specification.
+   * query parameters. For more information, see the <a
+   * href="https://goo.gl/q7FVgZ" target="_blank">fetching resources</a> section
+   * of the JSON API specification.
    *
    * @method show
    * @param {Request} request - The request object.
    * @param {Response} response - The response object.
-   * @return {<a href="./Database.Query.html">Query</a>} - Resolves with a
-   * {{#crossLink 'Lux.Model'}}Model{{/crossLink}} instance with the `id` equal
-   * to the `id` url parameter.
+   * @return {Promise} Resolves with a Model instance with the id equal to the
+   * id url parameter.
    * @public
    */
   show(req: Request): Query<Model> {
@@ -645,18 +611,15 @@ class Controller {
   }
 
   /**
-   * Create and return a single {{#crossLink 'Lux.Model'}}Model{{/crossLink}}
-   * instance that the Controller instance represents.
-   *
-   * For more information, see the [creating resources](https://goo.gl/4Obc9t)
-   * section of the JSON API specification.
+   * Create and return a single Model instance that the Controller instance
+   * represents. For more information, see the <a href="https://goo.gl/4Obc9t"
+   * target="_blank">creating resources</a> section of the JSON API
+   * specification.
    *
    * @method create
    * @param {Request} request - The request object.
    * @param {Response} response - The response object.
-   * @return {<a href="https://goo.gl/f6fNGm" target="_blank">Promise</a>} -
-   * Resolves with the newly created {{#crossLink 'Lux.Model'}}Model
-   * {{/crossLink}} instance.
+   * @return {Promise} Resolves with the newly created Model instance.
    * @public
    */
   create(req: Request, res: Response): Promise<Model> {
@@ -694,18 +657,17 @@ class Controller {
   }
 
   /**
-   * Update and return a single {{#crossLink 'Lux.Model'}}Model{{/crossLink}}
-   * instance that the Controller instance represents.
-   *
-   * For more information, see the [updating resources](https://goo.gl/o2ZdOR)
-   * section of the JSON API specification.
+   * Update and return a single Model instance that the Controller instance
+   * represents. For more information, see the <a href="https://goo.gl/o2ZdOR"
+   * target="_blank">updating resources</a> section of the JSON API
+   * specification.
    *
    * @method update
    * @param {Request} request - The request object.
    * @param {Response} response - The response object.
-   * @return {<a href="https://goo.gl/f6fNGm" target="_blank">Promise</a>} -
-   * Resolves with the updated {{#crossLink 'Lux.Model'}} Model{{/crossLink}} if
-   * changes occur. Resolves with the number `204` if no changes occur.
+   * @return {Promise} Resolves with the updated Model if changes occur.
+   * Resolves with the number `204` if no
+   * changes occur.
    * @public
    */
   update(req: Request): Promise<number | Model> {
@@ -741,17 +703,15 @@ class Controller {
   }
 
   /**
-   * Destroy a single Model instance that the Controller instance
-   * represents.
-   *
-   * For more information, see the [deleting resources](https://goo.gl/nUZn8t)
-   * section of the JSON API specification.
+   * Destroy a single Model instance that the Controller instance represents.
+   * For more information, see the <a href="https://goo.gl/nUZn8t"
+   * target="_blank">deleting resources</a> section of the JSON API
+   * specification.
    *
    * @method destroy
    * @param {Request} request - The request object.
    * @param {Response} response - The response object.
-   * @return {<a href="https://goo.gl/f6fNGm" target="_blank">Promise</a>} -
-   * Resolves with the number `204`.
+   * @return {Promise} Resolves with the number `204`.
    * @public
    */
   destroy(req: Request): Promise<number> {
@@ -761,13 +721,12 @@ class Controller {
   }
 
   /**
-   * Respond to `HEAD` or `OPTIONS` requests.
+   * Respond to HEAD or OPTIONS requests.
    *
    * @method preflight
    * @param {Request} request - The request object.
    * @param {Response} response - The response object.
-   * @return {<a href="https://goo.gl/f6fNGm" target="_blank">Promise</a>} -
-   * Resolves with the number `204`.
+   * @return {Promise} Resolves with the number `204`.
    * @public
    */
   preflight(): Promise<number> {

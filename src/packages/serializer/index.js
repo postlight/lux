@@ -341,7 +341,7 @@ import type { Serializer$opts } from './interfaces';
 class Serializer<T: Model> {
   /**
    * An Array of the `hasOne` or `belongsTo` relationships on a Serializer
-   * instance's {{#crossLink 'Lux.Model'}}Model{{/crossLink}} to include in the
+   * instance's Model to include in the
    * `relationships` resource object of a serialized payload.
    *
    * ```javascript
@@ -361,7 +361,7 @@ class Serializer<T: Model> {
 
   /**
    * An Array of the `hasMany` relationships on a Serializer instance's
-   * {{#crossLink 'Lux.Model'}}Model{{/crossLink}} to include in the
+   * Model to include in the
    * `relationships` resource object of a serialized payload.
    *
    * ```javscript
@@ -381,7 +381,7 @@ class Serializer<T: Model> {
 
   /**
    * An array of the `attributes` on a Serializer instance's
-   * {{#crossLink 'Lux.Model'}}Model{{/crossLink}} to include in the
+   * Model to include in the
    * `attributes` resource object of a serialized payload.
    *
    * ```javscript
@@ -401,7 +401,7 @@ class Serializer<T: Model> {
   attributes: Array<string> = [];
 
   /**
-   * The resolved {{#crossLink 'Lux.Model'}}Model{{/crossLink}} that a
+   * The resolved Model that a
    * Serializer instance represents.
    *
    * @property model
@@ -470,9 +470,8 @@ class Serializer<T: Model> {
    * the returned <a href="http://jsonapi.org" target="_blank">JSONAPI</a>
    * document object.
    *
-   * @return {<a href="https://goo.gl/f6fNGm" target="_blank">Promise</a>} -
-   * Resolves with a <a href="http://jsonapi.org" target="_blank">JSONAPI</a>
-   * document object.
+   * @return \{.+\} Resolves with a
+   * <a href="http://jsonapi.org" target="_blank">JSONAPI</a> document object.
    *
    * @private
    */
@@ -562,8 +561,8 @@ class Serializer<T: Model> {
    * relationships should be formatted and included in the returned
    * [JSONAPI](http://jsonapi.org) resource object.
    *
-   * @return {<a href="https://goo.gl/f6fNGm" target="_blank">Promise</a>} -
-   * Resolves with a [JSONAPI](http://jsonapi.org) resource object.
+   * @return \{.+\} Resolves with a
+   * <a href="http://jsonapi.org)" target="_blank">JSONAPI</a> resource object.
    *
    * @private
    */

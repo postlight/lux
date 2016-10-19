@@ -108,7 +108,7 @@ class Application {
   /**
    * @method constructor
    * @param {Object} config
-   * @return {<a href="https://goo.gl/f6fNGm" target="_blank">Promise</a>}
+   * @return {Promise}
    * @public
    */
   constructor(opts: Application$opts): Promise<Application> {
