@@ -6,6 +6,18 @@ import entries from '../../../utils/entries';
 import type { Request, Request$opts } from './interfaces';
 
 /**
+ * @typedef {Object} Request
+ * @property {Map<string, string>} headers
+ * @property {string} httpVersion
+ * @property {string} method
+ * @property {Logger} logger
+ * @property {Object} params
+ * @property {Object} defaultParams
+ * @property {Route} route
+ * @property {Object} url
+ */
+
+/**
  * @private
  */
 export function createRequest(req: any, {

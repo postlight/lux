@@ -16,47 +16,282 @@ import type {
 } from './interfaces';
 
 /**
- * The `Controller` class is responsible for taking in requests from the outside
+ * ## Overview
+ *
+ * The Controller class is responsible for taking in requests from the outside
  * world and returning the appropriate response.
  *
- * You can think of a `Controller` like a waiter or waitress at a restaurant.
- * A client makes a request to an application, that request is routed to the
- * appropriate `Controller` and then the `Controller` interprets the request
- * and returns data relative to what the client has request.
+ * Think of a Controller as a server at a restaurant. A client makes a request
+ * to an application, that request is routed to the appropriate Controller and
+ * then the Controller interprets the request and returns data relative to what
+ * the client has request.
+ *
+ * #### Actions
+ *
+ * Controller actions are functions that call on a Controller in response to an
+ * incoming HTTP request. The job of Controller actions are to return the data
+ * that the Lux Application will respond with.
+ *
+ * There is no special API for Controller actions. They are simply functions
+ * that return a value. If an action returns a Query or Promise the resolved
+ * value will be used rather than the immediate return value of the action.
+ *
+ * Below you will find a table showing the different types of responses you can
+ * get from different action return values. Keep in mind, Lux is agnostic to
+ * whether or not the value is returned synchronously or resolved from a
+ * Promise.
+ *
+ * | Return/Resolved Value        | Response                                   |
+ * |------------------------------|--------------------------------------------|
+ * | `Array<Model>` or `Model`    | Serialized JSON String                     |
+ * | `Array` or `Object` Literal  | JSON String                                |
+ * | `String` Literal             | Plain Text                                 |
+ * | `Number` Literal             | [HTTP Status Code](https://goo.gl/T2lMc7)  |
+ * | `true`                       | [204 No Content](https://goo.gl/GxKoqz)    |
+ * | `false`                      | [401 Unauthorized](https://goo.gl/60QqCW)  |
+ *
+ * **Built-In Actions**
+ *
+ * Built-in actions refer to Controller actions that you get for free when
+ * extending the Controller class (show, index, create, update, destroy). These
+ * actions are highly optimized to load only the attributes and relationships
+ * that are defined in the resolved Serializer for a Controller.
+ *
+ * If applicable, built-in actions support the following features described in
+ * the [JSON API specification](http://jsonapi.org/):
+ *
+ * - [Sorting](http://jsonapi.org/format/#fetching-sorting)
+ * - [Filtering](http://jsonapi.org/format/#fetching-filtering)
+ * - [Pagination](http://jsonapi.org/format/#fetching-pagination)
+ * - [Sparse Fieldsets](http://jsonapi.org/format/#fetching-sparse-fieldsets)
+ * - [Including Related Resources](http://jsonapi.org/format/#fetching-includes)
+ *
+ * **Extending Built-In Actions**
+ *
+ * Considering the amount of functionality built-in actions provide, you will
+ * rarely need to override the default behavior of a built-in action. In the
+ * event that you do need to override a built-in action, you have the ability to
+ * opt back into the built-in logic by calling the super class.
+ *
+ * Read actions such as index and show return a Query which allows us to chain
+ * methods to the super call. In the following example  we will extend the
+ * default behavior of the index action to only match records that meet an
+ * additional hard-coded set of conditions. We will still be able to use all of
+ * the functionality that the built-in index action provides.
+ *
+ * ```javascript
+ * // app/controllers/posts.js
+ * import { Controller } from 'lux-framework';
+ *
+ * class PostsController extends Controller {
+ *    index(request, response) {
+ *      return super.index(request, response).where({
+ *        isPublic: true
+ *      });
+ *    }
+ *  }
+ *
+ *  export default PostsController;
+ * ```
+ *
+ * **Custom Actions**
+ *
+ * Sometimes it is necessary to add a custom action to a Controller. Lux allows
+ * you to do so by adding an instance method to a Controller. In the following
+ * example you will see how to add a custom action with the name `check` to a
+ * Controller. We are implementing this action to use as a health check for the
+ * application so we want to return the `Number` literal `204`.
+ *
+ * ```javascript
+ * // app/controllers/health.js
+ * import { Controller } from 'lux-framework';
+ *
+ * class HealthController extends Controller {
+ *   async check() {
+ *     return 204;
+ *   }
+ * }
+ *
+ * export default HealthController;
+ * ```
+ *
+ * The example above is nice but we can make the code a bit more concise with an
+ * Arrow `Function`.
+ *
+ * ```javascript
+ * // app/controllers/health.js
+ * import { Controller } from 'lux-framework';
+ *
+ * class HealthController extends Controller {
+ *   check = async () => 204;
+ * }
+ *
+ * export default HealthController;
+ * ```
+ *
+ * Using an Arrow Function instead of a traditional method Controller can be
+ * useful when immediately returning a value. However, there are a few downsides
+ * to using an Arrow `Function` for a Controller action, such as not being able
+ * to call the `super class`. This can be an issue if you are looking to extend
+ * a built-in action.
+ *
+ * Another use case for a custom action could be to return a specific scope of
+ * data from a `Model`. Let's implement
+ * a custom `drafts` route on a `PostsController`.
+ *
+ * ```javascript
+ * // app/controllers/posts.js
+ * import { Controller } from 'lux-framework';
+ * import Post from 'app/models/posts';
+ *
+ * class PostsController extends Controller {
+ *   drafts() {
+ *     return Post.where({
+ *       isPublic: false
+ *     });
+ *   }
+ * }
+ *
+ * export default PostsController;
+ * ```
+ *
+ * While the example above works, we would have to implement all the custom
+ * logic that we get for free with built-in actions. Since we aren't getting too
+ * crazy with our custom action we can likely just call the `index` action and
+ * chain a `.where()` to it.
+ *
+ * ```javascript
+ * // app/controllers/posts.js
+ * import { Controller } from 'lux-framework';
+ *
+ * class PostsController extends Controller {
+ *   drafts(request, response) {
+ *     return this.index(request, response).where({
+ *       isPublic: false
+ *     });
+ *   }
+ * }
+ *
+ * export default PostsController;
+ * ```
+ *
+ * Now we can sort, filter, and paginate our custom `drafts` route!
+ *
+ * #### Middleware
+ *
+ * Middleware can be a very powerful tool in many Node.js server frameworks. Lux
+ * is no exception. Middleware can be used to execute logic before or after a
+ * Controller action is executed.
+ *
+ * There are two hooks where you can execute middleware functions,
+ * {{#crossLink 'Controller/beforeAction:property'}}`beforeAction`
+ * {{/crossLink}} and {{#crossLink 'Controller/afterAction:property'}}
+ * `afterAction`{{/crossLink}}. Functions added to the
+ * {{#crossLink 'Controller/beforeAction:property'}}`beforeAction`
+ * {{/crossLink}} hook will execute before the Controller action and functions
+ * added to the {{#crossLink 'Controller/afterAction:property'}}
+ * `afterAction`{{/crossLink}} hook will be executed after the `Controller`
+ * action.
+ *
+ * **Context**
+ *
+ * Middleware functions will be bound to the Controller they are added to upon
+ * the start of an Application.
+ *
+ * Due to the lexical binding of arrow functions, if you need to use the `this`
+ * keyword within a middleware function, declare the middleware function using
+ * the `function` keyword and not as an arrow function.
+ *
+ * **Scoping Middleware**
+ *
+ * Middleware is scoped by Controller and includes a parent Controller's
+ * middleware recursively until the parent Controller is the root
+ * `ApplicationController`. This allows you to implement custom logic that can
+ * be executed for resources, namespaces, or an entire Application.
+ *
+ * Let's say we want to require authentication for every route in our
+ * Application. All we have to do is move our authentication middleware function
+ * from the example above to the `ApplicationController`.
+ *
+ * ```javascript
+ * // app/controllers/application.js
+ * import { Controller } from 'lux-framework';
+ *
+ * class ApplicationController extends Controller {
+ *   beforeAction = [
+ *     async function authenticate(request) {
+ *       if (!request.currentUser) {
+ *         // 401 Unauthorized
+ *         return false;
+ *       }
+ *     }
+ *   ];
+ * }
+ *
+ * export default ApplicationController;
+ * ```
+ *
+ * **Execuation Order**
+ *
+ * Understanding the execution order of middleware functions and a `Controller`
+ * action is essential to productivity with Lux. Depending on what you use case
+ * is, you may want your function to execute at different times in the
+ * `request` / `response` cycle.
+ *
+ * 1. Parent `Controller` `beforeAction` hooks
+ * 2. `Controller` `beforeAction` hooks
+ * 3. `Controller` Action
+ * 4. `Controller` `afterAction` hooks
+ * 5. Parent `Controller` `afterAction` hooks
+ *
+ * **Modules**
+ *
+ * It is considered a best practice to define your middleware functions in
+ * separate file and export them for use throughout an Application. Typically
+ * this is done within an `app/middleware` directory.
+ *
+ * ```javascript
+ * // app/middleware/authenticate.js
+ * export default async function authenticate(request) {
+ *   if (!request.currentUser) {
+ *     // 401 Unauthorized
+ *     return false;
+ *   }
+ * }
+ * ```
+ *
+ * This keeps the Controller code clean, easier to read, and easier to modify.
+ *
+ * ```javascript
+ * // app/controllers/application.js
+ * import { Controller } from 'lux-framework';
+ * import authenticate from 'app/middleware/authenticate';
+ *
+ * class ApplicationController extends Controller {
+ *   beforeAction = [
+ *     authenticate
+ *   ];
+ * }
+ *
+ * export default ApplicationController;
+ * ```
+ *
+ * @module lux-framework
+ * @namespace Lux
+ * @class Controller
+ * @constructor
+ * @public
  */
 class Controller {
   /**
-   * @property model
-   * @memberof Controller
-   * @instance
-   */
-  model: Class<Model>;
-
-  /**
-   * @property parent
-   * @memberof Controller
-   * @instance
-   */
-  parent: ?Controller;
-
-  /**
-   * The namespace that a `Controller` instance is a member of.
-   *
-   * @property namespace
-   * @memberof Controller
-   * @instance
-   */
-  namespace: string;
-
-  /**
-   * Use this property to let Lux know what custom query parameters you want to
-   * allow for this controller.
+   * An array of custom query parameter keys that are allowed to reach a
+   * Controller instance from an incoming `HTTP` request.
    *
    * For security reasons, query parameters passed to Controller actions from an
    * incoming request other than sort, filter, and page must have their key
    * whitelisted.
    *
-   * @example
+   * ```javascript
    * class UsersController extends Controller {
    *   // Allow the following custom query parameters to be used for this
    *   // Controller's actions.
@@ -64,142 +299,260 @@ class Controller {
    *     'cache'
    *   ];
    * }
+   * ```
    *
-   * @property params
-   * @memberof Controller
-   * @instance
+   * @property query
+   * @type {Array}
+   * @default []
+   * @public
    */
   query: Array<string> = [];
 
   /**
-   * Whitelisted `?sort` parameter values.
+   * An array of sort query parameter values that are allowed to reach a
+   * Controller instance from an incoming `HTTP` request.
    *
-   * If you do not override this property all of the attributes specified in an
-   * instance's `Serializer` will be whitelisted.
+   * If you do not override this property all of the attributes specified in the
+   * Serializer that represents a
+   * Controller's resource. If the {{#crossLink 'Serializer'}}Serializer
+   * {{/crossLink}} cannot be resolved, this property will default to an empty
+   * array.
    *
    * @property sort
-   * @memberof Controller
-   * @instance
+   * @type {Array}
+   * @default []
+   * @public
    */
   sort: Array<string> = [];
 
   /**
-   * Whitelisted `?filter[{key}]` parameter keys.
+   * An array of filter query parameter keys that are allowed to reach a
+   * Controller instance from an incoming `HTTP` request.
    *
-   * If you do not override this property all of the attributes specified in an
-   * instance's `Serializer` will be whitelisted.
+   * If you do not override this property all of the attributes specified in the
+   * Serializer that represents a
+   * Controller's resource. If the {{#crossLink 'Serializer'}}Serializer
+   * {{/crossLink}} cannot be resolved, this property will default to an empty
+   * array.
    *
    * @property filter
-   * @memberof Controller
-   * @instance
+   * @type {Array}
+   * @default []
+   * @public
    */
   filter: Array<string> = [];
 
   /**
-   * Whitelisted parameter keys to allow in incoming PATCH and POST requests.
+   * An array of parameter keys that are allowed to reach a Controller instance
+   * from an incoming `POST` or `PATCH` request body.
    *
-   * For security reasons, parameters passed to controller actions from an
-   * incoming request must have their key whitelisted.
-   *
-   * @example
-   * class UsersController extends Controller {
-   *   // Do not allow incoming PATCH or POST requests to modify User#isAdmin.
-   *   params = [
-   *     'name',
-   *     'email',
-   *     'password',
-   *     // 'isAdmin'
-   *   ];
-   * }
+   * If you do not override this property all of the attributes specified in the
+   * Serializer that represents a
+   * Controller's resource. If the {{#crossLink 'Serializer'}}Serializer
+   * {{/crossLink}} cannot be resolved, this property will default to an empty
+   * array.
    *
    * @property params
-   * @memberof Controller
-   * @instance
+   * @type {Array}
+   * @default []
+   * @public
    */
   params: Array<string> = [];
 
   /**
-   * Middleware functions to execute on each request handled by a `Controller`.
+   * Functions to execute on each request handled by a `Controller` before the
+   * `Controller` action is executed.
    *
-   * Middleware functions declared in beforeAction on an `ApplicationController`
-   * will be executed before ALL route handlers.
+   * Functions added to the `beforeAction` hook behave similarly to `Controller`
+   * actions, however, they are expected to return `undefined`. If a middleware
+   * function returns a value other than `undefined` the `request` / `response`
+   * cycle will end before remaining middleware and/or Controller actions are
+   * executed. This makes the `beforeAction` hook a very powerful tool for
+   * dealing with many common tasks, such as authentication.
+   *
+   * Functions called from the `beforeAction` hook will have `request` and
+   * `response` objects passed as arguements.
+   *
+   * **Example:**
+   *
+   * ```javascript
+   * import { Controller } from 'lux-framework';
+   *
+   * const UNSAFE_METHODS = /(?:POST|PATCH|DELETE)/i;
+   *
+   * function isAdmin(user) {
+   *   if (user) {
+   *     return user.isAdmin;
+   *   }
+   *
+   *   return false;
+   * }
+   *
+   * async function authentication(request) {
+   *   const { method, currentUser } = request;
+   *   const isUnsafe = UNSAFE_METHODS.test(method);
+   *
+   *   if (isUnsafe && !isAdmin(currentUser)) {
+   *     return false; // 401 Unauthorized if the current user is not an admin.
+   *   }
+   * }
+   *
+   * class PostsController extends Controller {
+   *   beforeAction = [
+   *     authentication
+   *   ];
+   * }
+   *
+   * export default PostsController;
+   * ```
    *
    * @property beforeAction
-   * @memberof Controller
-   * @instance
+   * @type {Array}
+   * @default []
+   * @public
    */
   beforeAction: Array<Controller$beforeAction> = [];
 
   /**
-   * Middleware functions to execute on each request handled by a `Controller`.
+   * Functions to execute on each request handled by a `Controller` after the
+   * `Controller` action is executed.
    *
-   * Middleware functions declared in afterAction on an `ApplicationController`
-   * will be executed after ALL route handlers.
+   * Functions called from the `afterAction` hook will have `request` and
+   * `response` objects passed as arguments as well as a third `payload`
+   * arguements that is a reference to resolved data of the Controller action
+   * that was called within the current `request` / `response` cycle. If you
+   * return a value from a function added to the `afterAction` hook, that value
+   * will be used instead of the resolved data from the preceding Conroller
+   * action. Subsequent hooks called from an `afterAction` hook will will use
+   * the value returned or resolved from preceding hook. This makes
+   * `afterAction` a great place to modify the data you are sending back to the
+   * client.
+   *
+   * **Example:**
+   *
+   * ```javascript
+   * import { Controller } from 'lux-framework';
+   *
+   * async function addCopyright(request, response, payload) {
+   *   const { action } = request;
+   *
+   *   if (payload && action !== preflight) {
+   *     return {
+   *       ...payload,
+   *       meta: {
+   *         copyright: '2016 (c) Postlight'
+   *       }
+   *     };
+   *   }
+   *
+   *   return payload;
+   * }
+   *
+   * class ApplicationController extends Controller {
+   *   afterAction = [
+   *     addCopyright
+   *   ];
+   * }
+   *
+   * export default ApplicationController;
+   * ```
    *
    * @property afterAction
-   * @memberof Controller
-   * @instance
+   * @type {Array}
+   * @default []
+   * @public
    */
   afterAction: Array<Controller$afterAction> = [];
 
   /**
-   * The number of records to return for the #index action when a `?limit`
-   * parameter is not specified.
+   * The default amount of items to include per each response of the index
+   * action if a `?page[size]` query parameter is not specified.
    *
    * @property defaultPerPage
-   * @memberof Controller
-   * @instance
+   * @type {Number}
+   * @default 25
+   * @public
    */
   defaultPerPage: number = 25;
 
   /**
-   * A boolean value representing whether or not a `Controller` has a backing
-   * `Model`.
+   * The resolved Model for a Controller
+   * instance.
    *
-   * @property hasModel
-   * @memberof Controller
-   * @instance
+   * @property model
+   * @type {<a href="./Lux.Model.html">Model</a>}
    * @private
    */
-  hasModel: boolean;
+  model: Class<Model>;
 
   /**
-   * A boolean value representing whether or not a `Controller` is a member of
-   * a namespace.
+   * A reference to the root Controller for the namespace that a Controller
+   * instance is a member of.
    *
-   * @property hasNamespace
-   * @memberof Controller
-   * @instance
+   * @property parent
+   * @type {<a href="./Lux.Controller.html">?Controller</a>}
    * @private
    */
-  hasNamespace: boolean;
+  parent: ?Controller;
 
   /**
-   * A boolean value representing whether or not a `Controller` has a backing
-   * `Serializer`.
+   * The namespace that a Controller instance is a member of.
    *
-   * @property hasSerializer
-   * @memberof Controller
-   * @instance
+   * @property namespace
+   * @type {String}
    * @private
    */
-  hasSerializer: boolean;
+  namespace: string;
 
   /**
+   * The resolved Serializer for a
+   * Controller instance.
+   *
    * @property serializer
-   * @memberof Controller
-   * @instance
+   * @type {<a href="./Lux.Serializer.html">Serializer</a>}
    * @private
    */
   serializer: Serializer<*>;
 
   /**
+   * A Map instance containing a reference to all the Controller within a Lux
+   * Application instance.
+   *
    * @property controllers
-   * @memberof Controller
-   * @instance
+   * @type {Map}
    * @private
    */
   controllers: Map<string, Controller>;
+
+  /**
+   * A boolean value representing whether or not a Controller instance has a
+   * Model.
+   *
+   * @property hasModel
+   * @type {Boolean}
+   * @private
+   */
+  hasModel: boolean;
+
+  /**
+   * A boolean value representing whether or not a Controller instance is within
+   * a namespace.
+   *
+   * @property hasNamespace
+   * @type {Boolean}
+   * @private
+   */
+  hasNamespace: boolean;
+
+  /**
+   * A boolean value representing whether or not a Controller instance has a
+   * Serializer.
+   *
+   * @property hasSerializer
+   * @type {Boolean}
+   * @private
+   */
+  hasSerializer: boolean;
 
   constructor({ model, namespace, serializer }: Controller$opts) {
     Object.assign(this, {
@@ -225,39 +578,49 @@ class Controller {
   }
 
   /**
-   * Returns a list of `Model` instances that the Controller instance
-   * represents.
-   *
    * This method supports filtering, sorting, pagination, including
-   * relationships, and sparse fieldsets via query parameters.
+   * relationships, and sparse fieldsets via query parameters. For more
+   * information, see the <a href="https://goo.gl/q7FVgZ" target="_blank">
+   * fetching resources</a> section of the JSON API specification.
    *
-   * @param  {Request} request
-   * @param  {Response} response
+   * @method index
+   * @param {Request} request - The request object.
+   * @param {Response} response - The response object.
+   * @return {Promise} Resolves with an array of Model instances.
+   * @public
    */
   index(req: Request): Query<Array<Model>> {
     return findMany(this.model, req);
   }
 
   /**
-   * Returns a single `Model` instance that the `Controller` instance
-   * represents.
-   *
    * This method supports including relationships, and sparse fieldsets via
-   * query parameters.
+   * query parameters. For more information, see the <a
+   * href="https://goo.gl/q7FVgZ" target="_blank">fetching resources</a> section
+   * of the JSON API specification.
    *
-   * @param  {Request} request
-   * @param  {Response} response
+   * @method show
+   * @param {Request} request - The request object.
+   * @param {Response} response - The response object.
+   * @return {Promise} Resolves with a Model instance with the id equal to the
+   * id url parameter.
+   * @public
    */
   show(req: Request): Query<Model> {
     return findOne(this.model, req);
   }
 
   /**
-   * Create and return a single `Model` instance that the `Controller` instance
-   * represents.
+   * Create and return a single Model instance that the Controller instance
+   * represents. For more information, see the <a href="https://goo.gl/4Obc9t"
+   * target="_blank">creating resources</a> section of the JSON API
+   * specification.
    *
-   * @param  {Request} request
-   * @param  {Response} response
+   * @method create
+   * @param {Request} request - The request object.
+   * @param {Response} response - The response object.
+   * @return {Promise} Resolves with the newly created Model instance.
+   * @public
    */
   create(req: Request, res: Response): Promise<Model> {
     const {
@@ -284,20 +647,28 @@ class Controller {
       .then(record => {
         const { url: { pathname } } = req;
         const id = record.getPrimaryKey();
+        const location = `${getDomain(req) + pathname}/${id}`;
 
         res.statusCode = 201; // eslint-disable-line no-param-reassign
-        res.setHeader('Location', `${getDomain(req) + pathname}/${id}`);
+        res.setHeader('Location', location);
 
         return record;
       });
   }
 
   /**
-   * Update and return a single `Model` instance that the `Controller` instance
-   * represents.
+   * Update and return a single Model instance that the Controller instance
+   * represents. For more information, see the <a href="https://goo.gl/o2ZdOR"
+   * target="_blank">updating resources</a> section of the JSON API
+   * specification.
    *
-   * @param  {Request} request
-   * @param  {Response} response
+   * @method update
+   * @param {Request} request - The request object.
+   * @param {Response} response - The response object.
+   * @return {Promise} Resolves with the updated Model if changes occur.
+   * Resolves with the number `204` if no
+   * changes occur.
+   * @public
    */
   update(req: Request): Promise<number | Model> {
     return findOne(this.model, req).then(record => {
@@ -321,10 +692,7 @@ class Controller {
           }
         } = req;
 
-        return findRelated(
-          controllers,
-          relationships
-        ).then(related => {
+        return findRelated(controllers, relationships).then(related => {
           Object.assign(record, related);
           return record.save(true);
         });
@@ -335,11 +703,16 @@ class Controller {
   }
 
   /**
-   * Destroy a single `Model` instance that the `Controller` instance
-   * represents.
+   * Destroy a single Model instance that the Controller instance represents.
+   * For more information, see the <a href="https://goo.gl/nUZn8t"
+   * target="_blank">deleting resources</a> section of the JSON API
+   * specification.
    *
-   * @param  {Request} request
-   * @param  {Response} response
+   * @method destroy
+   * @param {Request} request - The request object.
+   * @param {Response} response - The response object.
+   * @return {Promise} Resolves with the number `204`.
+   * @public
    */
   destroy(req: Request): Promise<number> {
     return findOne(this.model, req)
@@ -348,11 +721,13 @@ class Controller {
   }
 
   /**
-   * An action handler used for responding to HEAD or OPTIONS requests.
+   * Respond to HEAD or OPTIONS requests.
    *
-   * @param  {Request} request
-   * @param  {Response} response
-   * @private
+   * @method preflight
+   * @param {Request} request - The request object.
+   * @param {Response} response - The response object.
+   * @return {Promise} Resolves with the number `204`.
+   * @public
    */
   preflight(): Promise<number> {
     return Promise.resolve(204);

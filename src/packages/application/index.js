@@ -14,110 +14,102 @@ import type { Application$opts } from './interfaces';
 
 /**
  * The `Application` class is responsible for constructing an application and
- * putting all the moving parts (`Model`, `Controller`, `Serializer`) together.
+ * putting all the moving parts together.
+ *
+ * @module lux-framework
+ * @namespace Lux
+ * @class Application
+ * @constructor
+ * @public
  */
 class Application {
   /**
-   * An absolute path to the root directory of the `Application` instance.
-   *
-   * @example
-   * '/projects/my-app'
+   * The path of `Application` instance.
    *
    * @property path
-   * @memberof Application
-   * @instance
-   * @readonly
+   * @type {String}
+   * @public
    */
   path: string;
 
   /**
-   * The port that the `Application` instance will listen for connections.
+   * The port that an `Application` instance is listening for incomming HTTP
+   * requests.
    *
    * @property port
-   * @memberof Application
-   * @instance
-   * @readonly
+   * @type {Number}
+   * @public
    */
   port: number;
 
   /**
-   * A reference to the instance of `Database`.
+   * A reference to the `Database` instance.
    *
    * @property store
-   * @memberof Application
-   * @instance
-   * @readonly
+   * @type {Database}
    * @private
    */
   store: Database;
 
   /**
-   * A map containing each `Model` class in an application instance.
-   *
-   * @property models
-   * @memberof Application
-   * @instance
-   * @readonly
-   */
-  models: FreezeableMap<string, Class<Model>>;
-
-  /**
-   * A reference to the instance of `Logger`.
+   * A reference to the `Logger` instance.
    *
    * @property logger
-   * @memberof Application
-   * @instance
-   * @readonly
+   * @type {Logger}
+   * @private
    */
   logger: Logger;
 
   /**
-   * A map containing each `Controller` class in an application instance.
+   * A reference to the `Router` instance.
    *
-   * @property controllers
-   * @memberof Application
-   * @instance
-   * @readonly
-   */
-  controllers: FreezeableMap<string, Controller>;
-
-  /**
-   * A map containing each `Serializer` class in an application instance.
-   *
-   * @property serializers
-   * @memberof Application
-   * @instance
-   * @readonly
-   */
-  serializers: FreezeableMap<string, Serializer<*>>;
-
-  /**
-   * A reference to the instance of `Router`.
-   *
-   * @property logger
-   * @memberof Application
-   * @instance
-   * @readonly
+   * @property router
+   * @type {Router}
    * @private
    */
   router: Router;
 
   /**
-   * A reference to the instance of `Server`.
+   * A reference to the `Server` instance.
    *
    * @property server
-   * @memberof Application
-   * @instance
-   * @readonly
+   * @type {Server}
    * @private
    */
   server: Server;
 
   /**
-   * Create an instance of `Application`.
+   * A map containing each `Model` class.
    *
-   * WARNING:
-   * It is highly reccomended that you do not override this method.
+   * @property models
+   * @type {Map}
+   * @private
+   */
+  models: FreezeableMap<string, Class<Model>>;
+
+  /**
+   * A map containing each `Controller` instance.
+   *
+   * @property controllers
+   * @type {Map}
+   * @private
+   */
+  controllers: FreezeableMap<string, Controller>;
+
+  /**
+   * A map containing each `Serializer` instance.
+   *
+   * @property serializers
+   * @type {Map}
+   * @private
+   */
+  serializers: FreezeableMap<string, Serializer<*>>;
+
+  /**
+   * @method constructor
+   * @param {Object} config
+   * @return {Promise}
+   * @public
    */
   constructor(opts: Application$opts): Promise<Application> {
     return initialize(this, merge(createDefaultConfig(), opts));

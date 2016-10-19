@@ -4,7 +4,6 @@ decl
 [ignore]
 .*/lib/.*
 .*/dist/.*
-.*/docs/.*
 .*/scripts/.*
 .*/examples/.*
 .*/node_modules/bcryptjs/*

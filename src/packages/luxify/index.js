@@ -7,6 +7,10 @@ import createResponseProxy from './utils/create-response-proxy';
 /**
  * Convert traditional node HTTP server middleware into a lux compatible
  * function for use in Controller#beforeAction.
+ *
+ * @module lux-framework
+ * @namespace Lux
+ * @function luxify
  */
 export default function luxify(
   middleware: (
@@ -14,7 +18,7 @@ export default function luxify(
     res: Response,
     next: (err?: Error) => void
   ) => void
-): Action<void | ?mixed> {
+): Action<any> {
   const result = function (req, res) { // eslint-disable-line func-names
     return new Promise((resolve, reject) => {
       Reflect.apply(middleware, null, [

@@ -9,6 +9,13 @@ import formatSelect from './utils/format-select';
 import { runQuery, createRunner } from './runner';
 
 /**
+ * I am a Query.
+ *
+ * @module lux-framework/src/packages/database
+ * @namespace Database
+ * @class Query
+ * @constructor
+ * @extends {Promise}
  * @private
  */
 class Query<+T: any> extends Promise {

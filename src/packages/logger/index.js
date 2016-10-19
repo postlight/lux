@@ -17,41 +17,29 @@ import type {
 /**
  * The `Logger` class is responsible for logging messages from an application
  * to `process.stdout` or `process.stdout`.
+ *
+ * @module lux-framework
+ * @namespace Lux
+ * @class Logger
  */
 class Logger {
   /**
    * The level your application should log.
-   *
-   * @property level
-   * @memberof Logger
-   * @instance
    */
   level: Logger$level;
 
   /**
    * The output format of log data.
-   *
-   * @property format
-   * @memberof Logger
-   * @instance
    */
   format: Logger$format;
 
   /**
    * An object containing key value pairs of data to filter before logging.
-   *
-   * @property filter
-   * @memberof Logger
-   * @instance
    */
   filter: Logger$filter;
 
   /**
    * Wether on not logging is enabled for an instance of `Logger`.
-   *
-   * @property enabled
-   * @memberof Logger
-   * @instance
    */
   enabled: boolean;
 
@@ -67,10 +55,6 @@ class Logger {
    * logger.debug(status);
    *
    * // => [6/4/16 5:46:53 PM] Did this work?
-   *
-   * @method debug
-   * @memberof Logger
-   * @instance
    */
   debug: Logger$logFn;
 
@@ -86,10 +70,6 @@ class Logger {
    * logger.info(status);
    *
    * // => [6/4/16 5:46:53 PM] Everything is going fine!
-   *
-   * @method info
-   * @memberof Logger
-   * @instance
    */
   info: Logger$logFn;
 
@@ -113,10 +93,6 @@ class Logger {
    *
    * // => [6/4/16 5:46:53 PM] Rescued "TypeError: undefined is not a function."
    * // => [6/4/16 5:46:53 PM] Everthing is all good!
-   *
-   * @method warn
-   * @memberof Logger
-   * @instance
    */
   warn: Logger$logFn;
 
@@ -136,19 +112,12 @@ class Logger {
    * }
    *
    * // => [6/4/16 5:46:53 PM] TypeError: undefined is not a function.
-   *
-   * @method error
-   * @memberof Logger
-   * @instance
    */
   error: Logger$logFn;
 
   /**
    * Internal method used for logging requests.
    *
-   * @method request
-   * @memberof Logger
-   * @instance
    * @private
    */
   request: Logger$RequestLogger;

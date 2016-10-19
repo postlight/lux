@@ -6,9 +6,6 @@ dist/
 # tests
 test/
 
-# docs
-docs/
-
 # dependencies
 node_modules/
 

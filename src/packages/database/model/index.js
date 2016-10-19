@@ -19,13 +19,24 @@ import initializeClass from './initialize-class';
 import getColumns from './utils/get-columns';
 import validate from './utils/validate';
 
+/**
+ * ## Overview
+ *
+ *
+ * @module lux-framework
+ * @namespace Lux
+ * @class Model
+ * @constructor
+ * @public
+ */
 class Model {
   /**
    * The name of the corresponding database table for a `Model` instance's
    * constructor.
    *
    * @property tableName
-   * @memberof Model
+   * @type {String}
+   * @public
    */
   tableName: string;
 
@@ -33,8 +44,8 @@ class Model {
    * The canonical name of a `Model`'s constructor.
    *
    * @property modelName
-   * @memberof Model
-   * @instance
+   * @type {String}
+   * @public
    */
   modelName: string;
 
@@ -42,32 +53,42 @@ class Model {
    * The name of the API resource a `Model` instance's constructor represents.
    *
    * @property resourceName
-   * @memberof Model
-   * @instance
+   * @type {String}
+   * @public
    */
   resourceName: string;
 
   /**
+   * @property initialized
+   * @type {Boolean}
    * @private
    */
   initialized: boolean;
 
   /**
+   * @property rawColumnData
+   * @type {Boolean}
    * @private
    */
   rawColumnData: Object;
 
   /**
+   * @property initialValues
+   * @type {Map}
    * @private
    */
   initialValues: Map<string, mixed>;
 
   /**
+   * @property dirtyAttributes
+   * @type {Set}
    * @private
    */
   dirtyAttributes: Set<string>;
 
   /**
+   * @property prevAssociations
+   * @type {Set}
    * @private
    */
   isModelInstance: boolean;
@@ -82,23 +103,19 @@ class Model {
    * `Model` is a part of.
    *
    * @property logger
-   * @memberof Model
+   * @type {Logger}
+   * @static
+   * @public
    */
   static logger: Logger;
-
-  /**
-   * The column name to use for a `Model`'s primaryKey.
-   *
-   * @property primaryKey
-   * @memberof Model
-   */
-  static primaryKey: string = 'id';
 
   /**
    * The name of the corresponding database table for a `Model`.
    *
    * @property tableName
-   * @memberof Model
+   * @type {String}
+   * @static
+   * @public
    */
   static tableName: string;
 
@@ -106,7 +123,9 @@ class Model {
    * The canonical name of a `Model`.
    *
    * @property modelName
-   * @memberof Model
+   * @type {String}
+   * @static
+   * @public
    */
   static modelName: string;
 
@@ -114,46 +133,82 @@ class Model {
    * The name of the API resource a `Model` represents.
    *
    * @property resourceName
-   * @memberof Model
+   * @type {String}
+   * @static
+   * @public
    */
   static resourceName: string;
 
   /**
+   * The column name to use for a `Model`'s primaryKey.
+   *
+   * @property primaryKey
+   * @type {String}
+   * @static
+   * @public
+   */
+  static primaryKey: string = 'id';
+
+  /**
+   * @property table
+   * @type {Function}
+   * @static
    * @private
    */
   static table;
 
   /**
+   * @property store
+   * @type {Database}
+   * @static
    * @private
    */
   static store: Database;
 
   /**
+   * @property initialized
+   * @type {Boolean}
+   * @static
    * @private
    */
   static initialized: boolean;
 
   /**
+   * @property serializer
+   * @type {Serializer}
+   * @static
    * @private
    */
   static serializer: Serializer<this>;
 
   /**
+   * @property attributes
+   * @type {Object}
+   * @static
    * @private
    */
   static attributes: Object;
 
   /**
+   * @property attributeNames
+   * @type {Array}
+   * @static
    * @private
    */
   static attributeNames: Array<string>;
 
   /**
+   * @property relationships
+   * @type {Object}
+   * @static
    * @private
    */
   static relationships: Object;
 
   /**
+   * @property relationshipNames
+   * @type {Array}
+   * @static
    * @private
    */
   static relationshipNames: Array<string>;
@@ -215,14 +270,101 @@ class Model {
     return this;
   }
 
+  /**
+   * Indicates if the model is new.
+   *
+   * ```javascript
+   * import Post from 'app/models/post';
+   *
+   * let post = new Post({
+   *   body: '',
+   *   title: 'New Post',
+   *   isPublic: false
+   * });
+   *
+   * post.isNew;
+   * // => true
+   *
+   * Post.create({
+   *   body: '',
+   *   title: 'New Post',
+   *   isPublic: false
+   * }).then(post => {
+   *   post.isNew;
+   *   // => false;
+   * });
+   * ```
+   *
+   * @property isNew
+   * @type {Boolean}
+   * @public
+   */
   get isNew(): boolean {
     return NEW_RECORDS.has(this);
   }
 
+  /**
+   * Indicates if the model is dirty.
+   *
+   * ```javascript
+   * import Post from 'app/models/post';
+   *
+   * Post
+   *  .find(1)
+   *  .then(post => {
+   *     post.isDirty;
+   *     // => false
+   *
+   *     post.isPublic = true;
+   *
+   *     post.isDirty;
+   *     // => true
+   *
+   *     return post.save();
+   *   })
+   *   .then(post => {
+   *     post.isDirty;
+   *     // => false
+   *   });
+   * ```
+   *
+   * @property isDirty
+   * @type {Boolean}
+   * @public
+   */
   get isDirty(): boolean {
     return Boolean(this.dirtyAttributes.size);
   }
 
+  /**
+   * Indicates if the model is persisted.
+   *
+   * ```javascript
+   * import Post from 'app/models/post';
+   *
+   * Post
+   *  .find(1)
+   *  .then(post => {
+   *     post.persisted;
+   *     // => true
+   *
+   *     post.isPublic = true;
+   *
+   *     post.persisted;
+   *     // => false
+   *
+   *     return post.save();
+   *   })
+   *   .then(post => {
+   *     post.persisted;
+   *     // => true
+   *   });
+   * ```
+   *
+   * @property persisted
+   * @type {Boolean}
+   * @public
+   */
   get persisted(): boolean {
     return !this.isNew && !this.isDirty;
   }
