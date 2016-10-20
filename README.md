@@ -1,4 +1,4 @@
-![Lux](https://lux.postlight.com/assets/logo-lux.svg)
+[![Lux](https://lux.postlight.com/assets/logo-lux.svg)](https://lux.postlight.com)
 --
 
 [![CircleCI](https://circleci.com/gh/postlight/lux/tree/master.svg?style=svg)](https://circleci.com/gh/postlight/lux/tree/master) [![Build status](https://ci.appveyor.com/api/projects/status/xxwunscfe3rsxdmr/branch/master?svg=true)](https://ci.appveyor.com/project/zacharygolba/lux/branch/master) [![codecov](https://codecov.io/gh/postlight/lux/branch/master/graph/badge.svg)](https://codecov.io/gh/postlight/lux)
