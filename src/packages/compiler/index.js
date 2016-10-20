@@ -8,7 +8,6 @@ import eslint from 'rollup-plugin-eslint';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import { rollup } from 'rollup';
 
-import { BACKSLASH } from '../../constants';
 import { rmrf, readdir, readdirRec, isJSFile } from '../fs';
 import template from '../template';
 
