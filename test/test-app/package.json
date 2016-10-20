@@ -13,7 +13,7 @@
     "babel-core": "6.17.0",
     "babel-preset-lux": "1.3.0",
     "bcryptjs": "2.3.0",
-    "knex": "0.12.5",
+    "knex": "0.12.6",
     "mssql": "3.3.0",
     "mysql2": "1.1.1",
     "pg": "6.1.0",
