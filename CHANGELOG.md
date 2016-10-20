@@ -1,6 +1,13 @@
 # Lux Changelog
 
-### 1.0.0 (Oct 19, 2016)
+### 1.0.1 (Oct 20, 2016)
+
+##### Commits
+
+*   [[`f27eab4e66`](https://github.com/postlight/lux/commit/f27eab4e66)] - **fix**: readdir error is causing cli commands to fail (#476) (Zachary Golba)
+*   [[`2deea84ab9`](https://github.com/postlight/lux/commit/2deea84ab9)] - **release**: 1.0.0 🎉 (#472) (Zachary Golba)
+
+### 1.0.0 (Oct 20, 2016)
 
 ##### Commits
 
