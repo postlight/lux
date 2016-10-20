@@ -1,5 +1,4 @@
-![Lux](https://lux.postlight.com/assets/logo-lux.svg)
-=====================================================
+# ![Lux](https://lux.postlight.com/assets/logo-lux.svg)
 
 [![CircleCI](https://circleci.com/gh/postlight/lux/tree/master.svg?style=svg)](https://circleci.com/gh/postlight/lux/tree/master) [![Build status](https://ci.appveyor.com/api/projects/status/xxwunscfe3rsxdmr/branch/master?svg=true)](https://ci.appveyor.com/project/zacharygolba/lux/branch/master) [![codecov](https://codecov.io/gh/postlight/lux/branch/master/graph/badge.svg)](https://codecov.io/gh/postlight/lux)
  [![Dependency Status](https://david-dm.org/postlight/lux.svg)](https://david-dm.org/postlight/lux) [![npm version](https://badge.fury.io/js/lux-framework.svg)](https://badge.fury.io/js/lux-framework) [![Join the chat at https://gitter.im/postlight/lux](https://badges.gitter.im/postlight/lux.svg)](https://gitter.im/postlight/lux?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -14,8 +13,7 @@ This isn't another wrapper around [Express](http://expressjs.com/) or a framewor
 
 [Check out the Medium Article!](https://trackchanges.postlight.com/not-another-node-js-framework-33103ebeedf8)
 
-What?
------
+## What?
 
 ### Features
 
@@ -55,8 +53,7 @@ Serving content is done by returning objects, arrays, or other primitives rather
 [Rails](http://rubyonrails.org/) and [Ember](http://emberjs.com/) are great because they make hard decisions for you and make it possible to submit a PR on your first day at a new company. This is rare with Node server frameworks.
 
 
-Why?
-----
+## Why?
 
 Frameworks like Rails are pretty great. You can build amazing applications in a reasonable amount of time without a ton of developers working on a project. They have their limitations though. They can be slow and sometimes hard to scale. Not to mention WebSocket support being so-so.
 
@@ -115,8 +112,7 @@ class PostsController extends Controller {
 It's about time a Node server framework learned something from client-side JS frameworks.
 
 
-How?
-----
+## How?
 
 ### Installation
 
@@ -144,14 +140,12 @@ lux serve
 For more information checkout out the [Guides](https://lux.postlight.com/).
 
 
-Benchmarks
-----------
+## Benchmarks
 
 [**postlight/lux-benchmarks**](https://github.com/postlight/lux-benchmarks)
 
 
-Contributing
-------------
+## Contributing
 
 ### Installation
 
@@ -179,8 +173,7 @@ cd ../../
 npm test
 ```
 
-Useful Links
-------------
+## Useful Links
 
 *   [JSON API](http://jsonapi.org/)
 *   [Knex.js](http://knexjs.org/)
