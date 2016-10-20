@@ -8,8 +8,9 @@ import eslint from 'rollup-plugin-eslint';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import { rollup } from 'rollup';
 
-import { rmrf, readdir, readdirRec, isJSFile } from '../fs';
+import { rmrf, exists, readdir, readdirRec, isJSFile } from '../fs';
 import template from '../template';
+import uniq from '../../utils/uniq';
 
 import normalizePath from './utils/normalize-path';
 import createManifest from './utils/create-manifest';
@@ -30,9 +31,17 @@ export async function compile(dir: string, env: string, {
   const entry = path.join(dir, 'dist', 'index.js');
 
   const nodeModules = path.join(dir, 'node_modules');
-  const external = await readdir(nodeModules).then(files => (
+  const luxNodeModules = path.join(__dirname, '..', 'node_modules');
+  let external = await readdir(nodeModules).then(files => (
     files.filter(name => name !== 'lux-framework')
   ));
+
+  if (await exists(luxNodeModules)) {
+    external = uniq([
+      ...external,
+      ...(await readdir(luxNodeModules))
+    ]);
+  }
 
   const assets = await Promise.all([
     readdir(path.join(dir, 'app', 'models')),
