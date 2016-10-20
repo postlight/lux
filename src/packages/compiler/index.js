@@ -31,14 +31,8 @@ export async function compile(dir: string, env: string, {
   const entry = path.join(dir, 'dist', 'index.js');
 
   const nodeModules = path.join(dir, 'node_modules');
-  const luxNodeModules = path.join(__dirname, '..', 'node_modules');
-  const sourceMapSupport = path.join(luxNodeModules, 'source-map-support');
-
-  const external = await Promise.all([
-    readdir(nodeModules),
-    readdir(luxNodeModules)
-  ]).then(([a, b]: [Array<string>, Array<string>]) => (
-    a.concat(b).filter(name => name !== 'lux-framework')
+  const external = await readdir(nodeModules).then(files => (
+    files.filter(name => name !== 'lux-framework')
   ));
 
   const assets = await Promise.all([
@@ -76,7 +70,6 @@ export async function compile(dir: string, env: string, {
     createManifest(dir, assets, {
       useStrict
     }),
-
     createBootScript(dir, {
       useStrict
     })
@@ -86,7 +79,6 @@ export async function compile(dir: string, env: string, {
     entry,
     onwarn,
     external,
-
     plugins: [
       alias({
         resolve: ['.js'],
@@ -120,9 +112,7 @@ export async function compile(dir: string, env: string, {
   await rmrf(entry);
 
   banner = template`
-    const srcmap = require('${
-      sourceMapSupport.replace(BACKSLASH, '/')
-    }').install({
+    const srcmap = require('source-map-support').install({
       environment: 'node'
     });
   `;
