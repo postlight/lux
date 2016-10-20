@@ -141,12 +141,12 @@ The example above would create the columns `commentable_id` and `commentable_typ
 
 Below is a list of features that will likely be a part of the `1.0` release but their API is still in very early stages.
 
-- WebSockets
-  - Controller API
-  - Model Hook API
+*   WebSockets
+    *   Controller API
+    *   Model Hook API
 
-- Application Testing
-  - Test Generators
-  - Debugging Tools
-  - ~~Generated SQL Logging ([#48](https://github.com/postlight/lux/issues/48))~~
-    - Implemented in #65
+*   Application Testing
+    *   Test Generators
+    *   Debugging Tools
+    *   ~~Generated SQL Logging ([#48](https://github.com/postlight/lux/issues/48))~~
+        *   Implemented in #65

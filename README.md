@@ -1,5 +1,4 @@
-[![Lux](https://lux.postlight.com/assets/logo-lux.svg)](https://lux.postlight.com)
---
+# [![Lux](https://lux.postlight.com/assets/logo-lux.svg)](https://lux.postlight.com)
 
 [![CircleCI](https://circleci.com/gh/postlight/lux/tree/master.svg?style=svg)](https://circleci.com/gh/postlight/lux/tree/master) [![Build status](https://ci.appveyor.com/api/projects/status/xxwunscfe3rsxdmr/branch/master?svg=true)](https://ci.appveyor.com/project/zacharygolba/lux/branch/master) [![codecov](https://codecov.io/gh/postlight/lux/branch/master/graph/badge.svg)](https://codecov.io/gh/postlight/lux)
  [![Dependency Status](https://david-dm.org/postlight/lux.svg)](https://david-dm.org/postlight/lux) [![npm version](https://badge.fury.io/js/lux-framework.svg)](https://badge.fury.io/js/lux-framework) [![Join the chat at https://gitter.im/postlight/lux](https://badges.gitter.im/postlight/lux.svg)](https://gitter.im/postlight/lux?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -18,21 +17,21 @@ This isn't another wrapper around [Express](http://expressjs.com/) or a framewor
 
 ### Features
 
-* Automatic CRUD actions in controllers
-* Automatic pagination, sorting, filtering via query params in controllers
-* CLI for eliminating boiler plate
-* [JSON API](http://jsonapi.org/) 1.0 compliant out of the box
-* Optimized database queries based on serialized attributes and associations
-* Highly extensible - just write reusable JavaScript functions
-* Pairs nicely with client-side JavaScript applications 🍷
-* Easy to contribute
-* Routes are stored and accessed via a `Map` not an `Array`
-* Embraces ES2015 and beyond
-  * Classes
-  * Modules
-  * Promises & async/await
-  * Arrow Functions
-  * etc.
+*   Automatic CRUD actions in controllers
+*   Automatic pagination, sorting, filtering via query params in controllers
+*   CLI for eliminating boiler plate
+*   [JSON API](http://jsonapi.org/) 1.0 compliant out of the box
+*   Optimized database queries based on serialized attributes and associations
+*   Highly extensible - just write reusable JavaScript functions
+*   Pairs nicely with client-side JavaScript applications 🍷
+*   Easy to contribute
+*   Routes are stored and accessed via a `Map` not an `Array`
+*   Embraces ES2015 and beyond
+    *   Classes
+    *   Modules
+    *   Promises & async/await
+    *   Arrow Functions
+    *   etc.
 
 
 ### Philosophies
@@ -143,7 +142,7 @@ For more information checkout out the [Guides](https://lux.postlight.com/).
 
 ## Benchmarks
 
-https://github.com/postlight/lux-benchmarks
+[**postlight/lux-benchmarks**](https://github.com/postlight/lux-benchmarks)
 
 
 ## Contributing
@@ -176,6 +175,6 @@ npm test
 
 ## Useful Links
 
-* [JSON API](http://jsonapi.org/)
-* [Knex.js](http://knexjs.org/)
-* [Chai](http://chaijs.com/) / [Mocha](http://mochajs.org/)
+*   [JSON API](http://jsonapi.org/)
+*   [Knex.js](http://knexjs.org/)
+*   [Chai](http://chaijs.com/) / [Mocha](http://mochajs.org/)
