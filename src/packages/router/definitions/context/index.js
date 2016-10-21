@@ -81,7 +81,15 @@ export function contextFor(build: Router$DefinitionBuilder<*>) {
               path = namespace.path + opts.path;
             }
 
-            const controllerKey = path.substr(1);
+            const controllerKey = path
+              .split('/')
+              .filter(Boolean)
+              .reduce((arr, str, index, parts) => [
+                ...arr,
+                index === parts.length - 1 ? opts.name : str
+              ], [])
+              .join('/');
+
             const controller = controllers.get(controllerKey);
 
             if (!controller) {

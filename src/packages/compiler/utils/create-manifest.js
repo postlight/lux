@@ -44,13 +44,6 @@ function createWriter(file: string) {
         const path = joinPath('app', pluralize(type), item);
         const name = chain(item)
           .pipe(formatName)
-          .pipe(str => {
-            if (str.endsWith('Application')) {
-              return str;
-            }
-
-            return pluralize(str);
-          })
           .pipe(str => str + capitalize(type))
           .value();
 
