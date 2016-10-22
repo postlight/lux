@@ -61,7 +61,7 @@
     "chai": "3.5.0",
     "codecov": "1.0.1",
     "eslint-config-airbnb-base": "9.0.0",
-    "eslint-plugin-flowtype": "2.20.0",
+    "eslint-plugin-flowtype": "2.21.0",
     "eslint-plugin-import": "2.0.1",
     "faker": "3.1.0",
     "flow-bin": "0.33.0",
