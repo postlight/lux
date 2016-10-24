@@ -1,5 +1,13 @@
 # Lux Changelog
 
+### 1.0.2 (Oct 24, 2016)
+
+##### Commits
+
+*   [[`bbf68000ea`](https://github.com/postlight/lux/commit/bbf68000ea)] - **fix**: controllers are not properly resolving for resources with custom paths (#478) (Zachary Golba)
+*   [[`1a52cc1cec`](https://github.com/postlight/lux/commit/1a52cc1cec)] - **deps**: update eslint-plugin-flowtype to version 2.21.0 (#479) (Greenkeeper)
+*   [[`fe35b45935`](https://github.com/postlight/lux/commit/fe35b45935)] - **release**: 1.0.1 🔧 (#477) (Zachary Golba)
+
 ### 1.0.1 (Oct 20, 2016)
 
 ##### Commits
