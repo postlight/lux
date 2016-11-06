@@ -1,7 +1,7 @@
 // @flow
 import entries from '../../../../../utils/entries';
 
-const DELIMITER = /^(.+)\[(.+)\]$/g;
+const DELIMITER = /^(.+)\[(.+)]$/g;
 
 /**
  * @private
