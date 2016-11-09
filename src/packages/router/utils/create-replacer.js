@@ -25,7 +25,7 @@ export default function createReplacer(
       return namespace
         .split('/')
         .reduce((str, part) => (
-          str.replace(new RegExp(`${part}`, 'ig'), '')
+          str.replace(new RegExp(part, 'ig'), '')
         ), name);
     })
     .filter((str, idx, arr) => idx === arr.lastIndexOf(str))
