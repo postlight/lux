@@ -4,9 +4,8 @@ import Namespace from '../../namespace';
 import K from '../../../../utils/k';
 import type { Router$Namespace } from '../../index'; // eslint-disable-line max-len, no-unused-vars
 import type { Router$DefinitionBuilder } from '../interfaces';
-import {
-  default as ControllerMissingError
-} from '../../../../errors/controller-missing-error';
+import ControllerMissingError
+  from '../../../../errors/controller-missing-error';
 
 import createDefinitionGroup from './utils/create-definition-group';
 import normalizeResourceArgs from './utils/normalize-resource-args';

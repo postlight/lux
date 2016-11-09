@@ -12,10 +12,10 @@ import { rmrf, exists, readdir, readdirRec, isJSFile } from '../fs';
 import template from '../template';
 import uniq from '../../utils/uniq';
 
+import onwarn from './utils/handle-warning';
 import normalizePath from './utils/normalize-path';
 import createManifest from './utils/create-manifest';
 import createBootScript from './utils/create-boot-script';
-import { default as onwarn } from './utils/handle-warning';
 
 /**
  * @private

@@ -8,9 +8,9 @@ const trailingWhitespace = /\s+$/;
  * @private
  */
 export default function template(
- strings: Array<string>,
- ...values: Array<mixed>
-) {
+  strings: Array<string>,
+  ...values: Array<mixed>
+): string {
   const compiled = insertValues(strings, ...values);
   let [body] = compiled.match(bodyPattern) || [];
   let indentLevel = /^\s{0,4}(.+)$/g;
