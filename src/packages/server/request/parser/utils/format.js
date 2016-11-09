@@ -1,7 +1,7 @@
 // @flow
 import { camelize } from 'inflection';
 
-import { INT, BOOL, DATE, TRUE, BRACKETS } from '../constants';
+import { INT, NULL, BOOL, DATE, TRUE, BRACKETS } from '../constants';
 import isNull from '../../../../../utils/is-null';
 import entries from '../../../../../utils/entries';
 import underscore from '../../../../../utils/underscore';
@@ -23,13 +23,19 @@ function makeArray(source: string | Array<string>): Array<string> {
  * @private
  */
 function formatString(source: string, method: Request$method): mixed {
-  if (method === 'GET' && source.indexOf(',') >= 0) {
-    return source.split(',').map(str => camelize(underscore(str), true));
-  } else if (INT.test(source)) {
-    return Number.parseInt(source, 10);
-  } else if (BOOL.test(source)) {
-    return TRUE.test(source);
-  } else if (DATE.test(source)) {
+  if (method === 'GET') {
+    if (source.indexOf(',') >= 0) {
+      return source.split(',').map(str => camelize(underscore(str), true));
+    } else if (INT.test(source)) {
+      return Number.parseInt(source, 10);
+    } else if (BOOL.test(source)) {
+      return TRUE.test(source);
+    } else if (NULL.test(source)) {
+      return null;
+    }
+  }
+
+  if (DATE.test(source)) {
     return new Date(source);
   }
 
