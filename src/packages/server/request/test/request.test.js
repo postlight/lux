@@ -89,10 +89,15 @@ describe('module "server/request"', () => {
 
   describe('#parseRequest()', () => {
     it('can parse params from a GET request', () => {
+      const now = new Date().toISOString();
       const url = '/posts?'
         + 'fields[posts]=body,title'
         + '&fields[users]=name'
-        + '&include=user';
+        + '&include=user'
+        + '&filter[is-public]=true'
+        + '&filter[title]=123'
+        + '&filter[body]=null'
+        + `&filter[created-at]=${now}`;
 
       return test(url, {
         method: 'GET'
@@ -101,12 +106,27 @@ describe('module "server/request"', () => {
 
         expect(params).to.deep.equal({
           fields: ['body', 'title'],
-          include: ['user']
+          include: ['user'],
+          filter: {
+            body: null,
+            title: 123,
+            isPublic: true
+          }
         });
+
+        expect(params)
+          .to.have.deep.property('filter.createdAt')
+          .and.be.an.instanceOf(Date);
+
+        expect(
+          params.filter.createdAt.valueOf()
+        ).to.equal(new Date(now).valueOf());
       });
     });
 
     it('can parse params from a POST request', () => {
+      const now = new Date().toISOString();
+
       return test('/posts?include=user', {
         method: 'POST',
         body: {
@@ -114,7 +134,11 @@ describe('module "server/request"', () => {
             type: 'posts',
             attributes: {
               title: 'New Post 1',
-              'is-public': true
+              'is-public': true,
+              intString: '123',
+              nullString: 'null',
+              boolString: 'true',
+              dateString: now
             },
             relationships: {
               user: {
@@ -153,7 +177,11 @@ describe('module "server/request"', () => {
             type: 'posts',
             attributes: {
               title: 'New Post 1',
-              isPublic: true
+              isPublic: true,
+              intString: '123',
+              nullString: 'null',
+              boolString: 'true',
+              dateString: now
             },
             relationships: {
               user: {
@@ -186,6 +214,8 @@ describe('module "server/request"', () => {
     });
 
     it('can parse params from a PATCH request', () => {
+      const now = new Date().toISOString();
+
       return test('/posts/1?include=user', {
         method: 'PATCH',
         data: {
@@ -193,7 +223,11 @@ describe('module "server/request"', () => {
           type: 'posts',
           attributes: {
             title: 'New Post 1',
-            'is-public': true
+            'is-public': true,
+            intString: '123',
+            nullString: 'null',
+            boolString: 'true',
+            dateString: now
           },
           relationships: {
             user: {
@@ -231,7 +265,11 @@ describe('module "server/request"', () => {
             type: 'posts',
             attributes: {
               title: 'New Post 1',
-              isPublic: true
+              isPublic: true,
+              intString: '123',
+              nullString: 'null',
+              boolString: 'true',
+              dateString: now
             },
             relationships: {
               user: {
