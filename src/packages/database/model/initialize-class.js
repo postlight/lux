@@ -94,8 +94,9 @@ function initializeValidations(opts) {
 
       if (!isValid) {
         logger.warn(line`
-          Invalid validation '${key}' will not be added to Model '${model.name}'.
-          '${key}' is not an attribute of Model '${model.name}'.
+          Invalid validation '${key}' will not be added to Model 
+          '${model.name}'. '${key}' is not an attribute of Model 
+          '${model.name}'.
         `);
       }
 
@@ -103,8 +104,8 @@ function initializeValidations(opts) {
         isValid = false;
 
         logger.warn(line`
-          Invalid validation '${key}' will not be added to Model '${model.name}'.
-          Validations must be a function.
+          Invalid validation '${key}' will not be added to Model 
+          '${model.name}'. Validations must be a function.
         `);
       }
 
