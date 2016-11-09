@@ -9,9 +9,25 @@ export default function createReplacer(
 ): RegExp {
   const names = Array
     .from(controllers)
-    .map(([, { model }]) => model)
-    .filter(Boolean)
-    .map(({ resourceName }) => resourceName)
+    .map(([, controller]) => {
+      const { model, namespace } = controller;
+
+      if (model) {
+        return model.resourceName;
+      }
+
+      let { constructor: { name } } = controller;
+
+      name = name
+        .replace(/controller/ig, '')
+        .toLowerCase();
+
+      return namespace
+        .split('/')
+        .reduce((str, part) => (
+          str.replace(new RegExp(`${part}`, 'ig'), '')
+        ), name);
+    })
     .filter((str, idx, arr) => idx === arr.lastIndexOf(str))
     .join('|');
 

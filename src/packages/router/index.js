@@ -6,7 +6,7 @@ import Namespace from './namespace';
 import { build, define } from './definitions';
 import createReplacer from './utils/create-replacer';
 import type { Router$opts } from './interfaces';
-import type Route from './route'; // eslint-disable-line no-duplicate-imports
+import type Route from './route';
 
 /**
  * @private
