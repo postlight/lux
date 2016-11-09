@@ -25,7 +25,7 @@
     "lint": "remark . && eslint .",
     "start": "lux serve",
     "test": "npm run build && nyc -i ./lib/babel-hook.js --instrument false --source-map false mocha -r ./lib/babel-hook.js test/index.js src/**/*.test.js",
-    "test:codecov": "nyc report --reporter=lcov > coverage.lcov && bash <(curl -s https://codecov.io/bash)"
+    "test:codecov": "nyc report --reporter=lcov > coverage.lcov && curl -s https://codecov.io/bash | bash"
   },
   "author": "Zachary Golba",
   "license": "MIT",
