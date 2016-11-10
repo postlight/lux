@@ -71,12 +71,12 @@ describe('module "freezeable"', () => {
         subject.delete('d');
         expect(subject.size).to.equal(4);
 
-        expect(subject.get('d')).to.not.be.frozen;
+        expect(Object.isFrozen(subject.get('d'))).to.be.false;
       });
 
       it('can recursively freeze members when `deep = true`', () => {
         subject.freeze(true);
-        expect(subject.get('d')).to.be.frozen;
+        expect(Object.isFrozen(subject.get('d'))).to.be.true;
       });
     });
   });
@@ -142,7 +142,7 @@ describe('module "freezeable"', () => {
 
         subject.forEach(member => {
           if (typeof member === 'object') {
-            expect(member).to.not.be.frozen;
+            expect(Object.isFrozen(member)).to.be.false;
           }
         });
       });
@@ -151,7 +151,7 @@ describe('module "freezeable"', () => {
         subject.freeze(true);
         subject.forEach(member => {
           if (typeof member === 'object') {
-            expect(member).to.be.frozen;
+            expect(Object.isFrozen(member)).to.be.true;
           }
         });
       });

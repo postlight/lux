@@ -12,4 +12,5 @@ node_modules/
 # misc
 decl/
 examples/
+flow-typed/
 *interfaces.js

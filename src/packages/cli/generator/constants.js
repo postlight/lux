@@ -1,4 +1,5 @@
 // @flow
+// $FlowIgnore
 import { dim } from 'chalk';
 
 import template from '../../template';
