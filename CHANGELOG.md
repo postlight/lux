@@ -1,5 +1,33 @@
 # Lux Changelog
 
+### 1.0.3 (Nov 10, 2016)
+
+##### Commits
+
+*   [[`53378f622b`](https://github.com/postlight/lux/commit/53378f622b)] - **fix**: dynamic segments are not parsed on model-less resources (#510) (Zachary Golba)
+*   [[`56321bb7df`](https://github.com/postlight/lux/commit/56321bb7df)] - **fix**: small typos in model initialize-class.js (#505) (Nick Schot)
+*   [[`7769865731`](https://github.com/postlight/lux/commit/7769865731)] - **chore**: use codecov bash uploader (#511) (Zachary Golba)
+*   [[`edb4635b8c`](https://github.com/postlight/lux/commit/edb4635b8c)] - **fix**: some strings in request body cast to another type (#506) (Zachary Golba)
+*   [[`dea08354ab`](https://github.com/postlight/lux/commit/dea08354ab)] - **deps**: update eslint-config-airbnb-base to version 10.0.1 🚀 (#503) (Greenkeeper)
+*   [[`b7435570fc`](https://github.com/postlight/lux/commit/b7435570fc)] - **deps**: update eslint-plugin-import to version 2.2.0 (#504) (Greenkeeper)
+*   [[`18ba638610`](https://github.com/postlight/lux/commit/18ba638610)] - **deps**: update babel-plugin-transform-es2015-modules-commonjs to version 6.18.0 (#500) (Zachary Golba)
+*   [[`59a16f19ca`](https://github.com/postlight/lux/commit/59a16f19ca)] - **deps**: update eslint to version 3.9.1 (#501) (Zachary Golba)
+*   [[`e12eb406d2`](https://github.com/postlight/lux/commit/e12eb406d2)] - **deps**: update eslint-plugin-import to version 2.1.0 (#498) (Greenkeeper)
+*   [[`7b1c48b4aa`](https://github.com/postlight/lux/commit/7b1c48b4aa)] - **deps**: update eslint to version 3.9.0 🚀 (#489) (Greenkeeper)
+*   [[`61c37cc4de`](https://github.com/postlight/lux/commit/61c37cc4de)] - **deps**: update source-map-support to version 0.4.6 (#492) (Greenkeeper)
+*   [[`055bf5f5fe`](https://github.com/postlight/lux/commit/055bf5f5fe)] - **deps**: update babel-core to version 6.18.2 (#496) (Greenkeeper)
+*   [[`63db399c8c`](https://github.com/postlight/lux/commit/63db399c8c)] - **deps**: update nyc to version 8.4.0 (#497) (Greenkeeper)
+*   [[`26ba4e5a21`](https://github.com/postlight/lux/commit/26ba4e5a21)] - **deps**: update remark-lint to version 5.2.0 (#494) (Greenkeeper)
+*   [[`46f223b77f`](https://github.com/postlight/lux/commit/46f223b77f)] - **deps**: update flow-bin to version 0.34.0 (#490) (Greenkeeper)
+*   [[`71214e17ff`](https://github.com/postlight/lux/commit/71214e17ff)] - **deps**: update remark-cli to version 2.1.0 (#488) (Greenkeeper)
+*   [[`748b26b577`](https://github.com/postlight/lux/commit/748b26b577)] - **deps**: update babel-eslint to version 7.1.0 (#487) (Greenkeeper)
+*   [[`d98139e08c`](https://github.com/postlight/lux/commit/d98139e08c)] - **deps**: update eslint-plugin-flowtype to version 2.25.0 (#486) (Greenkeeper)
+*   [[`40bea0b2d1`](https://github.com/postlight/lux/commit/40bea0b2d1)] - **deps**: update eslint-plugin-flowtype to version 2.24.0 (#485) (Greenkeeper)
+*   [[`edaec79e12`](https://github.com/postlight/lux/commit/edaec79e12)] - **deps**: update babel-core to version 6.18.0 (#483) (Greenkeeper)
+*   [[`ce25efdad7`](https://github.com/postlight/lux/commit/ce25efdad7)] - **deps**: update eslint-plugin-flowtype to version 2.23.1 (#484) (Greenkeeper)
+*   [[`be7fef2034`](https://github.com/postlight/lux/commit/be7fef2034)] - **deps**: update eslint-plugin-flowtype to version 2.22.0 (#481) (Greenkeeper)
+*   [[`3e578257f9`](https://github.com/postlight/lux/commit/3e578257f9)] - **release**: 1.0.2 🔧 (#480) (Zachary Golba)
+
 ### 1.0.2 (Oct 24, 2016)
 
 ##### Commits
