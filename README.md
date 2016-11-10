@@ -1,7 +1,7 @@
 # [![Lux](https://lux.postlight.com/assets/logo-lux.svg)](https://lux.postlight.com)
 
-[![CircleCI branch](https://img.shields.io/circleci/project/github/postlight/lux/master.svg?style=flat-square)]() [![AppVeyor](https://img.shields.io/appveyor/ci/zacharygolba/lux.svg?style=flat-square)]() [![Codecov branch](https://img.shields.io/codecov/c/github/postlight/lux/master.svg?style=flat-square)]()
- [![David](https://img.shields.io/david/postlight/lux.svg?style=flat-square)]() [![npm](https://img.shields.io/npm/v/lux-framework.svg?style=flat-square)]() [![Gitter](https://img.shields.io/gitter/room/postlight/lux.svg?style=flat-square)]()
+[![CircleCI branch](https://img.shields.io/circleci/project/github/postlight/lux/master.svg?style=flat-square)](https://circleci.com/gh/postlight/lux/tree/master) [![AppVeyor](https://img.shields.io/appveyor/ci/zacharygolba/lux.svg?style=flat-square)](https://ci.appveyor.com/project/zacharygolba/lux/branch/master) [![Codecov branch](https://img.shields.io/codecov/c/github/postlight/lux/master.svg?style=flat-square)](https://codecov.io/gh/postlight/lux)
+ [![David](https://img.shields.io/david/postlight/lux.svg?style=flat-square)](https://david-dm.org/postlight/lux) [![npm](https://img.shields.io/npm/v/lux-framework.svg?style=flat-square)](https://www.npmjs.com/package/lux-framework) [![Gitter](https://img.shields.io/gitter/room/postlight/lux.svg?style=flat-square)](https://gitter.im/postlight/lux)
 
 A MVC style framework for building highly performant, large scale JSON APIs that anybody who knows the JavaScript language and its modern features will understand.
 
