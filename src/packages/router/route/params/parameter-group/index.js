@@ -3,7 +3,6 @@ import { FreezeableMap } from '../../../../freezeable';
 import { InvalidParameterError } from '../errors';
 import isNull from '../../../../../utils/is-null';
 import entries from '../../../../../utils/entries';
-import setType from '../../../../../utils/set-type';
 import validateType from '../utils/validate-type';
 import type { ParameterLike, ParameterLike$opts } from '../index';
 
@@ -39,34 +38,33 @@ class ParameterGroup extends FreezeableMap<string, ParameterLike> {
   }
 
   validate<V: Object>(params: V): V {
-    return setType(() => {
-      const validated = {};
+    const validated = {};
 
-      if (isNull(params)) {
-        return params;
+    if (isNull(params)) {
+      return params;
+    }
+
+    if (validateType(this, params) && hasRequiredParams(this, params)) {
+      const { sanitize } = this;
+      let { path } = this;
+
+      if (path.length) {
+        path = `${path}.`;
       }
 
-      if (validateType(this, params) && hasRequiredParams(this, params)) {
-        const { sanitize } = this;
-        let { path } = this;
+      for (const [key, value] of entries(params)) {
+        const match = this.get(key);
 
-        if (path.length) {
-          path = `${path}.`;
-        }
-
-        for (const [key, value] of entries(params)) {
-          const match = this.get(key);
-
-          if (match) {
-            validated[key] = match.validate(value);
-          } else if (!match && !sanitize) {
-            throw new InvalidParameterError(`${path}${key}`);
-          }
+        if (match) {
+          validated[key] = match.validate(value);
+        } else if (!match && !sanitize) {
+          throw new InvalidParameterError(`${path}${key}`);
         }
       }
+    }
 
-      return validated;
-    });
+    // $FlowIgnore
+    return validated;
   }
 }
 
