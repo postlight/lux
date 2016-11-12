@@ -1,5 +1,7 @@
 // @flow
 import type { Attribute$meta } from '../index';
+import isNull from '../../../../../utils/is-null';
+import isUndefined from '../../../../../utils/is-undefined';
 
 import refsFor from './refs-for';
 
@@ -9,7 +11,12 @@ export default function createGetter({
 }: Attribute$meta): () => any {
   return function getter() {
     const refs = refsFor(this);
+    let value = Reflect.get(refs, key);
 
-    return Reflect.get(refs, key) || defaultValue;
+    if (isNull(value) || isUndefined(value)) {
+      value = defaultValue;
+    }
+
+    return value;
   };
 }
