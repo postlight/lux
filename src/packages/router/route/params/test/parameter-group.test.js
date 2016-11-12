@@ -44,6 +44,11 @@ describe('module "router/route/params"', () => {
     });
 
     describe('#validate()', () => {
+      it('returns null when then value is null', () => {
+        // $FlowIgnore
+        expect(subject.validate(null)).to.be.null;
+      });
+
       it('fails when required keys are missing', () => {
         expect(() => subject.validate({})).to.throw(TypeError);
         expect(() => subject.validate({ id: 1, meta: {} })).to.throw(TypeError);
