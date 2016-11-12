@@ -633,7 +633,9 @@ class Serializer<T: Model> {
               });
             }
 
-            return null;
+            return {
+              data: null
+            };
           })()
         }), {})
       );
