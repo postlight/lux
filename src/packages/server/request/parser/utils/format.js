@@ -111,7 +111,7 @@ export default function format(params: Object, method: Request$method): Object {
       case 'string':
         return {
           ...obj,
-          [key]: formatString(value, method)
+          [key]: formatString(value, key === 'id' ? 'GET' : method)
         };
 
       default:
