@@ -1,5 +1,6 @@
 // @flow
-import { ParameterTypeError } from '../errors';
+import ParameterTypeError from '../errors/parameter-type-error';
+import ParameterNotNullableError from '../errors/parameter-not-nullable-error';
 import isNull from '../../../../../utils/is-null';
 import isObject from '../../../../../utils/is-object';
 import isBuffer from '../../../../../utils/is-buffer';
@@ -12,33 +13,38 @@ export default function validateType(
   param: Parameter | ParameterGroup,
   value: mixed
 ): true {
-  const { type } = param;
+  const { type, required } = param;
+  const valueIsNull = isNull(value);
 
-  if (type) {
-    const valueType = typeof value;
-    let isValid;
-
-    switch (type) {
-      case 'array':
-        isValid = Array.isArray(value);
-        break;
-
-      case 'buffer':
-        isValid = isBuffer(value);
-        break;
-
-      case 'object':
-        isValid = isObject(value) || isNull(value);
-        break;
-
-      default:
-        isValid = type === valueType;
-    }
-
-    if (!isValid) {
-      throw new ParameterTypeError(param, valueType);
-    }
+  if (required && valueIsNull) {
+    throw new ParameterNotNullableError(param);
+  } else if (valueIsNull || !type) {
+    return true;
   }
 
-  return true;
+  const valueType = typeof value;
+  let isValid = true;
+
+  switch (type) {
+    case 'array':
+      isValid = Array.isArray(value);
+      break;
+
+    case 'buffer':
+      isValid = isBuffer(value);
+      break;
+
+    case 'object':
+      isValid = isObject(value) || isNull(value);
+      break;
+
+    default:
+      isValid = type === valueType;
+  }
+
+  if (!isValid) {
+    throw new ParameterTypeError(param, valueType);
+  }
+
+  return isValid;
 }

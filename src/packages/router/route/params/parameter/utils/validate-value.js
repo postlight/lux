@@ -1,4 +1,5 @@
 // @flow
+import isNull from '../../../../../../utils/is-null';
 import { ParameterValueError, ResourceMismatchError } from '../../errors';
 import type Parameter from '../index';
 
@@ -6,6 +7,10 @@ import type Parameter from '../index';
  * @private
  */
 function validateOne<V>(param: Parameter, value: V): V {
+  if (!param.required && isNull(value)) {
+    return value;
+  }
+
   if (!param.has(value)) {
     let expected;
 
