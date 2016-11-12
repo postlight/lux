@@ -8,7 +8,6 @@ import Serializer from '../index';
 import { VERSION as JSONAPI_VERSION } from '../../jsonapi';
 
 import range from '../../../utils/range';
-import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 import type Application from '../../application';
@@ -47,12 +46,18 @@ describe('module "serializer"', () => {
 
     before(async () => {
       const { models } = await getTestApp();
-      const Tag = setType(() => models.get('tag'));
-      const Post = setType(() => models.get('post'));
-      const User = setType(() => models.get('user'));
-      const Image = setType(() => models.get('image'));
-      const Comment = setType(() => models.get('comment'));
-      const Categorization = setType(() => models.get('categorization'));
+      // $FlowIgnore
+      const Tag = models.get('tag');
+      // $FlowIgnore
+      const Post = models.get('post');
+      // $FlowIgnore
+      const User = models.get('user');
+      // $FlowIgnore
+      const Image = models.get('image');
+      // $FlowIgnore
+      const Comment = models.get('comment');
+      // $FlowIgnore
+      const Categorization = models.get('categorization');
 
       class TestSerializer extends Serializer {
         attributes = [
@@ -336,7 +341,10 @@ describe('module "serializer"', () => {
         });
       });
 
-      it('works with an array of `Model` instances', async () => {
+      it('works with an array of `Model` instances', async function () {
+        this.slow(13 * 1000);
+        this.timeout(25 * 1000);
+
         const posts = await Promise.all(
           Array.from(range(1, 25)).map(() => {
             return createPost();

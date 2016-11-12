@@ -20,6 +20,6 @@ describe('util sleep()', function () {
 
   it('sleeps for the correct amount of time', async () => {
     await sleep(amount);
-    expect(Date.now() - time).to.be.at.least(amount);
+    expect(Date.now() - time).to.be.within(amount - 25, amount + 25);
   });
 });
