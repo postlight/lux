@@ -287,7 +287,9 @@ describe('module "serializer"', () => {
             }
           });
         } else {
-          expect(relationships.image).to.be.null;
+          expect(relationships.image).to.deep.equal({
+            data: null
+          });
         }
 
         expect(relationships)
