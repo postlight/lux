@@ -1,5 +1,20 @@
 # Lux Changelog
 
+### 1.0.4 (Nov 12, 2016)
+
+##### Commits
+
+*   [[`7d2ff0d316`](https://github.com/postlight/lux/commit/7d2ff0d316)] - **fix**: ids in json payloads should be cast to number (#523) (Zachary Golba)
+*   [[`8cca55e756`](https://github.com/postlight/lux/commit/8cca55e756)] - **fix**: empty 1:1 relationships are not returned in correct format (#521) (Zachary Golba)
+*   [[`6919517b37`](https://github.com/postlight/lux/commit/6919517b37)] - **test**: prevent ci builds from failing due to time constraints (#520) (Zachary Golba)
+*   [[`090f871f18`](https://github.com/postlight/lux/commit/090f871f18)] - **fix**: passing value null in post to type number throws type error (#516) (Zachary Golba)
+*   [[`6cd3e68b6e`](https://github.com/postlight/lux/commit/6cd3e68b6e)] - **deps**: update flow-bin to version 0.35.0 🚀 (#517) (Greenkeeper)
+*   [[`cd4f63fe4a`](https://github.com/postlight/lux/commit/cd4f63fe4a)] - **deps**: update eslint to version 3.10.0 (#518) (Greenkeeper)
+*   [[`b97d093c9a`](https://github.com/postlight/lux/commit/b97d093c9a)] - **fix**: default values override all falsy attribute values (#515) (Zachary Golba)
+*   [[`6f4e17078c`](https://github.com/postlight/lux/commit/6f4e17078c)] - **dx**: use flow-typed instead of custom type declarations when possible (#514) (Zachary Golba)
+*   [[`44b88250a2`](https://github.com/postlight/lux/commit/44b88250a2)] - **docs**: use shields.io for project status badges in readme (#513) (Zachary Golba)
+*   [[`2e9c3353b1`](https://github.com/postlight/lux/commit/2e9c3353b1)] - **release**: 1.0.3 🔧 (#512) (Zachary Golba)
+
 ### 1.0.3 (Nov 10, 2016)
 
 ##### Commits
