@@ -3,25 +3,23 @@ import { pluralize } from 'inflection';
 
 import { NEW_RECORDS } from '../constants';
 import Query from '../query';
-import { sql } from '../../logger';
-import { saveRelationships } from '../relationship';
+import { updateRelationship } from '../relationship';
 import pick from '../../../utils/pick';
-import omit from '../../../utils/omit';
-import chain from '../../../utils/chain';
 import setType from '../../../utils/set-type';
 import underscore from '../../../utils/underscore';
-import type Logger from '../../logger'; // eslint-disable-line max-len, no-duplicate-imports
+import { compose, composeAsync } from '../../../utils/compose';
+import type Logger from '../../logger';
 import type Database from '../../database';
 import type Serializer from '../../serializer';
-import type { Relationship$opts } from '../relationship'; // eslint-disable-line max-len, no-duplicate-imports
+ // eslint-disable-next-line no-duplicate-imports
+import type { Relationship$opts } from '../relationship';
 
+import { create, update, destroy, createRunner } from './utils/persistence';
 import initializeClass from './initialize-class';
-import getColumns from './utils/get-columns';
 import validate from './utils/validate';
 
 /**
  * ## Overview
- *
  *
  * @module lux-framework
  * @namespace Lux
@@ -459,118 +457,146 @@ class Model {
     }
   }
 
-  async save(deep?: boolean): Promise<this> {
-    const {
-      constructor: {
-        table,
-        logger,
-        primaryKey,
+  save(): Promise<this> {
+    const statements = [];
+    let afterHooks = record => Promise.resolve(record);
 
-        hooks: {
-          afterUpdate,
-          afterSave,
-          afterValidation,
-          beforeUpdate,
-          beforeSave,
-          beforeValidation
-        }
+    const {
+      isNew,
+      isDirty,
+      constructor: {
+        hooks,
+        store,
+        logger
       }
     } = this;
 
-    if (typeof beforeValidation === 'function') {
-      await beforeValidation(this);
-    }
+    return store.connection.transaction(trx => {
+      let promise = Promise.resolve([]);
 
-    validate(this);
+      if (isDirty) {
+        let beforeHooks;
 
-    if (typeof afterValidation === 'function') {
-      await afterValidation(this);
-    }
+        if (isNew) {
+          beforeHooks = composeAsync(hooks.beforeSave, hooks.beforeCreate);
+          afterHooks = composeAsync(hooks.afterSave, hooks.afterCreate);
+        } else {
+          beforeHooks = composeAsync(hooks.beforeSave, hooks.beforeUpdate);
+          afterHooks = composeAsync(hooks.afterSave, hooks.afterUpdate);
+        }
 
-    if (typeof beforeUpdate === 'function') {
-      await beforeUpdate(this);
-    }
+        promise = Promise
+          .resolve(this)
+          .then(hooks.beforeValidation)
+          .then(record => validate(record) && record)
+          .then(hooks.afterValidation)
+          .then(beforeHooks)
+          .then(record => update(record, trx));
+      }
 
-    if (typeof beforeSave === 'function') {
-      await beforeSave(this);
-    }
+      return promise
+        .then(createRunner(logger, statements))
+        .then(trx.commit)
+        .then(() => {
+          this.dirtyAttributes.clear();
+          this.prevAssociations.clear();
 
-    Reflect.set(this, 'updatedAt', new Date());
+          if (isNew) {
+            NEW_RECORDS.delete(this);
+          }
 
-    const query = table()
-      .where({ [primaryKey]: Reflect.get(this, primaryKey) })
-      .update(getColumns(this, Array.from(this.dirtyAttributes)))
-      .on('query', () => {
-        setImmediate(() => logger.debug(sql`${query.toString()}`));
-      });
-
-    if (deep) {
-      await Promise.all([
-        query,
-        saveRelationships(this)
-      ]);
-
-      this.prevAssociations.clear();
-    } else {
-      await query;
-    }
-
-    NEW_RECORDS.delete(this);
-    this.dirtyAttributes.clear();
-
-    if (typeof afterUpdate === 'function') {
-      await afterUpdate(this);
-    }
-
-    if (typeof afterSave === 'function') {
-      await afterSave(this);
-    }
-
-    return this;
+          return this;
+        })
+        .then(afterHooks)
+        .catch(err => {
+          trx.rollback();
+          return Promise.reject(err);
+        });
+    }).then(() => this);
   }
 
-  async update(attributes: Object = {}): Promise<this> {
-    Object.assign(this, attributes);
+  update(props: Object = {}): Promise<this> {
+    let statements = [];
+    let afterHooks = record => Promise.resolve(record);
 
-    if (this.isDirty) {
-      return await this.save(true);
-    }
-
-    return this;
-  }
-
-  async destroy(): Promise<this> {
     const {
       constructor: {
-        primaryKey,
-        logger,
-        table,
-
-        hooks: {
-          afterDestroy,
-          beforeDestroy
-        }
+        hooks,
+        store,
+        logger
       }
     } = this;
 
-    if (typeof beforeDestroy === 'function') {
-      await beforeDestroy(this);
-    }
+    return store.connection.transaction(trx => {
+      let promise = Promise.resolve([]);
 
-    const query = table()
-      .where({ [primaryKey]: this.getPrimaryKey() })
-      .del()
-      .on('query', () => {
-        setImmediate(() => logger.debug(sql`${query.toString()}`));
-      });
+      const associations = Object
+        .keys(props)
+        .filter(key => (
+          Boolean(this.constructor.relationshipFor(key))
+        ));
 
-    await query;
+      Object.assign(this, props);
 
-    if (typeof afterDestroy === 'function') {
-      await afterDestroy(this);
-    }
+      if (associations.length) {
+        statements = associations.reduce((arr, key) => [
+          ...arr,
+          ...updateRelationship(this, key, trx)
+        ], []);
+      }
 
-    return this;
+      if (this.isDirty) {
+        promise = Promise
+          .resolve(this)
+          .then(hooks.beforeValidation)
+          .then(record => validate(record) && record)
+          .then(hooks.afterValidation)
+          .then(composeAsync(hooks.beforeSave, hooks.beforeUpdate))
+          .then(record => update(record, trx));
+
+        afterHooks = composeAsync(hooks.afterSave, hooks.afterUpdate);
+      }
+
+      promise
+        .then(createRunner(logger, statements))
+        .then(trx.commit)
+        .then(() => {
+          this.dirtyAttributes.clear();
+          this.prevAssociations.clear();
+          return this;
+        })
+        .then(afterHooks)
+        .catch(err => {
+          trx.rollback();
+          return Promise.reject(err);
+        });
+    }).then(() => this);
+  }
+
+  destroy(): Promise<this> {
+    const statements = [];
+
+    const {
+      constructor: {
+        hooks,
+        store,
+        logger
+      }
+    } = this;
+
+    return store.connection.transaction(trx => (
+      Promise
+        .resolve(this)
+        .then(hooks.beforeDestroy)
+        .then(record => destroy(record, trx))
+        .then(createRunner(logger, statements))
+        .then(trx.commit)
+        .then(hooks.afterDestroy)
+        .catch(err => {
+          trx.rollback();
+          return Promise.reject(err);
+        })
+    )).then(() => this);
   }
 
   getAttributes(...keys: Array<string>): Object {
@@ -590,10 +616,8 @@ class Model {
     }
 
     if (!this.tableName) {
-      const tableName = chain(this.name)
-        .pipe(underscore)
-        .pipe(pluralize)
-        .value();
+      const getTableName = compose(pluralize, underscore);
+      const tableName = getTableName(this.name);
 
       Reflect.defineProperty(this, 'tableName', {
         value: tableName,
@@ -617,81 +641,59 @@ class Model {
     });
   }
 
-  static async create(props = {}): Promise<this> {
-    const {
-      primaryKey,
-      logger,
-      table,
+  static async create(props: Object = {}): Promise<this> {
+    const { hooks, store, logger } = this;
+    const instance = Reflect.construct(this, [props, false]);
+    let statements = [];
 
-      hooks: {
-        afterCreate,
-        afterSave,
-        afterValidation,
-        beforeCreate,
-        beforeSave,
-        beforeValidation
+    return store.connection.transaction(trx => {
+      const associations = Object
+        .keys(props)
+        .filter(key => (
+          Boolean(this.relationshipFor(key))
+        ));
+
+      if (associations.length) {
+        statements = associations.reduce((arr, key) => [
+          ...arr,
+          ...updateRelationship(instance, key, trx)
+        ], []);
       }
-    } = this;
 
-    const datetime = new Date();
-    const instance = Reflect.construct(this, [{
-      ...props,
-      createdAt: datetime,
-      updatedAt: datetime
-    }, false]);
+      Promise
+        .resolve(instance)
+        .then(hooks.beforeValidation)
+        .then(record => validate(record) && record)
+        .then(hooks.afterValidation)
+        .then(composeAsync(hooks.beforeSave, hooks.beforeCreate))
+        .then(record => create(record, trx))
+        .then(createRunner(logger, statements))
+        .then(([[primaryKeyValue]]) => {
+          const { primaryKey } = this;
 
-    if (typeof beforeValidation === 'function') {
-      await beforeValidation(instance);
-    }
+          Reflect.set(instance, primaryKey, primaryKeyValue);
+          Reflect.set(instance.rawColumnData, primaryKey, primaryKeyValue);
+        })
+        .then(trx.commit)
+        .then(() => {
+          Reflect.defineProperty(instance, 'initialized', {
+            value: true,
+            writable: false,
+            enumerable: false,
+            configurable: false
+          });
 
-    validate(instance);
+          Object.freeze(instance);
+          NEW_RECORDS.delete(instance);
 
-    if (typeof afterValidation === 'function') {
-      await afterValidation(instance);
-    }
-
-    if (typeof beforeCreate === 'function') {
-      await beforeCreate(instance);
-    }
-
-    if (typeof beforeSave === 'function') {
-      await beforeSave(instance);
-    }
-
-    const query = table()
-      .returning(primaryKey)
-      .insert(omit(getColumns(instance), primaryKey))
-      .on('query', () => {
-        setImmediate(() => logger.debug(sql`${query.toString()}`));
-      });
-
-    const [primaryKeyValue] = await query;
-
-    Object.assign(instance, {
-      [primaryKey]: primaryKeyValue
-    });
-
-    Reflect.set(instance.rawColumnData, primaryKey, primaryKeyValue);
-
-    Reflect.defineProperty(instance, 'initialized', {
-      value: true,
-      writable: false,
-      enumerable: false,
-      configurable: false
-    });
-
-    Object.freeze(instance);
-    NEW_RECORDS.delete(instance);
-
-    if (typeof afterCreate === 'function') {
-      await afterCreate(instance);
-    }
-
-    if (typeof afterSave === 'function') {
-      await afterSave(instance);
-    }
-
-    return instance;
+          return instance;
+        })
+        .then(composeAsync(hooks.afterSave, hooks.afterCreate))
+        .catch(err => {
+          trx.rollback();
+          return Promise.reject(err);
+        });
+    }).then(() => instance);
   }
 
   static all(): Query<Array<this>> {

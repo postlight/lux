@@ -92,6 +92,5 @@ export async function get(
   return value;
 }
 
-export { default as saveRelationships } from './utils/save-relationships';
-
+export { default as updateRelationship } from './utils/update-relationship';
 export type { Relationship$opts } from './interfaces';

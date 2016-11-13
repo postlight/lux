@@ -8,7 +8,7 @@ import type { Request, Response } from '../server'; // eslint-disable-line max-l
 
 import findOne from './utils/find-one';
 import findMany from './utils/find-many';
-import findRelated from './utils/find-related';
+import resolveRelationships from './utils/resolve-relationships';
 import type {
   Controller$opts,
   Controller$beforeAction,
@@ -622,8 +622,13 @@ class Controller {
    * @return {Promise} Resolves with the newly created Model instance.
    * @public
    */
-  create(req: Request, res: Response): Promise<Model> {
+  async create(req: Request, res: Response): Promise<Model> {
+    const { model } = this;
+
     const {
+      url: {
+        pathname
+      },
       params: {
         data: {
           attributes,
@@ -632,28 +637,19 @@ class Controller {
       }
     } = req;
 
-    return this.model
-      .create(attributes)
-      .then(record => {
-        if (relationships) {
-          return findRelated(this.controllers, relationships).then(related => {
-            Object.assign(record, related);
-            return record.save(true);
-          });
-        }
+    const record = await model.create({
+      ...attributes,
+      ...resolveRelationships(model, relationships)
+    });
 
-        return record;
-      })
-      .then(record => {
-        const { url: { pathname } } = req;
-        const id = record.getPrimaryKey();
-        const location = `${getDomain(req) + pathname}/${id}`;
+    res.setHeader(
+      'Location',
+      `${getDomain(req) + pathname}/${record.getPrimaryKey()}`
+    );
 
-        res.statusCode = 201; // eslint-disable-line no-param-reassign
-        res.setHeader('Location', location);
+    Reflect.set(res, 'statusCode', 201);
 
-        return record;
-      });
+    return record;
   }
 
   /**
@@ -670,35 +666,14 @@ class Controller {
    * changes occur.
    * @public
    */
-  update(req: Request): Promise<number | Model> {
-    return findOne(this.model, req).then(record => {
-      const {
-        params: {
-          data: {
-            attributes,
-            relationships
-          }
-        }
-      } = req;
+  async update(req: Request): Promise<number | Model> {
+    const { model } = this;
+    const { params: { data: { attributes, relationships } } } = req;
+    const record = await findOne(model, req);
 
-      Object.assign(record, attributes);
-
-      if (relationships) {
-        const {
-          route: {
-            controller: {
-              controllers
-            }
-          }
-        } = req;
-
-        return findRelated(controllers, relationships).then(related => {
-          Object.assign(record, related);
-          return record.save(true);
-        });
-      }
-
-      return record.isDirty ? record.save() : 204;
+    return await record.update({
+      ...attributes,
+      ...resolveRelationships(model, relationships)
     });
   }
 

@@ -1277,7 +1277,7 @@ describe('module "database/model"', () => {
         instances.add(userInstance);
 
         instance.user = userInstance;
-        await instance.save(true);
+        await instance.save();
 
         const {
           rawColumnData: {

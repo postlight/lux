@@ -180,7 +180,7 @@ describe('module "serializer"', () => {
           include = [...include, 'comments'];
         }
 
-        await post.save(true);
+        await post.save();
 
         return await Post
           .find(postId)
