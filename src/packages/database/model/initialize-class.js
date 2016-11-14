@@ -78,8 +78,8 @@ function initializeHooks(opts) {
 
       return {
         ...obj,
-        [key]: async instance => {
-          await Reflect.apply(hook, model, [instance]);
+        [key]: async (instance, transaction) => {
+          await Reflect.apply(hook, model, [instance, transaction]);
           return instance;
         }
       };

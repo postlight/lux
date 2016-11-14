@@ -31,8 +31,8 @@ class Post extends Model {
   };
 
   static hooks = {
-    async afterCreate(post) {
-      await track(post);
+    async afterCreate(post, transaction) {
+      await track(post, transaction);
     }
   };
 

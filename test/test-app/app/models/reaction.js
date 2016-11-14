@@ -27,19 +27,14 @@ class Reaction extends Model {
   };
 
   static hooks = {
-    beforeSave(reaction) {
-      const {
-        commentId,
-        postId
-      } = reaction;
-
+    async beforeSave({ postId, commentId }) {
       if (!commentId && !postId) {
         throw new Error('Reactions must have a reactable (Post or Comment).');
       }
     },
 
-    async afterCreate(reaction) {
-      await track(reaction);
+    async afterCreate(reaction, transaction) {
+      await track(reaction, transaction);
     }
   };
 }

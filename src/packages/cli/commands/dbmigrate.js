@@ -29,27 +29,23 @@ export async function dbmigrate() {
   const pending = await pendingMigrations(CWD, () => connection('migrations'));
 
   if (pending.length) {
-    await Promise.all(
-      pending.map(async migration => {
-        const version = migration.replace(/^(\d{16})-.+$/g, '$1');
-        const key = migration.replace(new RegExp(`${version}-(.+)\\.js`), '$1');
-        const value = migrations.get(`${key}-up`);
+    for (const migration of pending) {
+      const version = migration.replace(/^(\d{16})-.+$/g, '$1');
+      const key = migration.replace(new RegExp(`${version}-(.+)\\.js`), '$1');
+      const value = migrations.get(`${key}-up`);
 
-        if (value) {
-          const query = value.run(schema());
+      if (value) {
+        const query = value.run(schema());
 
-          await query.on('query', () => {
-            process.stdout.write(sql`${query.toString()}`);
-            process.stdout.write(EOL);
-          });
+        await query.on('query', () => {
+          process.stdout.write(sql`${query.toString()}`);
+          process.stdout.write(EOL);
+        });
 
-          await connection('migrations').insert({
-            version
-          });
-        }
-
-        return migration;
-      })
-    );
+        await connection('migrations').insert({
+          version
+        });
+      }
+    }
   }
 }

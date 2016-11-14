@@ -24,8 +24,8 @@ class Comment extends Model {
   };
 
   static hooks = {
-    async afterCreate(comment) {
-      await track(comment);
+    async afterCreate(comment, transaction) {
+      await track(comment, transaction);
     }
   };
 }

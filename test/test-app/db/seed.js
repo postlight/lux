@@ -24,20 +24,20 @@ const {
   }
 } = faker;
 
-export default async function seed() {
+export default async function seed(transaction) {
   await Promise.all(
     Array.from(range(1, 100)).map(() => User.create({
       name: `${name.firstName()} ${name.lastName()}`,
       email: internet.email(),
       password: internet.password(randomize([...range(8, 127)]))
-    }))
+    }, transaction))
   );
 
   await Promise.all(
     Array.from(range(1, 100)).map(() => Friendship.create({
       followerId: randomize([...range(1, 100)]),
       followeeId: randomize([...range(1, 100)])
-    }))
+    }, transaction))
   );
 
   await Promise.all(
@@ -46,27 +46,27 @@ export default async function seed() {
       title: lorem.sentence(),
       userId: randomize([...range(1, 100)]),
       isPublic: random.boolean()
-    }))
+    }, transaction))
   );
 
   await Promise.all(
     Array.from(range(1, 100)).map(() => Image.create({
       url: imageUrl(),
       postId: randomize([...range(1, 100)])
-    }))
+    }, transaction))
   );
 
   await Promise.all(
     Array.from(range(1, 100)).map(() => Tag.create({
       name: lorem.word()
-    }))
+    }, transaction))
   );
 
   await Promise.all(
     Array.from(range(1, 100)).map(() => Categorization.create({
       postId: randomize([...range(1, 100)]),
       tagId: randomize([...range(1, 100)])
-    }))
+    }, transaction))
   );
 
   await Promise.all(
@@ -75,7 +75,7 @@ export default async function seed() {
       edited: random.boolean(),
       userId: randomize([...range(1, 100)]),
       postId: randomize([...range(1, 100)])
-    }))
+    }, transaction))
   );
 
   await Promise.all(
@@ -83,6 +83,6 @@ export default async function seed() {
       [`${randomize(['comment', 'post'])}Id`]: randomize([...range(1, 100)]),
       userId: randomize([...range(1, 100)]),
       type: randomize(REACTION_TYPES)
-    }))
+    }, transaction))
   );
 };

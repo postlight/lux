@@ -13,15 +13,14 @@ export async function dbseed() {
   const seed = load('seed');
   const models = load('models');
 
-  await new Database({
+  const store = await new Database({
     config,
     models,
     path: CWD,
-
     logger: new Logger({
       enabled: false
     })
   });
 
-  await seed();
+  await store.connection.transaction(seed);
 }

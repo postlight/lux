@@ -31,7 +31,7 @@ export default function connect(path, config = {}) {
 
   if (pool && typeof pool === 'number') {
     pool = {
-      min: 0,
+      min: 1,
       max: pool
     };
   }

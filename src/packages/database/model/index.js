@@ -7,7 +7,7 @@ import { updateRelationship } from '../relationship';
 import pick from '../../../utils/pick';
 import setType from '../../../utils/set-type';
 import underscore from '../../../utils/underscore';
-import { compose, composeAsync } from '../../../utils/compose';
+import { compose } from '../../../utils/compose';
 import type Logger from '../../logger';
 import type Database from '../../database';
 import type Serializer from '../../serializer';
@@ -457,12 +457,8 @@ class Model {
     }
   }
 
-  save(): Promise<this> {
-    const statements = [];
-    let afterHooks = record => Promise.resolve(record);
-
+  save(transaction?: Object): Promise<this> {
     const {
-      isNew,
       isDirty,
       constructor: {
         hooks,
@@ -471,54 +467,59 @@ class Model {
       }
     } = this;
 
-    return store.connection.transaction(trx => {
+    const run = (trx: Object) => {
+      const statements = [];
+      let wasDirty = false;
       let promise = Promise.resolve([]);
 
       if (isDirty) {
-        let beforeHooks;
-
-        if (isNew) {
-          beforeHooks = composeAsync(hooks.beforeSave, hooks.beforeCreate);
-          afterHooks = composeAsync(hooks.afterSave, hooks.afterCreate);
-        } else {
-          beforeHooks = composeAsync(hooks.beforeSave, hooks.beforeUpdate);
-          afterHooks = composeAsync(hooks.afterSave, hooks.afterUpdate);
-        }
-
+        wasDirty = true;
         promise = Promise
           .resolve(this)
-          .then(hooks.beforeValidation)
+          .then(record => hooks.beforeValidation(record, trx))
           .then(record => validate(record) && record)
-          .then(hooks.afterValidation)
-          .then(beforeHooks)
+          .then(record => hooks.afterValidation(record, trx))
+          .then(record => hooks.beforeUpdate(record, trx))
+          .then(record => hooks.beforeSave(record, trx))
           .then(record => update(record, trx));
       }
 
       return promise
         .then(createRunner(logger, statements))
-        .then(trx.commit)
         .then(() => {
           this.dirtyAttributes.clear();
           this.prevAssociations.clear();
 
-          if (isNew) {
-            NEW_RECORDS.delete(this);
-          }
+          NEW_RECORDS.delete(this);
 
           return this;
         })
-        .then(afterHooks)
-        .catch(err => {
-          trx.rollback();
-          return Promise.reject(err);
+        .then(record => {
+          if (wasDirty) {
+            return hooks.afterUpdate(record, trx);
+          }
+
+          return record;
+        })
+        .then(record => {
+          if (wasDirty) {
+            return hooks.afterSave(record, trx);
+          }
+
+          return record;
         });
-    }).then(() => this);
+    };
+
+    if (transaction) {
+      return run(transaction);
+    }
+
+    return store.connection
+      .transaction(run)
+      .then(() => this);
   }
 
-  update(props: Object = {}): Promise<this> {
-    let statements = [];
-    let afterHooks = record => Promise.resolve(record);
-
+  update(props: Object = {}, transaction?: Object): Promise<this> {
     const {
       constructor: {
         hooks,
@@ -527,7 +528,9 @@ class Model {
       }
     } = this;
 
-    return store.connection.transaction(trx => {
+    const run = (trx: Object) => {
+      let statements = [];
+      let wasDirty = false;
       let promise = Promise.resolve([]);
 
       const associations = Object
@@ -546,36 +549,50 @@ class Model {
       }
 
       if (this.isDirty) {
+        wasDirty = true;
         promise = Promise
           .resolve(this)
-          .then(hooks.beforeValidation)
+          .then(record => hooks.beforeValidation(record, trx))
           .then(record => validate(record) && record)
-          .then(hooks.afterValidation)
-          .then(composeAsync(hooks.beforeSave, hooks.beforeUpdate))
+          .then(record => hooks.afterValidation(record, trx))
+          .then(record => hooks.beforeUpdate(record, trx))
+          .then(record => hooks.beforeSave(record, trx))
           .then(record => update(record, trx));
-
-        afterHooks = composeAsync(hooks.afterSave, hooks.afterUpdate);
       }
 
-      promise
+      return promise
         .then(createRunner(logger, statements))
-        .then(trx.commit)
         .then(() => {
           this.dirtyAttributes.clear();
           this.prevAssociations.clear();
           return this;
         })
-        .then(afterHooks)
-        .catch(err => {
-          trx.rollback();
-          return Promise.reject(err);
+        .then(record => {
+          if (wasDirty) {
+            return hooks.afterUpdate(record, trx);
+          }
+
+          return record;
+        })
+        .then(record => {
+          if (wasDirty) {
+            return hooks.afterSave(record, trx);
+          }
+
+          return record;
         });
-    }).then(() => this);
+    };
+
+    if (transaction) {
+      return run(transaction);
+    }
+
+    return store.connection
+      .transaction(run)
+      .then(() => this);
   }
 
-  destroy(): Promise<this> {
-    const statements = [];
-
+  destroy(transaction?: Object): Promise<this> {
     const {
       constructor: {
         hooks,
@@ -584,19 +601,24 @@ class Model {
       }
     } = this;
 
-    return store.connection.transaction(trx => (
-      Promise
+    const run = (trx: Object) => {
+      const statements = [];
+
+      return Promise
         .resolve(this)
-        .then(hooks.beforeDestroy)
+        .then(record => hooks.beforeDestroy(record, trx))
         .then(record => destroy(record, trx))
         .then(createRunner(logger, statements))
-        .then(trx.commit)
-        .then(hooks.afterDestroy)
-        .catch(err => {
-          trx.rollback();
-          return Promise.reject(err);
-        })
-    )).then(() => this);
+        .then(record => hooks.afterDestroy(record, trx));
+    };
+
+    if (transaction) {
+      return run(transaction);
+    }
+
+    return store.connection
+      .transaction(run)
+      .then(() => this);
   }
 
   getAttributes(...keys: Array<string>): Object {
@@ -641,12 +663,13 @@ class Model {
     });
   }
 
-  static async create(props: Object = {}): Promise<this> {
+  static create(props: Object = {}, transaction?: Object): Promise<this> {
     const { hooks, store, logger } = this;
     const instance = Reflect.construct(this, [props, false]);
-    let statements = [];
 
-    return store.connection.transaction(trx => {
+    const run = (trx: Object) => {
+      let statements = [];
+
       const associations = Object
         .keys(props)
         .filter(key => (
@@ -660,12 +683,13 @@ class Model {
         ], []);
       }
 
-      Promise
+      return Promise
         .resolve(instance)
-        .then(hooks.beforeValidation)
+        .then(record => hooks.beforeValidation(record, trx))
         .then(record => validate(record) && record)
-        .then(hooks.afterValidation)
-        .then(composeAsync(hooks.beforeSave, hooks.beforeCreate))
+        .then(record => hooks.afterValidation(record, trx))
+        .then(record => hooks.beforeCreate(record, trx))
+        .then(record => hooks.beforeSave(record, trx))
         .then(record => create(record, trx))
         .then(createRunner(logger, statements))
         .then(([[primaryKeyValue]]) => {
@@ -674,7 +698,6 @@ class Model {
           Reflect.set(instance, primaryKey, primaryKeyValue);
           Reflect.set(instance.rawColumnData, primaryKey, primaryKeyValue);
         })
-        .then(trx.commit)
         .then(() => {
           Reflect.defineProperty(instance, 'initialized', {
             value: true,
@@ -688,12 +711,17 @@ class Model {
 
           return instance;
         })
-        .then(composeAsync(hooks.afterSave, hooks.afterCreate))
-        .catch(err => {
-          trx.rollback();
-          return Promise.reject(err);
-        });
-    }).then(() => instance);
+        .then(record => hooks.afterCreate(record, trx))
+        .then(record => hooks.afterSave(record, trx));
+    };
+
+    if (transaction) {
+      return run(transaction);
+    }
+
+    return store.connection
+      .transaction(run)
+      .then(() => instance);
   }
 
   static all(): Query<Array<this>> {
