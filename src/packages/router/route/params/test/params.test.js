@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import { it, describe, before } from 'mocha';
 
-import { defaultParamsFor } from '../index';
+import { paramsFor, defaultParamsFor } from '../index';
 
 import setType from '../../../../../utils/set-type';
 import { getTestApp } from '../../../../../../test/utils/get-test-app';
@@ -10,6 +10,35 @@ import { getTestApp } from '../../../../../../test/utils/get-test-app';
 import type Controller from '../../../../controller';
 
 describe('module "router/route/params"', () => {
+  describe('#paramsFor()', () => {
+    let getController;
+
+    before(async () => {
+      const { controllers } = await getTestApp();
+
+      getController = (name: string): Controller => setType(() => {
+        return controllers.get(name);
+      });
+    });
+
+    describe('with model-less controller', () => {
+      let params;
+
+      before(() => {
+        params = paramsFor({
+          type: 'custom',
+          method: 'GET',
+          controller: getController('custom'),
+          dynamicSegments: []
+        });
+      });
+
+      it('contains query', () => {
+        expect(params.has('userId')).to.be.true;
+      });
+    });
+  });
+
   describe('#defaultParamsFor()', () => {
     let getController;
 
