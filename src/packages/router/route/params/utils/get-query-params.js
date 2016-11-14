@@ -118,7 +118,7 @@ function getIncludeParam({
 /**
  * @private
  */
-function getCustomParams({
+export function getCustomParams({
   query
 }: Controller): Array<[string, ParameterLike]> {
   return query.map(param => [param, new Parameter({
