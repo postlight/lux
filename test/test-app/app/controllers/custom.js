@@ -5,11 +5,7 @@ class CustomController extends Controller {
     'userId'
   ];
 
-  index({
-    params: {
-      userId
-    }
-  }) {
+  index() {
     return 204;
   };
 }
