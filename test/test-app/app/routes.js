@@ -13,6 +13,12 @@ export default function routes() {
     only: ['index']
   });
 
+  this.resource('custom', {
+    only: []
+  }, function(){
+    this.get('/', 'index');
+  });
+
   this.resource('images');
 
   this.resource('notifications', {

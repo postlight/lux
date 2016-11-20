@@ -1,5 +1,18 @@
 # Lux Changelog
 
+### 1.0.5 (Nov 20, 2016)
+
+##### Commits
+
+*   [[`45c18600c4`](https://github.com/postlight/lux/commit/45c18600c4)] - **deps**: update babel-eslint to version 7.1.1 (#533) (Greenkeeper)
+*   [[`0720dda77f`](https://github.com/postlight/lux/commit/0720dda77f)] - **deps**: update eslint to version 3.10.2 (#532) (Greenkeeper)
+*   [[`dbdcc5a2de`](https://github.com/postlight/lux/commit/dbdcc5a2de)] - **fix**: query parameters are not added to custom routes (#528) (Nick Schot)
+*   [[`4530d0ce8d`](https://github.com/postlight/lux/commit/4530d0ce8d)] - **deps**: update nyc to version 9.0.1 (#530) (Greenkeeper)
+*   [[`8d36091058`](https://github.com/postlight/lux/commit/8d36091058)] - **deps**: update eslint to version 3.10.1 (#529) (Greenkeeper)
+*   [[`c586f350f6`](https://github.com/postlight/lux/commit/c586f350f6)] - **docs**: use master branch for appveyor badge (#526) (Zachary Golba)
+*   [[`e93b45ca4b`](https://github.com/postlight/lux/commit/e93b45ca4b)] - **deps**: update test-app dependencies (#525) (Zachary Golba)
+*   [[`0bbb7af65c`](https://github.com/postlight/lux/commit/0bbb7af65c)] - **release**: 1.0.4 🔧 (#524) (Zachary Golba)
+
 ### 1.0.4 (Nov 12, 2016)
 
 ##### Commits

@@ -9,7 +9,8 @@ import getDefaultCollectionParams from './utils/get-default-collection-params';
 import type { Params$opts } from './interfaces';
 import {
   getMemberQueryParams,
-  getCollectionQueryParams
+  getCollectionQueryParams,
+  getCustomParams
 } from './utils/get-query-params';
 
 /**
@@ -47,6 +48,11 @@ export function paramsFor({
         getDataParams(controller, false)
       ];
     }
+  } else if (type === 'custom') {
+    params = [
+      ...params,
+      ...getCustomParams(controller)
+    ];
   }
 
   return new ParameterGroup(params, {
