@@ -11,8 +11,8 @@ describe('module "router"', () => {
 
     before(async () => {
       const app = await getTestApp();
-      // $FlowIgnore
       const healthController = app.controllers.get('health');
+      // $FlowIgnore
       const { constructor: HealthController } = healthController;
 
       class AdminHealthController extends HealthController {}
@@ -20,6 +20,7 @@ describe('module "router"', () => {
       subject = createReplacer(new Map([
         // $FlowIgnore
         ['posts', app.controllers.get('posts')],
+        // $FlowIgnore
         ['health', healthController],
         // $FlowIgnore
         ['admin/posts', app.controllers.get('admin/posts')],
