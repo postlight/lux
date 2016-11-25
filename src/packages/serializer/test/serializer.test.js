@@ -46,17 +46,11 @@ describe('module "serializer"', () => {
 
     before(async () => {
       const { models } = await getTestApp();
-      // $FlowIgnore
       const Tag = models.get('tag');
-      // $FlowIgnore
       const Post = models.get('post');
-      // $FlowIgnore
       const User = models.get('user');
-      // $FlowIgnore
       const Image = models.get('image');
-      // $FlowIgnore
       const Comment = models.get('comment');
-      // $FlowIgnore
       const Categorization = models.get('categorization');
 
       class TestSerializer extends Serializer {
@@ -81,6 +75,7 @@ describe('module "serializer"', () => {
 
       createSerializer = (namespace = '') => new TestSerializer({
         namespace,
+        // $FlowIgnore
         model: Post,
         parent: null
       });
@@ -93,6 +88,7 @@ describe('module "serializer"', () => {
       } = {}) => {
         let include = [];
 
+        // $FlowIgnore
         const post = await Post.create({
           body: faker.lorem.paragraphs(),
           title: faker.lorem.sentence(),
@@ -102,6 +98,7 @@ describe('module "serializer"', () => {
         const postId = post.getPrimaryKey();
 
         if (includeUser) {
+          // $FlowIgnore
           const user = await User.create({
             name: `${faker.name.firstName()} ${faker.name.lastName()}`,
             email: faker.internet.email(),
@@ -115,6 +112,7 @@ describe('module "serializer"', () => {
         }
 
         if (includeImage) {
+          // $FlowIgnore
           const image = await Image.create({
             postId,
             url: faker.image.imageUrl()
@@ -126,24 +124,28 @@ describe('module "serializer"', () => {
 
         if (includeTags) {
           const tags = await Promise.all([
+            // $FlowIgnore
             Tag.create({
               name: faker.lorem.word()
             }),
+            // $FlowIgnore
             Tag.create({
               name: faker.lorem.word()
             }),
+            // $FlowIgnore
             Tag.create({
               name: faker.lorem.word()
             })
           ]);
 
           const categorizations = await Promise.all(
-            tags.map(tag => {
-              return Categorization.create({
+            tags.map(tag => (
+              // $FlowIgnore
+              Categorization.create({
                 postId,
                 tagId: tag.getPrimaryKey()
-              });
-            })
+              })
+            ))
           );
 
           tags.forEach(tag => {
@@ -159,14 +161,17 @@ describe('module "serializer"', () => {
 
         if (includeComments) {
           const comments = await Promise.all([
+            // $FlowIgnore
             Comment.create({
               postId,
               message: faker.lorem.sentence()
             }),
+            // $FlowIgnore
             Comment.create({
               postId,
               message: faker.lorem.sentence()
             }),
+            // $FlowIgnore
             Comment.create({
               postId,
               message: faker.lorem.sentence()
@@ -182,6 +187,7 @@ describe('module "serializer"', () => {
 
         await post.save(true);
 
+        // $FlowIgnore
         return await Post
           .find(postId)
           .include(...include);
