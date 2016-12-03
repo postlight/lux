@@ -9,6 +9,26 @@ const DATABASE_DRIVER: string = Reflect.get(process.env, 'DATABASE_DRIVER');
 const DATABASE_USERNAME: string = Reflect.get(process.env, 'DATABASE_USERNAME');
 const DATABASE_PASSWORD: string = Reflect.get(process.env, 'DATABASE_PASSWORD');
 
+const DEFAULT_CONFIG = {
+  development: {
+    pool: 5,
+    driver: 'sqlite3',
+    database: 'lux_test'
+  },
+  test: {
+    pool: 5,
+    driver: DATABASE_DRIVER || 'sqlite3',
+    database: 'lux_test',
+    username: DATABASE_USERNAME,
+    password: DATABASE_PASSWORD
+  },
+  production: {
+    pool: 5,
+    driver: 'sqlite3',
+    database: 'lux_test'
+  }
+};
+
 describe('module "database"', () => {
   describe('class Database', () => {
     let createDatabase;
@@ -16,22 +36,7 @@ describe('module "database"', () => {
     before(async () => {
       const { path, models, logger } = await getTestApp();
 
-      createDatabase = (config = {
-        development: {
-          driver: 'sqlite3',
-          database: 'lux_test'
-        },
-        test: {
-          driver: DATABASE_DRIVER || 'sqlite3',
-          database: 'lux_test',
-          username: DATABASE_USERNAME,
-          password: DATABASE_PASSWORD
-        },
-        production: {
-          driver: 'sqlite3',
-          database: 'lux_test'
-        }
-      }) => new Database({
+      createDatabase = async (config = DEFAULT_CONFIG) => await new Database({
         path,
         models,
         logger,
@@ -45,6 +50,28 @@ describe('module "database"', () => {
         const result = await createDatabase();
 
         expect(result).to.be.an.instanceof(Database);
+      });
+
+      it('fails when an invalid database driver is used', async () => {
+        await createDatabase({
+          development: {
+            ...DEFAULT_CONFIG.development,
+            driver: 'invalid-driver'
+          },
+          test: {
+            ...DEFAULT_CONFIG.test,
+            driver: 'invalid-driver'
+          },
+          production: {
+            ...DEFAULT_CONFIG.production,
+            driver: 'invalid-driver'
+          }
+        }).catch(err => {
+          expect(err).to.have.deep.property(
+            'constructor.name',
+            'InvalidDriverError'
+          );
+        });
       });
     });
 

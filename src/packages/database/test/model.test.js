@@ -81,6 +81,20 @@ describe('module "database/model"', () => {
         });
       });
 
+      it('can be called repeatedly without error', async () => {
+        const table = () => store.connection(Subject.tableName);
+
+        const refs = await Promise.all([
+          Subject.initialize(store, table),
+          Subject.initialize(store, table),
+          Subject.initialize(store, table)
+        ]);
+
+        refs.forEach(ref => {
+          expect(ref).to.equal(Subject);
+        });
+      });
+
       it('adds a `store` property to the `Model`', () => {
         expect(Subject).to.have.property('store', store);
       });
@@ -346,6 +360,28 @@ describe('module "database/model"', () => {
         expect(result).to.have.property('isPublic', true);
         expect(result).to.have.property('createdAt').and.be.an.instanceof(Date);
         expect(result).to.have.property('updatedAt').and.be.an.instanceof(Date);
+      });
+    });
+
+    describe('.transacting()', async () => {
+      class Subject extends Model {
+        static tableName = 'posts';
+      }
+
+      before(async () => {
+        await Subject.initialize(store, () => {
+          return store.connection(Subject.tableName);
+        });
+      });
+
+      it('returns a static transaction proxy', async () => {
+        await Subject.transaction(trx => {
+          const proxy = Subject.transacting(trx);
+
+          expect(proxy.create).to.be.a('function');
+
+          return Promise.resolve(new Subject());
+        });
       });
     });
 
@@ -1527,6 +1563,18 @@ describe('module "database/model"', () => {
         expect(ref).to.not.equal(instance);
         expect(ref).to.have.property('title', prevTitle);
         expect(instance).to.have.property('title', nextTitle);
+      });
+
+      it('resolves with itself if the instance is new', async () => {
+        const newInstance = new Subject();
+        const nextTitle = 'Testing #reload()';
+
+        newInstance.title = nextTitle;
+
+        const ref = await newInstance.reload();
+
+        expect(ref).to.equal(newInstance);
+        expect(ref).to.have.property('title', nextTitle);
       });
     });
 
