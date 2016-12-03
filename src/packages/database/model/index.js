@@ -1,8 +1,8 @@
 // @flow
 import { pluralize } from 'inflection';
 
-import { NEW_RECORDS } from '../constants';
 import Query from '../query';
+import ChangeSet from '../change-set';
 import { updateRelationship } from '../relationship';
 import {
   createTransactionResultProxy,
@@ -12,6 +12,7 @@ import {
 import pick from '../../../utils/pick';
 import underscore from '../../../utils/underscore';
 import { compose } from '../../../utils/compose';
+import { diffMap } from '../../../utils/diff';
 import type Logger from '../../logger';
 import type Database from '../../database';
 import type Serializer from '../../serializer';
@@ -97,20 +98,6 @@ class Model {
   rawColumnData: Object;
 
   /**
-   * @property initialValues
-   * @type {Map}
-   * @private
-   */
-  initialValues: Map<string, mixed>;
-
-  /**
-   * @property dirtyAttributes
-   * @type {Set}
-   * @private
-   */
-  dirtyAttributes: Set<string>;
-
-  /**
    * @property prevAssociations
    * @type {Set}
    * @private
@@ -121,6 +108,11 @@ class Model {
    * @private
    */
   prevAssociations: Set<Model>;
+
+  /**
+   * @private
+   */
+  changeSets: Array<ChangeSet>;
 
   /**
    * A reference to the instance of the `Logger` used for the `Application` the
@@ -246,34 +238,15 @@ class Model {
   static relationshipNames: Array<string>;
 
   constructor(attrs: Object = {}, initialize: boolean = true): this {
-    const {
-      constructor: {
-        attributeNames,
-        relationshipNames
-      }
-    } = this;
-
     Object.defineProperties(this, {
+      changeSets: {
+        value: [new ChangeSet()],
+        writable: false,
+        enumerable: false,
+        configurable: false
+      },
       rawColumnData: {
         value: attrs,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-      initialValues: {
-        value: new Map(),
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-      dirtyAttributes: {
-        value: new Set(),
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-      isModelInstance: {
-        value: true,
         writable: false,
         enumerable: false,
         configurable: false
@@ -286,6 +259,7 @@ class Model {
       }
     });
 
+    const { constructor: { attributeNames, relationshipNames } } = this;
     const props = pick(attrs, ...attributeNames.concat(relationshipNames));
 
     Object.assign(this, props);
@@ -301,8 +275,6 @@ class Model {
       Object.freeze(this);
       Object.freeze(this.rawColumnData);
     }
-
-    NEW_RECORDS.add(this);
 
     return this;
   }
@@ -337,7 +309,7 @@ class Model {
    * @public
    */
   get isNew(): boolean {
-    return NEW_RECORDS.has(this);
+    return !this.persistedChangeSet;
   }
 
   /**
@@ -404,6 +376,34 @@ class Model {
    */
   get persisted(): boolean {
     return !this.isNew && !this.isDirty;
+  }
+
+  /**
+   * @property dirtyAttributes
+   * @type {Map}
+   */
+  get dirtyAttributes(): Map<string, mixed> {
+    const { currentChangeSet, persistedChangeSet } = this;
+
+    if (!persistedChangeSet) {
+      return new Map(currentChangeSet);
+    }
+
+    return diffMap(persistedChangeSet, currentChangeSet);
+  }
+
+  /**
+   * @private
+   */
+  get currentChangeSet(): ChangeSet {
+    return this.changeSets[0];
+  }
+
+  /**
+   * @private
+   */
+  get persistedChangeSet(): void | ChangeSet {
+    return this.changeSets.find(({ isPersisted }) => isPersisted);
   }
 
   static get hasOne(): Object {
@@ -512,10 +512,8 @@ class Model {
 
         await createRunner(logger, statements)(await update(this, trx));
 
-        this.dirtyAttributes.clear();
         this.prevAssociations.clear();
-
-        NEW_RECORDS.delete(this);
+        this.currentChangeSet.persist(this.changeSets);
 
         await runHooks(this, trx,
           hooks.afterUpdate,
@@ -578,8 +576,8 @@ class Model {
 
       await createRunner(logger, statements)(await promise);
 
-      this.dirtyAttributes.clear();
       this.prevAssociations.clear();
+      this.currentChangeSet.persist(this.changeSets);
 
       if (hadDirtyAttrs) {
         await runHooks(this, trx,
@@ -616,6 +614,26 @@ class Model {
     }
 
     return this.transaction(run);
+  }
+
+  async reload(): Promise<this> {
+    if (this.isNew) {
+      return this;
+    }
+
+    return await this.constructor.find(this.getPrimaryKey());
+  }
+
+  rollback(): this {
+    const { persistedChangeSet } = this;
+
+    if (persistedChangeSet && !this.currentChangeSet.isPersisted) {
+      persistedChangeSet
+        .applyTo(this)
+        .persist(this.changeSets);
+    }
+
+    return this;
   }
 
   getAttributes(...keys: Array<string>): Object {
@@ -706,7 +724,8 @@ class Model {
       });
 
       Object.freeze(instance);
-      NEW_RECORDS.delete(instance);
+
+      instance.currentChangeSet.persist(instance.changeSets);
 
       await runHooks(instance, trx,
         hooks.afterCreate,

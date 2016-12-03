@@ -10,7 +10,10 @@ import getColumns from './get-columns';
 /**
  * @private
  */
-export function create(record: Model, trx: Knex$Transaction): [Object] {
+export function create(
+  record: Model,
+  trx: Knex$Transaction
+): [Knex$QueryBuilder] {
   const timestamp = new Date();
 
   Object.assign(record, {
@@ -35,7 +38,10 @@ export function create(record: Model, trx: Knex$Transaction): [Object] {
 /**
  * @private
  */
-export function update(record: Model, trx: Knex$Transaction): [Object] {
+export function update(
+  record: Model,
+  trx: Knex$Transaction
+): [Knex$QueryBuilder] {
   Reflect.set(record, 'updatedAt', new Date());
 
   return [
@@ -45,7 +51,7 @@ export function update(record: Model, trx: Knex$Transaction): [Object] {
       .where(record.constructor.primaryKey, record.getPrimaryKey())
       .update(getColumns(
         record,
-        Array.from(record.dirtyAttributes)
+        Array.from(record.dirtyAttributes.keys())
       ))
   ];
 }
@@ -53,7 +59,10 @@ export function update(record: Model, trx: Knex$Transaction): [Object] {
 /**
  * @private
  */
-export function destroy(record: Model, trx: Knex$Transaction): [Object] {
+export function destroy(
+  record: Model,
+  trx: Knex$Transaction
+): [Knex$QueryBuilder] {
   return [
     record.constructor
       .table()

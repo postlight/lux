@@ -126,7 +126,7 @@ export default async function initializeClass<T: Class<Model>>({
   model
 }: {
   store: Database,
-  table: Function,
+  table: $PropertyType<T, 'table'>,
   model: T
 }): Promise<T> {
   let { hooks } = model;
@@ -450,11 +450,16 @@ export default async function initializeClass<T: Class<Model>>({
       enumerable: true,
       configurable: false
     },
-
     resourceName: {
       value: resourceName,
       writable: false,
       enumerable: true,
+      configurable: false
+    },
+    isModelInstance: {
+      value: true,
+      writable: false,
+      enumerable: false,
       configurable: false
     }
   });

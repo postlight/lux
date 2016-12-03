@@ -1,7 +1,6 @@
 // @flow
 import { camelize, singularize } from 'inflection';
 
-import { NEW_RECORDS } from '../../../constants';
 import Model from '../../../model';
 import entries from '../../../../../utils/entries';
 import underscore from '../../../../../utils/underscore';
@@ -133,7 +132,8 @@ export default async function buildResults<T: Model>({
         }, {})
     ]);
 
-    NEW_RECORDS.delete(instance);
+    instance.currentChangeSet.persist();
+
     return instance;
   });
 }

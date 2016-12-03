@@ -1,9 +1,8 @@
 // @flow
-import type { Attribute$meta } from '../index';
+import ChangeSet from '../../change-set';
 import isNull from '../../../../utils/is-null';
 import isUndefined from '../../../../utils/is-undefined';
-
-import refsFor from './refs-for';
+import type { Attribute$meta } from '../index';
 
 /**
  * @private
@@ -23,24 +22,19 @@ export default function createSetter({
       }
     }
 
-    const refs = refsFor(this);
+    let { currentChangeSet: changeSet } = this;
     const valueToSet = normalize(nextValue);
-    const currentValue = Reflect.get(refs, key) || defaultValue;
+    const currentValue = changeSet.get(key) || defaultValue;
 
-    if (valueToSet !== currentValue) {
-      Reflect.set(refs, key, valueToSet);
+    if (!changeSet.has(key) || valueToSet !== currentValue) {
+      if (changeSet.isPersisted) {
+        const { constructor: { attributeNames } } = this;
 
-      if (this.initialized) {
-        const initialValue = this.initialValues.get(key) || defaultValue;
-
-        if (valueToSet !== initialValue) {
-          this.dirtyAttributes.add(key);
-        } else {
-          this.dirtyAttributes.delete(key);
-        }
-      } else {
-        this.initialValues.set(key, valueToSet);
+        changeSet = new ChangeSet(this.getAttributes(...attributeNames));
+        this.changeSets.unshift(changeSet);
       }
+
+      changeSet.set(key, valueToSet);
     }
   };
 }

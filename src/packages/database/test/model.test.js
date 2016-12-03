@@ -1391,11 +1391,13 @@ describe('module "database/model"', () => {
             expect(err).to.be.an.instanceof(ValidationError);
           });
 
-        expect(instance).to.have.property('title', 'Test Post');
+        expect(instance).to.have.property('title', 'Test');
         expect(instance).to.have.property('isPublic', true);
 
         const result = await Subject.find(instance.id);
+
         expect(result).to.have.property('title', 'Test Post');
+        expect(result).to.have.property('isPublic', false);
       });
     });
 
@@ -1427,6 +1429,85 @@ describe('module "database/model"', () => {
         await Subject.find(instance.id).catch(err => {
           expect(err).to.be.an.instanceof(RecordNotFoundError);
         });
+      });
+    });
+
+    describe('#reload', () => {
+      let instance: Subject;
+
+      class Subject extends Model {
+        title: string;
+
+        static tableName = 'posts';
+      }
+
+      before(async () => {
+        await Subject.initialize(store, () => {
+          return store.connection(Subject.tableName);
+        });
+
+        instance = await Subject.create({
+          body: 'Lots of content...',
+          title: 'Test Post',
+          isPublic: true
+        });
+      });
+
+      after(async () => {
+        await instance.destroy();
+      });
+
+      it('reverts attributes to the last known persisted changes', async () => {
+        const { title: prevTitle } = instance;
+        const nextTitle = 'Testing #reload()';
+
+        instance.title = nextTitle;
+
+        const ref = await instance.reload();
+
+        expect(ref).to.not.equal(instance);
+        expect(ref).to.have.property('title', prevTitle);
+        expect(instance).to.have.property('title', nextTitle);
+      });
+    });
+
+    describe('#rollback', () => {
+      let instance: Subject;
+
+      class Subject extends Model {
+        title: string;
+
+        static tableName = 'posts';
+      }
+
+      before(async () => {
+        await Subject.initialize(store, () => {
+          return store.connection(Subject.tableName);
+        });
+
+        instance = await Subject.create({
+          body: 'Lots of content...',
+          title: 'Test Post',
+          isPublic: true
+        });
+      });
+
+      after(async () => {
+        await instance.destroy();
+      });
+
+      it('reverts attributes to the last known persisted changes', () => {
+        const { title: prevTitle } = instance;
+        const nextTitle = 'Testing #rollback()';
+
+        instance.title = nextTitle;
+
+        expect(instance).to.have.property('title', nextTitle);
+
+        const ref = instance.rollback();
+
+        expect(ref).to.equal(instance);
+        expect(instance).to.have.property('title', prevTitle);
       });
     });
 
