@@ -1219,6 +1219,65 @@ describe('module "database/model"', () => {
       });
     });
 
+    describe('.attributes', () => {
+      class Subject extends Model {
+        body: void | ?string;
+        title: string;
+
+        static tableName = 'posts';
+      }
+
+      before(async () => {
+        await Subject.initialize(store, () => {
+          return store.connection(Subject.tableName);
+        });
+      });
+
+      describe('#set()', () => {
+        const ogTitle = 'Test Attribute#set()';
+        let instance;
+
+        beforeEach(() => {
+          instance = new Subject({
+            title: ogTitle
+          });
+        });
+
+        it('updates the current value', () => {
+          const newVaue = 'It worked!';
+
+          instance.body = newVaue;
+          expect(instance).to.have.property('body', newVaue);
+        });
+
+        describe('- nullable', () => {
+          it('sets the current value to null when passed null', () => {
+            instance.body = null;
+            expect(instance).to.have.property('body', null);
+          });
+
+          it('sets the current value to null when passed undefined', () => {
+            instance.body = undefined;
+            expect(instance).to.have.property('body', null);
+          });
+        });
+
+        describe('- not nullable', () => {
+          it('does not update the current value when passed null', () => {
+            // $FlowIgnore
+            instance.title = null;
+            expect(instance).to.have.property('title', ogTitle);
+          });
+
+          it('does not update the current value when passed undefined', () => {
+            // $FlowIgnore
+            instance.title = undefined;
+            expect(instance).to.have.property('title', ogTitle);
+          });
+        });
+      });
+    });
+
     describe('#save()', () => {
       const instances = new Set();
       let instance: Subject;
