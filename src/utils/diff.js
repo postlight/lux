@@ -3,7 +3,7 @@
 /**
  * @private
  */
-export function diffMap<K, V>(a: Map<K, V>, b: Map<K, V>): Map<K, V> {
+export function map<K, V>(a: Map<K, V>, b: Map<K, V>): Map<K, V> {
   return Array
     .from(b)
     .reduce((result, [key, value]) => {

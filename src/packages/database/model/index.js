@@ -12,7 +12,7 @@ import {
 import pick from '../../../utils/pick';
 import underscore from '../../../utils/underscore';
 import { compose } from '../../../utils/compose';
-import { diffMap } from '../../../utils/diff';
+import { map as diffMap } from '../../../utils/diff';
 import type Logger from '../../logger';
 import type Database from '../../database';
 import type Serializer from '../../serializer';
