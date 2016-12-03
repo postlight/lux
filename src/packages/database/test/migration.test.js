@@ -41,28 +41,12 @@ describe('module "database/migration"', () => {
         await store.schema().dropTable(tableName);
       });
 
-      it('runs a migration function', async () => {
-        await subject.run(store.schema());
-
-        const result = await store.connection(tableName).columnInfo();
-
-        expect(result).to.have.all.keys([
-          'id',
-          'success',
-          'created_at',
-          'updated_at'
-        ]);
-
-        Object.keys(result).forEach(key => {
-          const value = Reflect.get(result, key);
-
-          expect(value).to.have.all.keys([
-            'type',
-            'nullable',
-            'maxLength',
-            'defaultValue'
-          ]);
-        });
+      it('runs a migration function', () => {
+        return subject
+          .run(store.schema())
+          .then(result => {
+            expect(result).to.be.ok;
+          });
       });
     });
   });

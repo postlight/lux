@@ -89,7 +89,7 @@ describe('module "serializer"', () => {
         let include = [];
         const run = async trx => {
           // $FlowIgnore
-          const post = await Post.create({
+          const post = await Post.transacting(trx).create({
             body: faker.lorem.paragraphs(),
             title: faker.lorem.sentence(),
             isPublic: faker.random.boolean()

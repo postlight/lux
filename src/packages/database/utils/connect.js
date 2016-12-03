@@ -33,7 +33,7 @@ export default function connect(path: string, config: Object = {}): Knex {
 
   if (pool && typeof pool === 'number') {
     pool = {
-      min: 1,
+      min: pool > 1 ? 2 : 1,
       max: pool
     };
   }
