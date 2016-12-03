@@ -271,9 +271,6 @@ class Model {
         enumerable: false,
         configurable: false
       });
-
-      Object.freeze(this);
-      Object.freeze(this.rawColumnData);
     }
 
     return this;
@@ -722,8 +719,6 @@ class Model {
         enumerable: false,
         configurable: false
       });
-
-      Object.freeze(instance);
 
       instance.currentChangeSet.persist(instance.changeSets);
 
