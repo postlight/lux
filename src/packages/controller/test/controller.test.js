@@ -38,12 +38,14 @@ describe('module "controller"', () => {
     before(async () => {
       const app = await getTestApp();
 
-      Post = setType(() => app.models.get('post'));
+      // $FlowIgnore
+      Post = app.models.get('post');
 
       subject = new Controller({
         model: Post,
         namespace: '',
         serializer: new Serializer({
+          // $FlowIgnore
           model: Post,
           parent: null,
           namespace: ''
@@ -303,6 +305,7 @@ describe('module "controller"', () => {
 
         assertRecord(result, [
           'id',
+          'user',
           'title',
           'isPublic',
           'createdAt',

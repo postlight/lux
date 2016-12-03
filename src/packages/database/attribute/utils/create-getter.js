@@ -1,7 +1,7 @@
 // @flow
 import type { Attribute$meta } from '../index';
-import isNull from '../../../../../utils/is-null';
-import isUndefined from '../../../../../utils/is-undefined';
+import isNull from '../../../../utils/is-null';
+import isUndefined from '../../../../utils/is-undefined';
 
 import refsFor from './refs-for';
 

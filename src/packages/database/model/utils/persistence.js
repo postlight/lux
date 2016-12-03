@@ -10,11 +10,18 @@ import getColumns from './get-columns';
 /**
  * @private
  */
-export function create(record: Model, trx: Object): [Object] {
+export function create(record: Model, trx: Knex$Transaction): [Object] {
   const timestamp = new Date();
 
-  Reflect.set(record, 'createdAt', timestamp);
-  Reflect.set(record, 'updatedAt', timestamp);
+  Object.assign(record, {
+    createdAt: timestamp,
+    updatedAt: timestamp
+  });
+
+  Object.assign(record.rawColumnData, {
+    createdAt: timestamp,
+    updatedAt: timestamp
+  });
 
   return [
     record.constructor
@@ -28,7 +35,7 @@ export function create(record: Model, trx: Object): [Object] {
 /**
  * @private
  */
-export function update(record: Model, trx: Object): [Object] {
+export function update(record: Model, trx: Knex$Transaction): [Object] {
   Reflect.set(record, 'updatedAt', new Date());
 
   return [
@@ -46,7 +53,7 @@ export function update(record: Model, trx: Object): [Object] {
 /**
  * @private
  */
-export function destroy(record: Model, trx: Object): [Object] {
+export function destroy(record: Model, trx: Knex$Transaction): [Object] {
   return [
     record.constructor
       .table()

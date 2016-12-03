@@ -649,7 +649,7 @@ class Controller {
 
     Reflect.set(res, 'statusCode', 201);
 
-    return record;
+    return record.unwrap();
   }
 
   /**
@@ -662,19 +662,35 @@ class Controller {
    * @param {Request} request - The request object.
    * @param {Response} response - The response object.
    * @return {Promise} Resolves with the updated Model if changes occur.
-   * Resolves with the number `204` if no
-   * changes occur.
+   * Resolves with the number `204` if no changes occur.
    * @public
    */
-  async update(req: Request): Promise<number | Model> {
+  update(req: Request): Promise<number | Model> {
     const { model } = this;
-    const { params: { data: { attributes, relationships } } } = req;
-    const record = await findOne(model, req);
 
-    return await record.update({
-      ...attributes,
-      ...resolveRelationships(model, relationships)
-    });
+    return findOne(model, req)
+      .then(record => {
+        const {
+          params: {
+            data: {
+              attributes,
+              relationships
+            }
+          }
+        } = req;
+
+        return record.update({
+          ...attributes,
+          ...resolveRelationships(model, relationships)
+        });
+      })
+      .then(record => {
+        if (record.didPersist) {
+          return record.unwrap();
+        }
+
+        return 204;
+      });
   }
 
   /**

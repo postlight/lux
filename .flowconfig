@@ -1,6 +1,6 @@
 [libs]
-decl/
 flow-typed/
+decl/
 
 [ignore]
 .*/lib/.*

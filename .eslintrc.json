@@ -8,7 +8,10 @@
   "globals": {
     "Class": true,
     "Generator": true,
-    "$PropertyType": true
+    "$PropertyType": true,
+    "Knex$Transaction": true,
+    "Knex$QueryBuilder": true,
+    "Knex$SchemaBuilder": true
   },
   "settings": {
     "flowtype": {

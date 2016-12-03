@@ -6,10 +6,12 @@ import { readdir } from '../../fs';
  */
 export default async function pendingMigrations(
   appPath: string,
-  table: Function
+  table: () => Knex$QueryBuilder
 ): Promise<Array<string>> {
-  const migrations = await readdir(`${appPath}/db/migrate`);
-  const versions = await table().select().map(({ version }) => version);
+  const migrations: Array<string> = await readdir(`${appPath}/db/migrate`);
+  const versions: Array<string> = await table()
+      .select()
+      .then(data => data.map(({ version }) => version));
 
   return migrations.filter(migration => versions.indexOf(
     migration.replace(/^(\d{16})-.+$/g, '$1')

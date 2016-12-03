@@ -45,6 +45,7 @@
     "eslint": "3.11.1",
     "fb-watchman": "1.9.0",
     "inflection": "1.10.0",
+    "knex": "0.12.6",
     "ora": "0.3.0",
     "rollup": "0.36.4",
     "rollup-plugin-alias": "1.2.0",

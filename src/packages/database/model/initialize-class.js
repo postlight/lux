@@ -2,16 +2,14 @@
 import { camelize, dasherize, pluralize, singularize } from 'inflection';
 
 import { line } from '../../logger';
+import { createAttribute } from '../attribute';
 import {
   get as getRelationship,
   set as setRelationship
 } from '../relationship';
-import K from '../../../utils/k';
 import entries from '../../../utils/entries';
 import underscore from '../../../utils/underscore';
 import type Database, { Model } from '../index'; // eslint-disable-line no-unused-vars, max-len
-
-import { createAttribute } from './attribute';
 
 const VALID_HOOKS = new Set([
   'afterCreate',
@@ -56,36 +54,28 @@ function initializeProps(prototype, attributes, relationships) {
 /**
  * @private
  */
-function initializeHooks(opts) {
-  const { model, logger } = opts;
-  let { hooks } = opts;
+function initializeHooks({ model, hooks, logger }) {
+  return Object.freeze(
+    entries(hooks).reduce((obj, [key, value]) => {
+      if (!VALID_HOOKS.has(key)) {
+        logger.warn(line`
+          Invalid hook '${key}' will not be added to Model '${model.name}'.
+          Valid hooks are ${
+            Array.from(VALID_HOOKS).map(h => `'${h}'`).join(', ')
+          }.
+        `);
 
-  entries(hooks).forEach(([key]) => {
-    if (!VALID_HOOKS.has(key)) {
-      logger.warn(line`
-        Invalid hook '${key}' will not be added to Model '${model.name}'.
-        Valid hooks are ${
-          Array.from(VALID_HOOKS).map(h => `'${h}'`).join(', ')
-        }.
-      `);
-    }
-  });
-
-  hooks = Array
-    .from(VALID_HOOKS)
-    .reduce((obj, key) => {
-      const hook = Reflect.get(hooks, key) || K;
+        return obj;
+      }
 
       return {
         ...obj,
         [key]: async (instance, transaction) => {
-          await Reflect.apply(hook, model, [instance, transaction]);
-          return instance;
+          await Reflect.apply(value, model, [instance, transaction]);
         }
       };
-    }, {});
-
-  return Object.freeze(hooks);
+    }, {})
+  );
 }
 
 /**
@@ -139,7 +129,8 @@ export default async function initializeClass<T: Class<Model>>({
   table: Function,
   model: T
 }): Promise<T> {
-  const { hooks, scopes, validates } = model;
+  let { hooks } = model;
+  const { scopes, validates } = model;
   const { logger } = store;
   const modelName = dasherize(underscore(model.name));
   const resourceName = pluralize(modelName);
@@ -306,6 +297,10 @@ export default async function initializeClass<T: Class<Model>>({
     ...hasMany,
     ...belongsTo
   });
+
+  if (!hooks) {
+    hooks = {};
+  }
 
   Object.defineProperties(model, {
     store: {

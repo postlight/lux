@@ -19,7 +19,8 @@ describe('module "database/model"', () => {
       const app = await getTestApp();
 
       store = app.store;
-      User = setType(() => app.models.get('user'));
+      // $FlowIgnore
+      User = app.models.get('user');
     });
 
     describe('.initialize()', () => {
@@ -48,9 +49,10 @@ describe('module "database/model"', () => {
         };
 
         static hooks = {
-          afterCreate: async instance => console.log(instance),
-          beforeDestroy: async instance => console.log(instance),
-          duringDestroy: async () => console.log('This hook should be removed.')
+          async afterCreate() {},
+          async beforeDestroy() {},
+          async duringDestroy() {}
+          //    ^^^^^^^^^^^^^ This hook should be removed.
         };
 
         static scopes = {
@@ -80,19 +82,23 @@ describe('module "database/model"', () => {
       });
 
       it('adds a `store` property to the `Model`', () => {
-        expect(Subject.store).to.equal(store);
+        expect(Subject).to.have.property('store', store);
       });
 
       it('adds a `table` property to the `Model`', () => {
-        expect(Subject.table).to.be.a('function');
+        expect(Subject)
+          .to.have.property('table')
+          .and.be.a('function');
       });
 
       it('adds a `logger` property to the `Model`', () => {
-        expect(Subject.logger).to.equal(store.logger);
+        expect(Subject).to.have.property('logger', store.logger);
       });
 
       it('adds an `attributes` property to the `Model`', () => {
-        expect(Subject.attributes).to.have.all.keys([
+        expect(Subject)
+          .to.have.property('attributes')
+          .and.have.all.keys([
           'id',
           'body',
           'title',
@@ -117,15 +123,17 @@ describe('module "database/model"', () => {
       });
 
       it('adds an `attributeNames` property to the `Model`', () => {
-        expect(Subject.attributeNames).to.include.all.members([
-          'id',
-          'body',
-          'title',
-          'isPublic',
-          'userId',
-          'createdAt',
-          'updatedAt'
-        ]);
+        expect(Subject)
+          .to.have.property('attributeNames')
+          .and.include.all.members([
+            'id',
+            'body',
+            'title',
+            'isPublic',
+            'userId',
+            'createdAt',
+            'updatedAt'
+          ]);
       });
 
       it('adds attribute accessors on the `prototype`', () => {
@@ -231,13 +239,18 @@ describe('module "database/model"', () => {
       });
 
       it('removes invalid hooks from the `hooks` property', () => {
-        expect(Subject.hooks).to.have.all.keys([
-          'afterCreate',
-          'beforeDestroy'
-        ]);
+        expect(Subject)
+          .to.have.property('hooks')
+          .and.be.an('object')
+          .and.not.have.any.keys(['duringDestroy']);
 
-        expect(Subject.hooks.afterCreate).to.be.a('function');
-        expect(Subject.hooks.beforeDestroy).to.be.a('function');
+        expect(Subject)
+          .to.have.deep.property('hooks.afterCreate')
+          .and.be.a('function');
+
+        expect(Subject)
+          .to.have.deep.property('hooks.beforeDestroy')
+          .and.be.a('function');
       });
 
       it('adds each scope to `Model`', () => {
@@ -1038,7 +1051,9 @@ describe('module "database/model"', () => {
           static tableName = 'posts';
 
           static hooks = {
-            async beforeDestroy() {}
+            async beforeDestroy(record) {
+
+            }
           };
         }
 
@@ -1121,7 +1136,9 @@ describe('module "database/model"', () => {
           static tableName = 'posts';
 
           static hooks = {
-            async beforeUpdate() {}
+            beforeUpdate(record) {
+              return Promise.resolve(record);
+            }
           };
         }
 
@@ -1245,15 +1262,22 @@ describe('module "database/model"', () => {
         });
       });
 
-      afterEach(async () => {
-        await Promise.all([
-          instance.destroy(),
-          ...Array.from(instances).map(record => {
-            return record.destroy().then(() => {
-              instances.delete(record);
-            });
-          })
-        ]);
+      afterEach(() => {
+        return Subject.transaction(trx => (
+          Promise.all([
+            instance
+              .transacting(trx)
+              .destroy(),
+            ...Array
+              .from(instances)
+              .map(record => (
+                record
+                  .transacting(trx)
+                  .destroy()
+                  .then(() => instances.delete(record))
+              ))
+          ])
+        ));
       });
 
       it('can persist dirty attributes', async () => {
@@ -1367,7 +1391,7 @@ describe('module "database/model"', () => {
             expect(err).to.be.an.instanceof(ValidationError);
           });
 
-        expect(instance).to.have.property('title', 'Test');
+        expect(instance).to.have.property('title', 'Test Post');
         expect(instance).to.have.property('isPublic', true);
 
         const result = await Subject.find(instance.id);

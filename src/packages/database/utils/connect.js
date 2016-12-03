@@ -1,5 +1,7 @@
 import { join as joinPath } from 'path';
 
+import type Knex from 'knex';
+
 import { NODE_ENV, DATABASE_URL } from '../../../constants';
 import { VALID_DRIVERS } from '../constants';
 import { tryCatchSync } from '../../../utils/try-catch';
@@ -9,8 +11,8 @@ import ModuleMissingError from '../../../errors/module-missing-error';
 /**
  * @private
  */
-export default function connect(path, config = {}) {
-  let knex;
+export default function connect(path: string, config: Object = {}): Knex {
+  let knex: Class<Knex>;
   let { pool } = config;
 
   const {

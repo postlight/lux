@@ -1,12 +1,13 @@
 // @flow
+import type Database from '../index';
 
 /**
  * @private
  */
 export default async function createMigrations(
-  schema: Function
+  schema: $PropertyType<Database, 'schema'>
 ): Promise<boolean> {
-  const hasTable = await schema().hasTable('migrations');
+  const hasTable: boolean = await schema().hasTable('migrations');
 
   if (!hasTable) {
     await schema().createTable('migrations', table => {

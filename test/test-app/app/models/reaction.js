@@ -33,8 +33,8 @@ class Reaction extends Model {
       }
     },
 
-    async afterCreate(reaction, transaction) {
-      await track(reaction, transaction);
+    async afterCreate(reaction, trx) {
+      await track(reaction, trx);
     }
   };
 }

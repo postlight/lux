@@ -20,7 +20,7 @@ describe('module "database/migration"', () => {
       const tableName = 'migration_test';
       let subject;
 
-      before(async () => {
+      before(() => {
         subject = new Migration(schema => {
           return schema.createTable(tableName, table => {
             table.increments();

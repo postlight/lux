@@ -4,19 +4,27 @@ import { pluralize } from 'inflection';
 import { NEW_RECORDS } from '../constants';
 import Query from '../query';
 import { updateRelationship } from '../relationship';
+import {
+  createTransactionResultProxy,
+  createStaticTransactionProxy,
+  createInstanceTransactionProxy
+} from '../transaction';
 import pick from '../../../utils/pick';
-import setType from '../../../utils/set-type';
 import underscore from '../../../utils/underscore';
 import { compose } from '../../../utils/compose';
 import type Logger from '../../logger';
 import type Database from '../../database';
 import type Serializer from '../../serializer';
- // eslint-disable-next-line no-duplicate-imports
+/* eslint-disable no-duplicate-imports */
 import type { Relationship$opts } from '../relationship';
+import type { Transaction$ResultProxy } from '../transaction';
+/* eslint-enable no-duplicate-imports */
 
 import { create, update, destroy, createRunner } from './utils/persistence';
 import initializeClass from './initialize-class';
 import validate from './utils/validate';
+import runHooks from './utils/run-hooks';
+import type { Model$Hooks } from './interfaces';
 
 /**
  * ## Overview
@@ -55,6 +63,24 @@ class Model {
    * @public
    */
   resourceName: string;
+
+  /**
+   * A timestamp representing when the Model instance was created.
+   *
+   * @property createdAt
+   * @type {Date}
+   * @public
+   */
+  createdAt: Date;
+
+  /**
+   * A timestamp representing the last time the Model instance was updated.
+   *
+   * @property updatedAt
+   * @type {Date}
+   * @public
+   */
+  updatedAt: Date;
 
   /**
    * @property initialized
@@ -153,7 +179,15 @@ class Model {
    * @static
    * @private
    */
-  static table;
+  static table: () => Knex$QueryBuilder;
+
+  /**
+   * @property hooks
+   * @type {Object}
+   * @static
+   * @private
+   */
+  static hooks: Model$Hooks;
 
   /**
    * @property store
@@ -211,8 +245,13 @@ class Model {
    */
   static relationshipNames: Array<string>;
 
-  constructor(attrs: Object = {}, initialize: boolean = true) {
-    const { constructor: { attributeNames, relationshipNames } } = this;
+  constructor(attrs: Object = {}, initialize: boolean = true): this {
+    const {
+      constructor: {
+        attributeNames,
+        relationshipNames
+      }
+    } = this;
 
     Object.defineProperties(this, {
       rawColumnData: {
@@ -412,21 +451,6 @@ class Model {
     }
   }
 
-  static get hooks(): Object {
-    return Object.freeze({});
-  }
-
-  static set hooks(value: Object): void {
-    if (value && Object.keys(value).length) {
-      Reflect.defineProperty(this, 'hooks', {
-        value,
-        writable: true,
-        enumerable: false,
-        configurable: true
-      });
-    }
-  }
-
   static get scopes(): Object {
     return Object.freeze({});
   }
@@ -457,81 +481,68 @@ class Model {
     }
   }
 
-  save(transaction?: Object): Promise<this> {
-    const {
-      isDirty,
-      constructor: {
-        hooks,
-        store,
-        logger
-      }
-    } = this;
+  transacting(trx: Knex$Transaction): this {
+    return createInstanceTransactionProxy(this, trx);
+  }
 
-    const run = (trx: Object) => {
+  transaction<T>(fn: (...args: Array<any>) => Promise<T>): Promise<T> {
+    return this.constructor.transaction(fn);
+  }
+
+  save(
+    transaction?: Knex$Transaction
+  ): Promise<Transaction$ResultProxy<this, *>> {
+    const run = async (trx: Knex$Transaction) => {
+      const { constructor: { hooks, logger } } = this;
       const statements = [];
-      let wasDirty = false;
-      let promise = Promise.resolve([]);
+      let hadDirtyAttrs = false;
 
-      if (isDirty) {
-        wasDirty = true;
-        promise = Promise
-          .resolve(this)
-          .then(record => hooks.beforeValidation(record, trx))
-          .then(record => validate(record) && record)
-          .then(record => hooks.afterValidation(record, trx))
-          .then(record => hooks.beforeUpdate(record, trx))
-          .then(record => hooks.beforeSave(record, trx))
-          .then(record => update(record, trx));
+      if (this.isDirty) {
+        hadDirtyAttrs = true;
+
+        await runHooks(this, trx, hooks.beforeValidation);
+
+        validate(this);
+
+        await runHooks(this, trx,
+          hooks.afterValidation,
+          hooks.beforeUpdate,
+          hooks.beforeSave
+        );
+
+        await createRunner(logger, statements)(await update(this, trx));
+
+        this.dirtyAttributes.clear();
+        this.prevAssociations.clear();
+
+        NEW_RECORDS.delete(this);
+
+        await runHooks(this, trx,
+          hooks.afterUpdate,
+          hooks.afterSave
+        );
       }
 
-      return promise
-        .then(createRunner(logger, statements))
-        .then(() => {
-          this.dirtyAttributes.clear();
-          this.prevAssociations.clear();
-
-          NEW_RECORDS.delete(this);
-
-          return this;
-        })
-        .then(record => {
-          if (wasDirty) {
-            return hooks.afterUpdate(record, trx);
-          }
-
-          return record;
-        })
-        .then(record => {
-          if (wasDirty) {
-            return hooks.afterSave(record, trx);
-          }
-
-          return record;
-        });
+      return createTransactionResultProxy(this, hadDirtyAttrs);
     };
 
     if (transaction) {
       return run(transaction);
     }
 
-    return store.connection
-      .transaction(run)
-      .then(() => this);
+    return this.transaction(run);
   }
 
-  update(props: Object = {}, transaction?: Object): Promise<this> {
-    const {
-      constructor: {
-        hooks,
-        store,
-        logger
-      }
-    } = this;
-
-    const run = (trx: Object) => {
+  update(
+    props: Object = {},
+    transaction?: Knex$Transaction
+  ): Promise<Transaction$ResultProxy<this, *>> {
+    const run = async (trx: Knex$Transaction) => {
+      const { constructor: { hooks, logger } } = this;
       let statements = [];
-      let wasDirty = false;
       let promise = Promise.resolve([]);
+      let hadDirtyAttrs = false;
+      let hadDirtyAssoc = false;
 
       const associations = Object
         .keys(props)
@@ -542,6 +553,7 @@ class Model {
       Object.assign(this, props);
 
       if (associations.length) {
+        hadDirtyAssoc = true;
         statements = associations.reduce((arr, key) => [
           ...arr,
           ...updateRelationship(this, key, trx)
@@ -549,86 +561,71 @@ class Model {
       }
 
       if (this.isDirty) {
-        wasDirty = true;
-        promise = Promise
-          .resolve(this)
-          .then(record => hooks.beforeValidation(record, trx))
-          .then(record => validate(record) && record)
-          .then(record => hooks.afterValidation(record, trx))
-          .then(record => hooks.beforeUpdate(record, trx))
-          .then(record => hooks.beforeSave(record, trx))
-          .then(record => update(record, trx));
+        hadDirtyAttrs = true;
+
+        await runHooks(this, trx, hooks.beforeValidation);
+
+        validate(this);
+
+        await runHooks(this, trx,
+          hooks.afterValidation,
+          hooks.beforeUpdate,
+          hooks.beforeSave
+        );
+
+        promise = update(this, trx);
       }
 
-      return promise
-        .then(createRunner(logger, statements))
-        .then(() => {
-          this.dirtyAttributes.clear();
-          this.prevAssociations.clear();
-          return this;
-        })
-        .then(record => {
-          if (wasDirty) {
-            return hooks.afterUpdate(record, trx);
-          }
+      await createRunner(logger, statements)(await promise);
 
-          return record;
-        })
-        .then(record => {
-          if (wasDirty) {
-            return hooks.afterSave(record, trx);
-          }
+      this.dirtyAttributes.clear();
+      this.prevAssociations.clear();
 
-          return record;
-        });
+      if (hadDirtyAttrs) {
+        await runHooks(this, trx,
+          hooks.afterUpdate,
+          hooks.afterSave
+        );
+      }
+
+      return createTransactionResultProxy(this, hadDirtyAttrs || hadDirtyAssoc);
     };
 
     if (transaction) {
       return run(transaction);
     }
 
-    return store.connection
-      .transaction(run)
-      .then(() => this);
+    return this.transaction(run);
   }
 
-  destroy(transaction?: Object): Promise<this> {
-    const {
-      constructor: {
-        hooks,
-        store,
-        logger
-      }
-    } = this;
+  destroy(
+    transaction?: Knex$Transaction
+  ): Promise<Transaction$ResultProxy<this, true>> {
+    const run = async (trx: Knex$Transaction) => {
+      const { constructor: { hooks, logger } } = this;
 
-    const run = (trx: Object) => {
-      const statements = [];
+      await runHooks(this, trx, hooks.beforeDestroy);
+      await createRunner(logger, [])(await destroy(this, trx));
+      await runHooks(this, trx, hooks.afterDestroy);
 
-      return Promise
-        .resolve(this)
-        .then(record => hooks.beforeDestroy(record, trx))
-        .then(record => destroy(record, trx))
-        .then(createRunner(logger, statements))
-        .then(record => hooks.afterDestroy(record, trx));
+      return createTransactionResultProxy(this, true);
     };
 
     if (transaction) {
       return run(transaction);
     }
 
-    return store.connection
-      .transaction(run)
-      .then(() => this);
+    return this.transaction(run);
   }
 
   getAttributes(...keys: Array<string>): Object {
-    return setType(() => pick(this, ...keys));
+    return pick(this, ...keys);
   }
 
   /**
    * @private
    */
-  getPrimaryKey() {
+  getPrimaryKey(): number {
     return Reflect.get(this, this.constructor.primaryKey);
   }
 
@@ -663,11 +660,13 @@ class Model {
     });
   }
 
-  static create(props: Object = {}, transaction?: Object): Promise<this> {
-    const { hooks, store, logger } = this;
-    const instance = Reflect.construct(this, [props, false]);
-
-    const run = (trx: Object) => {
+  static create(
+    props: Object = {},
+    transaction?: Knex$Transaction
+  ): Promise<Transaction$ResultProxy<this, true>> {
+    const run = async (trx: Knex$Transaction) => {
+      const { hooks, logger, primaryKey } = this;
+      const instance = Reflect.construct(this, [props, false]);
       let statements = [];
 
       const associations = Object
@@ -683,45 +682,72 @@ class Model {
         ], []);
       }
 
-      return Promise
-        .resolve(instance)
-        .then(record => hooks.beforeValidation(record, trx))
-        .then(record => validate(record) && record)
-        .then(record => hooks.afterValidation(record, trx))
-        .then(record => hooks.beforeCreate(record, trx))
-        .then(record => hooks.beforeSave(record, trx))
-        .then(record => create(record, trx))
-        .then(createRunner(logger, statements))
-        .then(([[primaryKeyValue]]) => {
-          const { primaryKey } = this;
+      await runHooks(instance, trx, hooks.beforeValidation);
 
-          Reflect.set(instance, primaryKey, primaryKeyValue);
-          Reflect.set(instance.rawColumnData, primaryKey, primaryKeyValue);
-        })
-        .then(() => {
-          Reflect.defineProperty(instance, 'initialized', {
-            value: true,
-            writable: false,
-            enumerable: false,
-            configurable: false
-          });
+      validate(instance);
 
-          Object.freeze(instance);
-          NEW_RECORDS.delete(instance);
+      await runHooks(instance, trx,
+        hooks.afterValidation,
+        hooks.beforeCreate,
+        hooks.beforeSave
+      );
 
-          return instance;
-        })
-        .then(record => hooks.afterCreate(record, trx))
-        .then(record => hooks.afterSave(record, trx));
+      const runner = createRunner(logger, statements);
+      const [[primaryKeyValue]] = await runner(await create(instance, trx));
+
+      Reflect.set(instance, primaryKey, primaryKeyValue);
+      Reflect.set(instance.rawColumnData, primaryKey, primaryKeyValue);
+
+      Reflect.defineProperty(instance, 'initialized', {
+        value: true,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      });
+
+      Object.freeze(instance);
+      NEW_RECORDS.delete(instance);
+
+      await runHooks(instance, trx,
+        hooks.afterCreate,
+        hooks.afterSave
+      );
+
+      return createTransactionResultProxy(instance, true);
     };
 
     if (transaction) {
       return run(transaction);
     }
 
-    return store.connection
-      .transaction(run)
-      .then(() => instance);
+    return this.transaction(run);
+  }
+
+  static transacting(trx: Knex$Transaction): Class<this> {
+    return createStaticTransactionProxy(this, trx);
+  }
+
+  static transaction<T>(fn: (...args: Array<any>) => Promise<T>): Promise<T> {
+    return new Promise((resolve, reject) => {
+      const { store: { connection } } = this;
+      let result: T;
+
+      connection
+        .transaction(trx => {
+          fn(trx)
+            .then(data => {
+              result = data;
+              return trx.commit();
+            })
+            .catch(trx.rollback);
+        })
+        .then(() => {
+          resolve(result);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
   }
 
   static all(): Query<Array<this>> {
@@ -811,3 +837,4 @@ class Model {
 }
 
 export default Model;
+export type { Model$Hook, Model$Hooks } from './interfaces';

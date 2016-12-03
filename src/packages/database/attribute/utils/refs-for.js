@@ -1,5 +1,5 @@
 // @flow
-import type Model from '../../index';
+import type { Model } from '../../index';
 
 export const REFS: WeakMap<Model, Object> = new WeakMap();
 

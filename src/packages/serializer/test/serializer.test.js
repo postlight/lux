@@ -36,13 +36,13 @@ describe('module "serializer"', () => {
       subject = createSerializer();
     };
 
-    const teardown = async () => {
-      await Promise.all(
-        Array.from(instances).map(record => {
-          return record.destroy();
-        })
-      );
-    };
+    const teardown = () => subject.model.transaction(async trx => {
+      const promises = Array
+        .from(instances)
+        .map(record => record.transacting(trx).destroy());
+
+      await Promise.all(promises);
+    });
 
     before(async () => {
       const { models } = await getTestApp();
@@ -85,117 +85,122 @@ describe('module "serializer"', () => {
         includeTags = true,
         includeImage = true,
         includeComments = true
-      } = {}) => {
+      } = {}, transaction) => {
         let include = [];
-
-        // $FlowIgnore
-        const post = await Post.create({
-          body: faker.lorem.paragraphs(),
-          title: faker.lorem.sentence(),
-          isPublic: faker.random.boolean()
-        });
-
-        const postId = post.getPrimaryKey();
-
-        if (includeUser) {
+        const run = async trx => {
           // $FlowIgnore
-          const user = await User.create({
-            name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-            email: faker.internet.email(),
-            password: faker.internet.password(8)
+          const post = await Post.create({
+            body: faker.lorem.paragraphs(),
+            title: faker.lorem.sentence(),
+            isPublic: faker.random.boolean()
           });
 
-          instances.add(user);
-          include = [...include, 'user'];
+          const postId = post.getPrimaryKey();
 
-          Reflect.set(post, 'user', user);
-        }
-
-        if (includeImage) {
-          // $FlowIgnore
-          const image = await Image.create({
-            postId,
-            url: faker.image.imageUrl()
-          });
-
-          instances.add(image);
-          include = [...include, 'image'];
-        }
-
-        if (includeTags) {
-          const tags = await Promise.all([
+          if (includeUser) {
             // $FlowIgnore
-            Tag.create({
-              name: faker.lorem.word()
-            }),
-            // $FlowIgnore
-            Tag.create({
-              name: faker.lorem.word()
-            }),
-            // $FlowIgnore
-            Tag.create({
-              name: faker.lorem.word()
-            })
-          ]);
+            const user = await User.transacting(trx).create({
+              name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+              email: faker.internet.email(),
+              password: faker.internet.password(8)
+            });
 
-          const categorizations = await Promise.all(
-            tags.map(tag => (
+            instances.add(user);
+            include = [...include, 'user'];
+
+            Reflect.set(post, 'user', user);
+          }
+
+          if (includeImage) {
+            // $FlowIgnore
+            const image = await Image.transacting(trx).create({
+              postId,
+              url: faker.image.imageUrl()
+            });
+
+            instances.add(image);
+            include = [...include, 'image'];
+          }
+
+          if (includeTags) {
+            const tags = await Promise.all([
               // $FlowIgnore
-              Categorization.create({
-                postId,
-                tagId: tag.getPrimaryKey()
+              Tag.transacting(trx).create({
+                name: faker.lorem.word()
+              }),
+              // $FlowIgnore
+              Tag.transacting(trx).create({
+                name: faker.lorem.word()
+              }),
+              // $FlowIgnore
+              Tag.transacting(trx).create({
+                name: faker.lorem.word()
               })
-            ))
-          );
+            ]);
 
-          tags.forEach(tag => {
-            instances.add(tag);
-          });
+            const categorizations = await Promise.all(
+              tags.map(tag => (
+                // $FlowIgnore
+                Categorization.transacting(trx).create({
+                  postId,
+                  tagId: tag.getPrimaryKey()
+                })
+              ))
+            );
 
-          categorizations.forEach(categorization => {
-            instances.add(categorization);
-          });
+            tags.forEach(tag => {
+              instances.add(tag);
+            });
 
-          include = [...include, 'tags'];
+            categorizations.forEach(categorization => {
+              instances.add(categorization);
+            });
+
+            include = [...include, 'tags'];
+          }
+
+          if (includeComments) {
+            const comments = await Promise.all([
+              // $FlowIgnore
+              Comment.transacting(trx).create({
+                postId,
+                message: faker.lorem.sentence()
+              }),
+              // $FlowIgnore
+              Comment.transacting(trx).create({
+                postId,
+                message: faker.lorem.sentence()
+              }),
+              // $FlowIgnore
+              Comment.transacting(trx).create({
+                postId,
+                message: faker.lorem.sentence()
+              })
+            ]);
+
+            comments.forEach(comment => {
+              instances.add(comment);
+            });
+
+            include = [...include, 'comments'];
+          }
+
+          await post.transacting(trx).save();
+
+          return post;
+        };
+
+        if (transaction) {
+          return await run(transaction);
         }
-
-        if (includeComments) {
-          const comments = await Promise.all([
-            // $FlowIgnore
-            Comment.create({
-              postId,
-              message: faker.lorem.sentence()
-            }),
-            // $FlowIgnore
-            Comment.create({
-              postId,
-              message: faker.lorem.sentence()
-            }),
-            // $FlowIgnore
-            Comment.create({
-              postId,
-              message: faker.lorem.sentence()
-            })
-          ]);
-
-          comments.forEach(comment => {
-            instances.add(comment);
-          });
-
-          include = [...include, 'comments'];
-        }
-
-        await post.save();
 
         // $FlowIgnore
-        return await Post
-          .find(postId)
-          .include(...include);
+        return await Post.transaction(run);
       };
     });
 
     describe('#format()', function () {
-      this.timeout(15000);
+      this.timeout(20 * 1000);
 
       beforeEach(setup);
       afterEach(teardown);
@@ -353,11 +358,11 @@ describe('module "serializer"', () => {
         this.slow(13 * 1000);
         this.timeout(25 * 1000);
 
-        const posts = await Promise.all(
-          Array.from(range(1, 25)).map(() => {
-            return createPost();
-          })
-        );
+        const posts = await subject.model.transaction(trx => (
+          Promise.all(
+            Array.from(range(1, 25)).map(() => createPost({}, trx))
+          )
+        ));
 
         const postIds = posts
           .map(post => post.getPrimaryKey())

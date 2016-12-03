@@ -1,4 +1,6 @@
 // @flow
+import type Knex from 'knex';
+
 import type Logger from '../logger';
 
 import { ModelMissingError } from './errors';
@@ -19,9 +21,9 @@ class Database {
 
   config: Object;
 
-  schema: Function;
+  schema: () => $PropertyType<Knex, 'schema'>;
 
-  connection: any;
+  connection: Knex;
 
   models: Map<string, Class<Model>>;
 

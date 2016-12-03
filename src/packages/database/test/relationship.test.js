@@ -5,7 +5,6 @@ import { it, describe, before, beforeEach, afterEach } from 'mocha';
 import { get, set } from '../relationship';
 
 import range from '../../../utils/range';
-import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 import type { Model } from '../index';
@@ -21,12 +20,18 @@ describe('module "database/relationship"', () => {
   before(async () => {
     const { models } = await getTestApp();
 
-    Tag = setType(() => models.get('tag'));
-    Post = setType(() => models.get('post'));
-    User = setType(() => models.get('user'));
-    Image = setType(() => models.get('image'));
-    Comment = setType(() => models.get('comment'));
-    Categorization = setType(() => models.get('categorization'));
+    // $FlowIgnore
+    Tag = models.get('tag');
+    // $FlowIgnore
+    Post = models.get('post');
+    // $FlowIgnore
+    User = models.get('user');
+    // $FlowIgnore
+    Image = models.get('image');
+    // $FlowIgnore
+    Comment = models.get('comment');
+    // $FlowIgnore
+    Categorization = models.get('categorization');
   });
 
   describe('#get()', () => {
@@ -40,63 +45,66 @@ describe('module "database/relationship"', () => {
         userId: 1
       });
 
+      subject = subject.unwrap();
       subjectId = subject.getPrimaryKey();
 
-      const [image, tags, comments] = await Promise.all([
-        Image.create({
-          url: 'http://postlight.com',
-          postId: subjectId
-        }),
-        Promise.all(
-          Array.from(range(1, 5)).map(num => {
-            return Tag.create({
-              name: `New Tag ${num}`
-            });
-          })
-        ),
-        Promise.all(
-          Array.from(range(1, 5)).map(num => {
-            return Comment.create({
-              message: `New Comment ${num}`,
-              userId: 2,
-              postId: subjectId
-            });
-          })
-        )
-      ]);
-
-      const categorizations = await Promise.all(
-        tags.map(tag => {
-          return Categorization.create({
-            tagId: tag.getPrimaryKey(),
+      await Post.transaction(async trx => {
+        const [image, tags, comments] = await Promise.all([
+          Image.transacting(trx).create({
+            url: 'http://postlight.com',
             postId: subjectId
-          });
-        })
-      );
+          }),
+          Promise.all(
+            Array.from(range(1, 5)).map(num => (
+              Tag.transacting(trx).create({
+                name: `New Tag ${num}`
+              })
+            ))
+          ),
+          Promise.all(
+            Array.from(range(1, 5)).map(num => (
+              Comment.transacting(trx).create({
+                message: `New Comment ${num}`,
+                userId: 2,
+                postId: subjectId
+              })
+            ))
+          )
+        ]);
 
-      instances.add(image);
+        const categorizations = await Promise.all(
+          tags.map(tag => (
+            Categorization.transacting(trx).create({
+              tagId: tag.getPrimaryKey(),
+              postId: subjectId
+            })
+          ))
+        );
 
-      tags.forEach(tag => {
-        instances.add(tag);
-      });
+        instances.add(image);
 
-      comments.forEach(comment => {
-        instances.add(comment);
-      });
+        tags.forEach(tag => {
+          instances.add(tag);
+        });
 
-      categorizations.forEach(categorization => {
-        instances.add(categorization);
+        comments.forEach(comment => {
+          instances.add(comment);
+        });
+
+        categorizations.forEach(categorization => {
+          instances.add(categorization);
+        });
       });
     };
 
-    const teardown = async () => {
+    const teardown = () => subject.transaction(async trx => {
       await Promise.all([
-        subject.destroy(),
-        ...Array.from(instances).map(record => {
-          return record.destroy();
-        })
+        subject.transacting(trx).destroy(),
+        ...Array
+          .from(instances)
+          .map(record => record.transacting(trx).destroy())
       ]);
-    };
+    });
 
     describe('has-one relationships', () => {
       beforeEach(setup);
@@ -185,17 +193,18 @@ describe('module "database/relationship"', () => {
         title: '#set() test'
       });
 
+      subject = subject.unwrap();
       subjectId = subject.getPrimaryKey();
     };
 
-    const teardown = async () => {
+    const teardown = () => subject.transaction(async trx => {
       await Promise.all([
-        subject.destroy(),
-        ...Array.from(instances).map(record => {
-          return record.destroy();
-        })
+        subject.transacting(trx).destroy(),
+        ...Array
+          .from(instances)
+          .map(record => record.transacting(trx).destroy())
       ]);
-    };
+    });
 
     describe('has-one relationships', () => {
       let image;
@@ -207,6 +216,7 @@ describe('module "database/relationship"', () => {
           url: 'http://postlight.com'
         });
 
+        instances.add(image);
         set(subject, 'image', image);
       });
 
@@ -255,17 +265,18 @@ describe('module "database/relationship"', () => {
       beforeEach(async () => {
         await setup();
 
-        comments = await Promise.all([
-          Comment.create({
-            message: 'Test Comment 1'
-          }),
-          Comment.create({
-            message: 'Test Comment 2'
-          }),
-          Comment.create({
-            message: 'Test Comment 3'
-          })
-        ]);
+        comments = await Comment.transaction(trx => (
+          Promise.all(
+            [1, 2, 3].map(num => (
+              Comment
+                .transacting(trx)
+                .create({
+                  message: `Test Comment ${num}`
+                })
+                .then(record => record.unwrap())
+            ))
+          )
+        ));
 
         comments.forEach(comment => {
           instances.add(comment);
