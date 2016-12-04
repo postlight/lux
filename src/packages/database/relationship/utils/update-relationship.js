@@ -2,8 +2,6 @@
 import type { Model } from '../../index';
 import type { Relationship$opts } from '../interfaces';
 
-import relatedFor from './related-for';
-
 type Params = {
   record: Model;
   value: ?Model | Array<Model>;
@@ -26,6 +24,10 @@ function updateHasOne({
           .table()
           .transacting(trx)
           .update(opts.foreignKey, null)
+          .where(
+            `${opts.model.tableName}.${opts.foreignKey}`,
+            recordPrimaryKey
+          )
           .whereNot(
             `${opts.model.tableName}.${opts.model.primaryKey}`,
             value.getPrimaryKey()
@@ -151,7 +153,13 @@ export default function updateRelationship(
     throw new Error(`Could not find relationship '${name} on '${className}`);
   }
 
-  const value = relatedFor(record).get(name);
+  const { dirtyRelationships } = record;
+
+  if (!dirtyRelationships.has(name)) {
+    return [];
+  }
+
+  const value = dirtyRelationships.get(name);
 
   switch (opts.type) {
     case 'hasOne':

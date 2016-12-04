@@ -1,8 +1,9 @@
 // @flow
 import type { Model } from '../index';
 import entries from '../../../utils/entries';
+import mapToObject from '../../../utils/map-to-object';
 
-class ChangeSet extends Map<string, mixed> {
+class ChangeSet extends Map<string, any> {
   isPersisted: boolean;
 
   constructor(data?: Object = {}): this {
@@ -37,14 +38,7 @@ class ChangeSet extends Map<string, mixed> {
   }
 
   applyTo(target: Model): ChangeSet {
-    const data = Array
-      .from(this)
-      .reduce((obj, [key, value]) => ({
-        ...obj,
-        [key]: value
-      }), {});
-
-    const instance = new ChangeSet(data);
+    const instance = new ChangeSet(mapToObject(this));
 
     target.changeSets.unshift(instance);
 

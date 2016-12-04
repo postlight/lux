@@ -2,7 +2,6 @@
 import type { Model } from '../../index';
 import type { Relationship$opts } from '../index';
 
-import relatedFor from './related-for';
 import unassociate from './unassociate';
 import validateType from './validate-type';
 import { setHasOneInverse, setHasManyInverse } from './inverse-setters';
@@ -16,10 +15,10 @@ export function setHasMany(owner: Model, key: string, value: Array<Model>, {
   inverse,
   foreignKey
 }: Relationship$opts) {
-  const related = relatedFor(owner);
+  let { currentChangeSet: changeSet } = owner;
 
   if (validateType(model, value)) {
-    let prevValue = related.get(key);
+    let prevValue = changeSet.get(key);
 
     if (Array.isArray(prevValue)) {
       prevValue = unassociate(prevValue, foreignKey);
@@ -33,7 +32,11 @@ export function setHasMany(owner: Model, key: string, value: Array<Model>, {
       }
     }
 
-    related.set(key, value);
+    if (changeSet.isPersisted) {
+      changeSet = changeSet.applyTo(owner);
+    }
+
+    changeSet.set(key, value);
 
     setHasManyInverse(owner, value, {
       type,
@@ -54,20 +57,28 @@ export function setHasOne(owner: Model, key: string, value?: ?Model, {
   inverse,
   foreignKey
 }: Relationship$opts) {
-  const related = relatedFor(owner);
   let valueToSet = value;
 
   if (value && typeof value === 'object' && !model.isInstance(value)) {
     valueToSet = Reflect.construct(model, [valueToSet]);
   }
 
+  let { currentChangeSet: changeSet } = owner;
+
   if (valueToSet) {
     if (validateType(model, valueToSet)) {
-      related.set(key, valueToSet);
+      if (changeSet.isPersisted) {
+        changeSet = changeSet.applyTo(owner);
+      }
+
+      changeSet.set(key, valueToSet);
     }
   } else {
-    valueToSet = null;
-    related.delete(key);
+    if (changeSet.isPersisted) {
+      changeSet = changeSet.applyTo(owner);
+    }
+
+    changeSet.set(key, null);
   }
 
   setHasOneInverse(owner, valueToSet, {

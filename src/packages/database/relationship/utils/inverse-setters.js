@@ -1,9 +1,6 @@
 // @flow
-import setType from '../../../../utils/set-type';
 import type { Model } from '../../index';
 import type { Relationship$opts } from '../index';
-
-import relatedFor from './related-for';
 
 /**
  * @private
@@ -19,10 +16,14 @@ export function setHasManyInverse(owner: Model, value: Array<Model>, {
   const { type: inverseType } = inverseModel.relationshipFor(inverse);
 
   for (const record of value) {
-    const related = relatedFor(record);
+    let { currentChangeSet: changeSet } = record;
 
-    if (owner !== related.get(inverse)) {
-      relatedFor(record).set(inverse, owner);
+    if (owner !== changeSet.get(inverse)) {
+      if (changeSet.isPersisted) {
+        changeSet = changeSet.applyTo(record);
+      }
+
+      changeSet.set(inverse, owner);
 
       if (inverseType === 'belongsTo') {
         Reflect.set(record, foreignKey, primaryKey);
@@ -43,31 +44,30 @@ export function setHasOneInverse(owner: Model, value?: ?Model, {
 }) {
   if (value) {
     const { type: inverseType } = inverseModel.relationshipFor(inverse);
-    const related = relatedFor(value);
-    let inverseValue = related.get(inverse);
+    let inverseValue = value.currentChangeSet.get(inverse);
 
     if (inverseType === 'hasMany') {
       if (!Array.isArray(inverseValue)) {
-        inverseValue = setType(() => []);
+        inverseValue = [];
       }
 
       if (!inverseValue.includes(owner)) {
         inverseValue.push(owner);
       }
-    } else if (inverseType !== 'hasMany' && owner !== inverseValue) {
-      const primaryKey = Reflect.get(owner, owner.constructor.primaryKey);
-
+    } else if (owner !== inverseValue) {
       inverseValue = owner;
 
       if (inverseType === 'belongsTo') {
-        Reflect.set(value, foreignKey, primaryKey);
+        Reflect.set(value, foreignKey, inverseValue.getPrimaryKey());
       }
     }
 
-    if (inverseValue) {
-      related.set(inverse, inverseValue);
-    } else {
-      related.delete(inverse);
+    let { currentChangeSet: changeSet } = value;
+
+    if (changeSet.isPersisted) {
+      changeSet = changeSet.applyTo(value);
     }
+
+    changeSet.set(inverse, inverseValue || null);
   }
 }

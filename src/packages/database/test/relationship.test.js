@@ -216,6 +216,8 @@ describe('module "database/relationship"', () => {
           url: 'http://postlight.com'
         });
 
+        image = image.unwrap();
+
         instances.add(image);
         set(subject, 'image', image);
       });
@@ -223,6 +225,8 @@ describe('module "database/relationship"', () => {
       afterEach(teardown);
 
       it('can add a record to the relationship', async () => {
+        console.log(image.changeSets);
+
         expect(image).to.have.property('postId', subjectId);
         expect(await Reflect.get(image, 'post')).be.an.instanceof(Post);
       });
@@ -239,6 +243,8 @@ describe('module "database/relationship"', () => {
           email: 'test-user@postlight.com',
           password: 'test12345678'
         });
+
+        user = user.unwrap();
 
         instances.add(user);
         set(subject, 'user', user);

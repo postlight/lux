@@ -1,5 +1,4 @@
 // @flow
-import ChangeSet from '../../change-set';
 import isNull from '../../../../utils/is-null';
 import isUndefined from '../../../../utils/is-undefined';
 import type { Attribute$meta } from '../index';
@@ -28,10 +27,7 @@ export default function createSetter({
 
     if (!changeSet.has(key) || valueToSet !== currentValue) {
       if (changeSet.isPersisted) {
-        const { constructor: { attributeNames } } = this;
-
-        changeSet = new ChangeSet(this.getAttributes(...attributeNames));
-        this.changeSets.unshift(changeSet);
+        changeSet = changeSet.applyTo(this);
       }
 
       changeSet.set(key, valueToSet);

@@ -13,6 +13,7 @@ import pick from '../../../utils/pick';
 import underscore from '../../../utils/underscore';
 import { compose } from '../../../utils/compose';
 import { map as diffMap } from '../../../utils/diff';
+import mapToObject from '../../../utils/map-to-object';
 import type Logger from '../../logger';
 import type Database from '../../database';
 import type Serializer from '../../serializer';
@@ -339,7 +340,7 @@ class Model {
    * @public
    */
   get isDirty(): boolean {
-    return Boolean(this.dirtyAttributes.size);
+    return Boolean(this.dirtyProperties.size);
   }
 
   /**
@@ -376,10 +377,10 @@ class Model {
   }
 
   /**
-   * @property dirtyAttributes
+   * @property dirtyProperties
    * @type {Map}
    */
-  get dirtyAttributes(): Map<string, mixed> {
+  get dirtyProperties(): Map<string, any> {
     const { currentChangeSet, persistedChangeSet } = this;
 
     if (!persistedChangeSet) {
@@ -387,6 +388,52 @@ class Model {
     }
 
     return diffMap(persistedChangeSet, currentChangeSet);
+  }
+
+  /**
+   * @property dirtyAttributes
+   * @type {Map}
+   */
+  get dirtyAttributes(): Map<string, any> {
+    const {
+      dirtyProperties,
+      constructor: {
+        relationshipNames
+      }
+    } = this;
+
+    Array
+      .from(dirtyProperties.keys())
+      .forEach(key => {
+        if (relationshipNames.indexOf(key) >= 0) {
+          dirtyProperties.delete(key);
+        }
+      });
+
+    return dirtyProperties;
+  }
+
+  /**
+   * @property dirtyRelationships
+   * @type {Map}
+   */
+  get dirtyRelationships(): Map<string, any> {
+    const {
+      dirtyProperties,
+      constructor: {
+        attributeNames
+      }
+    } = this;
+
+    Array
+      .from(dirtyProperties.keys())
+      .forEach(key => {
+        if (attributeNames.indexOf(key) >= 0) {
+          dirtyProperties.delete(key);
+        }
+      });
+
+    return dirtyProperties;
   }
 
   /**
@@ -489,43 +536,7 @@ class Model {
   save(
     transaction?: Knex$Transaction
   ): Promise<Transaction$ResultProxy<this, *>> {
-    const run = async (trx: Knex$Transaction) => {
-      const { constructor: { hooks, logger } } = this;
-      const statements = [];
-      let hadDirtyAttrs = false;
-
-      if (this.isDirty) {
-        hadDirtyAttrs = true;
-
-        await runHooks(this, trx, hooks.beforeValidation);
-
-        validate(this);
-
-        await runHooks(this, trx,
-          hooks.afterValidation,
-          hooks.beforeUpdate,
-          hooks.beforeSave
-        );
-
-        await createRunner(logger, statements)(await update(this, trx));
-
-        this.prevAssociations.clear();
-        this.currentChangeSet.persist(this.changeSets);
-
-        await runHooks(this, trx,
-          hooks.afterUpdate,
-          hooks.afterSave
-        );
-      }
-
-      return createTransactionResultProxy(this, hadDirtyAttrs);
-    };
-
-    if (transaction) {
-      return run(transaction);
-    }
-
-    return this.transaction(run);
+    return this.update(mapToObject(this.dirtyProperties), transaction);
   }
 
   update(
@@ -613,12 +624,12 @@ class Model {
     return this.transaction(run);
   }
 
-  async reload(): Promise<this> {
+  reload(): Promise<this> {
     if (this.isNew) {
-      return this;
+      return Promise.resolve(this);
     }
 
-    return await this.constructor.find(this.getPrimaryKey());
+    return this.constructor.find(this.getPrimaryKey());
   }
 
   rollback(): this {
@@ -644,6 +655,9 @@ class Model {
     return Reflect.get(this, this.constructor.primaryKey);
   }
 
+  /**
+   * @private
+   */
   static initialize(store, table): Promise<Class<this>> {
     if (this.initialized) {
       return Promise.resolve(this);
@@ -831,20 +845,29 @@ class Model {
   /**
    * Check if a value is an instance of a Model.
    */
-  static isInstance(obj: mixed): boolean {
+  static isInstance(obj: any): boolean {
     return obj instanceof this;
   }
 
+  /**
+   * @private
+   */
   static columnFor(key: string): void | Object {
     return Reflect.get(this.attributes, key);
   }
 
+  /**
+   * @private
+   */
   static columnNameFor(key: string): void | string {
     const column = this.columnFor(key);
 
     return column ? column.columnName : undefined;
   }
 
+  /**
+   * @private
+   */
   static relationshipFor(key: string): void | Relationship$opts {
     return Reflect.get(this.relationships, key);
   }
