@@ -413,9 +413,11 @@ describe('module "controller"', () => {
       it('returns a record if relationships(s) change', async () => {
         let item = record;
         let user = await Reflect.get(item, 'user');
+        let comments = await Reflect.get(item, 'comments');
         const id = Reflect.get(item, 'id');
 
         expect(user).to.be.null;
+        expect(comments).to.deep.equal([]);
 
         const request = createRequest({
           id,
@@ -428,11 +430,28 @@ describe('module "controller"', () => {
                   id: 1,
                   type: 'users'
                 }
+              },
+              comments: {
+                data: [
+                  {
+                    id: 1,
+                    type: 'comments'
+                  },
+                  {
+                    id: 2,
+                    type: 'comments'
+                  },
+                  {
+                    id: 3,
+                    type: 'comments'
+                  }
+                ]
               }
             }
           },
           fields: {
-            users: ['id']
+            users: ['id'],
+            comments: ['id']
           }
         });
 
@@ -440,13 +459,23 @@ describe('module "controller"', () => {
 
         assertRecord(result, [
           ...attributes,
-          'user'
+          'user',
+          'comments'
         ]);
 
         item = await Post.find(id);
         user = await Reflect.get(item, 'user');
+        comments = await Reflect.get(item, 'comments');
 
         expect(user.id).to.equal(1);
+
+        expect(comments)
+          .to.be.an('array')
+          .with.lengthOf(3);
+
+        comments.forEach((comment, index) => {
+          expect(comment).to.have.property('id', index + 1);
+        });
       });
 
       it('returns the number `204` if no changes occur', async () => {
