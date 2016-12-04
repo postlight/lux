@@ -14,6 +14,8 @@ describe('module "database/model"', () => {
   describe('class Model', () => {
     let store;
     let User: Class<Model>;
+    let Image: Class<Model>;
+    let Comment: Class<Model>;
 
     before(async () => {
       const app = await getTestApp();
@@ -21,6 +23,10 @@ describe('module "database/model"', () => {
       store = app.store;
       // $FlowIgnore
       User = app.models.get('user');
+      // $FlowIgnore
+      Image = app.models.get('image');
+      // $FlowIgnore
+      Comment = app.models.get('comment');
     });
 
     describe('.initialize()', () => {
@@ -39,7 +45,8 @@ describe('module "database/model"', () => {
           },
 
           reactions: {
-            inverse: 'post'
+            inverse: 'post',
+            model: 'reaction'
           },
 
           tags: {
@@ -71,7 +78,10 @@ describe('module "database/model"', () => {
 
         static validates = {
           title: str => Boolean(str),
+          notAFunction: {},
+        //^^^^^^^^^^^^ This validation should be removed.
           notAnAttribute: () => false
+        //^^^^^^^^^^^^^^ This validation should be removed.
         };
       }
 
@@ -330,6 +340,12 @@ describe('module "database/model"', () => {
 
       class Subject extends Model {
         static tableName = 'posts';
+
+        static belongsTo = {
+          user: {
+            inverse: 'posts'
+          }
+        };
       }
 
       before(async () => {
@@ -343,10 +359,12 @@ describe('module "database/model"', () => {
       });
 
       it('constructs and persists a `Model` instance', async () => {
+        const user = new User({ id: 1 });
         const body = 'Contents of "Test Post"...';
         const title = 'Test Post';
 
         result = await Subject.create({
+          user,
           body,
           title,
           isPublic: true
@@ -360,6 +378,9 @@ describe('module "database/model"', () => {
         expect(result).to.have.property('isPublic', true);
         expect(result).to.have.property('createdAt').and.be.an.instanceof(Date);
         expect(result).to.have.property('updatedAt').and.be.an.instanceof(Date);
+
+        // $FlowIgnore
+        expect(await result.user).to.have.property('id', user.getPrimaryKey());
       });
     });
 
@@ -1437,6 +1458,24 @@ describe('module "database/model"', () => {
 
         static tableName = 'posts';
 
+        static hasOne = {
+          image: {
+            inverse: 'post'
+          }
+        };
+
+        static hasMany = {
+          comments: {
+            inverse: 'post'
+          }
+        };
+
+        static belongsTo = {
+          user: {
+            inverse: 'posts'
+          }
+        };
+
         static validates = {
           title: str => str.split(' ').length > 1
         };
@@ -1459,21 +1498,69 @@ describe('module "database/model"', () => {
         await instance.destroy();
       });
 
-      it('can set and persist attributes', async () => {
+      it('can set and persist attributes and relationships', async () => {
         const body = 'Lots of content...';
+
+        const user = new User({
+          id: 1
+        });
+
+        const image = new Image({
+          id: 1
+        });
+
+        const comments = [
+          new Comment({
+            id: 1
+          }),
+          new Comment({
+            id: 2
+          }),
+          new Comment({
+            id: 3
+          })
+        ];
 
         await instance.update({
           body,
+          user,
+          image,
+          comments,
           isPublic: true
         });
 
         expect(instance).to.have.property('body', body);
         expect(instance).to.have.property('isPublic', true);
 
-        const result = await Subject.find(instance.id);
+        // $FlowIgnore
+        expect(await instance.user)
+          .to.have.property('id', user.getPrimaryKey());
+
+        // $FlowIgnore
+        expect(await instance.image)
+          .to.have.property('id', image.getPrimaryKey());
+
+        // $FlowIgnore
+        expect(await instance.comments)
+          .to.be.an('array')
+          .with.lengthOf(3);
+
+        const result = await Subject
+          .find(instance.id)
+          .include('user', 'image', 'comments');
 
         expect(result).to.have.property('body', body);
         expect(result).to.have.property('isPublic', true);
+
+        expect(await result.user)
+          .to.have.property('id', user.getPrimaryKey());
+
+        expect(await result.image)
+          .to.have.property('id', image.getPrimaryKey());
+
+        expect(await result.comments)
+          .to.be.an('array')
+          .with.lengthOf(3);
       });
 
       it('fails if a validation is not met', async () => {
@@ -1676,6 +1763,40 @@ describe('module "database/model"', () => {
         const result = instance.getPrimaryKey();
 
         expect(result).to.be.a('number');
+      });
+    });
+
+    describe('get #persisted()', () => {
+      let instance;
+
+      class Subject extends Model {
+        static tableName = 'posts';
+      }
+
+      before(async () => {
+        await Subject.initialize(store, () => {
+          return store.connection(Subject.tableName);
+        });
+      });
+
+      it('returns true for a record returned from querying', async () => {
+        const record = await Subject.first();
+
+        expect(record).to.have.property('persisted', true);
+      });
+
+      it('returns false if a record has been modified', async () => {
+        const record = await Subject.first();
+
+        record.title = 'Modified Title';
+
+        expect(record).to.have.property('persisted', false);
+      });
+
+      it('returns false if the record is new', () => {
+        const record = new Subject();
+
+        expect(record).to.have.property('persisted', false);
       });
     });
   });
