@@ -225,8 +225,6 @@ describe('module "database/relationship"', () => {
       afterEach(teardown);
 
       it('can add a record to the relationship', async () => {
-        console.log(image.changeSets);
-
         expect(image).to.have.property('postId', subjectId);
         expect(await Reflect.get(image, 'post')).be.an.instanceof(Post);
       });
