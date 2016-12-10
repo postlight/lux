@@ -43,12 +43,12 @@ import type {
  *
  * | Return/Resolved Value        | Response                                   |
  * |------------------------------|--------------------------------------------|
- * | `Array<Model>` or `Model`    | Serialized JSON String                     |
- * | `Array` or `Object` Literal  | JSON String                                |
- * | `String` Literal             | Plain Text                                 |
- * | `Number` Literal             | [HTTP Status Code](https://goo.gl/T2lMc7)  |
- * | `true`                       | [204 No Content](https://goo.gl/GxKoqz)    |
- * | `false`                      | [401 Unauthorized](https://goo.gl/60QqCW)  |
+ * | Array<Model> or Model        | Serialized JSON String                     |
+ * | Array or Object Literal      | JSON String                                |
+ * | String Literal               | Plain Text                                 |
+ * | Number Literal               | [HTTP Status Code](https://goo.gl/T2lMc7)  |
+ * | true                         | [204 No Content](https://goo.gl/GxKoqz)    |
+ * | false                        | [401 Unauthorized](https://goo.gl/60QqCW)  |
  *
  * **Built-In Actions**
  *
@@ -184,14 +184,9 @@ import type {
  * Controller action is executed.
  *
  * There are two hooks where you can execute middleware functions,
- * {{#crossLink 'Controller/beforeAction:property'}}`beforeAction`
- * {{/crossLink}} and {{#crossLink 'Controller/afterAction:property'}}
- * `afterAction`{{/crossLink}}. Functions added to the
- * {{#crossLink 'Controller/beforeAction:property'}}`beforeAction`
- * {{/crossLink}} hook will execute before the Controller action and functions
- * added to the {{#crossLink 'Controller/afterAction:property'}}
- * `afterAction`{{/crossLink}} hook will be executed after the `Controller`
- * action.
+ * `beforeAction` and `afterAction`. Functions added to the `beforeAction` hook
+ * will execute before the Controller action and functions added to the
+ * `afterAction` hook will be executed after the `Controller` action.
  *
  * **Context**
  *
@@ -276,10 +271,7 @@ import type {
  * export default ApplicationController;
  * ```
  *
- * @module lux-framework
- * @namespace Lux
  * @class Controller
- * @constructor
  * @public
  */
 class Controller {
@@ -313,10 +305,8 @@ class Controller {
    * Controller instance from an incoming `HTTP` request.
    *
    * If you do not override this property all of the attributes specified in the
-   * Serializer that represents a
-   * Controller's resource. If the {{#crossLink 'Serializer'}}Serializer
-   * {{/crossLink}} cannot be resolved, this property will default to an empty
-   * array.
+   * Serializer that represents a Controller's resource. If the Serializer
+   * cannot be resolved, this property will default to an empty array.
    *
    * @property sort
    * @type {Array}
@@ -330,10 +320,8 @@ class Controller {
    * Controller instance from an incoming `HTTP` request.
    *
    * If you do not override this property all of the attributes specified in the
-   * Serializer that represents a
-   * Controller's resource. If the {{#crossLink 'Serializer'}}Serializer
-   * {{/crossLink}} cannot be resolved, this property will default to an empty
-   * array.
+   * Serializer that represents a Controller's resource. If the Serializer
+   * cannot be resolved, this property will default to an empty array.
    *
    * @property filter
    * @type {Array}
@@ -347,10 +335,8 @@ class Controller {
    * from an incoming `POST` or `PATCH` request body.
    *
    * If you do not override this property all of the attributes specified in the
-   * Serializer that represents a
-   * Controller's resource. If the {{#crossLink 'Serializer'}}Serializer
-   * {{/crossLink}} cannot be resolved, this property will default to an empty
-   * array.
+   * Serializer that represents a Controller's resource. If the Serializer
+   * cannot be resolved, this property will default to an empty array.
    *
    * @property params
    * @type {Array}
@@ -476,11 +462,10 @@ class Controller {
   defaultPerPage: number = 25;
 
   /**
-   * The resolved Model for a Controller
-   * instance.
+   * The resolved Model for a Controller instance.
    *
    * @property model
-   * @type {<a href="./Lux.Model.html">Model</a>}
+   * @type {Model}
    * @private
    */
   model: Class<Model>;
@@ -490,7 +475,7 @@ class Controller {
    * instance is a member of.
    *
    * @property parent
-   * @type {<a href="./Lux.Controller.html">?Controller</a>}
+   * @type {?Controller}
    * @private
    */
   parent: ?Controller;
@@ -505,17 +490,16 @@ class Controller {
   namespace: string;
 
   /**
-   * The resolved Serializer for a
-   * Controller instance.
+   * The resolved Serializer for a Controller instance.
    *
    * @property serializer
-   * @type {<a href="./Lux.Serializer.html">Serializer</a>}
+   * @type {Serializer}
    * @private
    */
   serializer: Serializer<*>;
 
   /**
-   * A Map instance containing a reference to all the Controller within a Lux
+   * A Map instance containing a reference to all the Controller within an
    * Application instance.
    *
    * @property controllers
@@ -580,8 +564,8 @@ class Controller {
   /**
    * This method supports filtering, sorting, pagination, including
    * relationships, and sparse fieldsets via query parameters. For more
-   * information, see the <a href="https://goo.gl/q7FVgZ" target="_blank">
-   * fetching resources</a> section of the JSON API specification.
+   * information, see the [fetching resources](https://goo.gl/q7FVgZ) section of
+   * the JSON API specification.
    *
    * @method index
    * @param {Request} request - The request object.
@@ -595,9 +579,8 @@ class Controller {
 
   /**
    * This method supports including relationships, and sparse fieldsets via
-   * query parameters. For more information, see the <a
-   * href="https://goo.gl/q7FVgZ" target="_blank">fetching resources</a> section
-   * of the JSON API specification.
+   * query parameters. For more information, see the [fetching resources](
+   * https://goo.gl/q7FVgZ) section of the JSON API specification.
    *
    * @method show
    * @param {Request} request - The request object.
@@ -612,9 +595,8 @@ class Controller {
 
   /**
    * Create and return a single Model instance that the Controller instance
-   * represents. For more information, see the <a href="https://goo.gl/4Obc9t"
-   * target="_blank">creating resources</a> section of the JSON API
-   * specification.
+   * represents. For more information, see the [creating resources](
+   * https://goo.gl/4Obc9t) section of the JSON API specification.
    *
    * @method create
    * @param {Request} request - The request object.
@@ -654,9 +636,8 @@ class Controller {
 
   /**
    * Update and return a single Model instance that the Controller instance
-   * represents. For more information, see the <a href="https://goo.gl/o2ZdOR"
-   * target="_blank">updating resources</a> section of the JSON API
-   * specification.
+   * represents. For more information, see the [updating resources](
+   * https://goo.gl/o2ZdOR)section of the JSON API specification.
    *
    * @method update
    * @param {Request} request - The request object.
@@ -695,9 +676,8 @@ class Controller {
 
   /**
    * Destroy a single Model instance that the Controller instance represents.
-   * For more information, see the <a href="https://goo.gl/nUZn8t"
-   * target="_blank">deleting resources</a> section of the JSON API
-   * specification.
+   * For more information, see the [deleting resources](https://goo.gl/nUZn8t)
+   * section of the JSON API specification.
    *
    * @method destroy
    * @param {Request} request - The request object.

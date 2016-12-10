@@ -13,13 +13,7 @@ import initialize from './initialize';
 import type { Application$opts } from './interfaces';
 
 /**
- * The `Application` class is responsible for constructing an application and
- * putting all the moving parts together.
- *
- * @module lux-framework
- * @namespace Lux
  * @class Application
- * @constructor
  * @public
  */
 class Application {

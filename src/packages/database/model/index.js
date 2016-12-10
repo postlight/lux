@@ -29,12 +29,7 @@ import runHooks from './utils/run-hooks';
 import type { Model$Hooks } from './interfaces';
 
 /**
- * ## Overview
- *
- * @module lux-framework
- * @namespace Lux
  * @class Model
- * @constructor
  * @public
  */
 class Model {
@@ -93,31 +88,460 @@ class Model {
 
   /**
    * @property rawColumnData
-   * @type {Boolean}
+   * @type {Object}
    * @private
    */
   rawColumnData: Object;
+
+  /**
+   * @property isModelInstance
+   * @type {Boolean}
+   * @private
+   */
+  isModelInstance: boolean;
 
   /**
    * @property prevAssociations
    * @type {Set}
    * @private
    */
-  isModelInstance: boolean;
-
-  /**
-   * @private
-   */
   prevAssociations: Set<Model>;
 
   /**
+   * @property changeSets
+   * @type {Array}
    * @private
    */
   changeSets: Array<ChangeSet>;
 
   /**
-   * A reference to the instance of the `Logger` used for the `Application` the
-   * `Model` is a part of.
+   * An object where you declare `hasOne` relationships.
+   *
+   * When declaring a relationship you must specify the inverse of the
+   * relationship.
+   *
+   * ```javascript
+   * class User extends Model {
+   *   static hasOne = {
+   *     profile: {
+   *       inverse: 'user'
+   *       // The line above lets Lux know that this relationship is accessible
+   *       // on profile instances via `profile.user`.
+   *     }
+   *   };
+   * }
+   *
+   * class Profile extends Model {
+   *   static belongsTo = {
+   *     user: {
+   *       inverse: 'profile'
+   *       // The line above lets Lux know that this relationship is accessible
+   *       // on user instances via `user.profile`.
+   *     }
+   *   };
+   * }
+   * ```
+   *
+   * If the name of the model is different than the key of the relationship, you
+   * must specify it in the relationship object.
+   *
+   * ```javascript
+   * class Profile extends Model {
+   *   static belongsTo = {
+   *     owner: {
+   *       inverse: 'profile',
+   *       model: 'user'
+   *       // The line above lets Lux know that this is a relationship with the
+   *       // `User` model and not a non-existent `Owner` model.
+   *     }
+   *   };
+   * }
+   * ```
+   *
+   * @property hasOne
+   * @type {Object}
+   * @default {}
+   * @static
+   * @public
+   */
+  static hasOne: Object;
+
+  /**
+   * An object where you declare `hasMany` relationships.
+   *
+   * When declaring a relationship you must specify the inverse of the
+   * relationship.
+   *
+   * ```javascript
+   * class Author extends Model {
+   *   static hasMany = {
+   *     books: {
+   *       inverse: 'author'
+   *       // The line above lets Lux know that this relationship is accessible
+   *       // on book instances via `book.author`.
+   *     }
+   *   };
+   * }
+   *
+   * class Book extends Model {
+   *   static belongsTo = {
+   *     author: {
+   *       inverse: 'books'
+   *       // The line above lets Lux know that this relationship is accessible
+   *       // on author instances via `author.books`.
+   *     }
+   *   };
+   * }
+   * ```
+   *
+   * If the name of the model is different than the key of the relationship, you
+   * must specify it in the relationship object.
+   *
+   * ```javascript
+   * class Author extends Model {
+   *   static hasMany = {
+   *     publications: {
+   *       inverse: 'author',
+   *       model: 'book'
+   *       // The line above lets Lux know that this is a relationship with the
+   *       // `Book` model and not a non-existent `Publication` model.
+   *     }
+   *   };
+   * }
+   * ```
+   *
+   * ##### Many to Many
+   *
+   * In the examples above there is only one owner of relationship. Sometimes we
+   * need to express a many to many relationship. Typically in relational
+   * databases, this is done with a join table. When declaring a many to many
+   * relationship that uses a join table, you must specify the join model.
+   *
+   * ```javascript
+   * class Categorization extends Model {
+   *   static belongsTo = {
+   *     tag: {
+   *       inverse: 'categorization'
+   *     },
+   *     post: {
+   *       inverse: 'categorization'
+   *     }
+   *   }
+   * }
+   *
+   * class Tag extends Model {
+   *   static hasMany = {
+   *     posts: {
+   *       inverse: 'tags',
+   *       through: 'categorizations'
+   *     }
+   *   };
+   * }
+   *
+   * class Post extends Model {
+   *   static hasMany = {
+   *     tags: {
+   *       inverse: 'posts',
+   *       through: 'categorizations'
+   *     }
+   *   };
+   * }
+   * ```
+   *
+   * @property hasMany
+   * @type {Object}
+   * @default {}
+   * @static
+   * @public
+   */
+  static hasMany: Object;
+
+  /**
+   * An object where you declare `belongsTo` relationships.
+   *
+   * When declaring a relationship you must specify the inverse of the
+   * relationship.
+   *
+   * ```javascript
+   * class Book extends Model {
+   *   static belongsTo = {
+   *     author: {
+   *       inverse: 'books'
+   *       // The line above lets Lux know that this relationship is accessible
+   *       // on author instances via `author.books`.
+   *     }
+   *   };
+   * }
+   *
+   * class Author extends Model {
+   *   static hasMany = {
+   *     books: {
+   *       inverse: 'book'
+   *       // The line above lets Lux know that this relationship is accessible
+   *       // on book instances via `book.author`.
+   *     }
+   *   };
+   * }
+   * ```
+   *
+   * If the name of the model is different than the key of the relationship, you
+   * must specify it in the relationship object.
+   *
+   * ```javascript
+   * class Book extends Model {
+   *   static belongsTo = {
+   *     writer: {
+   *       inverse: 'books',
+   *       model: 'author'
+   *       // The line above lets Lux know that this is a relationship with the
+   *       // `Author` model and not a non-existent `Writer` model.
+   *     }
+   *   };
+   * }
+   * ```
+   *
+   * Sometimes our foreign keys in the database do not follow conventions (i.e
+   * `author_id`). You have the option to manually specify foreign keys when a
+   * situation like this occurs.
+   *
+   * ```javascript
+   * class Book extends Model {
+   *   static belongsTo = {
+   *     author: {
+   *       inverse: 'books',
+   *       foreignKey: 'SoMe_UnCoNvEnTiOnAl_FoReIgN_KeY'
+   *     }
+   *   };
+   * }
+   * ```
+   *
+   * @property belongsTo
+   * @type {Object}
+   * @default {}
+   * @static
+   * @public
+   */
+  static belongsTo: Object;
+
+  /**
+   * An object where you declare validations for an instance's attributes.
+   *
+   * Before a model instance is saved, validations declared in this block are
+   * executed. To declare a validation for a model attribute, simply add the
+   * attribute name as a key to the validates object. The value for the
+   * attribute key should be a function that takes a single argument (the value
+   * to validate against) and return a boolean value represent whether or not
+   * the attribute is valid.
+   *
+   * ```javascript
+   * class User extends Model {
+   *   static validates {
+   *     username: value => /^\w{2,30}$/.test(value),
+   *     password: value => String(value).length >= 8
+   *   };
+   * }
+   * ```
+   *
+   * In the spirit of have a small api surface area, Lux provides no validation
+   * helper functions. You can roll your own helpers with or use one of the many
+   * excellent validation libraries like [validator](https://goo.gl/LWaHBB).
+   *
+   * ```javascript
+   * import { isEmail } from 'validator';
+   *
+   * class User extends Model {
+   *   static validates {
+   *     email: isEmail
+   *   };
+   * }
+   * ```
+   *
+   * @property validates
+   * @type {Object}
+   * @default {}
+   * @static
+   * @public
+   */
+  static validates: Object;
+
+  /**
+   * An object where you declare custom query scopes for the model.
+   *
+   * Scopes allow you to DRY up query logic by chaining custom set's of queries
+   * with built-in query method such as `where`, `not`, `page`, etc. To declare
+   * a scope, add it as a method on the scopes object.
+   *
+   * ```javascript
+   * class Post extends Model {
+   *   static hasMany = {
+   *     tags: {
+   *       inverse: 'posts'
+   *     },
+   *     comments: {
+   *       inverse: 'post'
+   *     }
+   *   };
+   *
+   *   static belongsTo = {
+   *     user: {
+   *       inverse: 'posts'
+   *     }
+   *   };
+   *
+   *   static scopes = {
+   *     isPublic() {
+   *       return this.where({
+   *         isPublic: true
+   *       });
+   *     },
+   *
+   *     byUser(user) {
+   *       return this.where({
+   *         userId: user.id
+   *       });
+   *     },
+   *
+   *     withEverything() {
+   *       return this.includes('tags', 'user', 'comments');
+   *     }
+   *   };
+   * }
+   * ```
+   *
+   * Given the scopes declared in the example above, here is how we could return
+   * all the public posts with relationships eager loaded for the user with the
+   * id of 1.
+   *
+   * ```javascript
+   * const user = await User.find(1);
+   *
+   * return Post
+   *   .byUser(user)
+   *   .isPublic()
+   *   .withEverything();
+   * ```
+   *
+   * Since scopes can be chained with built-in query methods, we can easily
+   * paginate this collection.
+   *
+   * ```javascript
+   * const user = await User.find(1);
+   *
+   * return Post
+   *   .byUser(user)
+   *   .isPublic()
+   *   .withEverything()
+   *   .page(1);
+   * ```
+   *
+   * @property scopes
+   * @type {Object}
+   * @default {}
+   * @static
+   * @public
+   */
+  static scopes: Object;
+
+  /**
+   * An object where you declare hooks to execute at certain times in a model
+   * instance's lifecycle.
+   *
+   * There are many lifecycle hooks that are executed through out a model
+   * instance's lifetime. The have many use cases such as sanitization of
+   * attributes, creating dependent relationships, hashing passwords, and much
+   * more.
+   *
+   * ##### Execution Order
+   *
+   * When creating a record.
+   *
+   * 1. beforeValidation
+   * 2. afterValidation
+   * 3. beforeCreate
+   * 4. beforeSave
+   * 5. afterCreate
+   * 6. afterSave
+   *
+   * When updating a record.
+   *
+   * 1. beforeValidation
+   * 2. afterValidation
+   * 3. beforeUpdate
+   * 4. beforeSave
+   * 5. afterUpdate
+   * 6. afterSave
+   *
+   * When deleting a record.
+   *
+   * 1. beforeDestroy
+   * 2. afterDestroy
+   *
+   * ##### Anatomy
+   *
+   * Hooks are async functions that are called with two arguments. The first
+   * argument is the record that the hook applies to and the second argument is
+   * the transaction object relevant to the method from which the hook was
+   * called.
+   *
+   * The only time you will need to use the transaction object is if you are
+   * creating, updating, or deleting different record(s) within the hook. Using
+   * the transaction object when modifying the database in a hook ensures that
+   * any modifications made within the hook will be rolled back if the function
+   * that initiated the transaction fails.
+   *
+   * ```javascript
+   * import Notification from 'app/models/notification';
+   *
+   * class Comment extends Model {
+   *   static belongsTo = {
+   *     post: {
+   *       inverse: 'comments'
+   *     },
+   *     user: {
+   *       inverse: 'comments'
+   *     }
+   *   };
+   *
+   *   static hooks = {
+   *     async afterCreate(comment, trx) {
+   *       let [post, commenter] = await Promise.all([
+   *         comment.post,
+   *         comment.user
+   *       ]);
+   *
+   *       const commentee = await post.user;
+   *
+   *       post = post.title;
+   *       commenter = commenter.name;
+   *
+   *       // Calling .transacting(trx) prevents the commentee from getting a
+   *       // notification if the comment fails to be persisted in the database.
+   *       await Notification
+   *         .transacting(trx)
+   *         .create({
+   *           user: commentee,
+   *           message: `${commenter} commented on your post "${post}"`
+   *         });
+   *     },
+   *
+   *     async afterSave() {
+   *       // Good thing you called transacting in afterCreate.
+   *       throw new Error('Fatal Error');
+   *     }
+   *   };
+   * }
+   * ```
+   *
+   * @property hooks
+   * @type {Object}
+   * @default {}
+   * @static
+   * @public
+   */
+  static hooks: Model$Hooks;
+
+  /**
+   * A reference to the application's logger.
    *
    * @property logger
    * @type {Logger}
@@ -127,7 +551,7 @@ class Model {
   static logger: Logger;
 
   /**
-   * The name of the corresponding database table for a `Model`.
+   * The name of the corresponding database table for the model.
    *
    * @property tableName
    * @type {String}
@@ -137,7 +561,7 @@ class Model {
   static tableName: string;
 
   /**
-   * The canonical name of a `Model`.
+   * The canonical name of the model.
    *
    * @property modelName
    * @type {String}
@@ -147,7 +571,7 @@ class Model {
   static modelName: string;
 
   /**
-   * The name of the API resource a `Model` represents.
+   * The name of the resource the model represents.
    *
    * @property resourceName
    * @type {String}
@@ -157,10 +581,11 @@ class Model {
   static resourceName: string;
 
   /**
-   * The column name to use for a `Model`'s primaryKey.
+   * The column name to use for a model's primary key.
    *
    * @property primaryKey
    * @type {String}
+   * @default 'id'
    * @static
    * @public
    */
@@ -173,14 +598,6 @@ class Model {
    * @private
    */
   static table: () => Knex$QueryBuilder;
-
-  /**
-   * @property hooks
-   * @type {Object}
-   * @static
-   * @private
-   */
-  static hooks: Model$Hooks;
 
   /**
    * @property store
@@ -377,22 +794,9 @@ class Model {
   }
 
   /**
-   * @property dirtyProperties
-   * @type {Map}
-   */
-  get dirtyProperties(): Map<string, any> {
-    const { currentChangeSet, persistedChangeSet } = this;
-
-    if (!persistedChangeSet) {
-      return new Map(currentChangeSet);
-    }
-
-    return diffMap(persistedChangeSet, currentChangeSet);
-  }
-
-  /**
    * @property dirtyAttributes
    * @type {Map}
+   * @public
    */
   get dirtyAttributes(): Map<string, any> {
     const {
@@ -416,6 +820,7 @@ class Model {
   /**
    * @property dirtyRelationships
    * @type {Map}
+   * @public
    */
   get dirtyRelationships(): Map<string, any> {
     const {
@@ -437,6 +842,23 @@ class Model {
   }
 
   /**
+   * @property dirtyProperties
+   * @type {Map}
+   * @private
+   */
+  get dirtyProperties(): Map<string, any> {
+    const { currentChangeSet, persistedChangeSet } = this;
+
+    if (!persistedChangeSet) {
+      return new Map(currentChangeSet);
+    }
+
+    return diffMap(persistedChangeSet, currentChangeSet);
+  }
+
+  /**
+   * @property currentChangeSet
+   * @type {ChangeSet}
    * @private
    */
   get currentChangeSet(): ChangeSet {
@@ -444,101 +866,146 @@ class Model {
   }
 
   /**
+   * @property currentChangeSet
+   * @type {void | ChangeSet}
    * @private
    */
   get persistedChangeSet(): void | ChangeSet {
     return this.changeSets.find(({ isPersisted }) => isPersisted);
   }
 
-  static get hasOne(): Object {
-    return Object.freeze({});
-  }
-
-  static set hasOne(value: Object): void {
-    if (value && Object.keys(value).length) {
-      Reflect.defineProperty(this, 'hasOne', {
-        value,
-        writable: true,
-        enumerable: false,
-        configurable: true
-      });
-    }
-  }
-
-  static get hasMany(): Object {
-    return Object.freeze({});
-  }
-
-  static set hasMany(value: Object): void {
-    if (value && Object.keys(value).length) {
-      Reflect.defineProperty(this, 'hasMany', {
-        value,
-        writable: true,
-        enumerable: false,
-        configurable: true
-      });
-    }
-  }
-
-  static get belongsTo(): Object {
-    return Object.freeze({});
-  }
-
-  static set belongsTo(value: Object): void {
-    if (value && Object.keys(value).length) {
-      Reflect.defineProperty(this, 'belongsTo', {
-        value,
-        writable: true,
-        enumerable: false,
-        configurable: true
-      });
-    }
-  }
-
-  static get scopes(): Object {
-    return Object.freeze({});
-  }
-
-  static set scopes(value: Object): void {
-    if (value && Object.keys(value).length) {
-      Reflect.defineProperty(this, 'scopes', {
-        value,
-        writable: true,
-        enumerable: false,
-        configurable: true
-      });
-    }
-  }
-
-  static get validates(): Object {
-    return Object.freeze({});
-  }
-
-  static set validates(value: Object): void {
-    if (value && Object.keys(value).length) {
-      Reflect.defineProperty(this, 'validates', {
-        value,
-        writable: true,
-        enumerable: false,
-        configurable: true
-      });
-    }
-  }
-
+  /**
+   * Specify the transaction object to use for following save, update, or
+   * destroy method calls.
+   *
+   * When you call a method like update or destroy, lux will create a
+   * transaction and wrap the internals of the method and other downstream
+   * method calls like model hooks within. In some edge cases it can be more
+   * useful to manually initiate the transaction. Bulk updating or destroying
+   * are good examples of this. When you manually begin a transaction, you can
+   * call this method to specify the transaction object that you would like to
+   * use for subsequent mutation methods (save, update, destroy, etc.) so lux
+   * knows not to automatically begin a new transaction if/when a mutation
+   * method is called.
+   *
+   * ```javascript
+   * const post = await Post.first();
+   *
+   * // This call to update uses the transaction that lux will initiate.
+   * await post.update({
+   *   // updates to post...
+   * });
+   *
+   * await post.transaction(trx => {
+   *   // This call to update uses the transaction that we created with the
+   *   // call to the transaction method.
+   *   return post
+   *     .transacting(trx)
+   *     .update({
+   *       // updates to post...
+   *     });
+   * });
+   * ```
+   *
+   * @method transacting
+   * @param {Transaction} transaction - A transaction object to forward to save,
+   * update, or destroy method calls.
+   * @return {Model} - Returns a proxied version of `this` that delagates the
+   * transaction param to subsquent save, update, or destroy method calls.
+   * @public
+   */
   transacting(trx: Knex$Transaction): this {
     return createInstanceTransactionProxy(this, trx);
   }
 
+  /**
+   * Manually begin a new transaction.
+   *
+   * Most of the time, you don't need to start transactions yourself. However,
+   * if you need to do something like implement bulk updating of related records
+   * the transaction method can be useful.
+   *
+   * ```javascript
+   * const post = await Post.first().include('user');
+   * const user = await post.user;
+   *
+   * await post.transaction(trx => {
+   *   return Promise.all([
+   *     post.transacting(trx).update({
+   *       // updates to post...
+   *     }),
+   *     user.transacting(trx).update({
+   *       // updates to user...
+   *     })
+   *   ]);
+   * });
+   * ```
+   *
+   * @method transaction
+   * @param {Function} fn - The function used for executing the tranasction.
+   * This function is called with a new transaction object as it's only argument
+   * and is expected to return a promise.
+   * @return {Promise} Resolves with the resolved value of the fn param.
+   * @public
+   */
   transaction<T>(fn: (...args: Array<any>) => Promise<T>): Promise<T> {
     return this.constructor.transaction(fn);
   }
 
+  /**
+   * Persist any unsaved changes to the database.
+   *
+   * ```javascript
+   * const post = await Post.first();
+   *
+   * console.log(post.title, post.isDirty);
+   * // => 'New Post' false
+   *
+   * post.title = 'How to Save a Lux Model';
+   *
+   * console.log(post.title, post.isDirty);
+   * // => 'How to Update a Lux Model' true
+   *
+   * await post.save();
+   *
+   * console.log(post.title, post.isDirty);
+   * // => 'How to Save a Lux Model' false
+   * ```
+   *
+   * @method save
+   * @return {Promise} Resolves with `this`.
+   * @public
+   */
   save(
     transaction?: Knex$Transaction
   ): Promise<Transaction$ResultProxy<this, *>> {
     return this.update(mapToObject(this.dirtyProperties), transaction);
   }
 
+  /**
+   * Assign values to the instance and persist any changes to the database.
+   *
+   * ```javascript
+   * const post = await Post.first();
+   *
+   * console.log(post.title, post.isPublic, post.isDirty);
+   * // => 'New Post' false false
+   *
+   * await post.update({
+   *   title: 'How to Update a Lux Model',
+   *   isPublic: true
+   * });
+   *
+   * console.log(post.title, post.isPublic, post.isDirty);
+   * // => 'How to Update a Lux Model' true false
+   * ```
+   *
+   * @method update
+   * @param {Object} properties - An object containing key, value pairs of the
+   * attributes and/or relationships you would like to assign to the instance.
+   * @return {Promise} Resolves with `this`.
+   * @public
+   */
   update(
     props: Object = {},
     transaction?: Knex$Transaction
@@ -604,6 +1071,13 @@ class Model {
     return this.transaction(run);
   }
 
+  /**
+   * Permanently delete the instance from the database.
+   *
+   * @method destroy
+   * @return {Promise} Resolves with `this`.
+   * @public
+   */
   destroy(
     transaction?: Knex$Transaction
   ): Promise<Transaction$ResultProxy<this, true>> {
@@ -624,6 +1098,13 @@ class Model {
     return this.transaction(run);
   }
 
+  /**
+   * Reload the record from the database.
+   *
+   * @method reload
+   * @return {Promise} Resolves with `this`.
+   * @public
+   */
   reload(): Promise<this> {
     if (this.isNew) {
       return Promise.resolve(this);
@@ -632,6 +1113,14 @@ class Model {
     return this.constructor.find(this.getPrimaryKey());
   }
 
+  /**
+   * Rollback attributes and relationships to the last known persisted set of
+   * values.
+   *
+   * @method rollback
+   * @return {Model} Returns `this`.
+   * @public
+   */
   rollback(): this {
     const { persistedChangeSet } = this;
 
@@ -644,11 +1133,20 @@ class Model {
     return this;
   }
 
+  /**
+   * @method getAttributes
+   * @param {String} [...keys] - The keys of the properties to return.
+   * @return {Object} An object containing keys that were passed in as agruments
+   * and their associated values.
+   * @private
+   */
   getAttributes(...keys: Array<string>): Object {
     return pick(this, ...keys);
   }
 
   /**
+   * @method getPrimaryKey
+   * @return {Number} The value of the primary key for the instance.
    * @private
    */
   getPrimaryKey(): number {
@@ -656,39 +1154,15 @@ class Model {
   }
 
   /**
-   * @private
+   * Create and persist a new instance of the model.
+   *
+   * @method create
+   * @param {Object} properties - An object containing key, value pairs of the
+   * attributes and/or relationships you would like to assign to the instance.
+   * @return {Promise} Resolves with the newly created model.
+   * @static
+   * @public
    */
-  static initialize(store, table): Promise<Class<this>> {
-    if (this.initialized) {
-      return Promise.resolve(this);
-    }
-
-    if (!this.tableName) {
-      const getTableName = compose(pluralize, underscore);
-      const tableName = getTableName(this.name);
-
-      Reflect.defineProperty(this, 'tableName', {
-        value: tableName,
-        writable: false,
-        enumerable: true,
-        configurable: false
-      });
-
-      Reflect.defineProperty(this.prototype, 'tableName', {
-        value: tableName,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      });
-    }
-
-    return initializeClass({
-      store,
-      table,
-      model: this
-    });
-  }
-
   static create(
     props: Object = {},
     transaction?: Knex$Transaction
@@ -751,10 +1225,72 @@ class Model {
     return this.transaction(run);
   }
 
+  /**
+   * Specify the transaction object to use for following save, update, or
+   * destroy method calls.
+   *
+   * When you call a method like update or destroy, lux will create a
+   * transaction and wrap the internals of the method and other downstream
+   * method calls like model hooks within. In some edge cases it can be more
+   * useful to manually initiate the transaction. Bulk updating or destroying
+   * are good examples of this. When you manually begin a transaction, you can
+   * call this method to specify the transaction object that you would like to
+   * use for calls to the static create method so lux knows not to automatically
+   * begin a new transaction if/when the static create method is called.
+   *
+   * ```javascript
+   * // This call to create uses the transaction that lux will initiate.
+   * await Post.create();
+   *
+   * await Post.transaction(trx => {
+   *   // This call to create uses the transaction that we created with the
+   *   // call to the transaction method.
+   *   return Post
+   *     .transacting(trx)
+   *     .create();
+   * });
+   * ```
+   *
+   * @method transacting
+   * @param {Transaction} transaction - A transaction object to forward to
+   * create method calls.
+   * @return {Model} - Returns a proxied version of `this` that delagates the
+   * transaction param to subsquent create method calls.
+   * @static
+   * @public
+   */
   static transacting(trx: Knex$Transaction): Class<this> {
     return createStaticTransactionProxy(this, trx);
   }
 
+  /**
+   * Manually begin a new transaction.
+   *
+   * Most of the time, you don't need to start transactions yourself. However,
+   * the transaction method can be useful if you need to do something like
+   * bulk creating records.
+   *
+   * ```javascript
+   * await Post.transaction(trx => {
+   *   return Promise.all([
+   *     Post.transacting(trx).create({
+   *       // ...props
+   *     }),
+   *     Post.transacting(trx).create({
+   *       // ...props
+   *     })
+   *   ]);
+   * });
+   * ```
+   *
+   * @method transaction
+   * @param {Function} fn - The function used for executing the tranasction.
+   * This function is called with a new transaction object as it's only argument
+   * and is expected to return a promise.
+   * @return {Promise} Resolves with the resolved value of the fn param.
+   * @static
+   * @public
+   */
   static transaction<T>(fn: (...args: Array<any>) => Promise<T>): Promise<T> {
     return new Promise((resolve, reject) => {
       const { store: { connection } } = this;
@@ -838,18 +1374,82 @@ class Model {
     return new Query(this).unscope(...scopes);
   }
 
-  static hasScope(name: string) {
+  /**
+   * Check if a model has a scope.
+   *
+   * @method hasScope
+   * @param {String} name - The name of the scope to look for.
+   * @return {Boolean}
+   * @static
+   * @public
+   */
+  static hasScope(name: string): boolean {
     return Boolean(Reflect.get(this.scopes, name));
   }
 
   /**
-   * Check if a value is an instance of a Model.
+   * Check if a value is an instance of a model.
+   *
+   * @method isInstance
+   * @param {any} value - The value in question.
+   * @return {Boolean}
+   * @static
+   * @public
    */
-  static isInstance(obj: any): boolean {
-    return obj instanceof this;
+  static isInstance(value: any): boolean {
+    return value instanceof this;
   }
 
   /**
+   * Bind the model's connection to the database and get inferred data from the
+   * schema upon application boot.
+   *
+   * @method initialize
+   * @param {Database} store - A reference of the applications database
+   * instance.
+   * @param {Table} table - A function that returns a knex query builder bound
+   * to the model's table name.
+   * @return {Promise} Resolves with the model class.
+   * @static
+   * @private
+   */
+  static initialize(store, table): Promise<Class<this>> {
+    if (this.initialized) {
+      return Promise.resolve(this);
+    }
+
+    if (!this.tableName) {
+      const getTableName = compose(pluralize, underscore);
+      const tableName = getTableName(this.name);
+
+      Reflect.defineProperty(this, 'tableName', {
+        value: tableName,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      });
+
+      Reflect.defineProperty(this.prototype, 'tableName', {
+        value: tableName,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      });
+    }
+
+    return initializeClass({
+      store,
+      table,
+      model: this
+    });
+  }
+
+  /**
+   * @method columnFor
+   * @param {String} key - The respective attribute name of the column.
+   * @return {void | Object} An object containing metadata about the column if a
+   * match is found.
+   * @static
    * @private
    */
   static columnFor(key: string): void | Object {
@@ -857,6 +1457,11 @@ class Model {
   }
 
   /**
+   * @method columnNameFor
+   * @param {String} key - The respective attribute name of the column.
+   * @return {void | String} The name of the column in the database if a match
+   * is found.
+   * @static
    * @private
    */
   static columnNameFor(key: string): void | string {
@@ -866,6 +1471,11 @@ class Model {
   }
 
   /**
+   * @method relationshipFor
+   * @param {String} key - The name of the relationship to match against.
+   * @return {void | Object} An object containing relationship metadata if a
+   * match is found.
+   * @static
    * @private
    */
   static relationshipFor(key: string): void | Relationship$opts {

@@ -332,10 +332,7 @@ import type { Serializer$opts } from './interfaces';
  * export default AdminPostsSerializer;
  * ```
  *
- * @module lux-framework
- * @namespace Lux
  * @class Serializer
- * @constructor
  * @public
  */
 class Serializer<T: Model> {
@@ -360,9 +357,8 @@ class Serializer<T: Model> {
   hasOne: Array<string> = [];
 
   /**
-   * An Array of the `hasMany` relationships on a Serializer instance's
-   * Model to include in the
-   * `relationships` resource object of a serialized payload.
+   * An Array of the `hasMany` relationships on a Serializer instance's Model to
+   * include in the `relationships` resource object of a serialized payload.
    *
    * ```javscript
    * class PostsSerializer extends Serializer {
@@ -380,9 +376,8 @@ class Serializer<T: Model> {
   hasMany: Array<string> = [];
 
   /**
-   * An array of the `attributes` on a Serializer instance's
-   * Model to include in the
-   * `attributes` resource object of a serialized payload.
+   * An array of the `attributes` on a Serializer instance's Model to include in
+   * the `attributes` resource object of a serialized payload.
    *
    * ```javscript
    * class PostsSerializer extends Serializer {
@@ -401,8 +396,7 @@ class Serializer<T: Model> {
   attributes: Array<string> = [];
 
   /**
-   * The resolved Model that a
-   * Serializer instance represents.
+   * The resolved Model that a Serializer instance represents.
    *
    * @property model
    * @type {Model}
@@ -415,7 +409,7 @@ class Serializer<T: Model> {
    * instance is a member of.
    *
    * @property parent
-   * @type {<a href="./Lux.Serializer.html">?Serializer</a>}
+   * @type {?Serializer}
    * @private
    */
   parent: ?Serializer<*>;
@@ -445,33 +439,31 @@ class Serializer<T: Model> {
 
   /**
    * Transform an array of Model instances or a single Model instance into a
-   * <a href="http://jsonapi.org" target="_blank"></a> document object.
+   * [JSON API](http://jsonapi.org) document object.
    *
    * @method format
    *
    * @param {Object} options - An options object used for building the
-   * returned <a href="http://jsonapi.org" target="_blank">JSONAPI</a> document
-   * object.
+   * returned [JSON API](http://jsonapi.org) document object.
    *
    * @param {Model|Array} options.data - The Model instance or array of
-   * Model instances to transform into the returned
-   * <a href="http://jsonapi.org" target="_blank">JSONAPI</a> document object.
+   * Model instances to transform into the returned [JSON API](
+   * http://jsonapi.org) document object.
    *
    * @param {Object} options.links - An object containing links to include in
-   * the top level links object of the returned
-   * <a href="http://jsonapi.org" target="_blank">JSONAPI</a> document object.
+   * the top level links object of the returned [JSON API](http://jsonapi.org)
+   * document object.
    *
    * @param {String} options.domain - A string used to build links included in
-   * the resource and relationship objects in the returned
-   * <a href="http://jsonapi.org" target="_blank">JSONAPI</a> document object.
+   * the resource and relationship objects in the returned [JSON API](
+   * http://jsonapi.org) document object.
    *
    * @param {Array} options.include - An array of strings containing the
    * relationship keys that should be added to the top level included object of
-   * the returned <a href="http://jsonapi.org" target="_blank">JSONAPI</a>
-   * document object.
+   * the returned [JSON API](http://jsonapi.org) document object.
    *
-   * @return \{.+\} Resolves with a
-   * <a href="http://jsonapi.org" target="_blank">JSONAPI</a> document object.
+   * @return {Promise} Resolves with a [JSON API](http://jsonapi.org) document
+   * object.
    *
    * @private
    */
@@ -530,39 +522,39 @@ class Serializer<T: Model> {
   }
 
   /**
-   * Transform a single Model instance into a [JSONAPI](http://jsonapi.org)
+   * Transform a single Model instance into a [JSON API](http://jsonapi.org)
    * resource object.
    *
    * @method formatOne
    *
-   * @param {Object} options - An options object used for building the
-   * returned [JSONAPI](http://jsonapi.org) resource object.
+   * @param {Object} options - An options object used for building the returned
+   * [JSON API](http://jsonapi.org) resource object.
    *
    * @param {Model} options.item - The Model instance to transform into the
-   * returned [JSONAPI](http://jsonapi.org) resource object.
+   * returned [JSON API](http://jsonapi.org) resource object.
    *
    * @param {Object} options.links - An object containing links to include in
-   * the top level links object of the returned [JSONAPI](http://jsonapi.org)
+   * the top level links object of the returned [JSON API](http://jsonapi.org)
    * resource object.
    *
    * @param {String} options.domain - A string used to build links included in
    * the top level links object or relationship links objects in the returned
-   * [JSONAPI](http://jsonapi.org) resource object.
+   * [JSON API](http://jsonapi.org) resource object.
    *
    * @param {Array} options.include - An array of strings containing the
    * relationship keys that should be added to the top level included object of
-   * a [JSONAPI](http://jsonapi.org) document object.
+   * a [JSON API](http://jsonapi.org) document object.
    *
-   * @param {Array} options.included - An array of [JSONAPI](http://jsonapi.org)
-   * resource objects that will be added to the top level included array of a
-   * [JSONAPI](http://jsonapi.org) document object.
+   * @param {Array} options.included - An array of [JSON API](
+   * http://jsonapi.org) resource objects that will be added to the top level
+   * included array of a [JSON API](http://jsonapi.org) document object.
    *
    * @param {Boolean} options.formatRelationships - Wether or not
    * relationships should be formatted and included in the returned
-   * [JSONAPI](http://jsonapi.org) resource object.
+   * [JSON API](http://jsonapi.org) resource object.
    *
-   * @return \{.+\} Resolves with a
-   * <a href="http://jsonapi.org)" target="_blank">JSONAPI</a> resource object.
+   * @return {Promise} Resolves with a [JSON API](http://jsonapi.org) resource
+   * object.
    *
    * @private
    */
@@ -663,30 +655,30 @@ class Serializer<T: Model> {
   }
 
   /**
-   * Transform a single Model instance into a [JSONAPI](http://jsonapi.org)
+   * Transform a single Model instance into a [JSON API](http://jsonapi.org)
    * relationship object.
    *
    * @method formatRelationship
    *
-   * @param {Object} options - An options object used for building the
-   * returned [JSONAPI](http://jsonapi.org) relationship object.
+   * @param {Object} options - An options object used for building the returned
+   * [JSON API](http://jsonapi.org) relationship object.
    *
    * @param {Model} options.item - The Model instance to transform into the
-   * returned [JSONAPI](http://jsonapi.org) relationship object.
+   * returned [JSON API](http://jsonapi.org) relationship object.
    *
    * @param {String} options.domain - A string used to build links included in
-   * the returned [JSONAPI](http://jsonapi.org) relationship object.
+   * the returned [JSON API](http://jsonapi.org) relationship object.
    *
    * @param {Array} options.include - An array of strings containing the
    * relationship keys that should be added to the top level included object of
-   * a [JSONAPI](http://jsonapi.org) document object.
+   * a [JSON API](http://jsonapi.org) document object.
    *
-   * @param {Array} options.included - An array of [JSONAPI](http://jsonapi.org)
-   * resource objects that will be added to the top level included array of a
-   * [JSONAPI](http://jsonapi.org) document object.
+   * @param {Array} options.included - An array of [JSON API](
+   * http://jsonapi.org) resource objects that will be added to the top level
+   * included array of a [JSON API](http://jsonapi.org) document object.
    *
-   * @return {Promise} A `Promise` that resolves with a
-   * [JSONAPI](http://jsonapi.org) relationship object.
+   * @return {Promise} Resolves with a [JSON API](http://jsonapi.org)
+   * relationship object.
    *
    * @private
    */

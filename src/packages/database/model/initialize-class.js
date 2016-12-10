@@ -129,8 +129,7 @@ export default async function initializeClass<T: Class<Model>>({
   table: $PropertyType<T, 'table'>,
   model: T
 }): Promise<T> {
-  let { hooks } = model;
-  const { scopes, validates } = model;
+  let { hooks, scopes, validates } = model;
   const { logger } = store;
   const modelName = dasherize(underscore(model.name));
   const resourceName = pluralize(modelName);
@@ -300,6 +299,14 @@ export default async function initializeClass<T: Class<Model>>({
 
   if (!hooks) {
     hooks = {};
+  }
+
+  if (!scopes) {
+    scopes = {};
+  }
+
+  if (!validates) {
+    validates = {};
   }
 
   Object.defineProperties(model, {

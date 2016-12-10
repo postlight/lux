@@ -15,119 +15,182 @@ import type {
 } from './interfaces';
 
 /**
- * The `Logger` class is responsible for logging messages from an application
- * to `process.stdout` or `process.stdout`.
- *
- * @module lux-framework
- * @namespace Lux
  * @class Logger
+ * @public
  */
 class Logger {
   /**
-   * The level your application should log.
+   * The level your application should log (DEBUG, INFO, WARN, or ERROR).
+   *
+   * @property level
+   * @type {String}
+   * @public
    */
   level: Logger$level;
 
   /**
-   * The output format of log data.
+   * The output format of log data (text or json).
+   *
+   * @property format
+   * @type {String}
+   * @public
    */
   format: Logger$format;
 
   /**
-   * An object containing key value pairs of data to filter before logging.
+   * Hackers love logs. It's easy to get sensitive user information from log
+   * data if your server has been breached. To prevent leaking sensitive
+   * information in a potential attack, blacklist certain keys that should be
+   * filtered out of the logs.
+   *
+   * ```javascript
+   * // config/environments/development.js
+   * export default {
+   *   logging: {
+   *     level: 'DEBUG',
+   *     format: 'text',
+   *     enabled: true,
+   *     filter: {
+   *       params: ['password']
+   *     }
+   *   }
+   * };
+   * ```
+   *
+   * Now that we've added password to the array of parameters we want to filter
+   * out of the logs, let's try to create a new user.
+   *
+   * ```http
+   * POST /users HTTP/1.1
+   * Content-Type: application/vnd.api+json
+   * Host: 127.0.0.1:4000
+   * Connection: close
+   * User-Agent: Paw/3.0.14 (Macintosh; OS X/10.12.1) GCDHTTPRequest
+   * Content-Length: 188
+   *
+   * {
+   *   "data": {
+   *   "type": "users",
+   *     "attributes": {
+   *       "name": "Zachary Golba",
+   *       "email": "zachary.golba@postlight.com",
+   *       "password": "vcZxniFYyfnFDcLn%nhe8Vrt"
+   *     }
+   *   }
+   * }
+   * ```
+   *
+   * The request above will yield the following log message.
+   *
+   * ```text
+   * [2016-12-10T18:28:04.610Z] Processed POST "/users" from ::ffff:127.0.0.1
+   * with 201 Created by UsersController#create
+   *
+   * Params
+   *
+   * {
+   *   "data": {
+   *     "type": "users",
+   *     "attributes": {
+   *       "name": "Zachary Golba",
+   *       "email": "zachary.golba@postlight.com",
+   *       "password": "[FILTERED]"
+   *     }
+   *   }
+   * }
+   * ```
+   *
+   * It worked! The password value did not leak into the log message.
+   *
+   * @property filter
+   * @type {Object}
+   * @public
    */
   filter: Logger$filter;
 
   /**
-   * Wether on not logging is enabled for an instance of `Logger`.
+   * A boolean flag that determines whether or not the logger is enabled.
+   *
+   * @property enabled
+   * @type {Boolean}
+   * @public
    */
   enabled: boolean;
 
   /**
-   * Log a message at the `debug` level.
+   * Log a message at the DEBUG level.
    *
-   * The message passed as an argument will be piped to `process.stdout` and the
-   * log file that the instance of `Logger` is writing to.
+   * ```javascript
+   * logger.debug('Hello World!');
+   * // => [6/4/16 5:46:53 PM] Hello World!
+   * ```
    *
-   * @example
-   * const status = 'Did this work?';
-   *
-   * logger.debug(status);
-   *
-   * // => [6/4/16 5:46:53 PM] Did this work?
+   * @method debug
+   * @param {any} data - The data you wish to log.
+   * @return {void}
+   * @public
    */
   debug: Logger$logFn;
 
   /**
-   * Log a message at the `info` level.
+   * Log a message at the INFO level.
    *
-   * The message passed as an argument will be piped to `process.stdout` and the
-   * log file that the instance of `Logger` is writing to.
+   * ```javascript
+   * logger.info('Hello World!');
+   * // => [6/4/16 5:46:53 PM] Hello World!
+   * ```
    *
-   * @example
-   * const status = 'Everything is going fine!';
-   *
-   * logger.info(status);
-   *
-   * // => [6/4/16 5:46:53 PM] Everything is going fine!
+   * @method info
+   * @param {any} data - The data you wish to log.
+   * @return {void}
+   * @public
    */
   info: Logger$logFn;
 
   /**
-   * Log a message at the `warn` level.
+   * Log a message at the WARN level.
    *
-   * The message passed as an argument will be piped to `process.stderr` and the
-   * log file that the instance of `Logger` is writing to.
+   * ```javascript
+   * logger.warn('Good Bye World!');
+   * // => [6/4/16 5:46:53 PM] Good Bye World!
+   * ```
    *
-   * @example
-   * let status;
-   *
-   * try {
-   *   status = undefined();
-   * } catch (err) {
-   *   logger.warn(`Rescued "${err.message}"`);
-   *   status = 'Everything is all good!';
-   * }
-   *
-   * logger.info(status);
-   *
-   * // => [6/4/16 5:46:53 PM] Rescued "TypeError: undefined is not a function."
-   * // => [6/4/16 5:46:53 PM] Everthing is all good!
+   * @method warn
+   * @param {any} data - The data you wish to log.
+   * @return {void}
+   * @public
    */
   warn: Logger$logFn;
 
   /**
-   * Log a message at the `error` level.
+   * Log a message at the ERROR level.
    *
-   * The message passed as an argument will be piped to `process.stderr` and the
-   * log file that the instance of `Logger` is writing to.
+   * ```javascript
+   * logger.warn('HELP!');
+   * // => [6/4/16 5:46:53 PM] HELP!
+   * ```
    *
-   * @example
-   * let status;
-   *
-   * try {
-   *   status = undefined();
-   * } catch (err) {
-   *   logger.error(err.message);
-   * }
-   *
-   * // => [6/4/16 5:46:53 PM] TypeError: undefined is not a function.
+   * @method error
+   * @param {any} data - The data you wish to log.
+   * @return {void}
+   * @public
    */
   error: Logger$logFn;
 
   /**
    * Internal method used for logging requests.
    *
+   * @method request
+   * @param {Request} request
+   * @param {Response} response
+   * @param {Object} opts - An options object.
+   * @param {Number} opts.startTime - The timestamp from when the request was
+   * received.
+   * @return {void}
    * @private
    */
   request: Logger$RequestLogger;
 
-  /**
-   * Create an instance of `Logger`.
-   *
-   * WARNING:
-   * It is highly reccomended that you do not override this method.
-   */
   constructor({ level, format, filter, enabled }: Logger$config) {
     let write = K;
     let request = K;
@@ -194,8 +257,8 @@ class Logger {
   }
 
   /**
-   * The current timestamp used to prefix log messages.
-   *
+   * @method getTimestamp
+   * @return {String} The current time as an ISO8601 string.
    * @private
    */
   getTimestamp() {
