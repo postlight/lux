@@ -1,5 +1,109 @@
 # Lux Changelog
 
+### 1.1.0 (Dec 10, 2016)
+
+##### Features
+
+###### Transactions
+
+This release introduces a public transaction api to the model class. Changes are
+backwards compatible with the previous model api.
+
+Internally, all methods that modify the state of the database are wrapped in
+transactions. If the transaction fails, all calls to `create`, `save`, or
+`update` will be rolled back to the state before the transaction began.
+
+**Example:**
+
+```javascript
+import User from 'app/models/user';
+
+// This internally uses a transaction.
+await User.create({
+  firstName: 'New',
+  lastName: 'User'
+});
+```
+
+### Working With Transactions
+
+You have the ability to manually specify the transaction that will be used for a
+`create`, `update`, or `save` call with the static and instance method, `transacting`.
+
+**Example:**
+
+```javascript
+import { Model } from 'lux-framework';
+
+import Profile from 'app/models/profile';
+
+class User extends Model {
+  static hasOne = {
+    profile: {
+      inverse: 'user'
+    }
+  };
+
+  static hooks = {
+    async beforeCreate(user, trx) {
+      // If the transaction fails the profile instance will not be persisted.
+      user.profile = await Profile
+        .transacting(trx)
+        .create();
+    }
+  };
+}
+```
+
+You can also manually trigger create a transaction if you plan on creating many
+model instances as once.
+
+**Example:**
+
+```javascript
+import User from 'app/models/user';
+
+User.transaction(trx => (
+  Promise.all([
+    User
+      .transacting(trx)
+      .create({
+        firstName: 'New',
+        lastName: 'User'
+      }),
+    User
+      .transacting(trx)
+      .create({
+        firstName: 'New',
+        lastName: 'User'
+      }),
+    User
+      .transacting(trx)
+      .create({
+        firstName: 'New',
+        lastName: 'User'
+      })
+  ])
+));
+```
+
+##### Commits
+
+*   [[`3f15362600`](https://github.com/postlight/lux/commit/3f15362600)] - **deps**: update babel-core to version 6.20.0 (#556) (Greenkeeper)
+*   [[`9a20c5ce11`](https://github.com/postlight/lux/commit/9a20c5ce11)] - **deps**: update eslint to version 3.12.0 (#557) (Greenkeeper)
+*   [[`7f53cd230c`](https://github.com/postlight/lux/commit/7f53cd230c)] - **docs**: fix broken logo in readme (#555) (Zachary Golba)
+*   [[`590956ed52`](https://github.com/postlight/lux/commit/590956ed52)] - **docs**: add preliminary guide files (#554) (Zachary Golba)
+*   [[`16d224b4e7`](https://github.com/postlight/lux/commit/16d224b4e7)] - **feat**: use transactions when writing to the database (#527) (Zachary Golba)
+*   [[`9e89b042cd`](https://github.com/postlight/lux/commit/9e89b042cd)] - **deps**: update eslint-plugin-flowtype to version 2.29.1 (#549) (Greenkeeper)
+*   [[`5b3e91e5f9`](https://github.com/postlight/lux/commit/5b3e91e5f9)] - **deps**: update eslint to version 3.11.1 (#547) (Greenkeeper)
+*   [[`4eb0c9b926`](https://github.com/postlight/lux/commit/4eb0c9b926)] - **deps**: update eslint-plugin-flowtype to version 2.28.2 (#546) (Greenkeeper)
+*   [[`42f1707ac8`](https://github.com/postlight/lux/commit/42f1707ac8)] - **deps**: update eslint to version 3.11.0 🚀 (#539) (Greenkeeper)
+*   [[`39adf76c3a`](https://github.com/postlight/lux/commit/39adf76c3a)] - **deps**: update rollup to version 0.36.4 (#536) (Greenkeeper)
+*   [[`23189f535b`](https://github.com/postlight/lux/commit/23189f535b)] - **deps**: update flow-bin to version 0.36.0 🚀 (#537) (Greenkeeper)
+*   [[`394d3132e7`](https://github.com/postlight/lux/commit/394d3132e7)] - **deps**: update nyc to version 10.0.0 (#535) (Greenkeeper)
+*   [[`ef33526860`](https://github.com/postlight/lux/commit/ef33526860)] - **deps**: update mocha to version 3.2.0 (#538) (Greenkeeper)
+*   [[`760ae5f68c`](https://github.com/postlight/lux/commit/760ae5f68c)] - **release**: 1.0.5 🔧 (#534) (Zachary Golba)
+
 ### 1.0.5 (Nov 20, 2016)
 
 ##### Commits

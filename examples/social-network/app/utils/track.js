@@ -1,17 +1,14 @@
-import Action from 'app/models/action';
+import Action from '../models/action';
 
-export default async function track(trackable) {
+export default function track(trackable, trx) {
   if (trackable) {
-    const {
-      id: trackableId,
-      constructor: {
-        name: trackableType
-      }
-    } = trackable;
-
-    return await Action.create({
-      trackableType,
-      trackableId
-    });
+    return Action
+      .transacting(trx)
+      .create({
+        trackableId: trackable.id,
+        trackableType: trackable.constructor.name
+      });
   }
+
+  return Promise.resolve();
 }

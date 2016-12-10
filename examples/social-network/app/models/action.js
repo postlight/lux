@@ -15,8 +15,8 @@ const createMessageTemplate = resourceType => (name, reactionType) => (
  */
 class Action extends Model {
   static hooks = {
-    async afterCreate(action) {
-      await action.notifyOwner();
+    async afterCreate(action, trx) {
+      await action.notifyOwner(trx);
     }
   };
 
@@ -42,10 +42,12 @@ class Action extends Model {
         ]);
 
         if (user && post) {
-          await Notification.create({
-            message: `${user.name} commented on your post!`,
-            recipientId: post.userId
-          });
+          await Notification
+            .transacting(trx)
+            .create({
+              message: `${user.name} commented on your post!`,
+              recipientId: post.userId
+            });
         }
       }
     } else if (trackableType === 'Reaction') {
@@ -80,10 +82,12 @@ class Action extends Model {
         ]);
 
         if (user && reactable) {
-          await Notification.create({
-            message: createMessage(user.name, reaction.type),
-            recipientId: reactable.userId
-          });
+          await Notification
+            .transacting(trx)
+            .create({
+              message: createMessage(user.name, reaction.type),
+              recipientId: reactable.userId,
+            });
         }
       }
     }

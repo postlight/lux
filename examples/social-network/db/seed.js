@@ -15,71 +15,83 @@ const {
   lorem,
   random,
   internet,
-
   helpers: {
     randomize
   }
 } = faker;
 
-export default async function seed() {
+export default async function seed(trx) {
   await Promise.all(
-    Array.from(range(1, 100)).map(() => User.create({
-      name: `${name.firstName()} ${name.lastName()}`,
-      email: internet.email(),
-      password: internet.password(randomize([...range(8, 127)]))
-    }))
+    Array.from(range(1, 100)).map(() => (
+      User.transacting(trx).create({
+        name: `${name.firstName()} ${name.lastName()}`,
+        email: internet.email(),
+        password: internet.password(randomize([...range(8, 127)]))
+      })
+    ))
   );
 
   await Promise.all(
-    Array.from(range(1, 100)).map(() => Friendship.create({
-      followerId: randomize([...range(1, 100)]),
-      followeeId: randomize([...range(1, 100)])
-    }))
+    Array.from(range(1, 100)).map(() => (
+      Friendship.transacting(trx).create({
+        followerId: randomize([...range(1, 100)]),
+        followeeId: randomize([...range(1, 100)])
+      })
+    ))
   );
 
   await Promise.all(
-    Array.from(range(1, 100)).map(() => Post.create({
-      body: lorem.paragraphs(),
-      title: lorem.sentence(),
-      userId: randomize([...range(1, 100)]),
-      isPublic: random.boolean()
-    }))
+    Array.from(range(1, 100)).map(() => (
+      Post.transacting(trx).create({
+        body: lorem.paragraphs(),
+        title: lorem.sentence(),
+        userId: randomize([...range(1, 100)]),
+        isPublic: random.boolean()
+      })
+    ))
   );
 
   await Promise.all(
-    Array.from(range(1, 100)).map(() => Tag.create({
-      name: lorem.word()
-    }))
+    Array.from(range(1, 100)).map(() => (
+      Tag.transacting(trx).create({
+        name: lorem.word()
+      })
+    ))
   );
 
   await Promise.all(
-    Array.from(range(1, 100)).map(() => Categorization.create({
-      postId: randomize([...range(1, 100)]),
-      tagId: randomize([...range(1, 100)])
-    }))
+    Array.from(range(1, 100)).map(() => (
+      Categorization.transacting(trx).create({
+        postId: randomize([...range(1, 100)]),
+        tagId: randomize([...range(1, 100)])
+      })
+    ))
   );
 
   await Promise.all(
-    Array.from(range(1, 100)).map(() => Comment.create({
-      message: lorem.sentence(),
-      edited: random.boolean(),
-      userId: randomize([...range(1, 100)]),
-      postId: randomize([...range(1, 100)])
-    }))
+    Array.from(range(1, 100)).map(() => (
+      Comment.transacting(trx).create({
+        message: lorem.sentence(),
+        edited: random.boolean(),
+        userId: randomize([...range(1, 100)]),
+        postId: randomize([...range(1, 100)])
+      })
+    ))
   );
 
   await Promise.all(
-    Array.from(range(1, 100)).map(() => Reaction.create({
-      [`${randomize(['comment', 'post'])}Id`]: randomize([...range(1, 100)]),
-      userId: randomize([...range(1, 100)]),
-
-      type: randomize([
-        ':+1:',
-        ':heart:',
-        ':confetti_ball:',
-        ':laughing:',
-        ':disappointed:'
-      ])
-    }))
+    Array.from(range(1, 100)).map(() => (
+      Reaction.transacting(trx).create({
+        [`${randomize(['comment', 'post'])}Id`]: randomize([...range(1, 100)]),
+        userId: randomize([...range(1, 100)]),
+        type: randomize([
+          ':+1:',
+          ':heart:',
+          ':confetti_ball:',
+          ':laughing:',
+          ':disappointed:'
+        ])
+      })
+    ))
   );
 };

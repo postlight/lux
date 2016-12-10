@@ -10,25 +10,28 @@ const {
   hacker,
   random,
   company,
-
   helpers: {
     randomize
   }
 } = faker;
 
-export default async function seed() {
+export default async function seed(trx) {
   await Promise.all(
-    Array.from(range(1, 4)).map(() => List.create({
-      name: `${company.bsAdjective()} tasks`
-    }))
+    Array.from(range(1, 4)).map(() => (
+      List.transacting(trx).create({
+        name: `${company.bsAdjective()} tasks`
+      })
+    ))
   );
 
   await Promise.all(
-    Array.from(range(1, 100)).map(() => Task.create({
-      name: hacker.phrase(),
-      listId: randomize(Array.from(range(1, 4))),
-      dueDate: date.future(),
-      isCompleted: random.boolean()
-    }))
+    Array.from(range(1, 100)).map(() => (
+      Task.transacting(trx).create({
+        name: hacker.phrase(),
+        listId: randomize(Array.from(range(1, 4))),
+        dueDate: date.future(),
+        isCompleted: random.boolean()
+      })
+    ))
   );
 }
