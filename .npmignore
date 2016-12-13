@@ -8,6 +8,7 @@ node_modules/
 .nyc_output/
 coverage/
 examples/
+.idea/
 
 # logs
 log/
