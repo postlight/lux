@@ -20,4 +20,4 @@ esproposal.class_static_fields=enable
 esproposal.class_instance_fields=enable
 
 [version]
-0.36.0
+0.37.0
