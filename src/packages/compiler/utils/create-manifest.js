@@ -7,6 +7,7 @@ import { mkdir, writeFile, appendFile } from '../../fs';
 import chain from '../../../utils/chain';
 import tryCatch from '../../../utils/try-catch';
 import underscore from '../../../utils/underscore';
+import { compose } from '../../../utils/compose';
 
 import stripExt from './strip-ext';
 import formatName from './format-name';
@@ -36,31 +37,32 @@ function createWriter(file: string) {
   const writerFor = (
     type: string,
     handleWrite: void | (value: string) => Promise<void>
-  ) => async (value: string | Array<string>) => {
-    for (const item of value) {
-      if (handleWrite) {
-        await handleWrite(item);
-      } else {
-        const path = joinPath('app', pluralize(type), item);
-        const name = chain(item)
-          .pipe(formatName)
-          .pipe(str => str + capitalize(type))
-          .value();
+  ) => (value: Array<string>) => {
+    const formatSymbol = compose(str => str + capitalize(type), formatName);
 
-        await appendFile(file, createExportStatement(name, path));
-      }
-    }
+    return Promise.all(
+      value.map(item => {
+        if (handleWrite) {
+          return handleWrite(item);
+        }
+
+        const path = joinPath('app', pluralize(type), item);
+        const symbol = formatSymbol(item);
+
+        return appendFile(file, createExportStatement(symbol, path));
+      })
+    );
   };
 
   return {
     controllers: writerFor('controller'),
     serializers: writerFor('serializer'),
 
-    models: writerFor('model', async (item) => {
+    models: writerFor('model', async item => {
       const path = joinPath('app', 'models', item);
       const name = formatName(item);
 
-      return await appendFile(file, createExportStatement(name, path));
+      return appendFile(file, createExportStatement(name, path));
     }),
 
     migrations: writerFor('migration', async (item) => {
@@ -102,13 +104,19 @@ export default async function createManifest(
   await tryCatch(() => mkdir(dist));
   await writeFile(file, useStrict ? '\'use strict\';\n\n' : '');
 
-  for (const [key, value] of assets) {
-    const write = Reflect.get(writer, key);
+  await Promise.all(
+    Array
+      .from(assets)
+      .map(([key, value]) => {
+        const write = Reflect.get(writer, key);
 
-    if (write) {
-      await write(value);
-    } else if (!write && typeof value === 'string') {
-      await appendFile(file, createExportStatement(key, value));
-    }
-  }
+        if (write) {
+          return write(value);
+        } else if (!write && typeof value === 'string') {
+          return appendFile(file, createExportStatement(key, value));
+        }
+
+        return Promise.resolve();
+      })
+  );
 }

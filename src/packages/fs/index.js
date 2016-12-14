@@ -18,8 +18,8 @@ export type { fs$ParsedPath } from './interfaces';
 /**
  * @private
  */
-export async function watch(path: string): Promise<Watcher> {
-  return await new Watcher(path);
+export function watch(path: string): Promise<Watcher> {
+  return new Watcher(path);
 }
 
 /**

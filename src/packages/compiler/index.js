@@ -129,7 +129,7 @@ export async function compile(dir: string, env: string, {
     banner = `'use strict';\n\n${banner}`;
   }
 
-  return await bundle.write({
+  return bundle.write({
     banner,
     dest: path.join(dir, 'dist', 'bundle.js'),
     format: 'cjs',

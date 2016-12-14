@@ -11,6 +11,7 @@ import { NODE_ENV } from '../../../constants';
 import { line } from '../../logger';
 import omit from '../../../utils/omit';
 import range from '../../../utils/range';
+import { composeAsync } from '../../../utils/compose';
 import type Logger from '../../logger'; // eslint-disable-line max-len, no-duplicate-imports
 
 import type { Cluster$opts } from './interfaces';
@@ -201,24 +202,27 @@ class Cluster extends EventEmitter {
     });
   }
 
-  async reload() {
+  reload() {
     if (this.workers.size) {
-      const workers = Array
+      const groups = Array
         .from(this.workers)
         .reduce((arr, item, idx, src) => {
           if ((idx + 1) % 2) {
-            return [...arr, src.slice(idx, idx + 2)];
+            const group = src.slice(idx, idx + 2);
+
+            return [
+              ...arr,
+              () => Promise.all(group.map(worker => this.shutdown(worker)))
+            ];
           }
 
           return arr;
         }, []);
 
-      for (const group of workers) {
-        await Promise.all(group.map(worker => this.shutdown(worker)));
-      }
-    } else {
-      await this.fork();
+      return composeAsync(...groups)();
     }
+
+    return this.fork();
   }
 
   forkAll() {

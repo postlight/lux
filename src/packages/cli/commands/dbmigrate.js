@@ -4,6 +4,7 @@ import { CWD } from '../../../constants';
 import Database, { pendingMigrations } from '../../database';
 import Logger, { sql } from '../../logger';
 import { createLoader } from '../../loader';
+import { composeAsync } from '../../../utils/compose';
 
 /**
  * @private
@@ -29,23 +30,32 @@ export async function dbmigrate() {
   const pending = await pendingMigrations(CWD, () => connection('migrations'));
 
   if (pending.length) {
-    for (const migration of pending) {
-      const version = migration.replace(/^(\d{16})-.+$/g, '$1');
-      const key = migration.replace(new RegExp(`${version}-(.+)\\.js`), '$1');
-      const value = migrations.get(`${key}-up`);
+    const runners = pending
+      .map(name => {
+        const version = name.replace(/^(\d{16})-.+$/g, '$1');
+        const key = name.replace(new RegExp(`${version}-(.+)\\.js`), '$1');
 
-      if (value) {
-        const query = value.run(schema());
+        return [version, migrations.get(`${key}-up`)];
+      })
+      .filter(([, migration]) => Boolean(migration))
+      .reverse()
+      .map(([version, migration]) => () => {
+        const query = migration.run(schema());
 
-        await query.on('query', () => {
-          process.stdout.write(sql`${query.toString()}`);
-          process.stdout.write(EOL);
-        });
+        return query
+          .on('query', () => {
+            process.stdout.write(sql`${query.toString()}`);
+            process.stdout.write(EOL);
+          })
+          .then(() => (
+            connection('migrations').insert({
+              version
+            })
+          ));
+      });
 
-        await connection('migrations').insert({
-          version
-        });
-      }
-    }
+    await composeAsync(...runners)();
   }
+
+  return true;
 }
