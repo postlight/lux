@@ -830,20 +830,20 @@ describe('module "database/model"', () => {
     });
 
     describe('.hooks', () => {
-      const assertCreateHook = (instance, hookSpy) => {
+      const assertCreateHook = (instance: Model, hookSpy) => {
         expect(hookSpy.calledWith(instance)).to.be.true;
       };
 
-      const assertSaveHook = async (instance, hookSpy) => {
+      const assertSaveHook = async (instance: Model, hookSpy) => {
         hookSpy.reset();
 
-        instance.isPublic = true;
+        Reflect.set(instance, 'isPublic', true);
         await instance.save();
 
         expect(hookSpy.calledWith(instance)).to.be.true;
       };
 
-      const assertUpdateHook = async (instance, hookSpy) => {
+      const assertUpdateHook = async (instance: Model, hookSpy) => {
         hookSpy.reset();
 
         await instance.update({
@@ -853,7 +853,7 @@ describe('module "database/model"', () => {
         expect(hookSpy.calledWith(instance)).to.be.true;
       };
 
-      const assertDestroyHook = async (instance, hookSpy) => {
+      const assertDestroyHook = async (instance: Model, hookSpy) => {
         await instance.destroy();
         expect(hookSpy.calledWith(instance)).to.be.true;
       };
