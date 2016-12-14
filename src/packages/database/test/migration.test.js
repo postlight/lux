@@ -72,11 +72,17 @@ describe('module "database/migration/utils/generate-timestamp"', () => {
       expect(next).to.have.property('value', 'w');
       expect(next).to.have.property('done', false);
 
-      expect(next).to.have.property('value', 'w');
-      expect(next).to.have.property('done', false);
+      next = iter.next();
 
       expect(next).to.have.property('value', 'w');
       expect(next).to.have.property('done', false);
+
+      next = iter.next();
+
+      expect(next).to.have.property('value', 'w');
+      expect(next).to.have.property('done', false);
+
+      next = iter.next();
 
       expect(next).to.have.property('value', undefined);
       expect(next).to.have.property('done', true);
