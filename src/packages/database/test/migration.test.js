@@ -2,7 +2,10 @@
 import { expect } from 'chai';
 import { it, describe, before, after } from 'mocha';
 
-import Migration, { generateTimestamp } from '../migration';
+import Migration from '../migration';
+import generateTimestamp, {
+  padding
+} from '../migration/utils/generate-timestamp';
 
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
@@ -50,12 +53,33 @@ describe('module "database/migration"', () => {
       });
     });
   });
+});
 
-  describe('#generateTimestamp()', () => {
+describe('module "database/migration/utils/generate-timestamp"', () => {
+  describe('.generateTimestamp()', () => {
     it('generates a timestamp string', () => {
       const result = generateTimestamp();
 
       expect(result).to.be.a('string').and.match(/^\d{16}$/g);
+    });
+  });
+
+  describe('.padding()', () => {
+    it('yields the specified char for the specified amount', () => {
+      const iter = padding('w', 3);
+      let next = iter.next();
+
+      expect(next).to.have.property('value', 'w');
+      expect(next).to.have.property('done', false);
+
+      expect(next).to.have.property('value', 'w');
+      expect(next).to.have.property('done', false);
+
+      expect(next).to.have.property('value', 'w');
+      expect(next).to.have.property('done', false);
+
+      expect(next).to.have.property('value', undefined);
+      expect(next).to.have.property('done', true);
     });
   });
 });
