@@ -617,7 +617,7 @@ class Serializer<T: Model> {
                 )
               };
             } else if (related && related.id) {
-              return await this.formatRelationship({
+              return this.formatRelationship({
                 domain,
                 included,
                 item: related,

@@ -63,7 +63,7 @@ export default function resource(action: Action<any>): Action<any> {
         };
       }
 
-      return await serializer.format({
+      return serializer.format({
         data,
         links,
         domain,

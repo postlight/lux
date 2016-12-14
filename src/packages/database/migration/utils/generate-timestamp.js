@@ -3,7 +3,10 @@ function formatInt(int: number): string {
   return (int / 10).toString().replace('.', '').substr(0, 2);
 }
 
-function* padding(char: string, amount: number): Generator<string, void, void> {
+export function* padding(
+  char: string,
+  amount: number
+): Generator<string, void, void> {
   for (let i = 0; i < amount; i += 1) {
     yield char;
   }

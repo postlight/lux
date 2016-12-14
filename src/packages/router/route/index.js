@@ -131,6 +131,7 @@ class Route extends FreezeableSet<Action<any>> {
     let data;
 
     for (const handler of this) {
+      // eslint-disable-next-line no-await-in-loop
       data = await handler(req, res, data);
 
       if (handler.name === FINAL_HANDLER) {
@@ -160,7 +161,7 @@ class Route extends FreezeableSet<Action<any>> {
       validateResourceId(req);
     }
 
-    return await this.execHandlers(req, res);
+    return this.execHandlers(req, res);
   }
 }
 
