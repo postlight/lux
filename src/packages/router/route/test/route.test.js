@@ -327,41 +327,75 @@ describe('module "router/route"', () => {
     });
 
     describe('#visit', () => {
-      describe('- method "OPTIONS"', () => {
-        let subject;
-        let createRequest;
+      let controller: Controller;
 
-        before(async () => {
-          const { controllers } = await getTestApp();
+      before(async () => {
+        const { controllers } = await getTestApp();
 
-          subject = new Route({
-            type: 'collection',
-            path: 'posts',
-            action: 'preflight',
-            method: 'OPTIONS',
-            // $FlowIgnore
-            controller: controllers.get('posts')
+        // $FlowIgnore
+        controller = await controllers.get('posts');
+      });
+
+      ['GET', 'OPTIONS'].forEach(method => {
+        describe(`- method "${method}"`, () => {
+          let subject;
+          let createRequest;
+
+          before(async () => {
+
+
+            subject = new Route({
+              method,
+              controller,
+              type: 'collection',
+              path: 'posts',
+              action: 'preflight'
+            });
           });
 
-          createRequest = createRequestBuilder({
-            path: '/posts',
-            route: subject,
-            method: 'OPTIONS',
-            params: {
-              filter: {
-                isPublic: true
-              }
-            }
+          describe('- with params', () => {
+            before(() => {
+              createRequest = createRequestBuilder({
+                method,
+                controller,
+                path: '/posts',
+                route: subject,
+                params: {
+                  filter: {
+                    title: 'New Post'
+                  }
+                }
+              });
+            });
+
+            it('works', async () => {
+              const result = await subject.visit(
+                createRequest(),
+                createResponse()
+              );
+
+              expect(result).to.be.ok;
+            });
           });
-        });
 
-        it('works with params', async () => {
-          const result = await subject.visit(
-            createRequest(),
-            createResponse()
-          );
+          describe('- without params', () => {
+            before(() => {
+              createRequest = createRequestBuilder({
+                method,
+                path: '/posts',
+                route: subject
+              });
+            });
 
-          expect(result).to.equal(204);
+            it('works', async () => {
+              const result = await subject.visit(
+                createRequest(),
+                createResponse()
+              );
+
+              expect(result).to.be.ok;
+            });
+          });
         });
       });
     });
