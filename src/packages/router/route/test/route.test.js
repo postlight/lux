@@ -346,6 +346,7 @@ describe('module "router/route"', () => {
           createRequest = createRequestBuilder({
             path: '/posts',
             route: subject,
+            method: 'OPTIONS',
             params: {
               filter: {
                 isPublic: true

@@ -40,12 +40,13 @@ export const createResponse = (): Response => ({
 export const createRequestBuilder = ({
   path,
   route,
-  params
+  params,
+  method = 'GET'
   //$FlowIgnore
 }) => (): Request => ({
   route,
   params,
-  method: 'GET',
+  method,
   httpVersion: '1.1',
   url: {
     protocol: null,
