@@ -59,7 +59,7 @@
     "babel-core": "6.20.0",
     "babel-plugin-istanbul": "2.0.3",
     "babel-plugin-transform-es2015-modules-commonjs": "6.18.0",
-    "babel-preset-lux": "2.0.0",
+    "babel-preset-lux": "2.0.1",
     "chai": "3.5.0",
     "eslint-config-airbnb-base": "11.0.0",
     "eslint-plugin-flowtype": "2.29.1",
