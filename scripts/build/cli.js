@@ -1,5 +1,7 @@
 'use strict'; // eslint-disable-line strict, lines-around-directive
 
+process.env.NODE_ENV = 'production';
+
 require('../../lib/babel-hook');
 
 const { EOL } = require('os');
