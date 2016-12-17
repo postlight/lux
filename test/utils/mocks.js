@@ -59,7 +59,8 @@ export const createRequestBuilder = ({
     query: {},
     pathname: path,
     path: path,
-    href: path
+    href: path,
+    params: []
   },
   headers: new Map([
     ['host', 'localhost:4000']

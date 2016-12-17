@@ -325,5 +325,44 @@ describe('module "router/route"', () => {
         });
       });
     });
+
+    describe('#visit', () => {
+      describe('- method "OPTIONS"', () => {
+        let subject;
+        let createRequest;
+
+        before(async () => {
+          const { controllers } = await getTestApp();
+
+          subject = new Route({
+            type: 'collection',
+            path: 'posts',
+            action: 'preflight',
+            method: 'OPTIONS',
+            // $FlowIgnore
+            controller: controllers.get('posts')
+          });
+
+          createRequest = createRequestBuilder({
+            path: '/posts',
+            route: subject,
+            params: {
+              filter: {
+                isPublic: true
+              }
+            }
+          });
+        });
+
+        it('works with params', async () => {
+          const result = await subject.visit(
+            createRequest(),
+            createResponse()
+          );
+
+          expect(result).to.equal(204);
+        });
+      });
+    });
   });
 });
