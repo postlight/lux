@@ -1,4 +1,4 @@
-'use strict'; // eslint-disable-line strict, lines-around-directive
+'use strict';
 
 process.env.NODE_ENV = 'production';
 
