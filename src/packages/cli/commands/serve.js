@@ -24,6 +24,7 @@ export async function serve({
   const load = createLoader(CWD);
   const { logging } = load('config');
   const logger = new Logger(logging);
+  let maxWorkers;
 
   if (hot) {
     const watcher = await watch(CWD);
@@ -34,11 +35,15 @@ export async function serve({
     });
   }
 
+  if (!cluster) {
+    maxWorkers = 1;
+  }
+
   createCluster({
     logger,
+    maxWorkers,
     path: CWD,
-    port: PORT,
-    maxWorkers: cluster ? undefined : 1
+    port: PORT
   }).once('ready', () => {
     logger.info(`Lux Server listening on port: ${cyan(`${PORT}`)}`);
   });

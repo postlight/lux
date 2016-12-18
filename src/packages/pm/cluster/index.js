@@ -9,6 +9,7 @@ import { red, green } from 'chalk';
 
 import { NODE_ENV } from '../../../constants';
 import { line } from '../../logger';
+import { freezeProps } from '../../freezeable';
 import omit from '../../../utils/omit';
 import range from '../../../utils/range';
 import { composeAsync } from '../../../utils/compose';
@@ -31,44 +32,29 @@ class Cluster extends EventEmitter {
   maxWorkers: number;
 
   constructor({ path, port, logger, maxWorkers }: Cluster$opts) {
+    let numCPUs = os.cpus().length;
+
     super();
 
-    Object.defineProperties(this, {
-      path: {
-        value: path,
-        writable: false,
-        enumerable: true,
-        configurable: false
-      },
+    if (numCPUs > 2 && numCPUs % 2 === 0) {
+      numCPUs /= 2;
+    }
 
-      port: {
-        value: port,
-        writable: false,
-        enumerable: true,
-        configurable: false
-      },
-
-      logger: {
-        value: logger,
-        writable: false,
-        enumerable: true,
-        configurable: false
-      },
-
-      workers: {
-        value: new Set(),
-        writable: false,
-        enumerable: true,
-        configurable: false
-      },
-
-      maxWorkers: {
-        value: maxWorkers || os.cpus().length,
-        writable: false,
-        enumerable: true,
-        configurable: false
-      }
+    Object.assign(this, {
+      path,
+      port,
+      logger,
+      workers: new Set(),
+      maxWorkers: maxWorkers || numCPUs
     });
+
+    freezeProps(this, true,
+      'path',
+      'port',
+      'logger',
+      'workers',
+      'maxWorkers'
+    );
 
     cluster.setupMaster({
       exec: joinPath(path, 'dist', 'boot.js')
