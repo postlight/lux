@@ -5,32 +5,30 @@ import { describe, it, before } from 'mocha';
 import type { Model } from '../../database';
 import type { Request$params } from '../../server';
 import merge from '../../../utils/merge';
-import setType from '../../../utils/set-type';
 import paramsToQuery from '../utils/params-to-query';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 describe('module "controller"', () => {
   describe('util paramsToQuery()', () => {
     let Post: Class<Model>;
-    const createParams = (obj: Object): Request$params => setType(() => {
-      return merge({
-        sort: 'createdAt',
-        filter: {},
-        fields: {
-          posts: [
-            'body',
-            'title',
-            'createdAt',
-            'updatedAt'
-          ]
-        }
-      }, obj);
-    });
+    const createParams = (obj: Object): Request$params => merge({
+      sort: 'createdAt',
+      filter: {},
+      fields: {
+        posts: [
+          'body',
+          'title',
+          'createdAt',
+          'updatedAt'
+        ]
+      }
+    }, obj);
 
     before(async () => {
       const { models } = await getTestApp();
 
-      Post = setType(() => models.get('post'));
+      // $FlowIgnore
+      Post = models.get('post');
     });
 
     it('returns the correct params object', () => {

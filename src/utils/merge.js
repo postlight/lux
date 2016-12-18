@@ -1,33 +1,27 @@
 // @flow
 import entries from './entries';
-import setType from './set-type';
 import isObject from './is-object';
-
-function hasOwnProperty(target: Object, key: string): boolean {
-  return Reflect.apply(Object.prototype.hasOwnProperty, target, [key]);
-}
+import hasOwnProperty from './has-own-property';
 
 /**
  * @private
  */
 export default function merge<T: Object, U: Object>(dest: T, source: U): T & U {
-  return setType(() => entries(source).reduce((result, [key, value]) => {
+  // $FlowIgnore
+  return entries(source).reduce((obj, [key, value]) => {
+    const result = obj;
+    let mergeValue = value;
+
     if (hasOwnProperty(result, key) && isObject(value)) {
-      const currentValue = Reflect.get(result, key);
+      const currentValue = result[key];
 
       if (isObject(currentValue)) {
-        return {
-          ...result,
-          [key]: merge(currentValue, value)
-        };
+        mergeValue = merge(currentValue, value);
       }
     }
 
-    return {
-      ...result,
-      [key]: value
-    };
-  }, {
-    ...dest
-  }));
+    result[key] = mergeValue;
+
+    return result;
+  }, { ...dest });
 }

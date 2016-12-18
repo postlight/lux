@@ -4,7 +4,6 @@ import { it, describe, before } from 'mocha';
 
 import { paramsFor, defaultParamsFor } from '../index';
 
-import setType from '../../../../../utils/set-type';
 import { getTestApp } from '../../../../../../test/utils/get-test-app';
 
 import type Controller from '../../../../controller';
@@ -16,9 +15,8 @@ describe('module "router/route/params"', () => {
     before(async () => {
       const { controllers } = await getTestApp();
 
-      getController = (name: string): Controller => setType(() => {
-        return controllers.get(name);
-      });
+      // $FlowIgnore
+      getController = (name: string): Controller => controllers.get(name);
     });
 
     describe('with model-less controller', () => {
@@ -45,9 +43,8 @@ describe('module "router/route/params"', () => {
     before(async () => {
       const { controllers } = await getTestApp();
 
-      getController = (name: string): Controller => setType(() => {
-        return controllers.get(name);
-      });
+      // $FlowIgnore
+      getController = (name: string): Controller => controllers.get(name);
     });
 
     describe('with collection route', () => {

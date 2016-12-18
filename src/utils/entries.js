@@ -9,11 +9,18 @@ export default function entries(source: Object): Array<[string, any]> {
     return Object.entries(source);
   }
 
-  return Object.keys(source).reduce((result, key) => {
-    const value = Reflect.get(source, key);
+  const keys = Object.keys(source);
 
-    result.push([key, value]);
+  return keys.reduce((prev, key) => {
+    const next = prev;
+    const entry = new Array(2);
 
-    return result;
-  }, []);
+    entry[0] = key;
+    entry[1] = source[key];
+
+    // $FlowIgnore
+    next[next.length] = entry;
+
+    return next;
+  }, new Array(keys.length));
 }
