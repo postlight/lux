@@ -53,7 +53,7 @@
     "rollup-plugin-eslint": "3.0.0",
     "rollup-plugin-json": "2.0.2",
     "rollup-plugin-node-resolve": "2.0.0",
-    "source-map-support": "0.4.6"
+    "source-map-support": "0.4.7"
   },
   "devDependencies": {
     "babel-core": "6.21.0",
