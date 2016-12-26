@@ -6,7 +6,7 @@ type Params = {
   record: Model;
   value: ?Model | Array<Model>;
   opts: Relationship$opts;
-  trx: Knex$Transaction;
+  trx: Object;
 };
 
 function updateHasOne({
@@ -14,7 +14,7 @@ function updateHasOne({
   value,
   opts,
   trx
-}: Params): Array<Knex$QueryBuilder> {
+}: Params): Array<Object> {
   const recordPrimaryKey = record.getPrimaryKey();
 
   if (value) {
@@ -63,7 +63,7 @@ function updateHasMany({
   value,
   opts,
   trx
-}: Params): Array<Knex$QueryBuilder> {
+}: Params): Array<Object> {
   const recordPrimaryKey = record.getPrimaryKey();
 
   if (Array.isArray(value) && value.length) {
@@ -108,7 +108,7 @@ function updateBelongsTo({
   value,
   opts,
   trx
-}: Params): Array<Knex$QueryBuilder> {
+}: Params): Array<Object> {
   if (value instanceof opts.model) {
     const inverseOpts = opts.model.relationshipFor(opts.inverse);
     const foreignKeyValue = value.getPrimaryKey();
@@ -139,8 +139,8 @@ function updateBelongsTo({
 export default function updateRelationship(
   record: Model,
   name: string,
-  trx: Knex$Transaction
-): Array<Knex$QueryBuilder> {
+  trx: Object
+): Array<Object> {
   const opts = record.constructor.relationshipFor(name);
 
   if (!opts) {

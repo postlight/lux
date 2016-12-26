@@ -6,7 +6,7 @@ import { readdir } from '../../fs';
  */
 export default async function pendingMigrations(
   appPath: string,
-  table: () => Knex$QueryBuilder
+  table: () => Object
 ): Promise<Array<string>> {
   const migrations: Array<string> = await readdir(`${appPath}/db/migrate`);
   const versions: Array<string> = await table()

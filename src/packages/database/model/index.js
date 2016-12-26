@@ -597,7 +597,7 @@ class Model {
    * @static
    * @private
    */
-  static table: () => Knex$QueryBuilder;
+  static table: () => Object;
 
   /**
    * @property store
@@ -914,7 +914,7 @@ class Model {
    * transaction param to subsquent save, update, or destroy method calls.
    * @public
    */
-  transacting(trx: Knex$Transaction): this {
+  transacting(trx: Object): this {
     return createInstanceTransactionProxy(this, trx);
   }
 
@@ -976,9 +976,7 @@ class Model {
    * @return {Promise} Resolves with `this`.
    * @public
    */
-  save(
-    transaction?: Knex$Transaction
-  ): Promise<Transaction$ResultProxy<this, *>> {
+  save(transaction?: Object): Promise<Transaction$ResultProxy<this, *>> {
     return this.update(mapToObject(this.dirtyProperties), transaction);
   }
 
@@ -1008,9 +1006,9 @@ class Model {
    */
   update(
     props: Object = {},
-    transaction?: Knex$Transaction
+    transaction?: Object
   ): Promise<Transaction$ResultProxy<this, *>> {
-    const run = async (trx: Knex$Transaction) => {
+    const run = async (trx: Object) => {
       const { constructor: { hooks, logger } } = this;
       let statements = [];
       let promise = Promise.resolve([]);
@@ -1078,10 +1076,8 @@ class Model {
    * @return {Promise} Resolves with `this`.
    * @public
    */
-  destroy(
-    transaction?: Knex$Transaction
-  ): Promise<Transaction$ResultProxy<this, true>> {
-    const run = async (trx: Knex$Transaction) => {
+  destroy(transaction?: Object): Promise<Transaction$ResultProxy<this, true>> {
+    const run = async (trx: Object) => {
       const { constructor: { hooks, logger } } = this;
 
       await runHooks(this, trx, hooks.beforeDestroy);
@@ -1165,9 +1161,9 @@ class Model {
    */
   static create(
     props: Object = {},
-    transaction?: Knex$Transaction
+    transaction?: Object
   ): Promise<Transaction$ResultProxy<this, true>> {
-    const run = async (trx: Knex$Transaction) => {
+    const run = async (trx: Object) => {
       const { hooks, logger, primaryKey } = this;
       const instance = Reflect.construct(this, [props, false]);
       let statements = [];
@@ -1259,7 +1255,7 @@ class Model {
    * @static
    * @public
    */
-  static transacting(trx: Knex$Transaction): Class<this> {
+  static transacting(trx: Object): Class<this> {
     return createStaticTransactionProxy(this, trx);
   }
 
