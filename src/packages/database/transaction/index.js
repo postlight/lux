@@ -9,7 +9,7 @@ import type { Transaction$ResultProxy } from './interfaces';
  */
 export function createStaticTransactionProxy<T: Class<Model>>(
   target: T,
-  trx: Knex$Transaction
+  trx: Object
 ): T {
   return new Proxy(target, {
     get: trapGet({
@@ -25,7 +25,7 @@ export function createStaticTransactionProxy<T: Class<Model>>(
  */
 export function createInstanceTransactionProxy<T: Model>(
   target: T,
-  trx: Knex$Transaction
+  trx: Object
 ): T {
   return new Proxy(target, {
     get: trapGet({

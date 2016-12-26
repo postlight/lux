@@ -4,7 +4,7 @@ import type { Migration$Fn } from './interfaces';
 /**
  * @private
  */
-class Migration<T: Knex$SchemaBuilder> {
+class Migration<T: Object> {
   fn: Migration$Fn<T>;
 
   constructor(fn: Migration$Fn<T>) {
