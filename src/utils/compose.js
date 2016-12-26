@@ -11,18 +11,25 @@ export function tap<T>(input: T): T {
 /**
  * @private
  */
-export function compose<T>(...funcs: Array<(input: T) => T>): (input: T) => T {
-  return input => funcs.reduceRight((value, fn) => fn(value), input);
+export function compose<T, U>(
+  main: (input: any) => U,
+  ...etc: Array<Function>
+): (input: T) => U {
+  return input => main(etc.reduceRight(
+    (value, fn) => fn(value),
+    input
+  ));
 }
 
 /**
  * @private
  */
-export function composeAsync<T>(
-  ...funcs: Array<(input: T) => T | Promise<T>>
-): (input: T) => Promise<T> {
-  return input => funcs.reduceRight(
+export function composeAsync<T, U>(
+  main: (input: any) => Promise<U>,
+  ...etc: Array<Function>
+): (input: T | Promise<T>) => Promise<U> {
+  return input => etc.reduceRight(
     (value, fn) => Promise.resolve(value).then(fn),
     Promise.resolve(input)
-  );
+  ).then(main);
 }

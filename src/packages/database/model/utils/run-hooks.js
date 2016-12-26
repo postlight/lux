@@ -6,7 +6,7 @@ import type Model, { Model$Hook } from '../index';
  */
 export default function runHooks(
   record: Model,
-  trx: Knex$Transaction,
+  trx: Object,
   ...hooks: Array<void | Model$Hook>
 ): Promise<void> {
   return hooks
