@@ -1,10 +1,7 @@
 // @flow
 import type Model from './index';
 
-export type Model$Hook = (
-  instance: Model,
-  trx: Knex$Transaction
-) => Promise<any>;
+export type Model$Hook = (instance: Model, trx: Object) => Promise<any>;
 
 export interface Model$Hooks {
   +afterCreate?: Model$Hook;
