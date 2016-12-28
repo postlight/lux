@@ -1,5 +1,27 @@
 # Lux Changelog
 
+### v1.1.1 (Dec 28, 2016)
+
+##### Commits
+
+*   [[`c54cc20844`](https://github.com/postlight/lux/commit/c54cc20844)] - **fix**: options request does not work with query params (#573) (Zachary Golba)
+*   [[`93df71f3c9`](https://github.com/postlight/lux/commit/93df71f3c9)] - **deps**: update babel-plugin-istanbul to version 3.0.0 (#591) (Greenkeeper)
+*   [[`0f724109fa`](https://github.com/postlight/lux/commit/0f724109fa)] - **deps**: update source-map-support to version 0.4.8 🚀 (#590) (Greenkeeper)
+*   [[`fdb7a9e7fc`](https://github.com/postlight/lux/commit/fdb7a9e7fc)] - **deps**: update flow-bin to version 0.37.4 🚀 (#587) (Greenkeeper)
+*   [[`302a10fd61`](https://github.com/postlight/lux/commit/302a10fd61)] - **docs**: remove irrelevant doc comments from query class (#578) (Zachary Golba)
+*   [[`ccb645c0f0`](https://github.com/postlight/lux/commit/ccb645c0f0)] - **refactor**: lint binary and scripts (#576) (Zachary Golba)
+*   [[`20c381fd75`](https://github.com/postlight/lux/commit/20c381fd75)] - **deps**: update test-app dependencies (#577) (Zachary Golba)
+*   [[`4fad8cbdf5`](https://github.com/postlight/lux/commit/4fad8cbdf5)] - **deps**: update babel-preset-lux to version 2.0.1 (#570) (Zachary Golba)
+*   [[`ac08ca4fea`](https://github.com/postlight/lux/commit/ac08ca4fea)] - **deps**: update ora to version 0.4.0 (#575) (Greenkeeper)
+*   [[`557e2c2805`](https://github.com/postlight/lux/commit/557e2c2805)] - **deps**: update babel-core to version 6.21.0 (#567) (Greenkeeper)
+*   [[`c94b2597df`](https://github.com/postlight/lux/commit/c94b2597df)] - **deps**: update remark-lint to version 5.4.0 (#572) (Greenkeeper)
+*   [[`8ab08b3bba`](https://github.com/postlight/lux/commit/8ab08b3bba)] - **deps**: update eslint to version 3.12.1 (#564) (Greenkeeper)
+*   [[`a139b81b8e`](https://github.com/postlight/lux/commit/a139b81b8e)] - **deps**: update eslint-config-airbnb-base to version 11.0.0 🚀 (#560) (Greenkeeper)
+*   [[`821a2c49af`](https://github.com/postlight/lux/commit/821a2c49af)] - **deps**: update rollup to version 0.37.0 (#561) (Greenkeeper)
+*   [[`7eab2633d0`](https://github.com/postlight/lux/commit/7eab2633d0)] - **deps**: update flow-bin to version 0.37.0 🚀 (#563) (Greenkeeper)
+*   [[`ae4c4df189`](https://github.com/postlight/lux/commit/ae4c4df189)] - **deps**: update rollup-plugin-babel to version 2.7.1 (#565) (Greenkeeper)
+*   [[`f94ac5234c`](https://github.com/postlight/lux/commit/f94ac5234c)] - **docs**: add more api docs and improve existing content (#559) (Zachary Golba)
+
 ### 1.1.0 (Dec 10, 2016)
 
 ##### Features

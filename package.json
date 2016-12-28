@@ -1,6 +1,6 @@
 {
   "name": "lux-framework",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Build scalable, Node.js-powered REST APIs with almost no code.",
   "repository": "github:postlight/lux",
   "keywords": [
