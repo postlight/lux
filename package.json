@@ -73,6 +73,6 @@
     "remark-cli": "2.1.0",
     "remark-lint": "5.4.0",
     "remark-preset-lint-recommended": "1.0.0",
-    "sinon": "1.17.6"
+    "sinon": "1.17.7"
   }
 }
