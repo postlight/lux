@@ -1,7 +1,6 @@
 // @flow
 import { WriteStream } from 'tty';
 
-// $FlowIgnore
 import { dim, red, yellow } from 'chalk';
 
 import { WARN, ERROR } from '../constants';
