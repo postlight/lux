@@ -6,21 +6,20 @@ import { createLoader } from '../../loader';
 /**
  * @private
  */
-export async function dbseed() {
+export function dbseed() {
   const load = createLoader(CWD);
-
   const { database: config } = load('config');
   const seed = load('seed');
   const models = load('models');
 
-  const store = await new Database({
+  return new Database({
     config,
     models,
     path: CWD,
     logger: new Logger({
       enabled: false
     })
-  });
-
-  await store.connection.transaction(seed);
+  }).then(store => (
+    store.connection.transaction(seed)
+  ));
 }

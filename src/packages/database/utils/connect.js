@@ -35,10 +35,7 @@ export default function connect(path: string, config: Object = {}): Knex {
     };
   }
 
-  const knex: Class<Knex> = Reflect.apply(require, null, [
-    joinPath(path, 'node_modules', 'knex')
-  ]);
-
+  const knex: Class<Knex> = require(joinPath(path, 'node_modules', 'knex'));
   const usingSQLite = driver === 'sqlite3';
 
   const connection = DATABASE_URL || url || {
