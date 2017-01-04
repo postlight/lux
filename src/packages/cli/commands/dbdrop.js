@@ -11,17 +11,16 @@ import { createLoader } from '../../loader';
  */
 export async function dbdrop() {
   const load = createLoader(CWD);
+  let cfg = load('config');
+
+  cfg = Reflect.get(cfg.database, NODE_ENV);
 
   const {
-    database: {
-      [NODE_ENV]: {
-        driver,
-        database,
-        url,
-        ...config
-      }
-    }
-  } = load('config');
+    url,
+    driver,
+    database,
+    ...config
+  } = cfg;
 
   if (driver === 'sqlite3') {
     await rmrf(`${CWD}/db/${database}_${NODE_ENV}.sqlite`);
