@@ -1,5 +1,17 @@
 # Lux Changelog
 
+### v1.1.2 (Jan 3, 2017)
+
+:tada: Happy New Year!
+
+##### Commits
+
+*   [[`f828e8effa`](https://github.com/postlight/lux/commit/f828e8effa)] - **fix**: database is undefined when using the postgresql driver (#605) (Zachary Golba)
+*   [[`46ed68b35a`](https://github.com/postlight/lux/commit/46ed68b35a)] - **deps**: update third party type definitions (#604) (Zachary Golba)
+*   [[`914a4b831d`](https://github.com/postlight/lux/commit/914a4b831d)] - **deps**: update sinon to version 1.17.7 (#602) (Greenkeeper)
+*   [[`d3ffda9156`](https://github.com/postlight/lux/commit/d3ffda9156)] - **deps**: update eslint-plugin-flowtype to version 2.29.2 (#595) (Greenkeeper)
+*   [[`f5b002e3dd`](https://github.com/postlight/lux/commit/f5b002e3dd)] - **release**: v1.1.1 🔧 (#594) (Zachary Golba)
+
 ### v1.1.1 (Dec 28, 2016)
 
 ##### Commits
