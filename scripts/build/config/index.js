@@ -31,6 +31,7 @@ module.exports = {
       return !(
         id.startsWith('.')
         || id.startsWith('/')
+        || id.startsWith('\\')
         || id === 'babelHelpers'
         || id === '\u0000babelHelpers'
       );
