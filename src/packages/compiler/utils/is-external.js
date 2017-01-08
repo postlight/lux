@@ -9,7 +9,7 @@ export default function isExternal(dir: string, id: string): boolean {
     id.startsWith('.')
     || id.startsWith('/')
     || id.startsWith('app')
-    || id.startsWith(path.join(dir, 'src'))
+    || id.startsWith(path.join(dir, 'app'))
     || id === 'lux-framework'
     || id === 'LUX_LOCAL'
     || id === 'babelHelpers'

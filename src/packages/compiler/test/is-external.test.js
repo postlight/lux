@@ -16,10 +16,9 @@ describe('module "compiler"', () => {
     });
 
     it('returns `false` for absolute file paths', () => {
-      expect(isExternal('', '/absolute/path/to/app/models/user')).to.be.false;
       expect(isExternal(
-        '',
-        'C:\\absolute\\path\\to\\app\\models\\user'
+        '/absolute/path/to',
+        '/absolute/path/to/app/models/user'
       )).to.be.false;
     });
 
