@@ -12,7 +12,7 @@ import { rmrf, readdir, readdirRec, isJSFile } from '../fs';
 import template from '../template';
 
 import onwarn from './utils/handle-warning';
-import external from './utils/is-external';
+import isExternal from './utils/is-external';
 import normalizePath from './utils/normalize-path';
 import createManifest from './utils/create-manifest';
 import createBootScript from './utils/create-boot-script';
@@ -73,7 +73,7 @@ export async function compile(dir: string, env: string, {
   const bundle = await rollup({
     entry,
     onwarn,
-    external,
+    external: id => isExternal(dir, id),
     plugins: [
       alias({
         resolve: ['.js'],
