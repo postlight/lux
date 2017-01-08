@@ -1,7 +1,7 @@
 // @flow
 
 // eslint-disable-next-line max-len
-const PATTERN = /^(?![./\\]+|[A-Z]:\\.+\\app|app|lux-framework|LUX_LOCAL|\u0000?babelHelpers)/;
+const PATTERN = /^(?![./\\]+|[A-Z]:\\.+\\(?:app|dist)|app|dist|lux-framework|LUX_LOCAL|\u0000?babelHelpers)/;
 
 /**
  * @private
