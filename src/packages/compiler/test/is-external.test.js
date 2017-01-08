@@ -17,6 +17,7 @@ describe('module "compiler"', () => {
 
     it('returns `false` for absolute file paths', () => {
       expect(isExternal('/absolute/path/to/app/models/user')).to.be.false;
+      expect(isExternal('\\absolute\\path\\to\\app\\models\\user')).to.be.false;
     });
 
     it('returns `false` for relative file paths', () => {
