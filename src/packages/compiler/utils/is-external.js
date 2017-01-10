@@ -9,7 +9,7 @@ export default function isExternal(dir: string): (id: string) => boolean {
     id.startsWith('.')
     || id.endsWith('lux-framework')
     || id.startsWith('/') // Absolute path on Unix
-    || /^[A-Z]:\\/.test(id) // Absolute path on Windows
+    || /^[A-Z]:[\\/]/.test(id) // Absolute path on Windows
     || id.startsWith('app')
     || id.startsWith(path.join(dir, 'app'))
     || id.startsWith(path.join(dir, 'dist'))
