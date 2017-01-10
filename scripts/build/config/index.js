@@ -2,6 +2,8 @@
 
 require('../../../lib/babel-hook');
 
+const path = require('path');
+
 const json = require('rollup-plugin-json');
 const babel = require('rollup-plugin-babel');
 const resolve = require('rollup-plugin-node-resolve');
@@ -28,7 +30,15 @@ module.exports = {
       })
     ],
     external(id) {
-      return /^(?![./\\]+|[A-Z]:\\.+\\src|src|\u0000?babelHelpers)/.test(id);
+      return !(
+        id.startsWith('.')
+        || id.startsWith('/') // Absolute path on Unix
+        || /^[A-Z]:[\\/]/.test(id) // Absolute path on Windows
+        || id.startsWith('src')
+        || id.startsWith(path.join('..', '..', '..', 'src'))
+        || id === 'babelHelpers'
+        || id === '\u0000babelHelpers'
+      );
     },
   },
   bundle: {
