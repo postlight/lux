@@ -1,5 +1,5 @@
 // @flow
-import { join as joinPath } from 'path';
+import { sep, posix, basename, join as joinPath } from 'path';
 
 import { camelize, capitalize, pluralize } from 'inflection';
 
@@ -9,9 +9,7 @@ import tryCatch from '../../../utils/try-catch';
 import underscore from '../../../utils/underscore';
 import { compose } from '../../../utils/compose';
 
-import stripExt from './strip-ext';
 import formatName from './format-name';
-import normalizePath from './normalize-path';
 
 /**
  * @private
@@ -21,7 +19,7 @@ function createExportStatement(
   path: string,
   isDefault: boolean = true
 ): string {
-  const normalized = normalizePath(path);
+  const normalized = posix.join(...path.split(sep));
 
   if (isDefault) {
     return `export {\n  default as ${name}\n} from '../${normalized}';\n\n`;
@@ -68,7 +66,7 @@ function createWriter(file: string) {
     migrations: writerFor('migration', async (item) => {
       const path = joinPath('db', 'migrate', item);
       const name = chain(item)
-        .pipe(stripExt)
+        .pipe(str => basename(str, '.js'))
         .pipe(underscore)
         .pipe(str => str.substr(17))
         .pipe(str => camelize(str, true))

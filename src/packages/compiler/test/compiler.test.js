@@ -1,11 +1,50 @@
 // @flow
-import { spy } from 'sinon';
-import { expect } from 'chai';
-import { it, describe, after, before, beforeEach } from 'mocha';
+import path from 'path';
 
-import { onwarn } from '../index';
+import * as Rollup from 'rollup';
+import { spy, stub } from 'sinon';
+import { expect } from 'chai';
+import { it, describe, afterEach, beforeEach } from 'mocha';
+
+import { getTestApp } from '../../../../test/utils/get-test-app';
+import { compile, onwarn } from '../index';
 
 describe('module "compiler"', () => {
+  describe('#compile()', () => {
+    let rollupStub;
+
+    beforeEach(() => {
+      rollupStub = stub(Rollup, 'rollup', () => ({
+        write: () => Promise.resolve()
+      }));
+    });
+
+    afterEach(() => {
+      rollupStub.restore();
+    });
+
+    ['use strict', 'use weak'].forEach(opt => {
+      describe(`- ${opt}`, () => {
+        it('creates an instance of rollup with the correct config', async () => {
+          const { path: dir } = await getTestApp();
+          const entry = path.join(dir, 'dist', 'index.js')
+
+          await compile(dir, 'test', {
+            useStrict: opt === 'use strict'
+          });
+
+          const { args: [rollupConfig] } = rollupStub.getCall(0);
+
+          expect(rollupConfig).to.have.property('entry', entry);
+          expect(rollupConfig)
+            .to.have.property('plugins')
+            .and.be.an('array')
+            .with.lengthOf(5);
+        });
+      });
+    });
+  });
+
   describe('#onwarn()', () => {
     let warnSpy;
     const warnings = {
@@ -22,15 +61,11 @@ describe('module "compiler"', () => {
       }
     };
 
-    before(() => {
+    beforeEach(() => {
       warnSpy = spy(console, 'warn');
     });
 
-    beforeEach(() => {
-      warnSpy.reset();
-    });
-
-    after(() => {
+    afterEach(() => {
       warnSpy.restore();
     });
 

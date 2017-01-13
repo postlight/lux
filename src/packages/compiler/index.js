@@ -1,5 +1,5 @@
 // @flow
-import path from 'path';
+import path, { posix } from 'path';
 
 import json from 'rollup-plugin-json';
 import alias from 'rollup-plugin-alias';
@@ -13,7 +13,6 @@ import template from '../template';
 
 import onwarn from './utils/handle-warning';
 import isExternal from './utils/is-external';
-import normalizePath from './utils/normalize-path';
 import createManifest from './utils/create-manifest';
 import createBootScript from './utils/create-boot-script';
 
@@ -77,8 +76,8 @@ export async function compile(dir: string, env: string, {
     plugins: [
       alias({
         resolve: ['.js'],
-        app: normalizePath(path.join(dir, 'app')),
-        LUX_LOCAL: normalizePath(local)
+        app: posix.join('/', ...(dir.split(path.sep)), 'app'),
+        LUX_LOCAL: posix.join('/', ...(local.split(path.sep)))
       }),
       json(),
       resolve({

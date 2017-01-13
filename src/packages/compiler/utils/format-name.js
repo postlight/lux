@@ -1,30 +1,24 @@
 // @flow
+import { posix, dirname, basename } from 'path';
+
 import { camelize } from 'inflection';
 
-import chain from '../../../utils/chain';
 import underscore from '../../../utils/underscore';
-
-import stripExt from './strip-ext';
-import normalizePath from './normalize-path';
+import { compose } from '../../../utils/compose';
 
 const DOUBLE_COLON = /::/g;
 
 /**
  * @private
  */
-function applyNamespace(source: string) {
-  return source.replace(DOUBLE_COLON, '$');
-}
+const formatName: (source: string) => string = compose(
+  (name: string) => name.replace(DOUBLE_COLON, '$'),
+  camelize,
+  underscore,
+  (name: string) => posix.join(
+    dirname(name),
+    basename(name, '.js')
+  )
+);
 
-/**
- * @private
- */
-export default function formatName(source: string) {
-  return chain(source)
-    .pipe(normalizePath)
-    .pipe(stripExt)
-    .pipe(underscore)
-    .pipe(camelize)
-    .pipe(applyNamespace)
-    .value();
-}
+export default formatName;

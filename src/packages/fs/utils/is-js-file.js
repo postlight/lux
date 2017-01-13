@@ -1,9 +1,9 @@
 // @flow
-const REGEXP = /^(?!\.).+\.js$/;
+import { extname } from 'path';
 
 /**
  * @private
  */
 export default function isJSFile(target: string): boolean {
-  return REGEXP.test(target);
+  return extname(target) === '.js';
 }

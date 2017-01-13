@@ -1,5 +1,6 @@
 // @flow
-import { getParentKey } from '../../resolver';
+import { posix } from 'path';
+
 import type { Builder$Construct, Builder$ParentBuilder } from '../interfaces';
 
 import sortByNamespace from './sort-by-namespace';
@@ -18,7 +19,7 @@ export default function createParentBuilder<T>(
 
         if (key !== 'root') {
           grandparent = result.find(namespace => (
-            namespace.key === getParentKey(key)
+            namespace.key === posix.dirname(key)
           ));
 
           if (grandparent) {
