@@ -1,4 +1,5 @@
 // @flow
+import os from 'os';
 import path, { posix } from 'path';
 
 import json from 'rollup-plugin-json';
@@ -69,6 +70,21 @@ export async function compile(dir: string, env: string, {
     })
   ]);
 
+  const aliases = {
+    app: posix.join('/', ...(dir.split(path.sep)), 'app'),
+    LUX_LOCAL: posix.join('/', ...(local.split(path.sep)))
+  };
+
+  if (os.platform() === 'win32') {
+    const [volume] = dir;
+    const prefix = `${volume}:/`;
+
+    Object.assign(aliases, {
+      app: aliases.app.replace(prefix, ''),
+      LUX_LOCAL: aliases.LUX_LOCAL.replace(prefix, '')
+    });
+  }
+
   const bundle = await rollup({
     entry,
     onwarn,
@@ -76,8 +92,7 @@ export async function compile(dir: string, env: string, {
     plugins: [
       alias({
         resolve: ['.js'],
-        app: posix.join('/', ...(dir.split(path.sep)), 'app'),
-        LUX_LOCAL: posix.join('/', ...(local.split(path.sep)))
+        ...aliases
       }),
       json(),
       resolve({
