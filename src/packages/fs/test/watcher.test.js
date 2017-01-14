@@ -1,6 +1,6 @@
 // @flow
 import { tmpdir } from 'os';
-import { sep, join as joinPath } from 'path';
+import { join as joinPath } from 'path';
 
 import { expect } from 'chai';
 import { it, describe, after, before } from 'mocha';
@@ -11,7 +11,7 @@ import { APPVEYOR } from '../../../constants';
 import { rmrf, mkdirRec, writeFile } from '../index';
 
 describe('module "fs"', () => {
-  const tmpDirPath = joinPath(sep, tmpdir(), `lux-${Date.now()}`);
+  const tmpDirPath = joinPath(tmpdir(), `lux-${Date.now()}`);
   const tmpAppPath = joinPath(tmpDirPath, 'app');
 
   before(async () => {

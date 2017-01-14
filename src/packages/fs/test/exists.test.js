@@ -3,7 +3,7 @@ import { tmpdir } from 'os';
 import { expect } from 'chai';
 import { it, describe, before, after } from 'mocha';
 
-import { sep, basename, dirname, join } from 'path';
+import { basename, dirname, join } from 'path';
 
 import {
   createTmpDir,

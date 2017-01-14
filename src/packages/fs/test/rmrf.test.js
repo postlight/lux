@@ -4,7 +4,7 @@ import { tmpdir } from 'os';
 import { expect } from 'chai';
 import { it, describe, beforeEach, afterEach } from 'mocha';
 
-import { sep, join } from 'path';
+import { join } from 'path';
 
 import { rmrf, exists } from '../index';
 import {
