@@ -5,7 +5,6 @@ services:
   - postgresql
 environment:
   nodejs_version: 6
-  MYSQL: C:\Program Files\MySql\MySQL Server 5.7\bin\mysql
   NODE_ENV: test
   CREATE_DATABASE: CREATE DATABASE lux_test;
   DROP_DATABASE: DROP DATABASE IF EXISTS lux_test;
@@ -31,8 +30,11 @@ before_test:
     dropdb --if-exists lux_test
     createdb lux_test
   - ps: |
-      Invoke-Expression "& '$mysql' -e '$DROP_DATABASE' -u root"
-      Invoke-Expression "& '$mysql' -e '$CREATE_DATABASE' -u root"
+      $env:MYSQL_PWD="$env:DATABASE_PASSWORD"
+      $mysql="C:\Program Files\MySql\MySQL Server 5.7\bin\mysql"
+
+      Invoke-Expression "& '$mysql' -e '$env:DROP_DATABASE' -u root"
+      Invoke-Expression "& '$mysql' -e '$env:CREATE_DATABASE' -u root"
 
       Remove-Item C:\projects\lux\test\test-app\db\* -Force -Include *.sqlite
       Write-Host $null >> C:\projects\lux\test\test-app\db\lux_test_test.sqlite
