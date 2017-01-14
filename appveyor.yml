@@ -35,6 +35,8 @@ before_test:
 
       Remove-Item C:\projects\lux\test\test-app\db\* -Force -Include *.sqlite
       Write-Host $null >> C:\projects\lux\test\test-app\db\lux_test_test.sqlite
+  - npm run clean
+  - npm run build
 test_script:
   - npm run flow
   - npm run lint
