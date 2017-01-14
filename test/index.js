@@ -47,7 +47,7 @@ before(function (done) {
       process.env.DATABASE_DRIVER = driver;
       execOpts.env.DATABASE_DRIVER = driver;
 
-      console.log(`Starting test suite using database driver '${driver}.'`);
+      console.log(`Starting test suite using database driver '${driver}'.`);
     } else {
       await exec('lux db:reset', execOpts);
     }
