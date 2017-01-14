@@ -46,8 +46,7 @@ before(function (done) {
 
         default:
           driver = 'sqlite3';
-          await exec('rm -rf test/test-app/db/lux_test_test.sqlite', execOpts);
-          await exec(`touch test/test-app/db/lux_test_test.sqlite`, execOpts);
+          await exec('lux db:reset', execOpts);
           break;
       }
 
