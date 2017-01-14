@@ -12,7 +12,7 @@ environment:
   matrix:
     - DATABASE_DRIVER: sqlite3
     - DATABASE_DRIVER: mysql2
-        DATABASE_USERNAME: root
+      DATABASE_USERNAME: root
 
 install:
   - ps: Install-Product node $env:nodejs_version $env:platform
