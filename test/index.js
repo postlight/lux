@@ -24,20 +24,30 @@ before(function (done) {
       }
     };
 
-    if (CIRCLECI) {
+    if (APPVEYOR) {
+      // Do nothing for now.
+    } else if (CIRCLECI) {
+      const create = 'CREATE DATABASE lux_test;';
+      const drop = 'DROP DATABASE IF EXISTS lux_test;';
       let driver;
 
       switch (CIRCLE_NODE_INDEX) {
         case '0':
           driver = 'pg';
+          await exec(`psql -c "${drop}" -U postgres`, execOpts);
+          await exec(`psql -c "${create}" -U postgres`, execOpts);
           break;
 
         case '1':
           driver = 'mysql2';
+          await exec(`mysql -e "${drop}"`, execOpts);
+          await exec(`mysql -e "${create}"`, execOpts);
           break;
 
         default:
           driver = 'sqlite3';
+          await exec('rm -rf test/test-app/db/lux_test_test.sqlite', execOpts);
+          await exec(`touch test/test-app/db/lux_test_test.sqlite`, execOpts);
           break;
       }
 
@@ -45,9 +55,10 @@ before(function (done) {
       execOpts.env.DATABASE_DRIVER = driver;
 
       console.log(`Starting test suite using database driver '${driver}.'`);
+    } else {
+      await exec('lux db:reset', execOpts);
     }
 
-    await exec('lux db:reset', execOpts);
     await exec('lux db:migrate', execOpts);
     await exec('lux db:seed', execOpts);
 

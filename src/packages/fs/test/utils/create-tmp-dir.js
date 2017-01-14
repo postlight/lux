@@ -3,18 +3,16 @@ import { mkdir } from 'fs';
 import { sep, join, dirname } from 'path';
 
 export default function createTmpDir(path: string) {
-  return createRootTmpDir(path).then(() => (
-    new Promise((resolve, reject) => {
-      mkdir(path, undefined, (err) => {
-        if (err) {
-          reject(err);
-          return;
-        }
+  return new Promise((resolve, reject) => {
+    mkdir(path, undefined, (err) => {
+      if (err) {
+        reject(err);
+        return;
+      }
 
-        resolve();
-      });
-    })
-  ));
+      resolve();
+    });
+  });
 }
 
 

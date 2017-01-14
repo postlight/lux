@@ -13,7 +13,7 @@ import {
 
 import { exists } from '../index';
 
-const TMP_PATH = join(sep, tmpdir(), `lux-${Date.now()}`);
+const TMP_PATH = join(tmpdir(), `lux-${Date.now()}`);
 
 describe('module "fs"', () => {
   describe('#exists()', () => {
