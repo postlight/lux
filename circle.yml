@@ -43,6 +43,8 @@ dependencies:
 
 test:
   pre:
+    - npm run flow
+    - npm run lint
     - npm run clean
     - npm run build
     - >
