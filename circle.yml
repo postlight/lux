@@ -42,43 +42,24 @@ dependencies:
 
 test:
   pre:
-    - npm run flow
-    - npm run lint
-    - npm run clean
-    - npm run build
-    - |
-      DROP_DATABASE="DROP DATABASE IF EXISTS lux_test;"
-      CREATE_DATABASE="CREATE DATABASE lux_test;"
+    - npm run flow:
+        parallel: true
 
-      case $CIRCLE_NODE_INDEX in
-        0)
-          export DATABASE_DRIVER="pg"
+    - npm run lint:
+        parallel: true
 
-          psql -c "$DROP_DATABASE" -U postgres
-          psql -c "$CREATE_DATABASE" -U postgres
-          ;;
+    - npm run clean:
+        parallel: true
 
-        1)
-          export DATABASE_DRIVER="mysql2"
-
-          mysql -e "$DROP_DATABASE"
-          mysql -e "$CREATE_DATABASE"
-          ;;
-
-        2)
-          export DATABASE_DRIVER="sqlite3"
-
-          rm -rf test/test-app/db/lux_test_test.sqlite
-          touch test/test-app/db/lux_test_test.sqlite
-          ;;
-      esac
-
-      echo "ENV: DATABASE_DRIVER=$DATABASE_DRIVER"
+    - npm run build:
+        parallel: true
 
   override:
     - npm test -- -R mocha-junit-reporter:
+        parallel: true
         environment:
           MOCHA_FILE: $CIRCLE_TEST_REPORTS/junit/test-results.xml
 
   post:
-    - npm run codecov
+    - npm run codecov:
+        parallel: true
