@@ -10,49 +10,25 @@ const { red, green } = require('chalk');
 
 const { version: VERSION } = require('../package.json');
 
-const PWD = process.cwd();
-const PROJECT_REQUIRED = [
-  'test',
-  'build',
-  'serve',
-  'console',
-  'generate',
-  'destroy',
-  'db:seed',
-  'db:reset',
-  'db:migrate'
-];
-
-function writeOut(...lines) {
-  lines.forEach(line => {
-    process.stdout.write(`${line}\n`);
-  });
-}
-
-function writeErr(...lines) {
-  lines.forEach(line => {
-    process.stderr.write(`${line}\n`);
-  });
-}
-
 function inLuxProject() {
-  if (PWD.indexOf(path.join('lux', 'test', 'test-app')) >= 0) {
+  const cwd = process.cwd();
+
+  if (cwd.indexOf(path.join('lux', 'test', 'test-app')) >= 0) {
     return true;
   }
 
   try {
-    const { dependencies } = require(path.join(PWD, 'package.json'));
-
-    return Reflect.has(dependencies, 'lux-framework');
+    return Boolean(require(path.join(cwd, 'package.json'))['lux-framework']);
   } catch (err) {
     return false;
   }
 }
 
 function commandNotFound(cmd) {
-  writeOut(
-    `${EOL}  ${red(cmd)} is not a valid command${EOL}\n`,
-    `  Use ${green('lux --help')} for a full list of commands${EOL}`
+  // eslint-disable-next-line no-console
+  console.log(
+    `${EOL}  ${red(cmd)} is not a valid command.${EOL.repeat(2)}`,
+    ` Use ${green('lux --help')} for a full list of commands.${EOL}`
   );
 }
 
@@ -65,27 +41,18 @@ function setEnvVar(key, val, def) {
 }
 
 function exec(cmd, ...args) {
-  let handler;
+  const handler = require('../dist')[cmd];
+  const needsProject = new RegExp(
+    '^(?:db:.+|test|build|serve|console|generate|destroy)$'
+  );
 
-  if (PROJECT_REQUIRED.indexOf(cmd) >= 0 && !inLuxProject()) {
-    return Promise.reject(
-      'Error: Directory does not contain a valid Lux application.'
-    );
+  if (needsProject.test(cmd) && !inLuxProject()) {
+    return Promise.reject(new Error(
+      'Directory does not contain a valid Lux application.'
+    ));
   }
 
-  try {
-    handler = require(path.join(
-      PWD,
-      'node_modules',
-      'lux-framework',
-      'dist',
-      cmd
-    ))[cmd];
-  } catch (err) {
-    handler = require(path.join(__dirname, '..', 'dist', cmd))[cmd];
-  }
-
-  return Reflect.apply(handler, null, args);
+  return handler(...args);
 }
 
 function exit(code) {
@@ -93,7 +60,8 @@ function exit(code) {
 }
 
 function rescue(err) {
-  writeErr(err.stack);
+  // eslint-disable-next-line
+  console.error(err.stack);
   exit(1);
 }
 

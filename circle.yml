@@ -1,17 +1,83 @@
-test:
-  override:
-    - bash -e scripts/circle/before-script.sh:
-        parallel: true
-    - npm test && npm run test:codecov:
-        parallel: true
 machine:
   node:
     version: 6
+
   environment:
     NODE_ENV: test
     DATABASE_USERNAME: ubuntu
+
 dependencies:
+  pre:
+    - >
+      cd ../
+
+      # Install Watchman
+      if [ -d watchman ]; then
+        cd watchman
+        sudo make install
+      else
+        git clone https://github.com/facebook/watchman.git
+        cd watchman
+        git checkout v4.7.0
+
+        ./autogen.sh
+        ./configure
+        make
+        sudo make install
+      fi
+
+      cd ../lux
+
   override:
-    - bash -e scripts/circle/install.sh
+    - npm install
+    - npm link
+
+  post:
+    - >
+      cd test/test-app
+      npm install
+      cd ../../
+
   cache_directories:
     - /home/ubuntu/watchman
+
+test:
+  pre:
+    - npm run clean
+    - npm run build
+    - >
+      DROP_DATABASE="DROP DATABASE IF EXISTS lux_test;"
+      CREATE_DATABASE="CREATE DATABASE lux_test;"
+
+      case $CIRCLE_NODE_INDEX in
+        0)
+          export DATABASE_DRIVER="pg"
+
+          psql -c "$DROP_DATABASE" -U postgres
+          psql -c "$CREATE_DATABASE" -U postgres
+          ;;
+
+        1)
+          export DATABASE_DRIVER="mysql2"
+
+          mysql -e "$DROP_DATABASE"
+          mysql -e "$CREATE_DATABASE"
+          ;;
+
+        2)
+          export DATABASE_DRIVER="sqlite3"
+
+          rm -rf test/test-app/db/lux_test_test.sqlite
+          touch test/test-app/db/lux_test_test.sqlite
+          ;;
+      esac
+
+      echo "ENV: DATABASE_DRIVER=$DATABASE_DRIVER"
+
+  override:
+    - npm test -- -R mocha-junit-reporter:
+        environment:
+          MOCHA_FILE: $CIRCLE_TEST_REPORTS/junit/test-results.xml
+
+  post:
+    - npm run codecov
