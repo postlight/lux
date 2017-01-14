@@ -23,9 +23,7 @@ export default {
   plugins: [
     json(),
     babel(),
-    resolve({
-      preferBuiltins: true
-    })
+    resolve()
   ],
   external: id => !(
     id.startsWith('.')
