@@ -1,5 +1,5 @@
 // @flow
-
+import { tmpdir } from 'os';
 import { expect } from 'chai';
 import { it, describe, before, after } from 'mocha';
 
@@ -13,11 +13,10 @@ import {
 
 import { exists } from '../index';
 
-const TMP_PATH = join(sep, 'tmp', `lux-${Date.now()}`);
+const TMP_PATH = join(sep, tmpdir(), `lux-${Date.now()}`);
 
 describe('module "fs"', () => {
   describe('#exists()', () => {
-
     before(async () => {
       await createTmpDir(TMP_PATH);
       await createTmpFiles(TMP_PATH, 5);

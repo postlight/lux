@@ -1,4 +1,5 @@
 // @flow
+import { tmpdir } from 'os';
 import { sep, join } from 'path';
 
 import { expect } from 'chai';
@@ -12,9 +13,8 @@ import * as fs from '../index';
 import { createTmpDir, getTmpFile, createTmpFiles } from './utils';
 
 describe('module "fs"', () => {
-
-  let spies: {[ module: string ]: Spy } = {};
   let tmpDirPath: string;
+  let spies: { [module: string]: Spy } = {};
   const spiedMethods = [
     'mkdir',
     'rmdir',
@@ -45,7 +45,7 @@ describe('module "fs"', () => {
   });
 
   beforeEach(async () => {
-    tmpDirPath = `/tmp/lux-${Date.now()}`;
+    tmpDirPath = join(tmpdir(), `lux-${Date.now()}`);
     await createTmpDir(tmpDirPath);
   });
 
