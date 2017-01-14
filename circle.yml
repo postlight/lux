@@ -68,7 +68,7 @@ test:
         }
 
     - setup_db:
-      parallel: true
+        parallel: true
 
     - npm run flow:
         parallel: true
