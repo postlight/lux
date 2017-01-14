@@ -4,27 +4,38 @@ services:
   - mysql
   - postgresql
 environment:
+  nodejs_version: 6
   MYSQL: C:\Program Files\MySql\MySQL Server 5.7\bin\mysql
   NODE_ENV: test
   MYSQL_PWD: Password12!
   CREATE_DATABASE: CREATE DATABASE lux_test;
   DROP_DATABASE: DROP DATABASE IF EXISTS lux_test;
   matrix:
-    - DATABASE_DRIVER: sqlite3
+    - DATABASE_DRIVER: pg
+      DATABASE_USERNAME: postgres
     - DATABASE_DRIVER: mysql2
       DATABASE_USERNAME: root
+    - DATABASE_DRIVER: sqlite3
 install:
-  - ps: Install-Product node 6 $env:platform
+  - ps: Install-Product node $env:nodejs_version $env:platform
   - npm install
   - npm link
   - ps: Set-Location C:\projects\lux\test\test-app
   - npm install
   - ps: Set-Location C:\projects\lux
 before_test:
-  - ps: Invoke-Expression "& '$mysql' -e '$DROP_DATABASE' -u root"
-  - ps: Invoke-Expression "& '$mysql' -e '$CREATE_DATABASE' -u root"
-  - ps: Remove-Item C:\projects\lux\test\test-app\db\* -Force -Include *.sqlite
-  - ps: Write-Host $null >> C:\projects\lux\test\test-app\db\lux_test_test.sqlite
+  - |
+    SET PGUSER=postgres
+    SET PGPASSWORD=Password12!
+    PATH=C:\Program Files\PostgreSQL\9.4\bin\;%PATH%
+    createdb lux_test
+  - ps:
+    - |
+      Invoke-Expression "& '$mysql' -e '$DROP_DATABASE' -u root"
+      Invoke-Expression "& '$mysql' -e '$CREATE_DATABASE' -u root"
+
+      Remove-Item C:\projects\lux\test\test-app\db\* -Force -Include *.sqlite
+      Write-Host $null >> C:\projects\lux\test\test-app\db\lux_test_test.sqlite
 test_script:
   - npm run flow
   - npm run lint

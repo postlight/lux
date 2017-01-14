@@ -18,7 +18,6 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "changelog": "release",
     "clean": "shx rm -rf .nyc_output coverage dist test/test-app/dist test-results.xml",
     "codecov": "nyc report --reporter=lcov > coverage.lcov && curl -s https://codecov.io/bash | bash",
     "flow": "flow check",
@@ -69,7 +68,6 @@
     "mocha-junit-reporter": "1.13.0",
     "node-fetch": "1.6.3",
     "nyc": "10.0.0",
-    "release": "1.1.2",
     "remark-cli": "2.1.0",
     "remark-lint": "5.4.0",
     "remark-preset-lint-recommended": "1.0.0",
