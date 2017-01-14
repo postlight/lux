@@ -25,21 +25,26 @@ before(function (done) {
     };
 
     if (CIRCLECI) {
+      let driver;
+
       switch (CIRCLE_NODE_INDEX) {
         case '0':
-          execOpts.env.DATABASE_DRIVER = 'pg';
+          driver = 'pg';
           break;
 
         case '1':
-          execOpts.env.DATABASE_DRIVER = 'mysql2';
+          driver = 'mysql2';
           break;
 
-        case '2':
-          execOpts.env.DATABASE_DRIVER = 'sqlite3';
+        default:
+          driver = 'sqlite3';
           break;
       }
 
-      process.env.DATABASE_DRIVER = execOpts.env.DATABASE_DRIVER;
+      process.env.DATABASE_DRIVER = driver;
+      execOpts.env.DATABASE_DRIVER = driver;
+
+      console.log(`Starting test suite using database driver '${driver}.'`);
     }
 
     await exec('lux db:reset', execOpts);
