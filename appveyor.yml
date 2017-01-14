@@ -28,7 +28,7 @@ before_test:
     SET PGUSER=postgres
     SET PGPASSWORD=%DATABASE_PASSWORD%
     PATH=C:\Program Files\PostgreSQL\9.5\bin\;%PATH%
-    dropdb lux_test
+    dropdb --if-exists lux_test
     createdb lux_test
   - ps: |
       Invoke-Expression "& '$mysql' -e '$DROP_DATABASE' -u root"
