@@ -27,10 +27,9 @@ before_test:
   - |
     SET PGUSER=postgres
     SET PGPASSWORD=Password12!
-    PATH=C:\Program Files\PostgreSQL\9.4\bin\;%PATH%
+    PATH=C:\Program Files\PostgreSQL\9.5\bin\;%PATH%
     createdb lux_test
-  - ps:
-    - |
+  - ps: |
       Invoke-Expression "& '$mysql' -e '$DROP_DATABASE' -u root"
       Invoke-Expression "& '$mysql' -e '$CREATE_DATABASE' -u root"
 
