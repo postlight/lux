@@ -27,21 +27,15 @@ before(function (done) {
     if (APPVEYOR) {
       // Do nothing for now.
     } else if (CIRCLECI) {
-      const create = 'CREATE DATABASE lux_test;';
-      const drop = 'DROP DATABASE IF EXISTS lux_test;';
       let driver;
 
       switch (CIRCLE_NODE_INDEX) {
         case '0':
           driver = 'pg';
-          await exec(`psql -c "${drop}" -U postgres`, execOpts);
-          await exec(`psql -c "${create}" -U postgres`, execOpts);
           break;
 
         case '1':
           driver = 'mysql2';
-          await exec(`mysql -e "${drop}"`, execOpts);
-          await exec(`mysql -e "${create}"`, execOpts);
           break;
 
         default:

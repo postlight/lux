@@ -42,6 +42,18 @@ dependencies:
 
 test:
   pre:
+    - psql -c 'DROP DATABASE IF EXISTS lux_test;' -U postgres:
+        parallel: true
+
+    - psql -c 'CREATE DATABASE lux_test;' -U postgres:
+        parallel: true
+
+    - mysql -e 'DROP DATABASE IF EXISTS lux_test;':
+        parallel: true
+
+    - mysql -e 'CREATE DATABASE lux_test;':
+        parallel: true
+
     - npm run flow:
         parallel: true
 
