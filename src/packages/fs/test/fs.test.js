@@ -162,7 +162,7 @@ describe('module "fs"', () => {
   });
 
   describe('#watch()', () => {
-    const watchPath = join(sep, 'tmp', `lux-${Date.now()}`);
+    const watchPath = join(tmpdir(), `lux-${Date.now()}`);
     let result;
 
     before(async () => {

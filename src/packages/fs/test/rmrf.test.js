@@ -19,7 +19,7 @@ describe('module "fs"', () => {
     let tmpDirPath: string;
 
     beforeEach(async () => {
-      tmpDirPath = join(sep, tmpdir(), `lux-${Date.now()}`);
+      tmpDirPath = join(tmpdir(), `lux-${Date.now()}`);
 
       await createTmpDir(tmpDirPath);
       await createTmpFiles(tmpDirPath, 5);
