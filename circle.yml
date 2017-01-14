@@ -8,7 +8,7 @@ machine:
 
 dependencies:
   pre:
-    - >
+    - |
       cd ../
 
       if [ -d watchman ]; then
@@ -32,7 +32,7 @@ dependencies:
     - npm link
 
   post:
-    - >
+    - |
       cd test/test-app
       npm install
       cd ../../
@@ -46,7 +46,7 @@ test:
     - npm run lint
     - npm run clean
     - npm run build
-    - >
+    - |
       DROP_DATABASE="DROP DATABASE IF EXISTS lux_test;"
       CREATE_DATABASE="CREATE DATABASE lux_test;"
 
