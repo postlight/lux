@@ -164,10 +164,11 @@ class Query<+T: any> extends Promise {
         this.snapshots = this.snapshots
           .filter(([method]) => method !== 'orderBy')
           .concat([
-            ['orderBy', [
-              `${this.model.tableName}.${columnName}`,
-              direction
-            ]]
+            ['orderByRaw',
+              `"${this.model.tableName}"."${columnName}", ` +
+              `"${this.model.tableName}"."${this.model.primaryKey}"` +
+              `${direction}`
+            ]
           ]);
       }
     }
