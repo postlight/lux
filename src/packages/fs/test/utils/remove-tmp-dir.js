@@ -1,32 +1,44 @@
 // @flow
-
-import { rmdir, readdir, unlink } from 'fs';
 import { join } from 'path';
+import { rmdir, readdir, unlink } from 'fs';
 
-export default function removeTmpDir(path: string) {
+export default function removeTmpDir(path: string): Promise<void> {
   return new Promise((resolve, reject) => {
     readdir(path, (err, files) => {
-      if (err) return reject(err);
-      const filePaths = files.map(fileName => join(path, fileName));
-      removeTmpFiles(filePaths)
-        .then(() => {
-          rmdir(path, (error) => {
-            if (error) reject(error);
-            resolve();
-          });
-        })
-        .catch((error) => reject(error));
-    });
-  });
-}
+      if (err) {
+        reject(err);
+        return;
+      }
 
-function removeTmpFiles(filePaths: Array<string>) {
-  return Promise.all(filePaths.map((filePath) => {
-    return new Promise((resolve, reject) => {
-      unlink(filePath, (err) => {
-        if (err) return reject(err);
+      resolve(files);
+    });
+  }).then(files => (
+    removeTmpFiles(files.map(name => join(path, name)))
+  )).then(() => (
+    new Promise((resolve, reject) => {
+      rmdir(path, err => {
+        if (err) {
+          reject(err);
+          return;
+        }
+
         resolve();
       });
-    });
-  }));
+    })
+  ));
+}
+
+function removeTmpFiles(paths: Array<string>): Promise<Array<string>> {
+  return Promise.all(paths.map(path => (
+    new Promise((resolve, reject) => {
+      unlink(path, err => {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        resolve(path);
+      });
+    })
+  )));
 }

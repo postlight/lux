@@ -18,12 +18,7 @@ export function createLoader(path: string): Loader {
 }
 
 export { build } from './builder';
-export {
-  stripNamespaces,
-  closestAncestor,
-  closestChild,
-  getParentKey as getNamespaceKey
-} from './resolver';
+export { closestAncestor, closestChild } from './resolver';
 
 export type {
   Loader,

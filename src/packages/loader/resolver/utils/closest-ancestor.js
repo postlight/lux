@@ -1,20 +1,29 @@
 // @flow
+import { posix } from 'path';
+
 import type { Bundle$Namespace } from '../../index';
 
 export default function closestAncestor<T>(
   source: Bundle$Namespace<T>,
   key: string
 ): void | T {
-  const parts = key.split('/');
+  const name = posix.basename(key);
+  let namespace = posix.dirname(key);
 
-  if (parts.length > 2) {
-    const name = parts.pop();
-    const part = `${parts.slice(0, parts.length - 1).join('/')}/${name}`;
-
-    return source.get(part) || closestAncestor(source, part);
-  } else if (parts.length === 2) {
-    return source.get(parts.pop());
+  if (namespace === '.') {
+    return source.get(name);
   }
 
-  return undefined;
+  namespace = posix.dirname(namespace);
+
+  const ancestor = source.get(posix.join(namespace, name));
+
+  if (ancestor) {
+    return ancestor;
+  }
+
+  return closestAncestor(
+    source,
+    posix.join(posix.dirname(namespace), name)
+  );
 }

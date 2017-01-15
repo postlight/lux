@@ -1,9 +1,10 @@
 // @flow
+import { tmpdir } from 'os';
 
 import { expect } from 'chai';
 import { it, describe, beforeEach, afterEach } from 'mocha';
 
-import { sep, join } from 'path';
+import { join } from 'path';
 
 import { rmrf, exists } from '../index';
 import {
@@ -18,7 +19,7 @@ describe('module "fs"', () => {
     let tmpDirPath: string;
 
     beforeEach(async () => {
-      tmpDirPath = join(sep, 'tmp', `lux-${Date.now()}`);
+      tmpDirPath = join(tmpdir(), `lux-${Date.now()}`);
 
       await createTmpDir(tmpDirPath);
       await createTmpFiles(tmpDirPath, 5);

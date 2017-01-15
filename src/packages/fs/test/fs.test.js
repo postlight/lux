@@ -1,5 +1,6 @@
 // @flow
-import { sep, join } from 'path';
+import { tmpdir } from 'os';
+import { join } from 'path';
 
 import { expect } from 'chai';
 import { it, describe, before, after, beforeEach, afterEach } from 'mocha';
@@ -12,9 +13,8 @@ import * as fs from '../index';
 import { createTmpDir, getTmpFile, createTmpFiles } from './utils';
 
 describe('module "fs"', () => {
-
-  let spies: {[ module: string ]: Spy } = {};
   let tmpDirPath: string;
+  let spies: { [module: string]: Spy } = {};
   const spiedMethods = [
     'mkdir',
     'rmdir',
@@ -45,7 +45,7 @@ describe('module "fs"', () => {
   });
 
   beforeEach(async () => {
-    tmpDirPath = `/tmp/lux-${Date.now()}`;
+    tmpDirPath = join(tmpdir(), `lux-${Date.now()}`);
     await createTmpDir(tmpDirPath);
   });
 
@@ -162,7 +162,7 @@ describe('module "fs"', () => {
   });
 
   describe('#watch()', () => {
-    const watchPath = join(sep, 'tmp', `lux-${Date.now()}`);
+    const watchPath = join(tmpdir(), `lux-${Date.now()}`);
     let result;
 
     before(async () => {

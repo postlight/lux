@@ -1,6 +1,7 @@
 // @flow
+import { posix } from 'path';
+
 import { deepFreezeProps } from '../../freezeable';
-import { getNamespaceKey, stripNamespaces } from '../../loader';
 import { tryCatchSync } from '../../../utils/try-catch';
 import type Serializer from '../../serializer'; // eslint-disable-line max-len, no-unused-vars
 import type { Application$factoryOpts } from '../index';
@@ -10,9 +11,9 @@ export default function createSerializer<T: Serializer<*>>(
   opts: Application$factoryOpts<T>
 ): T {
   const { key, store } = opts;
-  const namespace = getNamespaceKey(key).replace('root', '');
+  const namespace = posix.dirname(key).replace('.', '');
   let { parent } = opts;
-  let model = tryCatchSync(() => store.modelFor(stripNamespaces(key)));
+  let model = tryCatchSync(() => store.modelFor(posix.basename(key)));
 
   if (!model) {
     model = null;
