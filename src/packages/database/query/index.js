@@ -166,7 +166,7 @@ class Query<+T: any> extends Promise {
           .filter(([method]) => method !== 'orderBy')
           .concat([
             ['orderByRaw', uniq([columnName, this.model.primaryKey])
-              .map(key => `"${this.model.tableName}".${key}`)
+              .map(key => `${this.model.tableName}.${key}`)
               .join(', ') + ` ${direction}`
             ]
           ]);
