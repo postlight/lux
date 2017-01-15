@@ -10,11 +10,13 @@ environment:
   DROP_DATABASE: DROP DATABASE IF EXISTS lux_test;
   DATABASE_PASSWORD: Password12!
   matrix:
-    - DATABASE_DRIVER: pg
-      DATABASE_USERNAME: postgres
     - DATABASE_DRIVER: mysql2
       DATABASE_USERNAME: root
     - DATABASE_DRIVER: sqlite3
+    allow_failures:
+      - DATABASE_DRIVER: pg
+        DATABASE_USERNAME: postgres
+
 install:
   - ps: Install-Product node $env:nodejs_version $env:platform
   - npm install
