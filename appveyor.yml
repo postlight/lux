@@ -1,5 +1,5 @@
 build: off
-version: {build}
+version: '{build}'
 branches:
   only:
     - master
