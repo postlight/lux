@@ -1,5 +1,5 @@
 // @flow
-import {camelize} from 'inflection';
+import { camelize } from 'inflection';
 
 import entries from '../../../utils/entries';
 import uniq from '../../../utils/uniq';
@@ -7,7 +7,7 @@ import type Model from '../model';
 
 import scopesFor from './utils/scopes-for';
 import formatSelect from './utils/format-select';
-import {runQuery, createRunner} from './runner';
+import { runQuery, createRunner } from './runner';
 
 /**
  * @class Query
@@ -346,8 +346,8 @@ class Query<+T: any> extends Promise {
 
       const willInclude = included
         .filter(opts => {
-          const {name, relationship} = opts;
-          let {attrs} = opts;
+          const { name, relationship } = opts;
+          let { attrs } = opts;
 
           if (relationship.type === 'hasMany') {
             attrs = relationship.through ? attrs : [
@@ -424,8 +424,10 @@ class Query<+T: any> extends Promise {
     return this;
   }
 
-  then<U>(onFulfilled?: (value: T) => Promise<U> | U,
-          onRejected?: (error: Error) => Promise<U> | U): Promise<U> {
+  then<U>(
+    onFulfilled?: (value: T) => Promise<U> | U,
+    onRejected?: (error: Error) => Promise<U> | U
+  ): Promise<U> {
     runQuery(this);
     return super.then(onFulfilled, onRejected);
   }
@@ -458,4 +460,4 @@ class Query<+T: any> extends Promise {
 }
 
 export default Query;
-export {RecordNotFoundError} from './errors';
+export { RecordNotFoundError } from './errors';
