@@ -1,8 +1,15 @@
 build: off
+version: '{build}'
+branches:
+  only:
+    - master
 platform: x64
 services:
   - mysql
   - postgresql
+matrix:
+  allow_failures:
+    - DATABASE_DRIVER: pg
 environment:
   nodejs_version: 6
   NODE_ENV: test
