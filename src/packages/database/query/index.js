@@ -163,7 +163,7 @@ class Query<+T: any> extends Promise {
 
       if (columnName) {
         this.snapshots = this.snapshots
-          .filter(([method]) => method !== 'orderBy')
+          .filter(([method]) => method !== 'orderByRaw')
           .concat([
             // eslint-disable-next-line prefer-template
             ['orderByRaw', uniq([columnName, this.model.primaryKey])
@@ -405,7 +405,7 @@ class Query<+T: any> extends Promise {
     if (scopes.length) {
       const keys = scopes.map(scope => {
         if (scope === 'order') {
-          return 'orderBy';
+          return 'orderByRaw';
         }
 
         return scope;
