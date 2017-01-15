@@ -58,11 +58,8 @@ export default (name: string, attrs: Array<string> | string): string => {
         ${body}
         table.timestamps();
 
-        table.index(
-          'id',
-          'created_at',
-          'updated_at'
-        );
+        table.index('created_at');
+        table.index('updated_at');
       });
     }
 
