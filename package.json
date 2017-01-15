@@ -49,6 +49,7 @@
     "rollup-plugin-babel": "2.7.1",
     "rollup-plugin-eslint": "3.0.0",
     "rollup-plugin-json": "2.0.2",
+    "rollup-plugin-lux": "2.0.4",
     "rollup-plugin-node-resolve": "2.0.0",
     "source-map-support": "0.4.8"
   },

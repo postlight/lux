@@ -2,6 +2,7 @@
 import os from 'os';
 import path, { posix } from 'path';
 
+import lux from 'rollup-plugin-lux';
 import json from 'rollup-plugin-json';
 import alias from 'rollup-plugin-alias';
 import babel from 'rollup-plugin-babel';
@@ -95,9 +96,7 @@ export async function compile(dir: string, env: string, {
         ...aliases
       }),
       json(),
-      resolve({
-        preferBuiltins: true
-      }),
+      resolve(),
       eslint({
         cwd: dir,
         parser: 'babel-eslint',
@@ -112,7 +111,8 @@ export async function compile(dir: string, env: string, {
       }),
       babel({
         exclude: 'node_modules/**'
-      })
+      }),
+      lux()
     ]
   });
 
