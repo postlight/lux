@@ -368,7 +368,7 @@ class Query<+T: any> extends Promise {
 
           return true;
         })
-        .reduce((arr, {name, attrs, relationship}) => {
+        .reduce((arr, { name, attrs, relationship }) => {
           arr.push([
             'includeSelect',
             formatSelect(relationship.model, attrs, `${name}.`)
@@ -380,7 +380,7 @@ class Query<+T: any> extends Promise {
               `${this.model.tableName}.${relationship.foreignKey}`,
               '=',
               `${relationship.model.tableName}.` +
-              `${relationship.model.primaryKey}`
+                `${relationship.model.primaryKey}`
             ]]);
           } else if (relationship.type === 'hasOne') {
             arr.push(['leftOuterJoin', [
