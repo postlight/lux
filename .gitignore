@@ -1,10 +1,10 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
-*.lcov
+.nyc_output/
 coverage/
 dist/
-.nyc_output/
+*test-results.xml
 
 # dependencies
 node_modules/

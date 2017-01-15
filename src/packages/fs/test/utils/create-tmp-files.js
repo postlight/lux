@@ -1,22 +1,27 @@
 // @flow
-
-import { writeFile } from 'fs';
 import { join } from 'path';
+import { writeFile } from 'fs';
 
 import range  from '../../../../utils/range';
 
 export default function createTmpFiles(
   dir: string,
   numberToCreate: number
-) {
-  const filePaths = Array.from(range(1, numberToCreate))
+): Promise<Array<string>> {
+  const filePaths = Array
+    .from(range(1, numberToCreate))
     .map(() => join(dir, `${Date.now()}.tmp`));
-  return Promise.all(filePaths.map((filePath) => {
-    return new Promise((resolve, reject) => {
-      writeFile(filePath, '', (error) => {
-        if (error) return reject(error);
-        resolve();
+
+  return Promise.all(filePaths.map(filePath => (
+    new Promise((resolve, reject) => {
+      writeFile(filePath, '', err => {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        resolve(filePath);
       });
-    });
-  }));
+    })
+  )));
 }

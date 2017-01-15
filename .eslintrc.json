@@ -51,6 +51,7 @@
       ],
       "newlines-between": "always"
     }],
+    "import/extensions": 0,
     "import/no-dynamic-require": 0,
     "import/prefer-default-export": 0,
     "flowtype/semi": 2,

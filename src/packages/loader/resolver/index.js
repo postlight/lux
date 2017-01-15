@@ -42,7 +42,5 @@ export function resolve<T>(
     }, new FreezeableMap());
 }
 
-export { default as getParentKey } from './utils/get-parent-key';
-export { default as stripNamespaces } from './utils/strip-namespaces';
 export { default as closestAncestor } from './utils/closest-ancestor';
 export { default as closestChild } from './utils/closest-child';

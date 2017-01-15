@@ -1,19 +1,19 @@
 // @flow
-import path from 'path';
+import os from 'os';
+import path, { posix } from 'path';
 
 import json from 'rollup-plugin-json';
 import alias from 'rollup-plugin-alias';
 import babel from 'rollup-plugin-babel';
 import eslint from 'rollup-plugin-eslint';
-import nodeResolve from 'rollup-plugin-node-resolve';
+import resolve from 'rollup-plugin-node-resolve';
 import { rollup } from 'rollup';
 
-import { rmrf, exists, readdir, readdirRec, isJSFile } from '../fs';
+import { rmrf, readdir, readdirRec, isJSFile } from '../fs';
 import template from '../template';
-import uniq from '../../utils/uniq';
 
 import onwarn from './utils/handle-warning';
-import normalizePath from './utils/normalize-path';
+import isExternal from './utils/is-external';
 import createManifest from './utils/create-manifest';
 import createBootScript from './utils/create-boot-script';
 
@@ -25,23 +25,10 @@ export async function compile(dir: string, env: string, {
 }: {
   useStrict: boolean
 } = {}): Promise<void> {
-  let banner;
-
   const local = path.join(__dirname, '..', 'src', 'index.js');
   const entry = path.join(dir, 'dist', 'index.js');
-
-  const nodeModules = path.join(dir, 'node_modules');
-  const luxNodeModules = path.join(__dirname, '..', 'node_modules');
-  let external = await readdir(nodeModules).then(files => (
-    files.filter(name => name !== 'lux-framework')
-  ));
-
-  if (await exists(luxNodeModules)) {
-    external = uniq([
-      ...external,
-      ...(await readdir(luxNodeModules))
-    ]);
-  }
+  const external = isExternal(dir);
+  let banner;
 
   const assets = await Promise.all([
     readdir(path.join(dir, 'app', 'models')),
@@ -83,6 +70,21 @@ export async function compile(dir: string, env: string, {
     })
   ]);
 
+  const aliases = {
+    app: posix.join('/', ...(dir.split(path.sep)), 'app'),
+    LUX_LOCAL: posix.join('/', ...(local.split(path.sep)))
+  };
+
+  if (os.platform() === 'win32') {
+    const [volume] = dir;
+    const prefix = `${volume}:/`;
+
+    Object.assign(aliases, {
+      app: aliases.app.replace(prefix, ''),
+      LUX_LOCAL: aliases.LUX_LOCAL.replace(prefix, '')
+    });
+  }
+
   const bundle = await rollup({
     entry,
     onwarn,
@@ -90,16 +92,12 @@ export async function compile(dir: string, env: string, {
     plugins: [
       alias({
         resolve: ['.js'],
-        app: normalizePath(path.join(dir, 'app')),
-        LUX_LOCAL: normalizePath(local)
+        ...aliases
       }),
-
       json(),
-
-      nodeResolve({
+      resolve({
         preferBuiltins: true
       }),
-
       eslint({
         cwd: dir,
         parser: 'babel-eslint',
@@ -112,8 +110,9 @@ export async function compile(dir: string, env: string, {
           path.join(__dirname, '..', 'src', '**')
         ]
       }),
-
-      babel()
+      babel({
+        exclude: 'node_modules/**'
+      })
     ]
   });
 
@@ -137,3 +136,5 @@ export async function compile(dir: string, env: string, {
     useStrict: false
   });
 }
+
+export { default as onwarn } from './utils/handle-warning';

@@ -3,8 +3,18 @@
 /**
  * @private
  */
-export default function handleWarnings(...warnings: Array<string>): void {
-  warnings
-    .filter(warning => warning.indexOf('external dependency') < 0)
-    .forEach(warning => process.stderr.write(`${warning}\n`));
+type CompilerWarning = {
+  code: string;
+  message: string;
+};
+
+/**
+ * @private
+ */
+export default function handleWarning(warning: CompilerWarning): void {
+  if (warning.code === 'UNUSED_EXTERNAL_IMPORT') {
+    return;
+  }
+  // eslint-disable-next-line no-console
+  console.warn(warning.message);
 }

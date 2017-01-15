@@ -1,22 +1,15 @@
 // @flow
 import { mkdir } from 'fs';
-import { sep, join, dirname } from 'path';
 
 export default function createTmpDir(path: string) {
-  return createRootTmpDir(path)
-    .then(() => new Promise((resolve, reject) => {
-      mkdir(path, undefined, (err) => {
-        if (err) return reject(err);
-        resolve();
-      });
-    }));
-}
+  return new Promise((resolve, reject) => {
+    mkdir(path, undefined, (err) => {
+      if (err) {
+        reject(err);
+        return;
+      }
 
-
-function createRootTmpDir() {
-  return new Promise(resolve => {
-    const path = join(sep, 'tmp');
-
-    mkdir(dirname(path), undefined, () => resolve(path));
+      resolve();
+    });
   });
 }
