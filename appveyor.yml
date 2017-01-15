@@ -1,4 +1,8 @@
 build: off
+version: {build}
+branches:
+  only:
+    - master
 platform: x64
 services:
   - mysql
