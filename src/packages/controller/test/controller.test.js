@@ -6,7 +6,6 @@ import Controller from '../index';
 import Serializer from '../../serializer';
 import { Model } from '../../database';
 
-import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 import type { Request, Response } from '../../server';
@@ -56,7 +55,8 @@ describe('module "controller"', () => {
     });
 
     describe('#index()', () => {
-      const createRequest = (params = {}): Request => setType(() => ({
+      // $FlowIgnore
+      const createRequest = (params = {}): Request => ({
         params,
         route: {
           controller: subject
@@ -72,7 +72,7 @@ describe('module "controller"', () => {
             number: 1
           }
         }
-      }));
+      });
 
       it('returns an array of records', async () => {
         const request = createRequest();
@@ -157,7 +157,8 @@ describe('module "controller"', () => {
     });
 
     describe('#show()', () => {
-      const createRequest = (params = {}): Request => setType(() => ({
+      // $FlowIgnore
+      const createRequest = (params = {}): Request => ({
         params,
         route: {
           controller: subject
@@ -167,7 +168,7 @@ describe('module "controller"', () => {
             posts: attributes
           }
         }
-      }));
+      });
 
       it('returns a single record', async () => {
         const request = createRequest({ id: 1 });
@@ -237,7 +238,8 @@ describe('module "controller"', () => {
     describe('#create()', () => {
       let result: Model;
 
-      const createRequest = (params = {}): Request => setType(() => ({
+      // $FlowIgnore
+      const createRequest = (params = {}): Request => ({
         params,
         url: {
           pathname: '/posts'
@@ -257,9 +259,10 @@ describe('module "controller"', () => {
             users: ['id']
           }
         }
-      }));
+      });
 
-      const createResponse = (): Response => setType(() => ({
+      // $FlowIgnore
+      const createResponse = (): Response => ({
         headers: new Map(),
         statusCode: 200,
 
@@ -270,7 +273,7 @@ describe('module "controller"', () => {
         getHeader(key: string): string | void {
           return this.headers.get(key);
         }
-      }));
+      });
 
       afterEach(async () => {
         await result.destroy();
@@ -361,7 +364,9 @@ describe('module "controller"', () => {
 
     describe('#update()', () => {
       let record: Model;
-      const createRequest = (params = {}): Request => setType(() => ({
+
+      // $FlowIgnore
+      const createRequest = (params = {}): Request => ({
         params,
         route: {
           controller: subject
@@ -371,7 +376,7 @@ describe('module "controller"', () => {
             posts: attributes
           }
         }
-      }));
+      });
 
       beforeEach(async () => {
         record = await Post.create({
@@ -545,7 +550,9 @@ describe('module "controller"', () => {
 
     describe('#destroy()', () => {
       let record: Model;
-      const createRequest = (params = {}): Request => setType(() => ({
+
+      // $FlowIgnore
+      const createRequest = (params = {}): Request => ({
         params,
         route: {
           controller: subject
@@ -555,7 +562,7 @@ describe('module "controller"', () => {
             posts: attributes
           }
         }
-      }));
+      });
 
       before(async () => {
         record = await Post.create({

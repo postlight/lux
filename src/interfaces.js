@@ -13,3 +13,7 @@ export interface Chain<T> {
   value(): T;
   construct<U, V: Class<U>>(constructor: V): Chain<U>;
 }
+
+export type ObjectMap<K, V> = {
+  [key: K]: V;
+};

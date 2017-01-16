@@ -5,7 +5,6 @@ import { it, describe, before, beforeEach } from 'mocha';
 import Query from '../query';
 import Model from '../model';
 
-import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 describe('module "database/query"', () => {

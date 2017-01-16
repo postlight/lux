@@ -1,11 +1,14 @@
 // @flow
-export default function mapToObject<T>(
-  source: Map<string, T>
-): { [key: string]: T } {
+import type { ObjectMap } from '../interfaces';
+
+export default function mapToObject<K, V>(source: Map<K, V>): ObjectMap<K, V> {
   return Array
     .from(source)
-    .reduce((obj, [key, value]) => ({
-      ...obj,
-      [String(key)]: value
-    }), {});
+    .reduce((obj, [key, value]) => {
+      const result = obj;
+
+      result[String(key)] = value;
+
+      return result;
+    }, {});
 }

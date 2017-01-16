@@ -7,7 +7,6 @@ import Model from '../model';
 import Query, { RecordNotFoundError } from '../query';
 import { ValidationError } from '../validation';
 
-import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 describe('module "database/model"', () => {
