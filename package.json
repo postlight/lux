@@ -51,7 +51,7 @@
     "rollup-plugin-json": "2.0.2",
     "rollup-plugin-lux": "2.0.4",
     "rollup-plugin-node-resolve": "2.0.0",
-    "source-map-support": "0.4.8"
+    "source-map-support": "0.4.9"
   },
   "devDependencies": {
     "babel-core": "6.21.0",
@@ -60,7 +60,7 @@
     "babel-preset-lux": "2.0.1",
     "chai": "3.5.0",
     "eslint-config-airbnb-base": "11.0.1",
-    "eslint-plugin-flowtype": "2.29.2",
+    "eslint-plugin-flowtype": "2.30.0",
     "eslint-plugin-import": "2.2.0",
     "faker": "3.1.0",
     "flow-bin": "0.37.4",
