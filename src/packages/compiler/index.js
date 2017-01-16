@@ -120,7 +120,7 @@ export async function compile(
       babel({
         exclude: 'node_modules/**'
       }),
-      lux(aliases.app)
+      lux(path.resolve('/', dir, 'app'))
     ]
   });
 
