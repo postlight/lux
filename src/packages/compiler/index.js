@@ -80,8 +80,8 @@ export async function compile(
   ]);
 
   const aliases = {
-    app: posix.join('/', ...(dir.split(path.sep)), 'app'),
-    LUX_LOCAL: posix.join('/', ...(local.split(path.sep)))
+    app: posix.join('/', ...dir.split(path.sep), 'app'),
+    LUX_LOCAL: posix.join('/', ...local.split(path.sep))
   };
 
   if (os.platform() === 'win32') {
@@ -120,7 +120,7 @@ export async function compile(
       babel({
         exclude: 'node_modules/**'
       }),
-      lux()
+      lux(aliases.app)
     ]
   });
 
