@@ -38,6 +38,10 @@ export default function validateType(
       isValid = isObject(value) || isNull(value);
       break;
 
+    case 'date':
+      isValid = value instanceof Date;
+      break;
+
     default:
       isValid = type === valueType;
   }

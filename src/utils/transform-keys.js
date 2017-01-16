@@ -20,6 +20,7 @@ export function transformKeys<T: Object | Array<mixed>>(
       return entries(source).reduce((result, [key, value]) => {
         const recurse = deep
           && value
+          && !(value instanceof Date)
           && typeof value === 'object'
           && !Array.isArray(value);
 
