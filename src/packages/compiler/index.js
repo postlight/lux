@@ -21,11 +21,19 @@ import createBootScript from './utils/create-boot-script';
 /**
  * @private
  */
-export async function compile(dir: string, env: string, {
-  useStrict = false
-}: {
-  useStrict: boolean
-} = {}): Promise<void> {
+type CompileOptions = {
+  useStrict?: boolean;
+};
+
+/**
+ * @private
+ */
+export async function compile(
+  dir: string,
+  env: string,
+  opts: CompileOptions = {}
+): Promise<void> {
+  const { useStrict = false } = opts;
   const local = path.join(__dirname, '..', 'src', 'index.js');
   const entry = path.join(dir, 'dist', 'index.js');
   const external = isExternal(dir);
