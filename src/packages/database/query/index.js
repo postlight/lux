@@ -2,6 +2,7 @@
 import { camelize } from 'inflection';
 
 import entries from '../../../utils/entries';
+import uniq from '../../../utils/uniq';
 import type Model from '../model';
 
 import scopesFor from './utils/scopes-for';
@@ -162,12 +163,13 @@ class Query<+T: any> extends Promise {
 
       if (columnName) {
         this.snapshots = this.snapshots
-          .filter(([method]) => method !== 'orderBy')
+          .filter(([method]) => method !== 'orderByRaw')
           .concat([
-            ['orderBy', [
-              `${this.model.tableName}.${columnName}`,
-              direction
-            ]]
+            // eslint-disable-next-line prefer-template
+            ['orderByRaw', uniq([columnName, this.model.primaryKey])
+              .map(key => `${this.model.tableName}.${key}`)
+              .join(', ') + ` ${direction}`
+            ]
           ]);
       }
     }
@@ -222,7 +224,9 @@ class Query<+T: any> extends Promise {
 
   first(): this {
     if (!this.shouldCount) {
-      const willSort = this.snapshots.some(([method]) => method === 'orderBy');
+      const willSort = this.snapshots.some(
+        ([method]) => method === 'orderByRaw'
+      );
 
       this.collection = false;
 
@@ -238,7 +242,9 @@ class Query<+T: any> extends Promise {
 
   last(): this {
     if (!this.shouldCount) {
-      const willSort = this.snapshots.some(([method]) => method === 'orderBy');
+      const willSort = this.snapshots.some(
+        ([method]) => method === 'orderByRaw'
+      );
 
       this.collection = false;
 
@@ -399,7 +405,7 @@ class Query<+T: any> extends Promise {
     if (scopes.length) {
       const keys = scopes.map(scope => {
         if (scope === 'order') {
-          return 'orderBy';
+          return 'orderByRaw';
         }
 
         return scope;
