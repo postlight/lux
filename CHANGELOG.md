@@ -1,5 +1,42 @@
 # Lux Changelog
 
+### v1.1.3 (Jan 17, 2017)
+
+##### Upgrading
+
+Due to a change in the way the cli modules are bundled, you may need to uninstall
+and reinstall lux globally before upgrading your application.
+
+```bash
+npm uninstall -g lux-framework
+npm cache clean
+npm install -g lux-framework@latest
+```
+
+##### Commits
+
+*   [[`89dff6162c`](https://github.com/postlight/lux/commit/89dff6162c)] - **fix**: we should check for lux under the dependency key in package.json not root (#643) (Zachary Golba)
+*   [[`b7c66cb41f`](https://github.com/postlight/lux/commit/b7c66cb41f)] - **fix**: make sure dates are correctly validated & parsed (#639) (Nick Schot)
+*   [[`00273c8279`](https://github.com/postlight/lux/commit/00273c8279)] - **deps**: update ora to version 1.0.0 (#641) (Greenkeeper)
+*   [[`fe2b860abd`](https://github.com/postlight/lux/commit/fe2b860abd)] - **deps**: update source-map-support to version 0.4.10 (#642) (Greenkeeper)
+*   [[`f41fc048b9`](https://github.com/postlight/lux/commit/f41fc048b9)] - **deps**: integrate rollup-plugin-lux (#632) (Zachary Golba)
+*   [[`e4ed011b0a`](https://github.com/postlight/lux/commit/e4ed011b0a)] - **deps**: update eslint-plugin-flowtype to version 2.30.0 (#636) (Greenkeeper)
+*   [[`df95938f3f`](https://github.com/postlight/lux/commit/df95938f3f)] - **deps**: update source-map-support to version 0.4.9 (#634) (Greenkeeper)
+*   [[`ebbcf577bd`](https://github.com/postlight/lux/commit/ebbcf577bd)] - **fix**: migration generator indexes (#625) (Nick Schot)
+*   [[`93aa5c47bd`](https://github.com/postlight/lux/commit/93aa5c47bd)] - **fix**: make pages consistent when using sort on non-unique attributes  (#633) (Nick Schot)
+*   [[`d1589ab8f3`](https://github.com/postlight/lux/commit/d1589ab8f3)] - **test**: allow appveyor builds to fail with pg driver (#635) (Zachary Golba)
+*   [[`682d6fef56`](https://github.com/postlight/lux/commit/682d6fef56)] - **chore**: improve ci config and process (#627) (Zachary Golba)
+*   [[`d0795c36fa`](https://github.com/postlight/lux/commit/d0795c36fa)] - **deps**: update rollup to version 0.41.4 (#630) (Greenkeeper)
+*   [[`20d6f0dbe7`](https://github.com/postlight/lux/commit/20d6f0dbe7)] - **deps**: update ansi-regex to version 2.1.1 (#629) (Greenkeeper)
+*   [[`016938c401`](https://github.com/postlight/lux/commit/016938c401)] - **deps**: update rollup to version 0.41.3 (#628) (Greenkeeper)
+*   [[`e7d069ffe7`](https://github.com/postlight/lux/commit/e7d069ffe7)] - **deps**: update rollup to version 0.41.1 (#616) (Greenkeeper)
+*   [[`1626cd882c`](https://github.com/postlight/lux/commit/1626cd882c)] - **deps**: update ora to version 0.4.1 (#623) (Greenkeeper)
+*   [[`60b33a6a33`](https://github.com/postlight/lux/commit/60b33a6a33)] - **deps**: update eslint to version 3.13.1 (#622) (Greenkeeper)
+*   [[`b050cfaf03`](https://github.com/postlight/lux/commit/b050cfaf03)] - **deps**: update eslint-config-airbnb-base to version 11.0.1 (#619) (Greenkeeper)
+*   [[`5a879d467e`](https://github.com/postlight/lux/commit/5a879d467e)] - **deps**: update eslint to version 3.13.0 (#615) (Greenkeeper)
+*   [[`fbbf198e2b`](https://github.com/postlight/lux/commit/fbbf198e2b)] - **deps**: update babel-plugin-istanbul to version 3.1.2 (#611) (Greenkeeper)
+*   [[`4c5e326afa`](https://github.com/postlight/lux/commit/4c5e326afa)] - **release**: v1.1.2 🔧 (#609) (Zachary Golba)
+
 ### v1.1.2 (Jan 3, 2017)
 
 :tada: Happy New Year!
