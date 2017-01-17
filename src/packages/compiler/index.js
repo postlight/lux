@@ -2,6 +2,7 @@
 import os from 'os';
 import path, { posix } from 'path';
 
+import lux from 'rollup-plugin-lux';
 import json from 'rollup-plugin-json';
 import alias from 'rollup-plugin-alias';
 import babel from 'rollup-plugin-babel';
@@ -20,11 +21,19 @@ import createBootScript from './utils/create-boot-script';
 /**
  * @private
  */
-export async function compile(dir: string, env: string, {
-  useStrict = false
-}: {
-  useStrict: boolean
-} = {}): Promise<void> {
+type CompileOptions = {
+  useStrict?: boolean;
+};
+
+/**
+ * @private
+ */
+export async function compile(
+  dir: string,
+  env: string,
+  opts: CompileOptions = {}
+): Promise<void> {
+  const { useStrict = false } = opts;
   const local = path.join(__dirname, '..', 'src', 'index.js');
   const entry = path.join(dir, 'dist', 'index.js');
   const external = isExternal(dir);
@@ -71,8 +80,8 @@ export async function compile(dir: string, env: string, {
   ]);
 
   const aliases = {
-    app: posix.join('/', ...(dir.split(path.sep)), 'app'),
-    LUX_LOCAL: posix.join('/', ...(local.split(path.sep)))
+    app: posix.join('/', ...dir.split(path.sep), 'app'),
+    LUX_LOCAL: posix.join('/', ...local.split(path.sep))
   };
 
   if (os.platform() === 'win32') {
@@ -95,9 +104,7 @@ export async function compile(dir: string, env: string, {
         ...aliases
       }),
       json(),
-      resolve({
-        preferBuiltins: true
-      }),
+      resolve(),
       eslint({
         cwd: dir,
         parser: 'babel-eslint',
@@ -112,7 +119,8 @@ export async function compile(dir: string, env: string, {
       }),
       babel({
         exclude: 'node_modules/**'
-      })
+      }),
+      lux(path.resolve(path.sep, dir, 'app'))
     ]
   });
 

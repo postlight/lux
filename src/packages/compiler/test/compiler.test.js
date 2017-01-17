@@ -39,7 +39,7 @@ describe('module "compiler"', () => {
           expect(rollupConfig)
             .to.have.property('plugins')
             .and.be.an('array')
-            .with.lengthOf(5);
+            .with.lengthOf(6);
         });
       });
     });

@@ -43,14 +43,15 @@
     "fb-watchman": "1.9.0",
     "inflection": "1.10.0",
     "knex": "0.12.6",
-    "ora": "0.4.1",
+    "ora": "1.0.0",
     "rollup": "0.41.4",
     "rollup-plugin-alias": "1.2.0",
     "rollup-plugin-babel": "2.7.1",
     "rollup-plugin-eslint": "3.0.0",
     "rollup-plugin-json": "2.0.2",
+    "rollup-plugin-lux": "3.0.0",
     "rollup-plugin-node-resolve": "2.0.0",
-    "source-map-support": "0.4.9"
+    "source-map-support": "0.4.10"
   },
   "devDependencies": {
     "babel-core": "6.21.0",

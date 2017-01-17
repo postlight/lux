@@ -1,7 +1,3 @@
-[libs]
-flow-typed/
-decl/
-
 [ignore]
 .*/lib/.*
 .*/dist/.*
@@ -9,10 +5,21 @@ decl/
 .*/examples/.*
 .*/node_modules/bcryptjs/*
 
+[include]
+./src/
+./node_modules/
+
+[libs]
+node_modules/rollup-plugin-lux/decl/
+node_modules/rollup-plugin-lux/flow-typed/
+decl/
+flow-typed/
+
 [options]
 suppress_comment=\\(.\\|\n\\)*\\$FlowIgnore
 
 module.name_mapper='LUX_LOCAL' -> '<PROJECT_ROOT>'
+module.name_mapper='rollup-plugin-lux' -> '<PROJECT_ROOT>/node_modules/rollup-plugin-lux/src/index.js'
 
 unsafe.enable_getters_and_setters=true
 
