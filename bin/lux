@@ -18,7 +18,8 @@ function inLuxProject() {
   }
 
   try {
-    return Boolean(require(path.join(cwd, 'package.json'))['lux-framework']);
+    const { dependencies } = require(path.join(cwd, 'package.json'));
+    return Boolean(dependencies['lux-framework']);
   } catch (err) {
     return false;
   }
