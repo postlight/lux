@@ -139,6 +139,41 @@ describe('module "router/route/params"', () => {
         });
       });
 
+      describe('- type "date"', () => {
+        [true, false].forEach(required => {
+          describe(`- ${required ? 'required' : 'optional'}`, () => {
+            let value;
+
+            beforeEach(() => {
+              value = new Date();
+              subject = new Parameter({
+                required,
+                type: 'date',
+                path: 'meta.test'
+              });
+            });
+
+            if (required) {
+              it('fails when the value is null', () => {
+                expect(() => subject.validate(null)).to.throw(TypeError);
+              });
+            } else {
+              it('passes when the value is null', () => {
+                expect(subject.validate(null)).to.be.null;
+              });
+            }
+
+            it('fails when there is a type mismatch', () => {
+              expect(() => subject.validate('test')).to.throw(TypeError);
+            });
+
+            it('returns the value when the type and value match', () => {
+              expect(subject.validate(value)).to.equal(value);
+            });
+          });
+        });
+      });
+
       primitives.forEach(({ type, valid, falsy, invalid }) => {
         describe(`- type "${type}"`, () => {
           [true, false].forEach(required => {
