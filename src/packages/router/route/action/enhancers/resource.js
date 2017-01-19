@@ -16,7 +16,7 @@ export default function resource(action: Action<any>): Action<any> {
     let data;
     let total;
 
-    if (actionName === 'index') {
+    if (actionName === 'index' && result instanceof Query) {
       [data, total] = await Promise.all([
         result,
         Query.from(result).count()
