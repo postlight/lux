@@ -28,7 +28,7 @@ class Query<+T: any> extends Promise {
   /**
    * @private
    */
-  snapshots: Array<[string, mixed]>;
+  snapshots: Array<Array<any>>;
 
   /**
    * @private
