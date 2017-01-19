@@ -117,9 +117,7 @@ export async function compile(
           path.join(__dirname, '..', 'src', '**')
         ]
       }),
-      babel({
-        exclude: 'node_modules/**'
-      }),
+      babel(),
       lux(path.resolve(path.sep, dir, 'app'))
     ]
   });
