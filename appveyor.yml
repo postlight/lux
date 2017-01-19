@@ -52,9 +52,9 @@ test_script:
   - npm run lint
   - npm test
 notifications:
-  - provider: Webhook
-    url: https://webhooks.gitter.im/e/070ebbf83dc0f595c4fb
-    method: POST
-    on_build_success: true
-    on_build_failure: true
-    on_build_status_changed: false
+- provider: Webhook
+  url: https://webhooks.gitter.im/e/070ebbf83dc0f595c4fb
+  method: POST
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: false
