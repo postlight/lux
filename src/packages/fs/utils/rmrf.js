@@ -22,9 +22,11 @@ function rmrf(target: string): Promise<boolean> {
     ))
     .then(() => rmdir(target))
     .catch(err => {
-      if (err.code !== 'ENOENT') {
-        return Promise.reject(err);
+      if (err.code === 'ENOENT') {
+        return Promise.resolve();
       }
+
+      return Promise.reject(err);
     })
     .then(() => true);
 }
