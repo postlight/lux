@@ -35,15 +35,6 @@ describe('util github', () => {
         expect(result).to.equal(`${baseURL}/master/src/index.js#2`);
       });
 
-      it('ignores line if it is not a number', () => {
-        const result = github.fileLink('src/index.js', {
-          // $FlowIgnore
-          line: [1, 2, 3]
-        });
-
-        expect(result).to.equal(`${baseURL}/master/src/index.js`);
-      });
-
       it('ignores line if it is > 0', () => {
         const result = github.fileLink('src/index.js', {
           line: -10

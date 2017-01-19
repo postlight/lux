@@ -1,19 +1,19 @@
 // @flow
 const GITHUB_URL = 'https://github.com/postlight/lux';
 
+type Options = {
+  line?: number;
+  branch?: string;
+};
+
 /**
  * @private
  */
-export function fileLink(path: string, {
-  line,
-  branch = 'master'
-}: {
-  line?: number;
-  branch?: string;
-} = {}): string {
+export function fileLink(path: string, opts: Options = {}): string {
+  const { line, branch = 'master' } = opts;
   let link = `${GITHUB_URL}/blob/${branch}/${path}`;
 
-  if (typeof line === 'number' && line >= 0) {
+  if (line && line >= 0) {
     link += `#${line}`;
   }
 

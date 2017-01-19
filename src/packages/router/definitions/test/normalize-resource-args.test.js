@@ -9,7 +9,6 @@ import normalizeResourceArgs from '../context/utils/normalize-resource-args';
 describe('module "router/definitions/context"', () => {
   describe('util normalizeResourceArgs()', () => {
     it('normalizes arguments with a name only', () => {
-      // $FlowIgnore
       const result = normalizeResourceArgs(['posts']);
 
       expect(result).to.be.an('array');
@@ -28,7 +27,6 @@ describe('module "router/definitions/context"', () => {
     });
 
     it('normalizes arguments with a name and options', () => {
-      // $FlowIgnore
       const result = normalizeResourceArgs(['posts', {
         only: [
           'show',
@@ -55,7 +53,6 @@ describe('module "router/definitions/context"', () => {
     });
 
     it('normalizes arguments with a name and builder', () => {
-      // $FlowIgnore
       const result = normalizeResourceArgs(['posts', function () {
         return undefined;
       }]);
@@ -76,7 +73,6 @@ describe('module "router/definitions/context"', () => {
     });
 
     it('normalizes arguments with a name, options, and builder', () => {
-      // $FlowIgnore
       const result = normalizeResourceArgs(['posts', {
         only: [
           'show',

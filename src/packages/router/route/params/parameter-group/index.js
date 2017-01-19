@@ -20,7 +20,7 @@ class ParameterGroup extends FreezeableMap<string, ParameterLike> {
 
   sanitize: boolean;
 
-  constructor(contents: Array<[string, ParameterLike]>, {
+  constructor(contents: Array<any>, {
     path,
     required,
     sanitize
