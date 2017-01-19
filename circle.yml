@@ -63,6 +63,9 @@ test:
   post:
     - npm run codecov:
         parallel: true
+notify:
+  webhooks:
+    - url: https://webhooks.gitter.im/e/6d49c9b19c888dba70b8
 deployment:
   release:
     tag: /^(?:v\d.\d.\d)$/
