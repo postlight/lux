@@ -37,15 +37,16 @@ describe('module "controller"', () => {
 
     before(async () => {
       const app = await getTestApp();
+      const model = app.models.get('post');
 
-      // $FlowIgnore
-      Post = app.models.get('post');
+      if (model) {
+        Post = model;
+      }
 
       subject = new Controller({
         model: Post,
         namespace: '',
         serializer: new Serializer({
-          // $FlowIgnore
           model: Post,
           parent: null,
           namespace: ''

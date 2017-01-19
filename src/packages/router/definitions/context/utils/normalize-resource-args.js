@@ -5,11 +5,7 @@ import type { Controller$builtIn } from '../../../../controller'; // eslint-disa
 /**
  * @private
  */
-export default function normalizeResourceArgs(args: [
-  string,
-  { path: string, only: Array<Controller$builtIn> },
-  Function
-]): [{
+export default function normalizeResourceArgs(args: Array<any>): [{
   name: string,
   path: string,
   only: Array<Controller$builtIn>
@@ -18,12 +14,18 @@ export default function normalizeResourceArgs(args: [
   let [, opts, builder] = args;
 
   if (!opts) {
-    opts = {};
+    opts = {
+      path: '',
+      only: undefined
+    };
   }
 
   if (typeof opts === 'function') {
     builder = opts;
-    opts = {};
+    opts = {
+      path: '',
+      only: undefined
+    };
   }
 
   if (typeof builder !== 'function') {

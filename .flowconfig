@@ -16,6 +16,8 @@ decl/
 flow-typed/
 
 [options]
+emoji=true
+strip_root=true
 suppress_comment=\\(.\\|\n\\)*\\$FlowIgnore
 
 module.name_mapper='LUX_LOCAL' -> '<PROJECT_ROOT>'
@@ -27,4 +29,4 @@ esproposal.class_static_fields=enable
 esproposal.class_instance_fields=enable
 
 [version]
-^0.37.4
+^0.38.0

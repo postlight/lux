@@ -53,6 +53,10 @@ describe('module "serializer"', () => {
       const Comment = models.get('comment');
       const Categorization = models.get('categorization');
 
+      if (!Post) {
+        throw new Error('Could not find model "Post".');
+      }
+
       class TestSerializer extends Serializer {
         attributes = [
           'body',
@@ -75,7 +79,6 @@ describe('module "serializer"', () => {
 
       createSerializer = (namespace = '') => new TestSerializer({
         namespace,
-        // $FlowIgnore
         model: Post,
         parent: null
       });
@@ -88,7 +91,6 @@ describe('module "serializer"', () => {
       } = {}, transaction) => {
         let include = [];
         const run = async trx => {
-          // $FlowIgnore
           const post = await Post.transacting(trx).create({
             body: faker.lorem.paragraphs(),
             title: faker.lorem.sentence(),
@@ -194,7 +196,6 @@ describe('module "serializer"', () => {
           return await run(transaction);
         }
 
-        // $FlowIgnore
         return await Post.transaction(run);
       };
     });
