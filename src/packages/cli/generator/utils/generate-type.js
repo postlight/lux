@@ -46,21 +46,19 @@ export async function controller(opts: Generator$opts): Promise<void> {
 
   const namespace = posix.dirname(name);
 
-  if (namespace === '.') {
-    return;
-  }
+  if (namespace !== '.') {
+    const hasParent = await exists(
+      joinPath(cwd, dir, ...[...namespace.split('/'), 'application.js'])
+    );
 
-  const hasParent = await exists(
-    joinPath(cwd, dir, namespace.split('/'), 'application.js')
-  );
-
-  if (!hasParent) {
-    await controller({
-      ...opts,
-      cwd,
-      name: `${namespace}/application`,
-      attrs: []
-    });
+    if (!hasParent) {
+      await controller({
+        ...opts,
+        cwd,
+        name: `${namespace}/application`,
+        attrs: []
+      });
+    }
   }
 }
 
@@ -89,21 +87,19 @@ export async function serializer(opts: Generator$opts): Promise<void> {
 
   const namespace = posix.dirname(name);
 
-  if (namespace === '.') {
-    return;
-  }
+  if (namespace !== '.') {
+    const hasParent = await exists(
+      joinPath(cwd, dir, ...[...namespace.split('/'), 'application.js'])
+    );
 
-  const hasParent = await exists(
-    joinPath(cwd, dir, ...[...namespace.split('/'), 'application.js'])
-  );
-
-  if (!hasParent) {
-    await serializer({
-      ...opts,
-      cwd,
-      name: `${namespace}/application`,
-      attrs: []
-    });
+    if (!hasParent) {
+      await serializer({
+        ...opts,
+        cwd,
+        name: `${namespace}/application`,
+        attrs: []
+      });
+    }
   }
 }
 
@@ -239,7 +235,7 @@ export async function resource(opts: Generator$opts) {
   await controller(opts);
   await serializer(opts);
 
-  if (posix.dirname(opts.name) === '.') {
+  if (posix.dirname(opts.name) !== '.') {
     log(NAMESPACED_RESOURCE_MESSAGE);
     return;
   }

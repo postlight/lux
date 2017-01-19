@@ -2,28 +2,31 @@
 import path from 'path';
 
 import { stat, rmdir, readdir, unlink } from '../index';
-import tryCatch from '../../../utils/try-catch';
 
 /**
  * @private
  */
-async function rmrf(target: string): Promise<boolean> {
-  const stats = await tryCatch(() => stat(target));
+function rmrf(target: string): Promise<boolean> {
+  return stat(target)
+    .then(stats => {
+      if (stats && stats.isDirectory()) {
+        return readdir(target);
+      } else if (stats && stats.isFile()) {
+        return unlink(target).then(() => []);
+      }
 
-  if (stats && stats.isDirectory()) {
-    let files = await tryCatch(() => readdir(target));
-
-    if (files) {
-      files = files.map(file => rmrf(path.join(target, file)));
-
-      await Promise.all(files);
-      await rmdir(target);
-    }
-  } else if (stats && stats.isFile()) {
-    await tryCatch(() => unlink(target));
-  }
-
-  return true;
+      return [];
+    })
+    .then(files => (
+      Promise.all(files.map(file => rmrf(path.join(target, file))))
+    ))
+    .then(() => rmdir(target))
+    .catch(err => {
+      if (err.code !== 'ENOENT') {
+        return Promise.reject(err);
+      }
+    })
+    .then(() => true);
 }
 
 export default rmrf;
