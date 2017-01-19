@@ -1,5 +1,14 @@
 # Lux Changelog
 
+### v1.1.4 (Jan 19, 2017)
+
+##### Commits
+
+*   [[`d1c5e8d00e`](https://github.com/postlight/lux/commit/d1c5e8d00e)] - **fix**: cli and compilation errors (#649) (Zachary Golba)
+*   [[`06d9fc7f65`](https://github.com/postlight/lux/commit/06d9fc7f65)] - **fix**: make sure result is an instance of query in resource enhancer (#648) (Nick Schot)
+*   [[`4f4bd16c12`](https://github.com/postlight/lux/commit/4f4bd16c12)] - **deps**: update nyc to version 10.1.2 (#646) (Greenkeeper)
+*   [[`d6c9ab49fc`](https://github.com/postlight/lux/commit/d6c9ab49fc)] - **release**: v1.1.3 🔧 (#644) (Zachary Golba)
+
 ### v1.1.3 (Jan 17, 2017)
 
 ##### Upgrading
