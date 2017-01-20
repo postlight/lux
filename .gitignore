@@ -12,6 +12,7 @@ node_modules/
 # misc
 *.sqlite
 *.DS_Store
+.idea/
 
 # logs
 log/

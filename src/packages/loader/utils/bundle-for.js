@@ -19,7 +19,11 @@ function normalize(manifest: Object) {
   return entries(manifest).reduce((obj, [key, value]) => {
     if (SUFFIX_PATTERN.test(key)) {
       const suffix = key.replace(SUFFIX_PATTERN, '$1');
-      const stripSuffix = source => source.replace(suffix, '');
+      const suffixRegexp = new RegExp(
+        `${suffix.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}$`,
+        'g'
+      );
+      const stripSuffix = source => source.replace(suffixRegexp, '');
 
       switch (suffix) {
         case 'Controller':
