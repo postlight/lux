@@ -455,7 +455,7 @@ describe('module "database/query"', () => {
         const result = subject.order('createdAt', 'DESC').first();
 
         expect(result.snapshots).to.deep.equal([
-          ['orderByRaw', 'posts.created_at, posts.id DESC'],
+          ['orderByRaw', 'posts.created_at DESC, posts.id DESC'],
           ['limit', 1]
         ]);
       });
@@ -509,7 +509,7 @@ describe('module "database/query"', () => {
         const result = subject.order('createdAt', 'DESC').last();
 
         expect(result.snapshots).to.deep.equal([
-          ['orderByRaw', 'posts.created_at, posts.id DESC'],
+          ['orderByRaw', 'posts.created_at DESC, posts.id DESC'],
           ['limit', 1]
         ]);
       });
