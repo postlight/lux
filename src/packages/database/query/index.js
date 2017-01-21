@@ -165,7 +165,6 @@ class Query<+T: any> extends Promise {
         this.snapshots = this.snapshots
           .filter(([method]) => method !== 'orderByRaw')
           .concat([
-            // eslint-disable-next-line prefer-template
             ['orderByRaw', uniq([columnName, this.model.primaryKey])
               .map(key => `${this.model.tableName}.${key} ${direction}`)
               .join(', ')
