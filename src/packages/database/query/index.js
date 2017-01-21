@@ -167,8 +167,8 @@ class Query<+T: any> extends Promise {
           .concat([
             // eslint-disable-next-line prefer-template
             ['orderByRaw', uniq([columnName, this.model.primaryKey])
-              .map(key => `${this.model.tableName}.${key}`)
-              .join(', ') + ` ${direction}`
+              .map(key => `${this.model.tableName}.${key} ${direction}`)
+              .join(', ')
             ]
           ]);
       }
