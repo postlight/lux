@@ -10,7 +10,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "babel-core": "6.21.0",
+    "babel-core": "6.22.1",
     "babel-preset-lux": "2.0.1",
     "bcryptjs": "2.4.0",
     "faker": "3.1.0",
@@ -18,7 +18,7 @@
     "mssql": "3.3.0",
     "mysql2": "1.1.2",
     "pg": "6.1.2",
-    "source-map-support": "0.4.6",
+    "source-map-support": "0.4.10",
     "sqlite3": "3.1.8"
   }
 }
