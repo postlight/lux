@@ -168,9 +168,14 @@ cli
 cli
   .command('db:create')
   .description('Create your database schema')
+  .option('-e, --environment [env]', '(Default: development)')
   .option('-w, --use-weak', 'Use weak mode')
-  .action(({ useWeak }) => {
-    exec('build', !useWeak)
+  .action(({ environment, useWeak }) => {
+    const useStrict = !useWeak;
+
+    setEnvVar('NODE_ENV', environment, 'development');
+
+    exec('build', useStrict)
       .then(() => exec('dbcreate'))
       .then(exit)
       .catch(rescue);
@@ -179,9 +184,14 @@ cli
 cli
   .command('db:drop')
   .description('Drop your database schema')
+  .option('-e, --environment [env]', '(Default: development)')
   .option('-w, --use-weak', 'Use weak mode')
-  .action(({ useWeak }) => {
-    exec('build', !useWeak)
+  .action(({ environment, useWeak }) => {
+    const useStrict = !useWeak;
+
+    setEnvVar('NODE_ENV', environment, 'development');
+
+    exec('build', useStrict)
       .then(() => exec('dbdrop'))
       .then(exit)
       .catch(rescue);
@@ -190,9 +200,14 @@ cli
 cli
   .command('db:reset')
   .description('Drop your database schema and create a new schema')
+  .option('-e, --environment [env]', '(Default: development)')
   .option('-w, --use-weak', 'Use weak mode')
-  .action(({ useWeak }) => {
-    exec('build', !useWeak)
+  .action(({ environment, useWeak }) => {
+    const useStrict = !useWeak;
+
+    setEnvVar('NODE_ENV', environment, 'development');
+
+    exec('build', useStrict)
       .then(() => exec('dbdrop'))
       .then(() => exec('dbcreate'))
       .then(exit)
@@ -202,9 +217,14 @@ cli
 cli
   .command('db:migrate')
   .description('Run database migrations')
+  .option('-e, --environment [env]', '(Default: development)')
   .option('-w, --use-weak', 'Use weak mode')
-  .action(({ useWeak }) => {
-    exec('build', !useWeak)
+  .action(({ environment, useWeak }) => {
+    const useStrict = !useWeak;
+
+    setEnvVar('NODE_ENV', environment, 'development');
+
+    exec('build', useStrict)
       .then(() => exec('dbmigrate'))
       .then(exit)
       .catch(rescue);
@@ -213,9 +233,14 @@ cli
 cli
   .command('db:rollback')
   .description('Rollback the last database migration')
+  .option('-e, --environment [env]', '(Default: development)')
   .option('-w, --use-weak', 'Use weak mode')
-  .action(({ useWeak }) => {
-    exec('build', !useWeak)
+  .action(({ environment, useWeak }) => {
+    const useStrict = !useWeak;
+
+    setEnvVar('NODE_ENV', environment, 'development');
+
+    exec('build', useStrict)
       .then(() => exec('dbrollback'))
       .then(exit)
       .catch(rescue);
@@ -224,9 +249,14 @@ cli
 cli
   .command('db:seed')
   .description('Add fixtures to your db from the seed function')
+  .option('-e, --environment [env]', '(Default: development)')
   .option('-w, --use-weak', 'Use weak mode')
-  .action(({ useWeak }) => {
-    exec('build', !useWeak)
+  .action(({ environment, useWeak }) => {
+    const useStrict = !useWeak;
+
+    setEnvVar('NODE_ENV', environment, 'development');
+
+    exec('build', useStrict)
       .then(() => exec('dbseed'))
       .then(exit)
       .catch(rescue);

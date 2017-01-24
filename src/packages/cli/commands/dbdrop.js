@@ -1,7 +1,9 @@
+// @flow
 import { EOL } from 'os';
 
 import { CWD, NODE_ENV, DATABASE_URL } from '../../../constants';
 import { CONNECTION_STRING_MESSAGE } from '../constants';
+import DatabaseConfigMissingError from '../errors/database-config-missing';
 import { rmrf } from '../../fs';
 import { connect } from '../../database';
 import { createLoader } from '../../loader';
@@ -9,36 +11,29 @@ import { createLoader } from '../../loader';
 /**
  * @private
  */
-export async function dbdrop() {
+export function dbdrop() {
   const load = createLoader(CWD);
-  let cfg = load('config');
+  const config = Reflect.get(load('config').database, NODE_ENV);
 
-  cfg = Reflect.get(cfg.database, NODE_ENV);
-
-  const {
-    url,
-    driver,
-    database,
-    ...config
-  } = cfg;
-
-  if (driver === 'sqlite3') {
-    await rmrf(`${CWD}/db/${database}_${NODE_ENV}.sqlite`);
-  } else {
-    if (DATABASE_URL || url) {
-      process.stderr.write(CONNECTION_STRING_MESSAGE);
-      process.stderr.write(EOL);
-      return;
-    }
-
-    const { schema } = connect(CWD, { ...config, driver });
-    const query = schema.raw(`DROP DATABASE IF EXISTS ${database}`);
-
-    query.on('query', () => {
-      process.stdout.write(query.toString());
-      process.stdout.write(EOL);
-    });
-
-    await query;
+  if (!config) {
+    throw new DatabaseConfigMissingError(NODE_ENV);
   }
+
+  if (config.driver === 'sqlite3') {
+    return rmrf(`${CWD}/db/${config.database}_${NODE_ENV}.sqlite`);
+  }
+
+  if (DATABASE_URL || config.url) {
+    process.stderr.write(CONNECTION_STRING_MESSAGE);
+    process.stderr.write(EOL);
+    return Promise.resolve();
+  }
+
+  const { schema } = connect(CWD, config);
+  const query = `DROP DATABASE IF EXISTS ${config.database}`;
+
+  return schema.raw(query).once('query', () => {
+    process.stdout.write(query);
+    process.stdout.write(EOL);
+  });
 }
