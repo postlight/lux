@@ -431,7 +431,7 @@ class Query<+T: any> extends Promise {
   ): Promise<U> {
     runQuery(this);
     return super.then(onFulfilled, onRejected);
-  }
+  } // eslint-disable-line brace-style
 
   catch<U>(onRejected?: (error: Error) => ?Promise<U> | U): Promise<U> {
     runQuery(this);
