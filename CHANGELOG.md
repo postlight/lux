@@ -1,5 +1,14 @@
 # Lux Changelog
 
+### v1.1.7 (Jan 24, 2017)
+
+##### Commits
+
+*   [[`d9c538ea3e`](https://github.com/postlight/lux/commit/d9c538ea3e)] - **fix**: children one layer deep cannot resolve their parent controller (#662) (Zachary Golba)
+*   [[`c8f0254397`](https://github.com/postlight/lux/commit/c8f0254397)] - **deps**: update eslint to version 3.14.0 (#656) (Greenkeeper)
+*   [[`bcf2c2fbff`](https://github.com/postlight/lux/commit/bcf2c2fbff)] - **fix**: properly set environment before running db:* commands (#661) (Zachary Golba)
+*   [[`083e112a6b`](https://github.com/postlight/lux/commit/083e112a6b)] - **release**: v1.1.6 🔧 (#660) (Zachary Golba)
+
 ### v1.1.6 (Jan 22, 2017)
 
 ##### Commits
