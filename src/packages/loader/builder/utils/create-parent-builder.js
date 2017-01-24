@@ -18,9 +18,15 @@ export default function createParentBuilder<T>(
         let grandparent = null;
 
         if (key !== 'root') {
-          grandparent = result.find(namespace => (
-            namespace.key === posix.dirname(key)
-          ));
+          grandparent = result.find(namespace => {
+            const dirname = posix.dirname(key);
+
+            if (namespace.key === 'root') {
+              return dirname === '.';
+            }
+
+            return dirname === namespace.key;
+          });
 
           if (grandparent) {
             grandparent = grandparent.parent;
