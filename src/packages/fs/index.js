@@ -1,10 +1,11 @@
 // @flow
 import fs from 'fs';
-import { basename, join as joinPath, resolve as resolvePath } from 'path';
+import { join as joinPath, resolve as resolvePath } from 'path';
 import type { Stats } from 'fs'; // eslint-disable-line no-duplicate-imports
 
 import Watcher from './watcher';
 import createResolver from './utils/create-resolver';
+import createPathRemover from './utils/create-path-remover';
 import type { fs$readOpts, fs$writeOpts } from './interfaces';
 
 export { default as rmrf } from './utils/rmrf';
@@ -88,6 +89,8 @@ export function readdirRec(
   path: string,
   opts?: fs$readOpts
 ): Promise<Array<string>> {
+  const stripPath = createPathRemover(path);
+
   return readdir(path, opts)
     .then(files => Promise.all(
       files.map(file => {
@@ -103,13 +106,13 @@ export function readdirRec(
       ]))
     ))
     .then(files => files.reduce((arr, [file, children]) => {
-      const name = basename(file);
+      const basename = stripPath(file);
 
-      // eslint-disable-next-line no-param-reassign
-      arr[arr.length] = name;
-      return arr.concat(
-        children.map(child => joinPath(name, basename(child)))
-      );
+      return [
+        ...arr,
+        basename,
+        ...children.map(child => joinPath(basename, stripPath(child)))
+      ];
     }, []));
 }
 

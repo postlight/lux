@@ -1,5 +1,25 @@
 # Lux Changelog
 
+### v1.1.6 (Jan 22, 2017)
+
+##### Commits
+
+*   [[`6f1f16a2dc`](https://github.com/postlight/lux/commit/6f1f16a2dc)] - **fix**: recursive readdir is broken (#659) (Zachary Golba)
+*   [[`d6b2d6cfa4`](https://github.com/postlight/lux/commit/d6b2d6cfa4)] - **release**: v1.1.5 🔧 (#658) (Zachary Golba)
+
+### v1.1.5 (Jan 21, 2017)
+
+##### Commits
+
+*   [[`ddbcd9e43b`](https://github.com/postlight/lux/commit/ddbcd9e43b)] - **fix**: sort not working (#657) (Nick Schot)
+*   [[`20eea5c71b`](https://github.com/postlight/lux/commit/20eea5c71b)] - **deps**: update babel-core to version 6.22.1 (#654) (Greenkeeper)
+*   [[`f83bdf413c`](https://github.com/postlight/lux/commit/f83bdf413c)] - **deps**: update ora to version 1.1.0 (#655) (Greenkeeper)
+*   [[`4ee7b28724`](https://github.com/postlight/lux/commit/4ee7b28724)] - **deps**: update babel-plugin-transform-es2015-modules-commonjs to version 6.22.0 (#653) (Greenkeeper)
+*   [[`c5bd0cc02a`](https://github.com/postlight/lux/commit/c5bd0cc02a)] - **deps**: update babel-core to version 6.22.0 (#652) (Greenkeeper)
+*   [[`26594fdf10`](https://github.com/postlight/lux/commit/26594fdf10)] - **chore**: add gitter integrations (#651) (Zachary Golba)
+*   [[`cdebc089ec`](https://github.com/postlight/lux/commit/cdebc089ec)] - **deps**: update flow-bin to version 0.38.0 (#647) (Greenkeeper)
+*   [[`4e40c2b550`](https://github.com/postlight/lux/commit/4e40c2b550)] - **release**: v1.1.4 🔧 (#650) (Zachary Golba)
+
 ### v1.1.4 (Jan 19, 2017)
 
 ##### Commits
