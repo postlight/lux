@@ -1,4 +1,5 @@
 // @flow
+import faker from 'faker';
 import { expect } from 'chai';
 import { it, describe, before, beforeEach, afterEach } from 'mocha';
 
@@ -361,7 +362,9 @@ describe('module "controller"', () => {
     });
 
     describe('#update()', () => {
-      let record: Model;
+      let User;
+      let record;
+
       const createRequest = (params = {}): Request => setType(() => ({
         params,
         route: {
@@ -375,9 +378,23 @@ describe('module "controller"', () => {
       }));
 
       beforeEach(async () => {
-        record = await Post.create({
-          title: '#destroy() Test'
-        });
+        const { models } = await getTestApp();
+        const userModel = models.get('user');
+
+        if (!userModel) {
+          throw new Error('Could not find model "user".');
+        }
+
+        User = userModel;
+
+        return Post
+          .create({
+            title: '#update() Test'
+          })
+          .then(post => post.unwrap())
+          .then(post => {
+            record = post;
+          });
       });
 
       afterEach(async () => {
@@ -386,10 +403,9 @@ describe('module "controller"', () => {
 
       it('returns a record if attribute(s) change', async () => {
         let item = record;
-        let isPublic = Reflect.get(item, 'isPublic');
         const id = Reflect.get(item, 'id');
 
-        expect(isPublic).to.be.false;
+        expect(item).to.have.property('isPublic', false);
 
         const request = createRequest({
           id,
@@ -401,24 +417,26 @@ describe('module "controller"', () => {
           }
         });
 
-        const result = await subject.update(request);
-
-        assertRecord(result);
-
-        item = await Post.find(id);
-        isPublic = Reflect.get(item, 'isPublic');
-
-        expect(isPublic).to.be.true;
+        assertRecord(await subject.update(request));
+        expect(await Post.find(id)).to.have.property('isPublic', true);
       });
 
       it('returns a record if relationships(s) change', async () => {
         let item = record;
         let user = await Reflect.get(item, 'user');
         let comments = await Reflect.get(item, 'comments');
-        const id = Reflect.get(item, 'id');
+        const id = item.getPrimaryKey();
 
         expect(user).to.be.null;
         expect(comments).to.deep.equal([]);
+
+        const newUser = await User
+          .create({
+            name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+            email: faker.internet.email(),
+            password: faker.internet.password(8)
+          })
+          .then(res => res.unwrap());
 
         const request = createRequest({
           id,
@@ -428,7 +446,7 @@ describe('module "controller"', () => {
             relationships: {
               user: {
                 data: {
-                  id: 1,
+                  id: newUser.getPrimaryKey(),
                   type: 'users'
                 }
               },
@@ -464,37 +482,29 @@ describe('module "controller"', () => {
           'comments'
         ]);
 
-        item = await Post.find(id);
-        user = await Reflect.get(item, 'user');
-        comments = await Reflect.get(item, 'comments');
+        // $FlowIgnore
+        item = await item.reload().include('user', 'comments');
+        ({ rawColumnData: { user, comments } } = item);
 
-        expect(user.id).to.equal(1);
+        expect(user).to.have.property('id', newUser.getPrimaryKey());
 
         expect(comments)
           .to.be.an('array')
           .with.lengthOf(3);
-
-        comments.forEach((comment, index) => {
-          expect(comment).to.have.property('id', index + 1);
-        });
       });
 
       it('returns the number `204` if no changes occur', async () => {
-        const id = Reflect.get(record, 'id');
-
         const request = createRequest({
-          id,
+          id: record.getPrimaryKey(),
           type: 'posts',
           data: {
             attributes: {
-              title: '#destroy() Test'
+              title: '#update() Test'
             }
           }
         });
 
-        const result = await subject.update(request);
-
-        expect(result).to.equal(204);
+        expect(await subject.update(request)).to.equal(204);
       });
 
       it('throws an error if the record is not found', async () => {
@@ -514,33 +524,36 @@ describe('module "controller"', () => {
       });
 
       it('supports sparse field sets', async () => {
-        let item = record;
-        let title = Reflect.get(item, 'title');
-        const id = Reflect.get(item, 'id');
-
-        expect(title).to.equal('#destroy() Test');
-
         const request = createRequest({
-          id,
+          id: record.getPrimaryKey(),
           type: 'posts',
           data: {
             attributes: {
-              title: 'Sparse Field Sets Work With #destroy()!'
+              title: 'Sparse Field Sets Work With #update()!'
             }
           },
           fields: {
-            posts: ['id', 'title']
+            posts: [
+              'id',
+              'title'
+            ]
           }
         });
 
-        const result = await subject.update(request);
+        expect(record).to.have.deep.property(
+          'rawColumnData.title',
+          '#update() Test'
+        );
 
-        assertRecord(result, ['id', 'title']);
+        assertRecord(await subject.update(request), [
+          'id',
+          'title'
+        ]);
 
-        item = await Post.find(id);
-        title = Reflect.get(item, 'title');
-
-        expect(title).to.equal('Sparse Field Sets Work With #destroy()!');
+        expect(await record.reload()).to.have.deep.property(
+          'rawColumnData.title',
+          'Sparse Field Sets Work With #update()!'
+        );
       });
     });
 
