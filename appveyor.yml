@@ -32,8 +32,8 @@ before_test:
     SET PGUSER=postgres
     SET PGPASSWORD=%DATABASE_PASSWORD%
 
-    psql -c %DROP_DATABASE% -U %PGUSER%
-    psql -c %CREATE_DATABASE% -U %PGUSER%
+    psql -c "%DROP_DATABASE%"
+    psql -c "%CREATE_DATABASE%"
   - ps: |
       $env:MYSQL_PWD="$env:DATABASE_PASSWORD"
       $mysql="C:\Program Files\MySql\MySQL Server 5.7\bin\mysql"
