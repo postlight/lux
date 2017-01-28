@@ -83,7 +83,7 @@ Could you imagine how ugly that gets when you have to implement pagination, filt
 
 Also, where does that code live? In what file and folder would I find it? What pattern do you use for organizing this code?
 
-😲Ok ok give me back Rails I'll worry about performance and scaling later. After all, premature optimization is the root of all evil.
+😲 Ok ok give me back Rails I'll worry about performance and scaling later. After all, premature optimization is the root of all evil.
 
 ##### Problem.resolve();
 
@@ -145,33 +145,9 @@ For more information checkout out the [Guides](https://lux.postlight.com/).
 [**postlight/lux-benchmarks**](https://github.com/postlight/lux-benchmarks)
 
 
-## Contributing
+## Contribution
 
-### Installation
-
-```bash
-git clone https://github.com/postlight/lux
-cd lux
-npm install
-```
-
-### Testing
-
-```bash
-git clone https://github.com/postlight/lux
-
-# Install Lux dependencies
-cd lux
-npm install
-
-# Install test app dependencies
-cd test/test-app
-npm install
-
-# Run the test suite
-cd ../../
-npm test
-```
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Useful Links
 
