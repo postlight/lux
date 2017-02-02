@@ -2,7 +2,7 @@
 
 ## Conduct
 
-**Contact**: [lux@postlight.com](mailto:lux@postlight.com)
+**Contact Lux moderators:**: [lux+moderators@postlight.com](mailto:lux+moderators@postlight.com)
 
 *   We are committed to providing a friendly, safe and welcoming environment for
 all, regardless of level of experience, gender, gender identity and expression,
@@ -30,7 +30,7 @@ people in socially marginalized groups.
 
 *   Private harassment is also unacceptable. No matter who you are, if you feel
 you have been or are being harassed or made uncomfortable by a community member,
-please contact one of the channel ops or any of the [Lux moderation team](mailto:lux@postlight.com)
+please contact one of the channel ops or any of the [Lux moderation team](mailto:lux+moderators@postlight.com)
 immediately. Whether you're a regular contributor or a newcomer, we care about
 making this community a safe place for you and we've got your back.
 
@@ -40,7 +40,7 @@ behavior is not welcome.
 ## Moderation
 
 These are the policies for upholding our community's standards of conduct. If you
-feel that a thread needs moderation, please contact the [Lux moderation team](mailto:lux@postlight.com).
+feel that a thread needs moderation, please contact the [Lux moderation team](mailto:lux+moderators@postlight.com).
 
 1.  Remarks that violate the Lux standards of conduct, including hateful, hurtful,
 oppressive, or exclusionary remarks, are not allowed. (Cursing is allowed, but
