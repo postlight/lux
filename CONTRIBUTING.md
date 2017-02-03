@@ -149,7 +149,7 @@ files pass [remarklint](https://github.com/wooorm/remark-lint) with the recommen
 preset. This helps keep our markdown tidy, consistent, and compatible with a range of
 markdown parsers used for generating documentation.
 
-### Node.js Version Requirement
+### Node.js Version Requirements
 
 Lux is built against Node `>= v6`. Since this is the latest LTS release and the
 version we run in our CI environments, we recommend you use it when working on
@@ -201,7 +201,7 @@ directory of this repository.
 Want to make a change to Lux? Submit a pull request! We use the "fork and pull"
 model [described here](https://help.github.com/articles/creating-a-pull-request-from-a-fork).
 
-**Before submitting a pull request**, please make sure you do the following:
+**Before submitting a pull request**, please make sure:
 
 *   [X] You have added tests for modifications you made to the codebase.
 *   [X] You have updated any documentation in the source code comments for APIs
