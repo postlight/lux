@@ -3,7 +3,7 @@
 .*/dist/.*
 .*/scripts/.*
 .*/examples/.*
-.*/node_modules/bcryptjs/*
+.*/test/test-app/.*
 
 [include]
 ./src/
@@ -12,8 +12,8 @@
 [libs]
 node_modules/rollup-plugin-lux/decl/
 node_modules/rollup-plugin-lux/flow-typed/
-decl/
 flow-typed/
+decl/
 
 [options]
 emoji=true

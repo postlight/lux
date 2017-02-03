@@ -21,7 +21,7 @@
     "clean": "shx rm -rf .nyc_output coverage dist test/test-app/dist test-results.xml",
     "codecov": "nyc report --reporter=lcov > coverage.lcov && curl -s https://codecov.io/bash | bash",
     "flow": "flow check",
-    "install:types": "shx rm -rf flow-typed && flow-typed install",
+    "types": "shx rm -rf flow-typed && flow-typed install",
     "lint": "remark . && eslint .",
     "test": "nyc -i ./lib/babel-hook.js --instrument false --source-map false mocha --opts mocha.opts"
   },
