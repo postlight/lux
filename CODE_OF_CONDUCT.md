@@ -9,8 +9,9 @@ all, regardless of level of experience, gender, gender identity and expression,
 sexual orientation, disability, personal appearance, body size, race, ethnicity,
 age, religion, nationality, or other similar characteristic.
 
-*   On Gitter, please avoid using overtly sexual nicknames or other nicknames
-that might detract from a friendly, safe and welcoming environment for all.
+*   On Gitter, please avoid avoid using racist, sexually explicit or otherwise
+hostile nicknames that might detract from a friendly, safe and welcoming environment
+for all.
 
 *   Please be kind and courteous. There's no need to be mean or rude.
 
@@ -74,7 +75,7 @@ particular, avoid flirting with offensive or sensitive issues, particularly if
 they're off-topic; this all too often leads to unnecessary fights, hurt feelings,
 and damaged trust; worse, it can drive people away from the community entirely.
 
-And if someone takes issue with something you said or did, resist the urge to be
+If someone takes issue with something you said or did, resist the urge to be
 defensive. Just stop doing what it was they complained about and apologize. Even
 if you feel you were misinterpreted or unfairly accused, chances are good there
 was something you could've communicated better — remember that it's your responsibility
