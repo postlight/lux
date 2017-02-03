@@ -208,7 +208,7 @@ model [described here](https://help.github.com/articles/creating-a-pull-request-
 that you may have changed.
 *   [X] You have no linter errors to correct after running `npm run lint`.
 *   [X] You have no type errors to correct after running `npm run flow`.
-*   [X] You have ran the test suite via `npm test` and it passed.
+*   [X] You have run the test suite via `npm test` and it passed.
 
 ### Commit Style
 
