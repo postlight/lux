@@ -142,14 +142,17 @@ If you have never written JavaScript with [Flow](https://flowtype.org) or
 [TypeScript](https://www.typescriptlang.org/) before, you may have a bit of a
 learning curve. If you get stuck on something, feel free to ask a question in the
 [*postlight/lux*](https://gitter.im/postlight/lux) and/or [*facebook/flow*](https://gitter.im/facebook/flow)
-Gitter room. We recommend installing an editor plugin with autocompletion and realtime error
-checking. Below you will find a few example plugins for many common editors.
+Gitter room. We recommend installing an editor plugin with autocompletion and
+realtime error checking. Below you will find a few example plugins for many
+common editors.
 
 *   [Nuclide (Atom)](https://nuclide.io/)
 *   [FlowIDE (Sublime Text)](https://github.com/tptee/FlowIDE)
 *   [flow-for-vscode (Visual Studio Code)](https://github.com/flowtype/flow-for-vscode)
 *   [flow-for-emacs (Emacs)](https://github.com/flowtype/flow-for-emacs)
 *   [vim-flow (Vim)](https://github.com/flowtype/vim-flow)
+
+You can find more information about Flow and how to use it in the [Flow documentation](https://flowtype.org/docs/getting-started.html).
 
 #### JavaScript
 
