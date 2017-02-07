@@ -29,6 +29,21 @@ this extra credit. We won't mind if you accidentally file a duplicate report.
 Opening an issue is as easy as following [this link](https://github.com/postlight/lux/issues/new)
 and filling out the fields.
 
+### Security
+
+If you find a security bug in Lux, send an email with a descriptive subject line
+to [lux+security@postlight.com](mailto:lux+security@postlight.com). If you think
+you’ve found a serious vulnerability, please do not file a public issue or share
+in the Lux Gitter room.
+
+Your report will go to Lux's core development team. You will receive
+acknowledgement of the report in 24-48 hours, and what our next steps will be to
+release a fix. If you don’t get a report acknowledgement in 48 hours, contact
+[Zachary Golba](mailto:zachary.golba@postlight.com) directly.
+
+A working list of public, known security-related issues can be found in the
+[issue tracker](https://github.com/postlight/lux/issues?q=is%3Aopen+is%3Aissue+label%3Asecurity).
+
 ## Requesting a Feature
 
 To request a change to the way that Lux works, please open an issue in the RFCs
@@ -245,4 +260,5 @@ Some useful places to look for information are:
 *   Example applications in [this repository](./examples)
 
 *Adapted from [Contributing to Node.js](https://github.com/nodejs/node/blob/master/CONTRIBUTING.md)
-as well as [Contributing to Rust](https://github.com/rust-lang/rust/blob/master/CONTRIBUTING.md).*
+, [Contributing to Rust](https://github.com/rust-lang/rust/blob/master/CONTRIBUTING.md), and
+[ThinkUp Security and Data Privacy](http://thinkup.readthedocs.io/en/latest/install/security.html#thinkup-security-and-data-privacy).*
