@@ -1,7 +1,4 @@
 // @flow
-import { expect } from 'chai';
-import { it, before, describe } from 'mocha';
-
 import Database from '../index';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
@@ -33,27 +30,35 @@ describe('module "database"', () => {
   describe('class Database', () => {
     let createDatabase;
 
-    before(async () => {
-      const { path, models, logger } = await getTestApp();
-
-      createDatabase = async (config = DEFAULT_CONFIG) => await new Database({
+    beforeAll(async () => {
+      const {
         path,
         models,
         logger,
-        config,
-        checkMigrations: false
-      });
+      } = await getTestApp();
+
+      createDatabase = (config = DEFAULT_CONFIG) => (
+        Promise.resolve(
+          new Database({
+            path,
+            models,
+            logger,
+            config,
+            checkMigrations: false
+          })
+        )
+      );
     });
 
     describe('#constructor()', () => {
-      it('creates an instance of `Database`', async () => {
-        const result = await createDatabase();
-
-        expect(result).to.be.an.instanceof(Database);
+      it('creates an instance of `Database`', () => {
+        return createDatabase().then(result => {
+          expect(result instanceof Database).toBe(true);
+        });
       });
 
-      it('fails when an invalid database driver is used', async () => {
-        await createDatabase({
+      it('fails when an invalid database driver is used', () => {
+        return createDatabase({
           development: {
             ...DEFAULT_CONFIG.development,
             driver: 'invalid-driver'
@@ -67,10 +72,7 @@ describe('module "database"', () => {
             driver: 'invalid-driver'
           }
         }).catch(err => {
-          expect(err).to.have.deep.property(
-            'constructor.name',
-            'InvalidDriverError'
-          );
+          expect(err.constructor.name).toBe('InvalidDriverError');
         });
       });
     });
@@ -78,24 +80,20 @@ describe('module "database"', () => {
     describe('#modelFor()', () => {
       let subject;
 
-      before(async () => {
+      beforeAll(async () => {
         subject = await createDatabase();
       });
 
       it('works with a singular key', () => {
-        const result = subject.modelFor('post');
-
-        expect(result).to.be.ok;
+        expect(subject.modelFor('post')).not.toThrow();
       });
 
       it('works with a plural key', () => {
-        const result = subject.modelFor('posts');
-
-        expect(result).to.be.ok;
+        expect(subject.modelFor('posts')).not.toThrow();
       });
 
       it('throws an error if a model does not exist', () => {
-        expect(() => subject.modelFor('not-a-model-name')).to.throw(Error);
+        expect(() => subject.modelFor('not-a-model-name')).toThrow();
       });
     });
   });

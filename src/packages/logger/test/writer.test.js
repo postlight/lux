@@ -1,36 +1,62 @@
 // @flow
-import { spy } from 'sinon';
-import { expect } from 'chai';
-import { it, describe, before, beforeEach, after } from 'mocha';
-
 import { WARN, ERROR, LEVELS, FORMATS } from '../constants';
-import { createWriter } from '../writer';
 
 describe('module "logger/writer"', () => {
   describe('#createWriter()', () => {
-    let stdoutSpy;
-    let stderrSpy;
+    const stdout = jest.fn();
+    const stderr = jest.fn();
+    let createWriter;
 
-    before(() => {
-      stdoutSpy = spy(process.stdout, 'write');
-      stderrSpy = spy(process.stderr, 'write');
+    beforeAll(() => {
+      const stdoutProxy = new Proxy(process.stdout, {
+        get(target, key) {
+          // $FlowIgnore
+          return key === 'write' ? stdout : target[key];
+        }
+      });
+
+      const stderrProxy = new Proxy(process.stderr, {
+        get(target, key) {
+          // $FlowIgnore
+          return key === 'write' ? stderr : target[key];
+        }
+      });
+
+      jest.mock('process', () => {
+        return new Proxy(process, {
+          get(target, key) {
+            switch (key) {
+              case 'stdout':
+                return stdoutProxy;
+
+              case 'stderr':
+                return stderrProxy;
+
+              default:
+                // $FlowIgnore
+                return target[key];
+            }
+          }
+        })
+      });
+
+      ({ createWriter } = require('../writer'));
     });
 
     beforeEach(() => {
-      stdoutSpy.reset();
-      stderrSpy.reset();
+      stdout.mockReset();
+      stderr.mockReset();
     });
 
-    after(() => {
-      stdoutSpy.restore();
-      stderrSpy.restore();
+    afterAll(() => {
+      jest.unmock('process');
     });
 
     FORMATS.forEach(format => {
       describe(`- format "${format}"`, () => {
         let subject;
 
-        before(() => {
+        beforeAll(() => {
           subject = createWriter(format);
         });
 
@@ -38,89 +64,68 @@ describe('module "logger/writer"', () => {
           describe(`- level "${level}"`, () => {
             it('can write message objects', () => {
               const message = 'Hello world!';
-              const timestamp = new Date().toISOString();
-              let spyForLevel;
+              let mockForLevel;
 
               subject({
                 level,
                 message,
-                timestamp
+                timestamp: new Date().toISOString(),
               });
 
               switch (level) {
                 case WARN:
                 case ERROR:
-                  spyForLevel = stderrSpy;
+                  mockForLevel = stderr;
                   break;
 
                 default:
-                  spyForLevel = stdoutSpy;
+                  mockForLevel = stdout;
                   break;
               }
 
-              expect(spyForLevel.calledOnce).to.be.true;
-              expect(spyForLevel)
-                .to.have.deep.property('firstCall.args[0]')
-                .and.include(message);
+              expect(mockForLevel).lastCalledWith(message);
             });
 
             it('can write nested message objects', () => {
               const message = { message: 'Hello world!' };
-              const timestamp = new Date().toISOString();
-              let spyForLevel;
+              let mockForLevel;
 
               subject({
                 level,
                 message,
-                timestamp
+                timestamp: new Date().toISOString(),
               });
 
               switch (level) {
                 case WARN:
                 case ERROR:
-                  spyForLevel = stderrSpy;
+                  mockForLevel = stderr;
                   break;
 
                 default:
-                  spyForLevel = stdoutSpy;
+                  mockForLevel = stdout;
                   break;
               }
 
-              expect(spyForLevel).to.have.property('calledOnce', true);
-
-              if (format === 'text') {
-                expect(spyForLevel)
-                  .to.have.deep.property('firstCall.args[0]')
-                  .and.include(JSON.stringify(message, null, 2));
-              } else {
-                expect(spyForLevel)
-                  .to.have.deep.property('firstCall.args[0]')
-                  .and.include(message.message);
-              }
+              expect(mockForLevel).lastCalledWith(
+                format === 'text' ?
+                  JSON.stringify(message, null, 2) : message.message
+              );
             });
 
             if (level === ERROR) {
               it('can write error stack traces', () => {
                 const message = new Error('Test');
-                const timestamp = new Date().toISOString();
 
                 subject({
                   level,
                   message,
-                  timestamp
+                  timestamp: new Date().toISOString(),
                 });
 
-                expect(stderrSpy).to.have.property('calledOnce', true);
-
-                if (format === 'text') {
-                  expect(stderrSpy)
-                    .to.have.deep.property('firstCall.args[0]')
-                    .and.include(message.stack);
-                } else {
-                  expect(stderrSpy)
-                    .to.have.deep.property('firstCall.args[0]')
-                    .and.include(message.message);
-                }
+                expect(stderr).lastCalledWith(
+                  format === 'text' ? message.stack : message.message
+                );
               });
             }
           });

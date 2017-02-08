@@ -1,8 +1,7 @@
 // @flow
 import { posix } from 'path';
 
-import { expect } from 'chai';
-import { describe, it, beforeEach } from 'mocha';
+
 
 import Controller from '../../../controller';
 import Serializer from '../../../serializer';
@@ -51,15 +50,15 @@ describe('module "loader/builder"', () => {
       ])).forEach(({ key, parent }) => {
         switch (key) {
           case 'root':
-            expect(parent).to.be.an.instanceOf(ApplicationController);
+            expect(parent instanceof ApplicationController).toBe(true);
             break;
 
           case 'api':
-            expect(parent).to.be.an.instanceOf(ApiApplicationController);
+            expect(parent instanceof ApiApplicationController).toBe(true);
             break;
 
           case 'api/v1':
-            expect(parent).to.be.an.instanceOf(ApiV1ApplicationController);
+            expect(parent instanceof ApiV1ApplicationController).toBe(true);
             break;
 
           default:

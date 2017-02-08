@@ -1,7 +1,5 @@
 // @flow
 import { spy } from 'sinon';
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
 
 import { tap, compose, composeAsync } from '../compose';
 
@@ -9,19 +7,19 @@ describe('util compose', () => {
   describe('.tap()', () => {
     let consoleSpy;
 
-    before(() => {
+    beforeEach(() => {
       consoleSpy = spy(console, 'log');
     });
 
-    after(() => {
+    afterEach(() => {
       consoleSpy.restore();
     });
 
     it('logs an input and then returns it', () => {
       const val = {};
 
-      expect(tap(val)).to.equal(val);
-      expect(consoleSpy.calledWithExactly(val)).to.be.true;
+      expect(tap(val)).toBe(val);
+      expect(consoleSpy.calledWithExactly(val)).toBe(true);
     });
   });
 
@@ -32,11 +30,9 @@ describe('util compose', () => {
         str => str.toUpperCase()
       );
 
-      expect(shout)
-        .to.be.a('function')
-        .with.lengthOf(1);
-
-      expect(shout('hello world')).to.equal('HELLO WORLD!');
+      expect(shout).toHaveLength(1);
+      expect(typeof shout).toBe('function');
+      expect(shout('hello world')).toBe('HELLO WORLD!');
     });
   });
 
@@ -47,12 +43,11 @@ describe('util compose', () => {
         str => Promise.resolve(str.toUpperCase())
       );
 
-      expect(shout)
-        .to.be.a('function')
-        .with.lengthOf(1);
+      expect(shout).toBe(expect.any(Function));
+      expect(shout.length).toBe(1);
 
       return shout('hello world').then(str => {
-        expect(str).to.equal('HELLO WORLD!');
+        expect(str).toBe('HELLO WORLD!');
       });
     });
   });

@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
+
 
 import createQueryString from '../create-query-string';
 
@@ -10,6 +9,6 @@ describe('util createQueryString()', () => {
   it('can build a query string from a nested object', () => {
     const result = createQueryString(subject);
 
-    expect(result).to.equal('a=1&b%5Ba%5D=1');
+    expect(result).toBe('a=1&b%5Ba%5D=1');
   });
 });

@@ -1,7 +1,4 @@
 // @flow
-import { expect } from 'chai';
-import { describe, it, before } from 'mocha';
-
 import type { Model } from '../../database';
 import type { Request$params } from '../../server';
 import merge from '../../../utils/merge';
@@ -27,7 +24,7 @@ describe('module "controller"', () => {
       }, obj);
     });
 
-    before(async () => {
+    beforeAll(async () => {
       const { models } = await getTestApp();
 
       Post = setType(() => models.get('post'));
@@ -52,47 +49,44 @@ describe('module "controller"', () => {
         }
       });
 
-      const result = paramsToQuery(Post, subject);
-
-      expect(result).to.have.property('id', 1);
-      expect(result).to.have.property('page', 5);
-      expect(result).to.have.property('limit', 10);
-
-      expect(result)
-        .to.have.property('sort')
-        .and.deep.equal([
+      expect(paramsToQuery(Post, subject)).toEqual({
+        id: 1,
+        page: 5,
+        sort: [
           'title',
           'ASC'
-        ]);
-
-      expect(result)
-        .to.have.property('filter')
-        .and.deep.equal({
-          title: 'New Post'
-        });
-
-      expect(result)
-        .to.have.property('select')
-        .and.deep.equal([
+        ],
+        limit: 10,
+        filter: {
+          title: 'New Post',
+        },
+        select: [
           'id',
           'body',
-          'title'
-        ]);
+          'title',
+        ],
+      });
     });
 
     describe('- page', () => {
-      const subject = createParams({
-        page: {
-          size: 10,
-          number: 2
-        }
+      let subject;
+
+      beforeEach(() => {
+        subject = createParams({
+          page: {
+            size: 10,
+            number: 2
+          }
+        });
       });
 
       it('converts `number` and `size` to `page` and `limit`', () => {
-        const result = paramsToQuery(Post, subject);
-
-        expect(result).to.have.property('page', 2);
-        expect(result).to.have.property('limit', 10);
+        expect(paramsToQuery(Post, subject)).toEqual(
+          expect.objectContaining({
+            page: 2,
+            limit: 10,
+          })
+        );
       });
     });
 
@@ -102,11 +96,14 @@ describe('module "controller"', () => {
           sort: 'title'
         });
 
-        const result = paramsToQuery(Post, subject);
-
-        expect(result)
-          .to.have.property('sort')
-          .and.deep.equal(['title', 'ASC']);
+        expect(paramsToQuery(Post, subject)).toEqual(
+          expect.objectContaining({
+            sort: [
+              'title',
+              'ASC'
+            ]
+          })
+        );
       });
 
       it('converts desc parameters', () => {
@@ -114,11 +111,14 @@ describe('module "controller"', () => {
           sort: '-title'
         });
 
-        const result = paramsToQuery(Post, subject);
-
-        expect(result)
-          .to.have.property('sort')
-          .and.deep.equal(['title', 'DESC']);
+        expect(paramsToQuery(Post, subject)).toEqual(
+          expect.objectContaining({
+            sort: [
+              'title',
+              'DESC'
+            ]
+          })
+        );
       });
     });
 
@@ -127,24 +127,24 @@ describe('module "controller"', () => {
         const subject = createParams({
           fields: {
             users: [
-              'name'
-            ]
+              'name',
+            ],
           },
           include: [
-            'user'
-          ]
+            'user',
+          ],
         });
 
-        const result = paramsToQuery(Post, subject);
-
-        expect(result)
-          .to.have.property('include')
-          .and.deep.equal({
-            user: [
-              'id',
-              'name'
-            ]
-          });
+        expect(paramsToQuery(Post, subject)).toEqual(
+          expect.objectContaining({
+            include: {
+              user: [
+                'id',
+                'name',
+              ],
+            },
+          })
+        );
       });
 
       it('ignores invalid field sets', () => {
@@ -159,11 +159,11 @@ describe('module "controller"', () => {
           ]
         });
 
-        const result = paramsToQuery(Post, subject);
-
-        expect(result)
-          .to.have.property('include')
-          .and.deep.equal({});
+        expect(paramsToQuery(Post, subject)).toEqual(
+          expect.objectContaining({
+            include: {},
+          })
+        );
       });
 
       it('only adds `id` when the include array is `undefined`', () => {
@@ -176,13 +176,15 @@ describe('module "controller"', () => {
           }
         });
 
-        const result = paramsToQuery(Post, subject);
-
-        expect(result)
-          .to.have.property('include')
-          .and.deep.equal({
-            image: ['id']
-          });
+        expect(paramsToQuery(Post, subject)).toEqual(
+          expect.objectContaining({
+            include: {
+              image: [
+                'id',
+              ],
+            },
+          })
+        );
       });
     });
   });

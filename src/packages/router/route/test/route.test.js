@@ -1,7 +1,5 @@
 // @flow
 import { spy } from 'sinon';
-import { expect } from 'chai';
-import { it, describe, before } from 'mocha';
 
 import Controller from '../../../controller';
 import type { Request, Response } from '../../../server';
@@ -18,7 +16,7 @@ describe('module "router/route"', () => {
     describe('#constructor()', () => {
       let controller: Controller;
 
-      before(async () => {
+      beforeAll(async () => {
         const { controllers } = await getTestApp();
 
         // $FlowIgnore
@@ -34,7 +32,7 @@ describe('module "router/route"', () => {
           method: 'GET'
         });
 
-        expect(result).to.be.an.instanceOf(Route);
+        expect(result instanceof Route).toBe(true);
       });
 
       it('throws when a handler is not found', () => {
@@ -46,7 +44,7 @@ describe('module "router/route"', () => {
             action: 'invalidHandler',
             method: 'GET'
           });
-        }).to.throw(TypeError);
+        }).toThrow();
       });
 
       it('throws when an an action is not provided', () => {
@@ -58,7 +56,7 @@ describe('module "router/route"', () => {
             path: 'posts',
             method: 'GET'
           });
-        }).to.throw(TypeError);
+        }).toThrow();
       });
 
       it('throws when an an controller is not provided', () => {
@@ -70,7 +68,7 @@ describe('module "router/route"', () => {
             action: 'index',
             method: 'GET'
           });
-        }).to.throw(TypeError);
+        }).toThrow();
       });
     });
 
@@ -79,7 +77,7 @@ describe('module "router/route"', () => {
       let dynamicRoute: Route;
       let dataRoute: Route;
 
-      before(async () => {
+      beforeAll(async () => {
         const { controllers } = await getTestApp();
         // $FlowIgnore
         const controller: Controller = controllers.get('posts');
@@ -112,11 +110,11 @@ describe('module "router/route"', () => {
       });
 
       it('contains params matching dynamic segments', () => {
-        expect(dynamicRoute.parseParams(['1'])).to.deep.equal({ id: 1 });
+        expect(dynamicRoute.parseParams(['1'])).toEqual({ id: 1 });
       });
 
       it('does not contain params for unmatched dynamic segments', () => {
-        expect(dynamicRoute.parseParams(['1', '2'])).to.deep.equal({ id: 1 });
+        expect(dynamicRoute.parseParams(['1', '2'])).toEqual({ id: 1 });
       });
     });
 
@@ -125,7 +123,7 @@ describe('module "router/route"', () => {
       let createRequest;
 
       describe('- with action only', () => {
-        before(async () => {
+        beforeAll(async () => {
           class TestController extends Controller {
             // $FlowIgnore
             index = async () => ({
@@ -158,7 +156,7 @@ describe('module "router/route"', () => {
             createResponse()
           );
 
-          expect(result).to.deep.equal({
+          expect(result).toEqual({
             meta: {
               success: true
             }
@@ -167,7 +165,7 @@ describe('module "router/route"', () => {
       });
 
       describe('- with `beforeAction`', () => {
-        before(async () => {
+        beforeAll(async () => {
           class TestController extends Controller {
             beforeAction = [
               async () => ({
@@ -208,7 +206,7 @@ describe('module "router/route"', () => {
             createResponse()
           );
 
-          expect(result).to.deep.equal({
+          expect(result).toEqual({
             meta: {
               beforeSuccess: true
             }
@@ -217,7 +215,7 @@ describe('module "router/route"', () => {
       });
 
       describe('- with `afterAction`', () => {
-        before(async () => {
+        beforeAll(async () => {
           class TestController extends Controller {
             // $FlowIgnore
             index = async () => ({
@@ -251,7 +249,7 @@ describe('module "router/route"', () => {
             createResponse()
           );
 
-          expect(result).to.deep.equal({
+          expect(result).toEqual({
             meta: {
               success: true,
               afterSuccess: true
@@ -263,7 +261,7 @@ describe('module "router/route"', () => {
       describe('- with `beforeAction` and `afterAction`', () => {
         let beforeSpy;
 
-        before(async () => {
+        beforeAll(async () => {
           const beforeHooks = {
             call: async () => undefined
           };
@@ -315,8 +313,8 @@ describe('module "router/route"', () => {
             createResponse()
           );
 
-          expect(beforeSpy.calledOnce).to.be.true;
-          expect(result).to.deep.equal({
+          expect(beforeSpy.calledOnce).toBe(true);
+          expect(result).toEqual({
             meta: {
               success: true,
               afterSuccess: true
@@ -329,7 +327,7 @@ describe('module "router/route"', () => {
     describe('#visit', () => {
       let controller: Controller;
 
-      before(async () => {
+      beforeAll(async () => {
         const { controllers } = await getTestApp();
 
         // $FlowIgnore
@@ -341,7 +339,7 @@ describe('module "router/route"', () => {
           let subject;
           let createRequest;
 
-          before(async () => {
+          beforeAll(async () => {
 
 
             subject = new Route({
@@ -354,7 +352,7 @@ describe('module "router/route"', () => {
           });
 
           describe('- with params', () => {
-            before(() => {
+            beforeAll(() => {
               createRequest = createRequestBuilder({
                 method,
                 controller,
@@ -374,12 +372,12 @@ describe('module "router/route"', () => {
                 createResponse()
               );
 
-              expect(result).to.be.ok;
+              expect(result).not.toThrow();
             });
           });
 
           describe('- without params', () => {
-            before(() => {
+            beforeAll(() => {
               createRequest = createRequestBuilder({
                 method,
                 path: '/posts',
@@ -393,7 +391,7 @@ describe('module "router/route"', () => {
                 createResponse()
               );
 
-              expect(result).to.be.ok;
+              expect(result).not.toThrow();
             });
           });
         });

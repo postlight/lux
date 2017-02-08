@@ -1,18 +1,14 @@
 [ignore]
-.*/lib/.*
-.*/dist/.*
-.*/scripts/.*
-.*/examples/.*
-.*/test/test-app/.*
-
-[include]
-./src/
-./node_modules/
+.*/bin/*
+.*/dist/*
+.*/examples/*
+.*/guide/*
+.*/lib/*
+.*/node_modules/*
+.*/scripts/*
+.*/test/test-app/*
 
 [libs]
-node_modules/rollup-plugin-lux/decl/
-node_modules/rollup-plugin-lux/flow-typed/
-flow-typed/
 decl/
 
 [options]

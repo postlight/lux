@@ -3,8 +3,6 @@ import path from 'path';
 
 import * as Rollup from 'rollup';
 import { spy, stub } from 'sinon';
-import { expect } from 'chai';
-import { it, describe, afterEach, beforeEach } from 'mocha';
 
 import { getTestApp } from '../../../../test/utils/get-test-app';
 import { compile, onwarn } from '../index';
@@ -35,11 +33,14 @@ describe('module "compiler"', () => {
 
           const { args: [rollupConfig] } = rollupStub.getCall(0);
 
-          expect(rollupConfig).to.have.property('entry', entry);
-          expect(rollupConfig)
-            .to.have.property('plugins')
-            .and.be.an('array')
-            .with.lengthOf(6);
+          expect(rollupConfig).toBe(
+            expect.objectContaining({
+              entry,
+              plugins: expect.any(Array),
+            })
+          );
+
+          expect(rollupConfig.plugins.length).toBe(6);
         });
       });
     });
@@ -73,14 +74,14 @@ describe('module "compiler"', () => {
       onwarn(warnings.EMPTY_BUNDLE);
       expect(
         warnSpy.calledWithExactly(warnings.EMPTY_BUNDLE.message)
-      ).to.be.true;
+      ).toBe(true);
     });
 
     it('ignores invalid warning types', () => {
       onwarn(warnings.UNUSED_EXTERNAL_IMPORT);
       expect(
         warnSpy.neverCalledWith(warnings.UNUSED_EXTERNAL_IMPORT.message)
-      ).to.be.true;
+      ).toBe(true);
     });
   });
 });

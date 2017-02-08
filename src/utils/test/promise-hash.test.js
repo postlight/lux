@@ -1,7 +1,4 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
-
 import promiseHash from '../promise-hash';
 
 describe('util promiseHash()', () => {
@@ -13,9 +10,9 @@ describe('util promiseHash()', () => {
     };
 
     return promiseHash(subject).then(({ a, b, c }) => {
-      expect(a).to.equal(1);
-      expect(b).to.equal(2);
-      expect(c).to.deep.equal([3, 4]);
+      expect(a).toBe(1);
+      expect(b).toBe(2);
+      expect(c).toEqual([3, 4]);
     });
   });
 
@@ -27,7 +24,7 @@ describe('util promiseHash()', () => {
     };
 
     return promiseHash(subject).catch(err => {
-      expect(err).to.be.an('error');
+      expect(err).toBe(expect.any(Error));;
     });
   });
 });

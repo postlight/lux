@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe, before } from 'mocha';
+
 
 import { paramsFor, defaultParamsFor } from '../index';
 
@@ -13,7 +12,7 @@ describe('module "router/route/params"', () => {
   describe('#paramsFor()', () => {
     let getController;
 
-    before(async () => {
+    beforeAll(async () => {
       const { controllers } = await getTestApp();
 
       getController = (name: string): Controller => setType(() => {
@@ -24,7 +23,7 @@ describe('module "router/route/params"', () => {
     describe('with model-less controller', () => {
       let params;
 
-      before(() => {
+      beforeAll(() => {
         params = paramsFor({
           type: 'custom',
           method: 'GET',
@@ -34,7 +33,7 @@ describe('module "router/route/params"', () => {
       });
 
       it('contains query', () => {
-        expect(params.has('userId')).to.be.true;
+        expect(params.has('userId')).toBe(true);
       });
     });
   });
@@ -42,7 +41,7 @@ describe('module "router/route/params"', () => {
   describe('#defaultParamsFor()', () => {
     let getController;
 
-    before(async () => {
+    beforeAll(async () => {
       const { controllers } = await getTestApp();
 
       getController = (name: string): Controller => setType(() => {
@@ -54,7 +53,7 @@ describe('module "router/route/params"', () => {
       let params;
       let controller;
 
-      before(() => {
+      beforeAll(() => {
         controller = getController('posts');
         params = defaultParamsFor({
           controller,
@@ -75,7 +74,7 @@ describe('module "router/route/params"', () => {
         const { model, serializer: { attributes } } = controller;
 
         expect(params.fields).to.include.keys(model.resourceName);
-        expect(params.fields[model.resourceName]).to.deep.equal(attributes);
+        expect(params.fields[model.resourceName]).toEqual(attributes);
       });
     });
 
@@ -83,7 +82,7 @@ describe('module "router/route/params"', () => {
       let params;
       let controller;
 
-      before(() => {
+      beforeAll(() => {
         controller = getController('posts');
         params = defaultParamsFor({
           controller,
@@ -95,14 +94,14 @@ describe('module "router/route/params"', () => {
         const { model, serializer: { attributes } } = controller;
 
         expect(params.fields).to.include.keys(model.resourceName);
-        expect(params.fields[model.resourceName]).to.deep.equal(attributes);
+        expect(params.fields[model.resourceName]).toEqual(attributes);
       });
     });
 
     describe('with custom route', () => {
       let params;
 
-      before(() => {
+      beforeAll(() => {
         params = defaultParamsFor({
           type: 'custom',
           controller: getController('posts')
@@ -110,14 +109,14 @@ describe('module "router/route/params"', () => {
       });
 
       it('is an empty object literal', () => {
-        expect(params).to.deep.equal({});
+        expect(params).toEqual({});
       });
     });
 
     describe('with model-less controller', () => {
       let params;
 
-      before(() => {
+      beforeAll(() => {
         params = defaultParamsFor({
           type: 'custom',
           controller: getController('health')
@@ -125,7 +124,7 @@ describe('module "router/route/params"', () => {
       });
 
       it('is an empty object literal', () => {
-        expect(params).to.deep.equal({});
+        expect(params).toEqual({});
       });
     });
   });

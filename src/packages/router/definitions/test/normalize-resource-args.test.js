@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe, before } from 'mocha';
+
 
 import { BUILT_IN_ACTIONS } from '../../../controller';
 
@@ -11,7 +10,7 @@ describe('module "router/definitions/context"', () => {
     it('normalizes arguments with a name only', () => {
       const result = normalizeResourceArgs(['posts']);
 
-      expect(result).to.be.an('array');
+      expect(result).toBe(expect.any(Array));
 
       expect(result)
         .to.have.property('0')
@@ -34,7 +33,7 @@ describe('module "router/definitions/context"', () => {
         ]
       }]);
 
-      expect(result).to.be.an('array');
+      expect(result).toBe(expect.any(Array));
 
       expect(result)
         .to.have.property('0')
@@ -57,7 +56,7 @@ describe('module "router/definitions/context"', () => {
         return undefined;
       }]);
 
-      expect(result).to.be.an('array');
+      expect(result).toBe(expect.any(Array));
 
       expect(result)
         .to.have.property('0')
@@ -82,7 +81,7 @@ describe('module "router/definitions/context"', () => {
         return undefined;
       }]);
 
-      expect(result).to.be.an('array');
+      expect(result).toBe(expect.any(Array));
 
       expect(result)
         .to.have.property('0')

@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe, beforeEach } from 'mocha';
+
 
 import hasOwnProperty from '../has-own-property';
 
@@ -18,18 +17,18 @@ describe('util hasOwnProperty()', () => {
   it('returns true when an object has a property', () => {
     const result = hasOwnProperty(subject, 'x');
 
-    expect(result).to.be.true;
+    expect(result).toBe(true);
   });
 
   it('returns false when an object\'s prototype has a property', () => {
     const result = hasOwnProperty(subject, 'y');
 
-    expect(result).to.be.false;
+    expect(result).toBe(false);
   });
 
   it('returns false when an object does not have a property', () => {
     const result = hasOwnProperty(subject, 'z');
 
-    expect(result).to.be.false;
+    expect(result).toBe(false);
   });
 });

@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
+
 
 import compact from '../compact';
 
@@ -8,8 +7,9 @@ describe('util compact()', () => {
   it('removes null and undefined values from an `Array`', () => {
     const result = compact([0, 'a', 1, null, {}, undefined, false]);
 
-    expect(result).to.have.lengthOf(5);
-    expect(result).to.not.include.members([null, undefined]);
+    expect(result).toHaveLength(5);
+    expect(result).not.toContain(null);
+    expect(result).not.toContain(undefined);
   });
 
   it('removes null and undefined values from an `Object`', () => {
@@ -27,6 +27,6 @@ describe('util compact()', () => {
       g: undefined
     });
 
-    expect(result).to.deep.equal(values);
+    expect(result).toEqual(values);
   });
 });

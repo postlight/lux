@@ -56,10 +56,8 @@ test:
         parallel: true
     - npm run lint:
         parallel: true
-    - npm test -- -R mocha-junit-reporter:
+    - npm test:
         parallel: true
-        environment:
-          MOCHA_FILE: $CIRCLE_TEST_REPORTS/junit/test-results.xml
   post:
     - npm run codecov:
         parallel: true

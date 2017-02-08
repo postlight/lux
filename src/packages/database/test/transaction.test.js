@@ -1,7 +1,6 @@
 // @flow
 import { spy } from 'sinon';
-import { expect } from 'chai';
-import { it, describe, before, after } from 'mocha';
+
 
 import Model from '../model';
 import {
@@ -17,7 +16,7 @@ describe('module "database/transaction"', () => {
     static tableName = 'posts';
   }
 
-  before(async () => {
+  beforeAll(async () => {
     const { store } = await getTestApp();
 
     await Subject.initialize(store, () => {
@@ -30,7 +29,7 @@ describe('module "database/transaction"', () => {
       // $FlowIgnore
       const proxy = createTransactionResultProxy({}, true);
 
-      expect(proxy.didPersist).to.be.true;
+      expect(proxy.didPersist).toBe(true);
     });
   });
 
@@ -39,11 +38,11 @@ describe('module "database/transaction"', () => {
       let instance: Subject;
       let createSpy;
 
-      before(async () => {
+      beforeAll(async () => {
         createSpy = spy(Subject, 'create');
       });
 
-      after(async () => {
+      afterAll(async () => {
         createSpy.restore();
 
         if (instance) {
@@ -59,7 +58,7 @@ describe('module "database/transaction"', () => {
           return createStaticTransactionProxy(Subject, trx).create(args[0]);
         });
 
-        expect(createSpy.calledWith(...args)).to.be.true;
+        expect(createSpy.calledWith(...args)).toBe(true);
       });
     });
   });
@@ -70,14 +69,14 @@ describe('module "database/transaction"', () => {
         let instance: Subject;
         let methodSpy;
 
-        before(async () => {
+        beforeAll(async () => {
           await Subject.create().then(proxy => {
             instance = proxy.unwrap();
             methodSpy = spy(instance, method);
           });
         });
 
-        after(async () => {
+        afterAll(async () => {
           methodSpy.restore();
 
           if (method !== 'destroy') {
@@ -113,7 +112,7 @@ describe('module "database/transaction"', () => {
             return promise;
           });
 
-          expect(methodSpy.calledWith(...args)).to.be.true;
+          expect(methodSpy.calledWith(...args)).toBe(true);
         });
       });
     });

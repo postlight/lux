@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe, before, beforeEach } from 'mocha';
+
 
 import Namespace from '../namespace';
 
@@ -17,15 +16,15 @@ describe('module "router/namespace"', () => {
       let controllers;
       let createRootNamespace;
       const expectNamspaceToBeValid = (subject: Namespace, name, path) => {
-        expect(subject).to.be.an.instanceof(Namespace);
-        expect(subject).to.have.property('name', name);
-        expect(subject).to.have.property('path', path);
-        expect(subject).to.have.property('namespace', root);
-        expect(subject).to.have.property('controller', controller);
-        expect(subject).to.have.property('controllers', controllers);
+        expect(subject instanceof Namespace).toBe(true);
+        expect(subject.name).toBe(name);
+        expect(subject.path).toBe(path);
+        expect(subject.namespace).toBe(root);
+        expect(subject.controller).toBe(controller);
+        expect(subject.controllers).toBe(controllers);
       };
 
-      before(async () => {
+      beforeAll(async () => {
         const app = await getTestApp();
 
         controllers = app.controllers;

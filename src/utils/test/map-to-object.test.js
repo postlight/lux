@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
+
 
 import mapToObject from '../map-to-object';
 
@@ -12,7 +11,7 @@ describe('util mapToObject()', () => {
         ['y', 2],
         ['z', 3]
       ])
-    )).to.deep.equal({
+    )).toEqual({
       x: 1,
       y: 2,
       z: 3

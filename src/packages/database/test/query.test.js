@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe, before, beforeEach } from 'mocha';
+
 
 import Query from '../query';
 import Model from '../model';
@@ -57,10 +56,10 @@ describe('module "database/query"', () => {
     }
 
     const assertItem = item => {
-      expect(item).to.be.an.instanceof(TestModel);
+      expect(item instanceof TestModel).toBe(true);
     };
 
-    before(async () => {
+    beforeAll(async () => {
       const { store } = await getTestApp();
 
       Comment = store.modelFor('comment');
@@ -73,7 +72,7 @@ describe('module "database/query"', () => {
     describe('.from()', () => {
       let source;
 
-      before(() => {
+      beforeAll(() => {
         source = new Query(TestModel)
           .limit(10)
           .order('title', 'DESC')
@@ -92,12 +91,12 @@ describe('module "database/query"', () => {
         const result = Query.from(source);
 
         expect(result).to.not.equal(source);
-        expect(result.model).to.equal(source.model);
-        expect(result.isFind).to.equal(source.isFind);
-        expect(result.collection).to.equal(source.collection);
-        expect(result.shouldCount).to.equal(source.shouldCount);
-        expect(result.snapshots).to.deep.equal(source.snapshots);
-        expect(result.relationships).to.equal(source.relationships);
+        expect(result.model).toBe(source.model);
+        expect(result.isFind).toBe(source.isFind);
+        expect(result.collection).toBe(source.collection);
+        expect(result.shouldCount).toBe(source.shouldCount);
+        expect(result.snapshots).toEqual(source.snapshots);
+        expect(result.relationships).toBe(source.relationships);
       });
     });
 
@@ -111,7 +110,7 @@ describe('module "database/query"', () => {
       it('returns `this`', () => {
         const result = subject.all();
 
-        expect(result).to.equal(subject);
+        expect(result).toBe(subject);
       });
 
       it('does not modify #snapshots', () => {
@@ -143,7 +142,7 @@ describe('module "database/query"', () => {
           isPublic: true
         });
 
-        expect(result).to.equal(subject);
+        expect(result).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
@@ -151,7 +150,7 @@ describe('module "database/query"', () => {
           isPublic: true
         });
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['whereNot', { 'posts.is_public': true }]
         ]);
       });
@@ -162,7 +161,7 @@ describe('module "database/query"', () => {
           isPublic: true
         });
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['whereNotIn', ['posts.id', [1, 2, 3]]],
           ['whereNot', { 'posts.is_public': true }]
         ]);
@@ -173,12 +172,12 @@ describe('module "database/query"', () => {
           isPublic: true
         });
 
-        expect(result).to.be.an('array');
+        expect(result).toBe(expect.any(Array));
 
         if (Array.isArray(result)) {
           result.forEach(item => {
             assertItem(item);
-            expect(item).to.have.property('isPublic', false);
+            expect(item.isPublic).toBe(false);
           });
         }
       });
@@ -194,13 +193,13 @@ describe('module "database/query"', () => {
       it('returns `this`', () => {
         const result = subject.find(1);
 
-        expect(result).to.equal(subject);
+        expect(result).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
         const result = subject.find(1);
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['where', { 'posts.id': 1 }],
           ['limit', 1]
         ]);
@@ -209,13 +208,13 @@ describe('module "database/query"', () => {
       it('sets #isFind to `true`', () => {
         const result = subject.find(1);
 
-        expect(result.isFind).to.be.true;
+        expect(result.isFind).toBe(true);
       });
 
       it('sets #collection to `false`', () => {
         const result = subject.find(1);
 
-        expect(result.collection).to.be.false;
+        expect(result.collection).toBe(false);
       });
 
       it('does not add a limit to #snapshots if #shouldCount', () => {
@@ -223,7 +222,7 @@ describe('module "database/query"', () => {
 
         const result = subject.find(1);
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['where', { 'posts.id': 1 }]
         ]);
       });
@@ -247,13 +246,13 @@ describe('module "database/query"', () => {
       it('returns `this`', () => {
         const result = subject.page(2);
 
-        expect(result).to.equal(subject);
+        expect(result).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
         const result = subject.page(2);
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['limit', 25],
           ['offset', 25]
         ]);
@@ -264,7 +263,7 @@ describe('module "database/query"', () => {
 
         const result = subject.page(2);
 
-        expect(result.snapshots).to.have.lengthOf(0);
+        expect(result.snapshots).toHaveLength(0);
       });
 
       it('resolves with the correct array of `Model` instances', async () => {
@@ -288,13 +287,13 @@ describe('module "database/query"', () => {
       it('returns `this`', () => {
         const result = subject.limit(5);
 
-        expect(result).to.equal(subject);
+        expect(result).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
         const result = subject.limit(5);
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['limit', 5]
         ]);
       });
@@ -304,7 +303,7 @@ describe('module "database/query"', () => {
 
         const result = subject.limit(5);
 
-        expect(result.snapshots).to.have.lengthOf(0);
+        expect(result.snapshots).toHaveLength(0);
       });
 
       it('resolves with the correct array of `Model` instances', async () => {
@@ -328,13 +327,13 @@ describe('module "database/query"', () => {
       it('returns `this`', () => {
         const result = subject.order('id', 'DESC');
 
-        expect(result).to.equal(subject);
+        expect(result).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
         const result = subject.order('id', 'DESC');
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['orderByRaw', 'posts.id DESC']
         ]);
       });
@@ -342,7 +341,7 @@ describe('module "database/query"', () => {
       it('defaults sort direction to `ASC`', () => {
         const result = subject.order('id');
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['orderByRaw', 'posts.id ASC']
         ]);
       });
@@ -352,7 +351,7 @@ describe('module "database/query"', () => {
 
         const result = subject.order('id', 'DESC');
 
-        expect(result.snapshots).to.have.lengthOf(0);
+        expect(result.snapshots).toHaveLength(0);
       });
 
       it('resolves with the correct array of `Model` instances', async () => {
@@ -364,7 +363,7 @@ describe('module "database/query"', () => {
         if (Array.isArray(result)) {
           result.forEach((item, index) => {
             assertItem(item);
-            expect(item).to.have.property('id', limit - index);
+            expect(item.id).toBe(limit - index);
           });
         }
       });
@@ -382,7 +381,7 @@ describe('module "database/query"', () => {
           isPublic: true
         });
 
-        expect(result).to.equal(subject);
+        expect(result).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
@@ -390,7 +389,7 @@ describe('module "database/query"', () => {
           isPublic: true
         });
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['where', { 'posts.is_public': true }]
         ]);
       });
@@ -401,7 +400,7 @@ describe('module "database/query"', () => {
           isPublic: true
         });
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['whereIn', ['posts.id', [1, 2, 3]]],
           ['where', { 'posts.is_public': true }]
         ]);
@@ -412,12 +411,12 @@ describe('module "database/query"', () => {
           isPublic: true
         });
 
-        expect(result).to.be.an('array');
+        expect(result).toBe(expect.any(Array));
 
         if (Array.isArray(result)) {
           result.forEach(item => {
             assertItem(item);
-            expect(item).to.have.property('isPublic', true);
+            expect(item.isPublic).toBe(true);
           });
         }
       });
@@ -433,13 +432,13 @@ describe('module "database/query"', () => {
       it('returns `this`', () => {
         const result = subject.first();
 
-        expect(result).to.equal(subject);
+        expect(result).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
         const result = subject.first();
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['orderByRaw', 'posts.id ASC'],
           ['limit', 1]
         ]);
@@ -448,13 +447,13 @@ describe('module "database/query"', () => {
       it('sets #collection to `false`', () => {
         const result = subject.first();
 
-        expect(result.collection).to.be.false;
+        expect(result.collection).toBe(false);
       });
 
       it('respects order if one already exists', () => {
         const result = subject.order('createdAt', 'DESC').first();
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['orderByRaw', 'posts.created_at DESC, posts.id DESC'],
           ['limit', 1]
         ]);
@@ -465,7 +464,7 @@ describe('module "database/query"', () => {
 
         const result = subject.first();
 
-        expect(result.snapshots).to.have.lengthOf(0);
+        expect(result.snapshots).toHaveLength(0);
       });
 
       it('resolves with the correct `Model` instance', async () => {
@@ -487,13 +486,13 @@ describe('module "database/query"', () => {
       it('returns `this`', () => {
         const result = subject.last();
 
-        expect(result).to.equal(subject);
+        expect(result).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
         const result = subject.last();
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['orderByRaw', 'posts.id DESC'],
           ['limit', 1]
         ]);
@@ -502,13 +501,13 @@ describe('module "database/query"', () => {
       it('sets #collection to `false`', () => {
         const result = subject.last();
 
-        expect(result.collection).to.be.false;
+        expect(result.collection).toBe(false);
       });
 
       it('respects order if one already exists', () => {
         const result = subject.order('createdAt', 'DESC').last();
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['orderByRaw', 'posts.created_at DESC, posts.id DESC'],
           ['limit', 1]
         ]);
@@ -519,7 +518,7 @@ describe('module "database/query"', () => {
 
         const result = subject.last();
 
-        expect(result.snapshots).to.have.lengthOf(0);
+        expect(result.snapshots).toHaveLength(0);
       });
 
       it('resolves with the correct `Model` instance', async () => {
@@ -541,13 +540,13 @@ describe('module "database/query"', () => {
       it('returns `this`', () => {
         const result = subject.count();
 
-        expect(result).to.equal(subject);
+        expect(result).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
         const result = subject.count();
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['count', '* as countAll']
         ]);
       });
@@ -555,7 +554,7 @@ describe('module "database/query"', () => {
       it('sets #shouldCount to `true`', () => {
         const result = subject.count();
 
-        expect(result).to.have.property('shouldCount', true);
+        expect(result.shouldCount).toBe(true);
       });
 
       it('removes all snapshots except for filter conditions', () => {
@@ -566,7 +565,7 @@ describe('module "database/query"', () => {
           .where({ isPublic: true })
           .count();
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['count', '* as countAll'],
           ['where', { 'posts.is_public': true }]
         ]);
@@ -575,7 +574,7 @@ describe('module "database/query"', () => {
       it('resolves with the number of matching records', async () => {
         const result = await subject.count();
 
-        expect(result).to.equal(100);
+        expect(result).toBe(100);
       });
     });
 
@@ -589,13 +588,13 @@ describe('module "database/query"', () => {
       it('returns `this`', () => {
         const result = subject.offset(10);
 
-        expect(result).to.equal(subject);
+        expect(result).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
         const result = subject.offset(10);
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['offset', 10]
         ]);
       });
@@ -605,7 +604,7 @@ describe('module "database/query"', () => {
 
         const result = subject.offset(10);
 
-        expect(result.snapshots).to.have.lengthOf(0);
+        expect(result.snapshots).toHaveLength(0);
       });
 
       it('resolves with the correct array of `Model` instances', async () => {
@@ -630,13 +629,13 @@ describe('module "database/query"', () => {
       it('returns `this`', () => {
         const result = subject.select(...attrs);
 
-        expect(result).to.equal(subject);
+        expect(result).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
         const result = subject.select(...attrs);
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['select', [
             'posts.id AS id',
             'posts.title AS title',
@@ -648,12 +647,12 @@ describe('module "database/query"', () => {
       it('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.select(...attrs);
 
-        expect(result).to.be.an('array');
+        expect(result).toBe(expect.any(Array));
 
         if (Array.isArray(result)) {
           result.forEach(item => {
             assertItem(item);
-            expect(item.rawColumnData).to.have.all.keys(attrs);
+            expect(Object.keys(item.rawColumnData)).toEqual(attrs);;
           });
         }
       });
@@ -670,13 +669,13 @@ describe('module "database/query"', () => {
       it('returns `this`', () => {
         const result = subject.distinct(...attrs);
 
-        expect(result).to.equal(subject);
+        expect(result).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
         const result = subject.distinct(...attrs);
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['distinct', ['posts.title AS title']],
           ['select', []]
         ]);
@@ -685,12 +684,12 @@ describe('module "database/query"', () => {
       it('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.distinct(...attrs);
 
-        expect(result).to.be.an('array');
+        expect(result).toBe(expect.any(Array));
 
         if (Array.isArray(result)) {
           result.forEach(item => {
             assertItem(item);
-            expect(item.rawColumnData).to.have.all.keys(attrs);
+            expect(Object.keys(item.rawColumnData)).toEqual(attrs);;
           });
         }
       });
@@ -713,7 +712,7 @@ describe('module "database/query"', () => {
 
         expect(relationships).to.have.property('comments');
 
-        expect(comments).to.have.all.keys([
+        expect(comments).toEqual([
           'attrs',
           'type',
           'model',
@@ -721,10 +720,10 @@ describe('module "database/query"', () => {
           'foreignKey'
         ]);
 
-        expect(comments).to.have.property('type', 'hasMany');
-        expect(comments).to.have.property('model', Comment);
-        expect(comments).to.have.property('through', undefined);
-        expect(comments).to.have.property('foreignKey', 'post_id');
+        expect(comments.type).toBe('hasMany');
+        expect(comments.model).toBe(Comment);
+        expect(comments.through).toBe(undefined);
+        expect(comments.foreignKey).toBe('post_id');
 
         expect(comments)
           .to.have.property('attrs')
@@ -738,7 +737,7 @@ describe('module "database/query"', () => {
       it('returns `this`', () => {
         const result = subject.include('user', 'comments');
 
-        expect(result).to.equal(subject);
+        expect(result).toBe(subject);
       });
 
       it('properly modifies #snapshots when using an array of strings', () => {
@@ -820,7 +819,7 @@ describe('module "database/query"', () => {
       it('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.include('user', 'comments');
 
-        expect(result).to.be.an('array');
+        expect(result).toBe(expect.any(Array));
 
         if (Array.isArray(result)) {
           result.forEach(assertItem);
@@ -841,7 +840,7 @@ describe('module "database/query"', () => {
           .select('id', 'title')
           .limit(10);
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['where', { 'posts.is_public': true }, 'isPublic'],
           ['select', ['posts.id AS id', 'posts.title AS title']],
           ['limit', 10]
@@ -855,7 +854,7 @@ describe('module "database/query"', () => {
           .limit(10)
           .isPublic();
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['select', ['posts.id AS id', 'posts.title AS title']],
           ['limit', 10],
           ['where', { 'posts.is_public': true }, 'isPublic']
@@ -873,7 +872,7 @@ describe('module "database/query"', () => {
       it('returns `this`', () => {
         const result = subject.isPublic().unscope('isPublic');
 
-        expect(result).to.equal(subject);
+        expect(result).toBe(subject);
       });
 
       it('removes a named scope from #snapshots', () => {
@@ -883,7 +882,7 @@ describe('module "database/query"', () => {
           .limit(10)
           .unscope('isPublic');
 
-        expect(result.snapshots).to.deep.equal([
+        expect(result.snapshots).toEqual([
           ['select', ['posts.id AS id', 'posts.title AS title']],
           ['limit', 10]
         ]);

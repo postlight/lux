@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe, before, after } from 'mocha';
+
 
 import Migration from '../migration';
 import generateTimestamp, {
@@ -13,7 +12,7 @@ describe('module "database/migration"', () => {
   describe('class Migration', () => {
     let store;
 
-    before(async () => {
+    beforeAll(async () => {
       const app = await getTestApp();
 
       store = app.store;
@@ -23,7 +22,7 @@ describe('module "database/migration"', () => {
       const tableName = 'migration_test';
       let subject;
 
-      before(() => {
+      beforeAll(() => {
         subject = new Migration(schema => {
           return schema.createTable(tableName, table => {
             table.increments();
@@ -40,7 +39,7 @@ describe('module "database/migration"', () => {
         });
       });
 
-      after(async () => {
+      afterAll(async () => {
         await store.schema().dropTable(tableName);
       });
 
@@ -48,7 +47,7 @@ describe('module "database/migration"', () => {
         return subject
           .run(store.schema())
           .then(result => {
-            expect(result).to.be.ok;
+            expect(result).not.toThrow();
           });
       });
     });
@@ -58,9 +57,7 @@ describe('module "database/migration"', () => {
 describe('module "database/migration/utils/generate-timestamp"', () => {
   describe('.generateTimestamp()', () => {
     it('generates a timestamp string', () => {
-      const result = generateTimestamp();
-
-      expect(result).to.be.a('string').and.match(/^\d{16}$/g);
+      expect(generateTimestamp()).toMatch(/^\d{16}$/g);
     });
   });
 
@@ -69,23 +66,23 @@ describe('module "database/migration/utils/generate-timestamp"', () => {
       const iter = padding('w', 3);
       let next = iter.next();
 
-      expect(next).to.have.property('value', 'w');
-      expect(next).to.have.property('done', false);
+      expect(next.value).toBe('w');
+      expect(next.done).toBe(false);
 
       next = iter.next();
 
-      expect(next).to.have.property('value', 'w');
-      expect(next).to.have.property('done', false);
+      expect(next.value).toBe('w');
+      expect(next.done).toBe(false);
 
       next = iter.next();
 
-      expect(next).to.have.property('value', 'w');
-      expect(next).to.have.property('done', false);
+      expect(next.value).toBe('w');
+      expect(next.done).toBe(false);
 
       next = iter.next();
 
-      expect(next).to.have.property('value', undefined);
-      expect(next).to.have.property('done', true);
+      expect(next.value).toBe(undefined);
+      expect(next.done).toBe(true);
     });
   });
 });

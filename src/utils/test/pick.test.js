@@ -1,12 +1,9 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
-
 import pick from '../pick';
 
 describe('util pick()', () => {
   it('filters out keys that are not passed as arguments', () => {
-    expect(pick({ a: 1, b: 2, c: 3 }, 'a', 'c')).to.deep.equal({ a: 1, c: 3 });
+    expect(pick({ a: 1, b: 2, c: 3 }, 'a', 'c')).toEqual({ a: 1, c: 3 });
   });
 
   it('does not mutate the source object', () => {
@@ -14,6 +11,6 @@ describe('util pick()', () => {
 
     pick(subject, 'a', 'c');
 
-    expect(subject).to.deep.equal({ a: 1, b: 2, c: 3 });
+    expect(subject).toEqual({ a: 1, b: 2, c: 3 });
   });
 });

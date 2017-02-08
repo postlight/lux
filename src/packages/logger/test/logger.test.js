@@ -1,7 +1,5 @@
 // @flow
 
-import { expect } from 'chai';
-import { it, describe, before, afterEach } from 'mocha';
 
 import Logger, { line } from '../index';
 
@@ -13,7 +11,7 @@ describe('module "logger"', () => {
     let disabledLogger: Logger;
     let unhookWrite: ?() => void;
 
-    before(async () => {
+    beforeAll(async () => {
       const baseConfig = {
         level: 'INFO',
         format: 'json',
@@ -35,8 +33,8 @@ describe('module "logger"', () => {
     it('writes to stdout at the logger level', (done) => {
       unhookWrite = hookWrite((line) => {
         const { message, level } = JSON.parse(line);
-        expect(message).to.equal(TEST_MESSAGE);
-        expect(level).to.equal('INFO');
+        expect(message).toBe(TEST_MESSAGE);
+        expect(level).toBe('INFO');
         done();
       });
       jsonLogger.info(TEST_MESSAGE);
@@ -45,8 +43,8 @@ describe('module "logger"', () => {
     it('does write messages above the logger level', (done) => {
       unhookWrite = hookWrite((line) => {
         const { message, level } = JSON.parse(line);
-        expect(message).to.equal(TEST_MESSAGE);
-        expect(level).to.equal('WARN');
+        expect(message).toBe(TEST_MESSAGE);
+        expect(level).toBe('WARN');
         done();
       });
       jsonLogger.warn(TEST_MESSAGE);
@@ -64,7 +62,7 @@ describe('module "logger"', () => {
       const oldTimestamp = Date.now();
       unhookWrite = hookWrite((line) => {
         const { timestamp } = JSON.parse(line);
-        expect(Date.parse(timestamp)).to.equal(oldTimestamp);
+        expect(Date.parse(timestamp)).toBe(oldTimestamp);
         done();
       });
       jsonLogger.info(TEST_MESSAGE);
@@ -73,7 +71,7 @@ describe('module "logger"', () => {
     it('writes json', (done) => {
       unhookWrite = hookWrite((line) => {
         line = line.trim();
-        expect(JSON.stringify(JSON.parse(line))).to.equal(line);
+        expect(JSON.stringify(JSON.parse(line))).toBe(line);
         done();
       });
       jsonLogger.info(TEST_MESSAGE);
@@ -95,7 +93,7 @@ describe('module "logger"', () => {
         is
         a
         test
-      `).to.equal('this is a test');
+      `).toBe('this is a test');
     });
   });
 });

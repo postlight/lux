@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, before, describe } from 'mocha';
+
 
 import Route from '../route';
 import Router from '../index';
@@ -17,7 +16,7 @@ describe('module "router"', () => {
     let controller: Controller;
     let controllers;
 
-    before(async () => {
+    beforeAll(async () => {
       const app = await getTestApp();
 
       controllers = app.controllers;
@@ -39,7 +38,7 @@ describe('module "router"', () => {
           }
         });
 
-        expect(subject.has('GET:/users')).to.be.true;
+        expect(subject.has('GET:/users')).toBe(true);
       });
     });
 
@@ -54,15 +53,15 @@ describe('module "router"', () => {
           }
         });
 
-        expect(subject.has('GET:/posts')).to.be.true;
-        expect(subject.has('GET:/posts/:dynamic')).to.be.true;
-        expect(subject.has('POST:/posts')).to.be.true;
-        expect(subject.has('PATCH:/posts/:dynamic')).to.be.true;
-        expect(subject.has('DELETE:/posts/:dynamic')).to.be.true;
-        expect(subject.has('HEAD:/posts')).to.be.true;
-        expect(subject.has('HEAD:/posts/:dynamic')).to.be.true;
-        expect(subject.has('OPTIONS:/posts')).to.be.true;
-        expect(subject.has('OPTIONS:/posts/:dynamic')).to.be.true;
+        expect(subject.has('GET:/posts')).toBe(true);
+        expect(subject.has('GET:/posts/:dynamic')).toBe(true);
+        expect(subject.has('POST:/posts')).toBe(true);
+        expect(subject.has('PATCH:/posts/:dynamic')).toBe(true);
+        expect(subject.has('DELETE:/posts/:dynamic')).toBe(true);
+        expect(subject.has('HEAD:/posts')).toBe(true);
+        expect(subject.has('HEAD:/posts/:dynamic')).toBe(true);
+        expect(subject.has('OPTIONS:/posts')).toBe(true);
+        expect(subject.has('OPTIONS:/posts/:dynamic')).toBe(true);
       });
 
       it('throws an error when a controller is missing', () => {
@@ -75,7 +74,7 @@ describe('module "router"', () => {
               this.resource('articles');
             }
           });
-        }).to.throw(ReferenceError, CONTROLLER_MISSING_MESSAGE);
+        }).toThrow();
       });
     });
 
@@ -92,15 +91,15 @@ describe('module "router"', () => {
           }
         });
 
-        expect(subject.has('GET:/admin/posts')).to.be.true;
-        expect(subject.has('GET:/admin/posts/:dynamic')).to.be.true;
-        expect(subject.has('POST:/admin/posts')).to.be.true;
-        expect(subject.has('PATCH:/admin/posts/:dynamic')).to.be.true;
-        expect(subject.has('DELETE:/admin/posts/:dynamic')).to.be.true;
-        expect(subject.has('HEAD:/admin/posts')).to.be.true;
-        expect(subject.has('HEAD:/admin/posts/:dynamic')).to.be.true;
-        expect(subject.has('OPTIONS:/admin/posts')).to.be.true;
-        expect(subject.has('OPTIONS:/admin/posts/:dynamic')).to.be.true;
+        expect(subject.has('GET:/admin/posts')).toBe(true);
+        expect(subject.has('GET:/admin/posts/:dynamic')).toBe(true);
+        expect(subject.has('POST:/admin/posts')).toBe(true);
+        expect(subject.has('PATCH:/admin/posts/:dynamic')).toBe(true);
+        expect(subject.has('DELETE:/admin/posts/:dynamic')).toBe(true);
+        expect(subject.has('HEAD:/admin/posts')).toBe(true);
+        expect(subject.has('HEAD:/admin/posts/:dynamic')).toBe(true);
+        expect(subject.has('OPTIONS:/admin/posts')).toBe(true);
+        expect(subject.has('OPTIONS:/admin/posts/:dynamic')).toBe(true);
       });
 
       it('throws an error when a controller is missing', () => {
@@ -115,14 +114,14 @@ describe('module "router"', () => {
               });
             }
           });
-        }).to.throw(ReferenceError, CONTROLLER_MISSING_MESSAGE);
+        }).toThrow();
       });
     });
 
     describe('#match()', () => {
       let subject: Router;
 
-      before(() => {
+      beforeAll(() => {
         subject = new Router({
           controller,
           controllers,
@@ -142,7 +141,7 @@ describe('module "router"', () => {
           }
         };
 
-        expect(subject.match(req)).to.be.an.instanceof(Route);
+        expect(subject.match(req) instanceof Route).toBe(true);
       });
 
       it('can match a route for a request with a non-dynamic url', () => {
@@ -154,7 +153,7 @@ describe('module "router"', () => {
           }
         };
 
-        expect(subject.match(req)).to.be.an.instanceof(Route);
+        expect(subject.match(req) instanceof Route).toBe(true);
       });
     });
   });

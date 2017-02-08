@@ -1,7 +1,5 @@
 // @flow
 import faker from 'faker';
-import { expect } from 'chai';
-import { it, describe, before, beforeEach, afterEach } from 'mocha';
 
 import Controller from '../index';
 import Serializer from '../../serializer';
@@ -29,14 +27,13 @@ describe('module "controller"', () => {
     ];
 
     const assertRecord = (item, keys = attributes) => {
-      expect(item).to.be.an.instanceof(Post);
-
+      expect(item instanceof Post).toBe(true);
       if (item instanceof Post) {
-        expect(item.rawColumnData).to.have.all.keys(keys);
+        expect(Object.keys(item.rawColumnData)).toEqual(keys);;
       }
     };
 
-    before(async () => {
+    beforeAll(async () => {
       const app = await getTestApp();
       const model = app.models.get('post');
 
@@ -80,7 +77,8 @@ describe('module "controller"', () => {
         const request = createRequest();
         const result = await subject.index(request);
 
-        expect(result).to.be.an('array').with.lengthOf(25);
+        expect(result).toBe(expect.any(Array));
+        expect(result).toHaveLength(25);
         result.forEach(item => assertRecord(item));
       });
 
@@ -93,24 +91,25 @@ describe('module "controller"', () => {
 
         const result = await subject.index(request);
 
-        expect(result).to.be.an('array').with.lengthOf(10);
+        expect(result).toBe(expect.any(Array));
+        expect(result).toHaveLength(10);
         result.forEach(item => assertRecord(item));
       });
 
       it('supports filter parameters', async () => {
-        const request = createRequest({
-          filter: {
-            isPublic: false
-          }
-        });
+        const result = await subject.index(
+          createRequest({
+            filter: {
+              isPublic: false
+            }
+          })
+        );
 
-        const result = await subject.index(request);
-
-        expect(result).to.be.an('array').with.length.above(0);
+        expect(result).toBe(expect.any(Array));
 
         result.forEach(item => {
           assertRecord(item);
-          expect(Reflect.get(item, 'isPublic')).to.be.false;
+          expect(item.rawColumnData.isPublic).toBe(false);
         });
       });
 
@@ -123,7 +122,8 @@ describe('module "controller"', () => {
 
         const result = await subject.index(request);
 
-        expect(result).to.be.an('array').with.lengthOf(25);
+        expect(result).toBe(expect.any(Array));
+        expect(result).toHaveLength(25);
         result.forEach(item => assertRecord(item, ['id', 'title']));
       });
 
@@ -141,15 +141,15 @@ describe('module "controller"', () => {
 
         const result = await subject.index(request);
 
-        expect(result).to.be.an('array').with.lengthOf(25);
-
+        expect(result).toBe(expect.any(Array));
+        expect(result).toHaveLength(25);
         result.forEach(item => {
           assertRecord(item, [
             ...attributes,
             'user'
           ]);
 
-          expect(item.rawColumnData.user).to.have.all.keys([
+          expect(item.rawColumnData.user).toEqual([
             'id',
             'name',
             'email'
@@ -175,7 +175,7 @@ describe('module "controller"', () => {
         const request = createRequest({ id: 1 });
         const result = await subject.show(request);
 
-        expect(result).to.be.ok;
+        expect(result).not.toThrow();
 
         if (result) {
           assertRecord(result);
@@ -186,7 +186,7 @@ describe('module "controller"', () => {
         const request = createRequest({ id: 10000 });
 
         await subject.show(request).catch(err => {
-          expect(err).to.be.an.instanceof(Error);
+          expect(err instanceof Error).toBe(true);
         });
       });
 
@@ -200,7 +200,7 @@ describe('module "controller"', () => {
 
         const result = await subject.show(request);
 
-        expect(result).to.be.ok;
+        expect(result).not.toThrow();
         assertRecord(result, ['id', 'title']);
       });
 
@@ -219,7 +219,7 @@ describe('module "controller"', () => {
 
         const result = await subject.show(request);
 
-        expect(result).to.be.ok;
+        expect(result).not.toThrow();
 
         if (result) {
           assertRecord(result, [
@@ -227,7 +227,7 @@ describe('module "controller"', () => {
             'user'
           ]);
 
-          expect(result.rawColumnData.user).to.have.all.keys([
+          expect(result.rawColumnData.user).toEqual([
             'id',
             'name',
             'email'
@@ -318,9 +318,9 @@ describe('module "controller"', () => {
         const title = Reflect.get(result, 'title');
         const isPublic = Reflect.get(result, 'isPublic');
 
-        expect(user.id).to.equal(1);
-        expect(title).to.equal('#create() Test');
-        expect(isPublic).to.equal(true);
+        expect(user.id).toBe(1);
+        expect(title).toBe('#create() Test');
+        expect(isPublic).toBe(true);
       });
 
       it('sets `response.statusCode` to the number `201`', async () => {
@@ -337,7 +337,7 @@ describe('module "controller"', () => {
 
         result = await subject.create(request, response);
 
-        expect(response.statusCode).to.equal(201);
+        expect(response.statusCode).toBe(201);
       });
 
       it('sets the correct `Location` header', async () => {
@@ -357,7 +357,7 @@ describe('module "controller"', () => {
         const id = Reflect.get(result, 'id');
         const location = response.getHeader('Location');
 
-        expect(location).to.equal(`http://${HOST}/posts/${id}`);
+        expect(location).toBe(`http://${HOST}/posts/${id}`);
       });
     });
 
@@ -397,16 +397,10 @@ describe('module "controller"', () => {
           });
       });
 
-      afterEach(async () => {
-        await record.destroy();
-      });
+      afterEach(() => record.destroy());
 
-      it('returns a record if attribute(s) change', async () => {
-        let item = record;
-        const id = Reflect.get(item, 'id');
-
-        expect(item).to.have.property('isPublic', false);
-
+      it('returns a record if attribute(s) change', () => {
+        const id = record.getPrimaryKey();
         const request = createRequest({
           id,
           type: 'posts',
@@ -417,8 +411,17 @@ describe('module "controller"', () => {
           }
         });
 
-        assertRecord(await subject.update(request));
-        expect(await Post.find(id)).to.have.property('isPublic', true);
+        expect(record.rawColumnData.isPublic).toBe(false);
+
+        return subject
+          .update(request)
+          .then(result => {
+            assertRecord(result);
+            return Post.find(id);
+          })
+          .then(({ rawColumnData: { isPublic } }) => {
+            expect(isPublic).toBe(true);
+          });
       });
 
       it('returns a record if relationships(s) change', async () => {
@@ -427,8 +430,8 @@ describe('module "controller"', () => {
         let comments = await Reflect.get(item, 'comments');
         const id = item.getPrimaryKey();
 
-        expect(user).to.be.null;
-        expect(comments).to.deep.equal([]);
+        expect(user).toBeNull();
+        expect(comments).toEqual([]);
 
         const newUser = await User
           .create({
@@ -486,11 +489,9 @@ describe('module "controller"', () => {
         item = await item.reload().include('user', 'comments');
         ({ rawColumnData: { user, comments } } = item);
 
-        expect(user).to.have.property('id', newUser.getPrimaryKey());
-
-        expect(comments)
-          .to.be.an('array')
-          .with.lengthOf(3);
+        expect(user.id).toBe(newUser.getPrimaryKey());
+        expect(comments).toBe(expect.any(Array));
+        expect(comments).toHaveLength(3);
       });
 
       it('returns the number `204` if no changes occur', async () => {
@@ -504,7 +505,7 @@ describe('module "controller"', () => {
           }
         });
 
-        expect(await subject.update(request)).to.equal(204);
+        expect(await subject.update(request)).toBe(204);
       });
 
       it('throws an error if the record is not found', async () => {
@@ -519,7 +520,7 @@ describe('module "controller"', () => {
         });
 
         await subject.update(request).catch(err => {
-          expect(err).to.be.an.instanceof(Error);
+          expect(err instanceof Error).toBe(true);
         });
       });
 
@@ -540,9 +541,12 @@ describe('module "controller"', () => {
           }
         });
 
-        expect(record).to.have.deep.property(
-          'rawColumnData.title',
-          '#update() Test'
+        expect(record).toEqual(
+          expect.objectContaining({
+            rawColumnData: expect.objectContaining({
+              title: '#update() Test'
+            })
+          })
         );
 
         assertRecord(await subject.update(request), [
@@ -550,9 +554,12 @@ describe('module "controller"', () => {
           'title'
         ]);
 
-        expect(await record.reload()).to.have.deep.property(
-          'rawColumnData.title',
-          'Sparse Field Sets Work With #update()!'
+        expect(await record.reload()).toEqual(
+          expect.objectContaining({
+            rawColumnData: expect.objectContaining({
+              title: 'Sparse Field Sets Work With #update()!'
+            })
+          })
         );
       });
     });
@@ -571,7 +578,7 @@ describe('module "controller"', () => {
         }
       }));
 
-      before(async () => {
+      beforeAll(async () => {
         record = await Post.create({
           title: '#destroy() Test'
         });
@@ -581,10 +588,10 @@ describe('module "controller"', () => {
         const id = Reflect.get(record, 'id');
         const result = await subject.destroy(createRequest({ id }));
 
-        expect(result).to.equal(204);
+        expect(result).toBe(204);
 
         await Post.find(id).catch(err => {
-          expect(err).to.be.an.instanceof(Error);
+          expect(err instanceof Error).toBe(true);
         });
       });
 
@@ -592,7 +599,7 @@ describe('module "controller"', () => {
         const request = createRequest({ id: 10000 });
 
         await subject.destroy(request).catch(err => {
-          expect(err).to.be.an.instanceof(Error);
+          expect(err instanceof Error).toBe(true);
         });
       });
     });
@@ -601,7 +608,7 @@ describe('module "controller"', () => {
       it('returns the number `204`', async () => {
         const result = await subject.preflight();
 
-        expect(result).to.equal(204);
+        expect(result).toBe(204);
       });
     });
   });

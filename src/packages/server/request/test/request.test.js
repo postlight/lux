@@ -1,9 +1,7 @@
 // @flow
 import fetch from 'node-fetch';
-import { expect } from 'chai';
 import { createServer } from 'http';
 import { parse as parseURL } from 'url';
-import { it, describe, before } from 'mocha';
 
 import { MIME_TYPE } from '../../../jsonapi';
 import { getDomain, createRequest, parseRequest } from '../index';
@@ -13,12 +11,12 @@ import { getTestApp } from '../../../../../test/utils/get-test-app';
 const DOMAIN = 'http://localhost:4100';
 
 describe('module "server/request"', () => {
-  let test;
+  let run;
 
-  before(async () => {
+  beforeAll(async () => {
     const { logger, router } = await getTestApp();
 
-    test = (path, opts, fn) => {
+    run = (path, opts, fn) => {
       const server = createServer((req, res) => {
         req = createRequest(req, {
           logger,
@@ -30,7 +28,7 @@ describe('module "server/request"', () => {
           res.end();
         };
 
-        fn(req).then(close, close);
+        Promise.resolve(fn(req)).then(close, close);
       });
 
       const cleanup = () => {
@@ -45,44 +43,40 @@ describe('module "server/request"', () => {
 
   describe('#getDomain()', () => {
     it('returns the domain (`${PROTOCOL}://${HOST}`) of a request', () => {
-      return test('/post', {
+      return run('/post', {
         headers: {
           host: 'localhost'
         }
-      }, async req => {
-        const result = getDomain(req);
-
-        expect(result).to.equal(DOMAIN);
+      }, req => {
+        expect(getDomain(req)).toBe(DOMAIN);
       });
     });
   });
 
   describe('#createRequest()', () => {
     it('can create a Request from an http.IncomingMessage', () => {
-      return test('/posts', {
+      return run('/posts', {
         headers: {
           'x-test': 'true'
         }
-      }, async ({ url, route, method, logger, headers }) => {
-        const parsed = parseURL(`${DOMAIN}/posts`);
-
-        expect(url).to.deep.equal(parsed);
-        expect(route).to.be.ok;
-        expect(method).to.equal('GET');
-        expect(logger).to.equal(logger);
-        expect(headers).to.be.an.instanceof(Map);
-        expect(headers.get('x-test')).to.equal('true');
+      }, ({ url, route, method, logger, headers }) => {
+        expect(url).toEqual(parseURL(`${DOMAIN}/posts`));
+        expect(route).not.toThrow();
+        expect(method).toBe('GET');
+        expect(logger).toBe(logger);
+        expect(headers instanceof Map).toBe(true);
+        expect(headers.get('x-test')).toBe('true');
       });
     });
 
     it('accepts a HTTP-Method-Override header', () => {
-      return test('/posts', {
+      return run('/posts', {
         method: 'POST',
         headers: {
           'HTTP-Method-Override': 'PATCH'
         }
       }, async ({ method }) => {
-        expect(method).to.equal('PATCH');
+        expect(method).toBe('PATCH');
       });
     });
   });
@@ -90,44 +84,37 @@ describe('module "server/request"', () => {
   describe('#parseRequest()', () => {
     it('can parse params from a GET request', () => {
       const now = new Date().toISOString();
-      const url = '/posts?'
+      const url = (
+        '/posts?'
         + 'fields[posts]=body,title'
         + '&fields[users]=name'
         + '&include=user'
         + '&filter[is-public]=true'
         + '&filter[title]=123'
         + '&filter[body]=null'
-        + `&filter[created-at]=${now}`;
+        + `&filter[created-at]=${now}`
+      );
 
-      return test(url, {
+      return run(url, {
         method: 'GET'
       }, async req => {
-        const params = await parseRequest(req);
-
-        expect(params).to.deep.equal({
+        expect(await parseRequest(req)).toEqual({
           fields: ['body', 'title'],
           include: ['user'],
           filter: {
             body: null,
             title: 123,
-            isPublic: true
+            isPublic: true,
+            createdAt: expect.any(Date)
           }
         });
-
-        expect(params)
-          .to.have.deep.property('filter.createdAt')
-          .and.be.an.instanceOf(Date);
-
-        expect(
-          params.filter.createdAt.valueOf()
-        ).to.equal(new Date(now).valueOf());
       });
     });
 
     it('can parse params from a POST request', () => {
       const now = new Date().toISOString();
 
-      return test('/posts?include=user', {
+      return run('/posts?include=user', {
         method: 'POST',
         body: {
           data: {
@@ -170,9 +157,7 @@ describe('module "server/request"', () => {
           'Content-Type': MIME_TYPE
         }
       }, async req => {
-        const params = await parseRequest(req);
-
-        expect(params).to.deep.equal({
+        expect(await parseRequest(req)).toEqual({
           data: {
             type: 'posts',
             attributes: {
@@ -216,7 +201,7 @@ describe('module "server/request"', () => {
     it('can parse params from a PATCH request', () => {
       const now = new Date().toISOString();
 
-      return test('/posts/1?include=user', {
+      return run('/posts/1?include=user', {
         method: 'PATCH',
         data: {
           id: 1,
@@ -258,9 +243,7 @@ describe('module "server/request"', () => {
           'Content-Type': MIME_TYPE
         }
       }, async req => {
-        const params = await parseRequest(req);
-
-        expect(params).to.deep.equal({
+        expect(await parseRequest(req)).toEqual({
           data: {
             type: 'posts',
             attributes: {
@@ -302,7 +285,7 @@ describe('module "server/request"', () => {
     });
 
     it('rejects when a POST request body is invalid', () => {
-      return test('/posts', {
+      return run('/posts', {
         method: 'POST',
         body: '{[{not json,,,,,}]}',
         headers: {
@@ -310,13 +293,13 @@ describe('module "server/request"', () => {
         }
       }, req => {
         return parseRequest(req).catch(err => {
-          expect(err).to.be.an.instanceof(SyntaxError);
+          expect(err instanceof SyntaxError).toBe(true);
         });
       });
     });
 
     it('rejects when a PATCH request body is invalid', () => {
-      return test('/posts', {
+      return run('/posts', {
         method: 'PATCH',
         body: '{[{not json,,,,,}]}',
         headers: {
@@ -324,7 +307,7 @@ describe('module "server/request"', () => {
         }
       }, req => {
         return parseRequest(req).catch(err => {
-          expect(err).to.be.an.instanceof(SyntaxError);
+          expect(err instanceof SyntaxError).toBe(true);
         });
       });
     });

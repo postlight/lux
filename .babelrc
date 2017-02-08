@@ -1,5 +1,28 @@
 {
-  "presets": ["lux"],
-  "minified": true,
-  "comments": false
+  "env": {
+    "development": {
+      "presets": [
+        "lux"
+      ]
+    },
+    "test": {
+      "plugins": [
+        "babel-plugin-transform-class-properties",
+        "babel-plugin-transform-flow-strip-types",
+        "babel-plugin-transform-es2015-modules-commonjs",
+        "babel-plugin-transform-exponentiation-operator",
+        "babel-plugin-transform-async-to-generator",
+        ["transform-object-rest-spread", {
+          "useBuiltIns": true
+        }]
+      ]
+    },
+    "production": {
+      "presets": [
+        "lux"
+      ],
+      "minified": true,
+      "comments": false
+    }
+  }
 }

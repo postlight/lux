@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
+
 
 import insert from '../insert';
 
@@ -10,12 +9,12 @@ describe('util insert()', () => {
 
     insert(subject, [1, 2, 3]);
 
-    expect(subject).to.deep.equal([1, 2, 3]);
+    expect(subject).toEqual([1, 2, 3]);
   });
 
   it('returns the destination `Array`', () => {
     const subject = new Array(3);
 
-    expect(insert(subject, [1, 2, 3])).to.equal(subject);
+    expect(insert(subject, [1, 2, 3])).toBe(subject);
   });
 });

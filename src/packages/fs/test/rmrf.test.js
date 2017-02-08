@@ -1,8 +1,7 @@
 // @flow
 import { tmpdir } from 'os';
 
-import { expect } from 'chai';
-import { it, describe, beforeEach, afterEach } from 'mocha';
+
 
 import { join } from 'path';
 
@@ -28,12 +27,12 @@ describe('module "fs"', () => {
     it('removes a file', async () => {
       const tmpFilePath = await getTmpFile(tmpDirPath);
       await rmrf(tmpFilePath);
-      expect(await exists(tmpFilePath)).to.be.false;
+      expect(await exists(tmpFilePath)).toBe(false);
     });
 
     it('removes a directory and its contents', async () => {
       await rmrf(tmpDirPath);
-      expect(await exists(tmpDirPath)).to.be.false;
+      expect(await exists(tmpDirPath)).toBe(false);
     });
 
     afterEach(async () => {

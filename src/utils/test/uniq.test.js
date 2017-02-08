@@ -1,12 +1,9 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
-
 import uniq from '../uniq';
 
 describe('util uniq()', () => {
   it('removes duplicate items from an `Array`', () => {
-    expect(uniq([1, 1, 2, 2, 3, 3])).to.deep.equal([1, 2, 3]);
+    expect(uniq([1, 1, 2, 2, 3, 3])).toEqual([1, 2, 3]);
   });
 
   it('removes objects with a non-unique key-value pair from an `Array`', () => {
@@ -25,7 +22,7 @@ describe('util uniq()', () => {
       }
     ];
 
-    expect(uniq(subject, 'id')).to.deep.equal([
+    expect(uniq(subject, 'id')).toEqual([
       {
         id: 1,
         name: 'Test 1'
@@ -42,6 +39,6 @@ describe('util uniq()', () => {
 
     uniq(subject);
 
-    expect(subject).to.deep.equal([1, 1, 2, 2, 3, 3]);
+    expect(subject).toEqual([1, 1, 2, 2, 3, 3]);
   });
 });

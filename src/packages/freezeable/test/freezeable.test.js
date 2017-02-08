@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe, before, beforeEach } from 'mocha';
+
 
 import { FreezeableMap, FreezeableSet } from '../index';
 
@@ -9,7 +8,7 @@ describe('module "freezeable"', () => {
     describe('#constructor()', () => {
       let subject;
 
-      before(() => {
+      beforeAll(() => {
         subject = new FreezeableMap([
           ['a', 1],
           ['b', 2],
@@ -18,19 +17,19 @@ describe('module "freezeable"', () => {
       });
 
       it('returns a mutable `Map` interface', () => {
-        expect(subject.size).to.equal(3);
+        expect(subject.size).toBe(3);
 
         subject.clear();
-        expect(subject.size).to.equal(0);
+        expect(subject.size).toBe(0);
 
         subject.set('a', 1).set('b', 2).set('c', 3);
-        expect(subject.size).to.equal(3);
+        expect(subject.size).toBe(3);
 
         subject.set('d', 4);
-        expect(subject.size).to.equal(4);
+        expect(subject.size).toBe(4);
 
         subject.delete('d');
-        expect(subject.size).to.equal(3);
+        expect(subject.size).toBe(3);
       });
     });
 
@@ -53,30 +52,30 @@ describe('module "freezeable"', () => {
       });
 
       it('returns `this`', () => {
-        expect(subject.freeze()).to.equal(subject);
+        expect(subject.freeze()).toBe(subject);
       });
 
       it('is immutable after #freeze is called', () => {
         subject.freeze();
 
         subject.clear();
-        expect(subject.size).to.equal(4);
+        expect(subject.size).toBe(4);
 
         subject.set('a', 1).set('b', 2).set('c', 3);
-        expect(subject.size).to.equal(4);
+        expect(subject.size).toBe(4);
 
         subject.set('d', 4);
-        expect(subject.size).to.equal(4);
+        expect(subject.size).toBe(4);
 
         subject.delete('d');
-        expect(subject.size).to.equal(4);
+        expect(subject.size).toBe(4);
 
-        expect(Object.isFrozen(subject.get('d'))).to.be.false;
+        expect(Object.isFrozen(subject.get('d'))).toBe(false);
       });
 
       it('can recursively freeze members when `deep = true`', () => {
         subject.freeze(true);
-        expect(Object.isFrozen(subject.get('d'))).to.be.true;
+        expect(Object.isFrozen(subject.get('d'))).toBe(true);
       });
     });
   });
@@ -85,24 +84,24 @@ describe('module "freezeable"', () => {
     describe('#constructor()', () => {
       let subject;
 
-      before(() => {
+      beforeAll(() => {
         subject = new FreezeableSet([1, 2, 3]);
       });
 
       it('returns a mutable `Set` interface', () => {
-        expect(subject.size).to.equal(3);
+        expect(subject.size).toBe(3);
 
         subject.clear();
-        expect(subject.size).to.equal(0);
+        expect(subject.size).toBe(0);
 
         subject.add(1).add(2).add(3);
-        expect(subject.size).to.equal(3);
+        expect(subject.size).toBe(3);
 
         subject.add(4);
-        expect(subject.size).to.equal(4);
+        expect(subject.size).toBe(4);
 
         subject.delete(4);
-        expect(subject.size).to.equal(3);
+        expect(subject.size).toBe(3);
       });
     });
 
@@ -120,29 +119,29 @@ describe('module "freezeable"', () => {
       });
 
       it('returns `this`', () => {
-        expect(subject.freeze()).to.equal(subject);
+        expect(subject.freeze()).toBe(subject);
       });
 
       it('is immutable after #freeze is called', () => {
         subject.freeze();
 
-        expect(subject.size).to.equal(4);
+        expect(subject.size).toBe(4);
 
         subject.clear();
-        expect(subject.size).to.equal(4);
+        expect(subject.size).toBe(4);
 
         subject.add(1).add(2).add(3);
-        expect(subject.size).to.equal(4);
+        expect(subject.size).toBe(4);
 
         subject.add(4);
-        expect(subject.size).to.equal(4);
+        expect(subject.size).toBe(4);
 
         subject.delete(4);
-        expect(subject.size).to.equal(4);
+        expect(subject.size).toBe(4);
 
         subject.forEach(member => {
           if (typeof member === 'object') {
-            expect(Object.isFrozen(member)).to.be.false;
+            expect(Object.isFrozen(member)).toBe(false);
           }
         });
       });
@@ -151,7 +150,7 @@ describe('module "freezeable"', () => {
         subject.freeze(true);
         subject.forEach(member => {
           if (typeof member === 'object') {
-            expect(Object.isFrozen(member)).to.be.true;
+            expect(Object.isFrozen(member)).toBe(true);
           }
         });
       });

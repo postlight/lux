@@ -1,7 +1,5 @@
 // @flow
 
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
 
 import getStaticPath from '../utils/get-static-path';
 import getDynamicSegments from '../utils/get-dynamic-segments';
@@ -12,7 +10,7 @@ describe('module "router/route"', () => {
       const path = '/posts/:pid/comments/:cid';
       const staticPath = '/posts/:dynamic/comments/:dynamic';
       const dynamicSegments = getDynamicSegments(path);
-      expect(getStaticPath(path, dynamicSegments)).to.equal(staticPath);
+      expect(getStaticPath(path, dynamicSegments)).toBe(staticPath);
     });
   });
 });

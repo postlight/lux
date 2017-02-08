@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
+
 
 import luxify from '../index';
 
@@ -23,7 +22,7 @@ describe('module "luxify"', () => {
         next();
       });
 
-      expect(subject(request, response)).to.be.a('promise');
+      expect(subject(request, response)).toBe(expect.any(Promise));
     });
 
     it('resolves when Response#end is called', () => {
@@ -32,7 +31,7 @@ describe('module "luxify"', () => {
       });
 
       return subject(request, response).then(data => {
-        expect(data).to.equal('Hello world!');
+        expect(data).toBe('Hello world!');
       });
     });
 
@@ -42,7 +41,7 @@ describe('module "luxify"', () => {
       });
 
       return subject(request, response).then(data => {
-        expect(data).to.equal('Hello world!');
+        expect(data).toBe('Hello world!');
       });
     });
 
@@ -54,7 +53,7 @@ describe('module "luxify"', () => {
       });
 
       return subject(request, response).then(data => {
-        expect(data).to.deep.equal({
+        expect(data).toEqual({
           data: 'Hello world!'
         });
       });
@@ -66,15 +65,15 @@ describe('module "luxify"', () => {
       });
 
       return subject(request, response).catch(err => {
-        expect(err).to.be.a('error');
+        expect(err).toBe(expect.any(Error));
       });
     });
 
     it('properly proxies untrapped response properties', () => {
       luxify((req, res) => {
-        expect(res.getHeader).to.be.a('function');
-        expect(res.setHeader).to.be.a('function');
-        expect(res.removeHeader).to.be.a('function');
+        expect(res.getHeader).toBe(expect.any(Function));
+        expect(res.setHeader).toBe(expect.any(Function));
+        expect(res.removeHeader).toBe(expect.any(Function));
       });
     });
   });

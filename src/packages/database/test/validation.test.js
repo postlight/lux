@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
+
 
 import Validation from '../validation';
 
@@ -16,7 +15,7 @@ describe('module "database/validation"', () => {
           value: 'super-secret-password'
         });
 
-        expect(subject.isValid()).to.be.true;
+        expect(subject.isValid()).toBe(true);
       });
 
       it('returns false when constraints are not met', () => {
@@ -26,7 +25,7 @@ describe('module "database/validation"', () => {
           value: 'pwd'
         });
 
-        expect(subject.isValid()).to.be.false;
+        expect(subject.isValid()).toBe(false);
       });
     });
   });

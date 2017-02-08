@@ -1,0 +1,5 @@
+{
+  "testRegex": "\\.test\\.js",
+  "testEnvironment": "node",
+  "collectCoverage": true
+}

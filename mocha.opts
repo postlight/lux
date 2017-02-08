@@ -1,2 +1,0 @@
---require ./lib/babel-hook.js
-test/index.js src/**/*.test.js

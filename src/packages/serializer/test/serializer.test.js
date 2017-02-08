@@ -1,7 +1,6 @@
 // @flow
 import * as faker from 'faker';
-import { expect } from 'chai';
-import { it, describe, before, beforeEach, afterEach } from 'mocha';
+
 import { dasherize, underscore } from 'inflection';
 
 import Serializer from '../index';
@@ -44,7 +43,7 @@ describe('module "serializer"', () => {
       await Promise.all(promises);
     });
 
-    before(async () => {
+    beforeAll(async () => {
       const { models } = await getTestApp();
       const Tag = models.get('tag');
       const Post = models.get('post');
@@ -250,15 +249,15 @@ describe('module "serializer"', () => {
           .map(comment => comment.getPrimaryKey())
           .map(String);
 
-        expect(result).to.have.property('id', `${postId}`);
-        expect(result).to.have.property('type', 'posts');
-        expect(attributes).to.be.an('object');
-        expect(relationships).to.be.an('object');
-        expect(attributes).to.have.property('body', body);
-        expect(attributes).to.have.property('title', title);
-        expect(attributes).to.have.property('is-public', isPublic);
-        expect(attributes).to.have.property('created-at', createdAt);
-        expect(attributes).to.have.property('updated-at', updatedAt);
+        expect(result.id).toBe(`${postId}`);
+        expect(result.type).toBe('posts');
+        expect(attributes).toBe(expect.any(Object));
+        expect(relationships).toBe(expect.any(Object));
+        expect(attributes.body).toBe(body);
+        expect(attributes.title).toBe(title);
+        expect(attributes['is-public']).toBe(isPublic);
+        expect(attributes['created-at']).toBe(createdAt);
+        expect(attributes['updated-at']).toBe(updatedAt);
 
         let userLink;
 
@@ -269,7 +268,7 @@ describe('module "serializer"', () => {
         }
 
         expect(relationships).to.have.property('user').and.be.an('object');
-        expect(relationships.user).to.deep.equal({
+        expect(relationships.user).toEqual({
           data: {
             id: `${userId}`,
             type: 'users'
@@ -289,7 +288,7 @@ describe('module "serializer"', () => {
           }
 
           expect(relationships).to.have.property('image').and.be.an('object');
-          expect(relationships.image).to.deep.equal({
+          expect(relationships.image).toEqual({
             data: {
               id: `${image.getPrimaryKey()}`,
               type: 'images'
@@ -299,7 +298,7 @@ describe('module "serializer"', () => {
             }
           });
         } else {
-          expect(relationships.image).to.deep.equal({
+          expect(relationships.image).toEqual({
             data: null
           });
         }
@@ -338,7 +337,7 @@ describe('module "serializer"', () => {
           }
         });
 
-        expect(result).to.have.all.keys([
+        expect(result).toEqual([
           'data',
           'links',
           'jsonapi'
@@ -378,7 +377,7 @@ describe('module "serializer"', () => {
           }
         });
 
-        expect(result).to.have.all.keys([
+        expect(result).toEqual([
           'data',
           'links',
           'jsonapi'
@@ -412,7 +411,7 @@ describe('module "serializer"', () => {
           }
         });
 
-        expect(result).to.have.all.keys([
+        expect(result).toEqual([
           'data',
           'links',
           'jsonapi'
@@ -446,7 +445,7 @@ describe('module "serializer"', () => {
           }
         });
 
-        expect(result).to.have.all.keys([
+        expect(result).toEqual([
           'data',
           'links',
           'jsonapi'
@@ -475,7 +474,7 @@ describe('module "serializer"', () => {
           }
         });
 
-        expect(result).to.have.all.keys([
+        expect(result).toEqual([
           'data',
           'links',
           'jsonapi',
@@ -488,10 +487,10 @@ describe('module "serializer"', () => {
 
         const { included: [item] } = result;
 
-        expect(item).to.have.property('id', `${image.getPrimaryKey()}`);
-        expect(item).to.have.property('type', 'images');
+        expect(item.id).toBe(`${image.getPrimaryKey()}`);
+        expect(item.type).toBe('images');
         expect(item).to.have.property('attributes').and.be.an('object');
-        expect(item.attributes).to.have.property('url', image.url);
+        expect(item.attributes.url).toBe(image.url);
       });
 
       it('supports including belongs-to relationships', async () => {
@@ -506,7 +505,7 @@ describe('module "serializer"', () => {
           }
         });
 
-        expect(result).to.have.all.keys([
+        expect(result).toEqual([
           'data',
           'links',
           'jsonapi',
@@ -519,11 +518,11 @@ describe('module "serializer"', () => {
 
         const { included: [item] } = result;
 
-        expect(item).to.have.property('id', `${user.getPrimaryKey()}`);
-        expect(item).to.have.property('type', 'users');
+        expect(item.id).toBe(`${user.getPrimaryKey()}`);
+        expect(item.type).toBe('users');
         expect(item).to.have.property('attributes').and.be.an('object');
-        expect(item.attributes).to.have.property('name', user.name);
-        expect(item.attributes).to.have.property('email', user.email);
+        expect(item.attributes.name).toBe(user.name);
+        expect(item.attributes.email).toBe(user.email);
       });
 
       it('supports including a one-to-many relationship', async () => {
@@ -538,7 +537,7 @@ describe('module "serializer"', () => {
           }
         });
 
-        expect(result).to.have.all.keys([
+        expect(result).toEqual([
           'data',
           'links',
           'jsonapi',
@@ -552,7 +551,7 @@ describe('module "serializer"', () => {
           .with.lengthOf(comments.length);
 
         result.included.forEach(item => {
-          expect(item).to.have.all.keys([
+          expect(item).toEqual([
             'id',
             'type',
             'links',
@@ -560,14 +559,17 @@ describe('module "serializer"', () => {
           ]);
 
           expect(item).to.have.property('id').and.be.a('string');
-          expect(item).to.have.property('type', 'comments');
+          expect(item.type).toBe('comments');
           expect(item).to.have.property('attributes').and.be.an('object');
         });
       });
 
       it('supports including a many-to-many relationship', async () => {
         const post = await createPost();
-        const tags = await Reflect.get(post, 'tags');
+
+        // $FlowIgnore
+        await post.reload().include('tags');
+
         const result = await subject.format({
           data: post,
           domain: DOMAIN,
@@ -577,30 +579,22 @@ describe('module "serializer"', () => {
           }
         });
 
-        expect(result).to.have.all.keys([
-          'data',
-          'links',
-          'jsonapi',
-          'included'
-        ]);
-
         await expectResourceToBeCorrect(post, result.data);
 
-        expect(result.included)
-          .to.be.an('array')
-          .with.lengthOf(tags.length);
+        expect(result).toEqual({
+          data: expect.any(Object),
+          links: expect.any(Object),
+          jsonapi: { verison: JSONAPI_VERSION },
+          included: expect.any(Array),
+        });
 
         result.included.forEach(item => {
-          expect(item).to.have.all.keys([
-            'id',
-            'type',
-            'links',
-            'attributes'
-          ]);
-
-          expect(item).to.have.property('id').and.be.a('string');
-          expect(item).to.have.property('type', 'tags');
-          expect(item).to.have.property('attributes').and.be.an('object');
+          expect(item).toEqual({
+            id: expect.any(String),
+            type: 'tags',
+            links: expect.any(Object),
+            attributes: expect.any(Object),
+          });
         });
       });
     });

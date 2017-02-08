@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
+
 
 import merge from '../merge';
 
@@ -27,7 +26,7 @@ describe('util merge()', () => {
       }
     };
 
-    expect(merge(x, y)).to.deep.equal({
+    expect(merge(x, y)).toEqual({
       a: 1,
       b: '2',
       c: {
@@ -63,7 +62,7 @@ describe('util merge()', () => {
 
     merge(x, y);
 
-    expect(x).to.deep.equal({
+    expect(x).toEqual({
       a: 1,
       b: 2,
       c: {
@@ -74,7 +73,7 @@ describe('util merge()', () => {
       }
     });
 
-    expect(y).to.deep.equal({
+    expect(y).toEqual({
       a: 1,
       b: '2',
       c: {

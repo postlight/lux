@@ -1,7 +1,4 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe, beforeEach } from 'mocha';
-
 import * as proxy from '../proxy';
 
 describe('util proxy', () => {
@@ -43,29 +40,29 @@ describe('util proxy', () => {
     describe('- properties', () => {
       it('captures and returns values defined in as traps', () => {
         // $FlowIgnore
-        expect(proxied.isProxied).to.be.true;
+        expect(proxied.isProxied).toBe(true);
       });
 
       it('forwards unknown properties to the proxy target', () => {
-        expect(proxied.radius).to.equal(base.radius);
+        expect(proxied.radius).toBe(base.radius);
       });
     });
 
     describe('- methods', () => {
       it('captures and returns values defined in as traps', () => {
         // $FlowIgnore
-        expect(proxied.shortArea()).to.equal(314.16);
+        expect(proxied.shortArea()).toBe(314.16);
       });
 
       it('forwards unknown methods to the proxy target', () => {
-        expect(proxied.area()).to.equal(base.area());
+        expect(proxied.area()).toBe(base.area());
       });
     });
 
     describe('#unwrap', () => {
       it('returns the proxy target', () => {
         // $FlowIgnore
-        expect(proxied.unwrap()).to.equal(base);
+        expect(proxied.unwrap()).toBe(base);
       });
     });
   });

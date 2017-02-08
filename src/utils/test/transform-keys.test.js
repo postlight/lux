@@ -1,7 +1,4 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
-
 import {
   transformKeys,
   camelizeKeys,
@@ -31,7 +28,7 @@ describe('util camelizeKeys()', () => {
   };
 
   it('can shallow camelize an objects keys', () => {
-    expect(camelizeKeys(subjectA)).to.deep.equal({
+    expect(camelizeKeys(subjectA)).toEqual({
       keyA: 1,
       keyB: 2,
       keyC: 3,
@@ -41,7 +38,7 @@ describe('util camelizeKeys()', () => {
       }
     });
 
-    expect(camelizeKeys(subjectB)).to.deep.equal({
+    expect(camelizeKeys(subjectB)).toEqual({
       keyA: 1,
       keyB: 2,
       keyC: 3,
@@ -53,7 +50,7 @@ describe('util camelizeKeys()', () => {
   });
 
   it('can deep camelize an objects keys', () => {
-    expect(camelizeKeys(subjectA, true)).to.deep.equal({
+    expect(camelizeKeys(subjectA, true)).toEqual({
       keyA: 1,
       keyB: 2,
       keyC: 3,
@@ -63,7 +60,7 @@ describe('util camelizeKeys()', () => {
       }
     });
 
-    expect(camelizeKeys(subjectB, true)).to.deep.equal({
+    expect(camelizeKeys(subjectB, true)).toEqual({
       keyA: 1,
       keyB: 2,
       keyC: 3,
@@ -97,7 +94,7 @@ describe('util dasherizeKeys()', () => {
   };
 
   it('can shallow dasherize an objects keys', () => {
-    expect(dasherizeKeys(subjectA)).to.deep.equal({
+    expect(dasherizeKeys(subjectA)).toEqual({
       'key-a': 1,
       'key-b': 2,
       'key-c': 3,
@@ -107,7 +104,7 @@ describe('util dasherizeKeys()', () => {
       }
     });
 
-    expect(dasherizeKeys(subjectB)).to.deep.equal({
+    expect(dasherizeKeys(subjectB)).toEqual({
       'key-a': 1,
       'key-b': 2,
       'key-c': 3,
@@ -119,7 +116,7 @@ describe('util dasherizeKeys()', () => {
   });
 
   it('can deep dasherize an objects keys', () => {
-    expect(dasherizeKeys(subjectA, true)).to.deep.equal({
+    expect(dasherizeKeys(subjectA, true)).toEqual({
       'key-a': 1,
       'key-b': 2,
       'key-c': 3,
@@ -129,7 +126,7 @@ describe('util dasherizeKeys()', () => {
       }
     });
 
-    expect(dasherizeKeys(subjectB, true)).to.deep.equal({
+    expect(dasherizeKeys(subjectB, true)).toEqual({
       'key-a': 1,
       'key-b': 2,
       'key-c': 3,
@@ -163,7 +160,7 @@ describe('util underscoreKeys()', () => {
   };
 
   it('can shallow underscore an objects keys', () => {
-    expect(underscoreKeys(subjectA)).to.deep.equal({
+    expect(underscoreKeys(subjectA)).toEqual({
       key_a: 1, // eslint-disable-line camelcase
       key_b: 2, // eslint-disable-line camelcase
       key_c: 3, // eslint-disable-line camelcase
@@ -173,7 +170,7 @@ describe('util underscoreKeys()', () => {
       }
     });
 
-    expect(underscoreKeys(subjectB)).to.deep.equal({
+    expect(underscoreKeys(subjectB)).toEqual({
       key_a: 1, // eslint-disable-line camelcase
       key_b: 2, // eslint-disable-line camelcase
       key_c: 3, // eslint-disable-line camelcase
@@ -185,7 +182,7 @@ describe('util underscoreKeys()', () => {
   });
 
   it('can deep underscore an objects keys', () => {
-    expect(underscoreKeys(subjectA, true)).to.deep.equal({
+    expect(underscoreKeys(subjectA, true)).toEqual({
       key_a: 1, // eslint-disable-line camelcase
       key_b: 2, // eslint-disable-line camelcase
       key_c: 3, // eslint-disable-line camelcase
@@ -195,7 +192,7 @@ describe('util underscoreKeys()', () => {
       }
     });
 
-    expect(underscoreKeys(subjectB, true)).to.deep.equal({
+    expect(underscoreKeys(subjectB, true)).toEqual({
       key_a: 1, // eslint-disable-line camelcase
       key_b: 2, // eslint-disable-line camelcase
       key_c: 3, // eslint-disable-line camelcase
@@ -221,7 +218,7 @@ describe('util transformKeys()', () => {
   it('can shallow transform an objects keys', () => {
     const result = transformKeys(subject, key => `${key}Transformed`);
 
-    expect(result).to.deep.equal({
+    expect(result).toEqual({
       keyATransformed: 1,
       keyBTransformed: 2,
       keyCTransformed: 3,
@@ -235,7 +232,7 @@ describe('util transformKeys()', () => {
   it('can deep transform an objects keys', () => {
     const result = transformKeys(subject, key => `${key}Transformed`, true);
 
-    expect(result).to.deep.equal({
+    expect(result).toEqual({
       keyATransformed: 1,
       keyBTransformed: 2,
       keyCTransformed: 3,
@@ -247,7 +244,7 @@ describe('util transformKeys()', () => {
   });
 
   it('does not mutate the source object', () => {
-    expect(subject).to.deep.equal({
+    expect(subject).toEqual({
       keyA: 1,
       keyB: 2,
       keyC: 3,

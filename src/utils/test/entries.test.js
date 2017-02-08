@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
+
 
 import entries from '../entries';
 
@@ -10,7 +9,7 @@ describe('util entries()', () => {
       a: 1,
       b: 2,
       c: 3
-    })).to.deep.equal([
+    })).toEqual([
       ['a', 1],
       ['b', 2],
       ['c', 3],

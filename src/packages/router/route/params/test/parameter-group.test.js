@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe, before } from 'mocha';
+
 
 import Parameter from '../parameter';
 import ParameterGroup from '../parameter-group';
@@ -9,7 +8,7 @@ describe('module "router/route/params"', () => {
   describe('class ParameterGroup', () => {
     let subject: ParameterGroup;
 
-    before(() => {
+    beforeAll(() => {
       subject = new ParameterGroup([
         ['id', new Parameter({
           type: 'number',
@@ -46,16 +45,16 @@ describe('module "router/route/params"', () => {
     describe('#validate()', () => {
       it('returns null when then value is null', () => {
         // $FlowIgnore
-        expect(subject.validate(null)).to.be.null;
+        expect(subject.validate(null)).toBeNull();
       });
 
       it('fails when required keys are missing', () => {
-        expect(() => subject.validate({})).to.throw(TypeError);
-        expect(() => subject.validate({ id: 1, meta: {} })).to.throw(TypeError);
+        expect(() => subject.validate({})).toThrow();
+        expect(() => subject.validate({ id: 1, meta: {} })).toThrow();
       });
 
       it('fails when there is a type mismatch', () => {
-        expect(() => subject.validate({ id: '1' })).to.throw(TypeError);
+        expect(() => subject.validate({ id: '1' })).toThrow();
         expect(() => {
           subject.validate({
             id: '1',
@@ -63,7 +62,7 @@ describe('module "router/route/params"', () => {
               date: Date.now()
             }
           });
-        }).to.throw(TypeError);
+        }).toThrow();
       });
 
       it('fails when there is a value mismatch', () => {
@@ -75,7 +74,7 @@ describe('module "router/route/params"', () => {
               vowel: 'p'
             }
           });
-        }).to.throw(TypeError);
+        }).toThrow();
       });
 
       it('returns the value(s) when the type and value(s) match', () => {
@@ -87,11 +86,11 @@ describe('module "router/route/params"', () => {
           }
         };
 
-        expect(subject.validate(params)).to.deep.equal(params);
+        expect(subject.validate(params)).toEqual(params);
       });
 
       it('fails when an unsanitized group contains an invalid key', () => {
-        expect(() => subject.validate({ test: true })).to.throw(TypeError);
+        expect(() => subject.validate({ test: true })).toThrow();
       });
 
       it('strips out invalid keys when a group is santized ', () => {
@@ -103,7 +102,7 @@ describe('module "router/route/params"', () => {
           }
         };
 
-        expect(subject.validate(params)).to.deep.equal({
+        expect(subject.validate(params)).toEqual({
           id: 1,
           meta: {
             date: params.meta.date

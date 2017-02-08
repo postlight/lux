@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
+
 
 import * as github from '../github';
 
@@ -12,7 +11,7 @@ describe('util github', () => {
       it('builds the correct url', () => {
         const result = github.fileLink('src/index.js');
 
-        expect(result).to.equal(`${baseURL}/master/src/index.js`);
+        expect(result).toBe(`${baseURL}/master/src/index.js`);
       });
     });
 
@@ -22,7 +21,7 @@ describe('util github', () => {
           branch: 'branch-name'
         });
 
-        expect(result).to.equal(`${baseURL}/branch-name/src/index.js`);
+        expect(result).toBe(`${baseURL}/branch-name/src/index.js`);
       });
     });
 
@@ -32,7 +31,7 @@ describe('util github', () => {
           line: 2
         });
 
-        expect(result).to.equal(`${baseURL}/master/src/index.js#2`);
+        expect(result).toBe(`${baseURL}/master/src/index.js#2`);
       });
 
       it('ignores line if it is > 0', () => {
@@ -40,7 +39,7 @@ describe('util github', () => {
           line: -10
         });
 
-        expect(result).to.equal(`${baseURL}/master/src/index.js`);
+        expect(result).toBe(`${baseURL}/master/src/index.js`);
       });
     });
   });

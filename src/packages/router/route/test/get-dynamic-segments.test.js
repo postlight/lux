@@ -1,7 +1,5 @@
 // @flow
 
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
 
 import getDynamicSegments from '../utils/get-dynamic-segments';
 
@@ -9,7 +7,7 @@ describe('module "router/route"', () => {
   describe('util getDynamicSegments()', () => {
     it('parses the dynamic segments in a path', () => {
       const segments = getDynamicSegments('/posts/:pid/comments/:cid');
-      expect(segments).to.deep.equal(['pid', 'cid']);
+      expect(segments).toEqual(['pid', 'cid']);
     });
 
     it('does not parse static segments in a path', () => {
@@ -21,7 +19,7 @@ describe('module "router/route"', () => {
       const path = '/posts/:pid/comments/:cid';
       const segments = getDynamicSegments(path);
       const segmentsWithTrailingSlash = getDynamicSegments(path + '/');
-      expect(segments).to.deep.equal(segmentsWithTrailingSlash);
+      expect(segments).toEqual(segmentsWithTrailingSlash);
     });
   });
 });

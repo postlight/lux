@@ -1,12 +1,8 @@
 // @flow
 import EventEmitter from 'events';
 
-import { expect } from 'chai';
-import { it, describe, before } from 'mocha';
-
 import { FORMATS } from '../constants';
 import { createRequestLogger } from '../request-logger';
-import sleep from '../../../utils/sleep';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 import {
   createResponse,
@@ -21,7 +17,7 @@ describe('module "logger/request-logger"', () => {
       describe(`- format "${format}"`, () => {
         let subject;
 
-        before(() => {
+        beforeAll(() => {
           const logger = new Logger({
             format,
             level: 'INFO',
@@ -35,16 +31,15 @@ describe('module "logger/request-logger"', () => {
         });
 
         it('returns a request logger function', () => {
-          expect(subject)
-            .to.be.a('function')
-            .with.lengthOf(3);
+          expect(typeof subject).toBe('function');
+          expect(subject).toHaveLength(3);
         });
 
         describe('- logger function', () => {
           let req;
           let res;
 
-          before(async () => {
+          beforeAll(async () => {
             const { router } = await getTestApp();
             const emitter = new EventEmitter();
             const createRequest = createRequestBuilder({
@@ -70,11 +65,8 @@ describe('module "logger/request-logger"', () => {
               subject(req, res, {
                 startTime: Date.now()
               });
-            }).to.not.throw(Error);
-
-            await sleep(10);
+            }).not.toThrow();
             res.emit('finish');
-            await sleep(10);
           });
         });
       });

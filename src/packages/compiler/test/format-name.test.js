@@ -1,8 +1,7 @@
 // @flow
 import path from 'path';
 
-import { expect } from 'chai';
-import { it, describe, beforeEach } from 'mocha';
+
 
 import { getTestApp } from '../../../../test/utils/get-test-app';
 import formatName from '../utils/format-name';
@@ -18,7 +17,7 @@ describe('module "compiler"', () => {
     });
 
     it('transforms an array of keys into identifiers', () => {
-      expect(keys.map(formatName).sort()).to.deep.equal([
+      expect(keys.map(formatName).sort()).toEqual([
         'Actions',
         'Admin$Actions',
         'Admin$Application',

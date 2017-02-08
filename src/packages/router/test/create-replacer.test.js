@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe, before } from 'mocha';
+
 
 import { getTestApp } from '../../../../test/utils/get-test-app';
 import createReplacer from '../utils/create-replacer';
@@ -9,7 +8,7 @@ describe('module "router"', () => {
   describe('util createReplacer()', () => {
     let subject;
 
-    before(async () => {
+    beforeAll(async () => {
       const app = await getTestApp();
       const healthController = app.controllers.get('health');
       // $FlowIgnore
@@ -31,17 +30,17 @@ describe('module "router"', () => {
     });
 
     it('returns an instance of RegExp', () => {
-      expect(subject).to.be.an.instanceOf(RegExp);
+      expect(subject instanceof RegExp).toBe(true);
     });
 
     it('correctly replaces dynamic parts', () => {
       expect(
         'posts/1'.replace(subject, '$1/:dynamic')
-      ).to.equal('posts/:dynamic');
+      ).toBe('posts/:dynamic');
 
       expect(
         'health/1'.replace(subject, '$1/:dynamic')
-      ).to.equal('health/:dynamic');
+      ).toBe('health/:dynamic');
     });
   });
 });

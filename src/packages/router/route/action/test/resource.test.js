@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe, before } from 'mocha';
+
 
 import type Controller from '../../../../controller';
 import type { Request, Response } from '../../../../server';
@@ -60,7 +59,7 @@ describe('module "router/route/action"', () => {
       let subject: Action<any>;
       let createRequest;
 
-      before(async () => {
+      beforeAll(async () => {
         const { router, controllers } = await getTestApp();
 
         // $FlowIgnore
@@ -90,7 +89,7 @@ describe('module "router/route/action"', () => {
       it('resolves with a serialized payload', async () => {
         const result = await subject(createRequest(), createResponse());
 
-        expect(result).to.be.an('object');
+        expect(result).toBe(expect.any(Object));
       });
     });
 
@@ -100,7 +99,7 @@ describe('module "router/route/action"', () => {
         let subject: Action<any>;
         let createRequest;
 
-        before(async () => {
+        beforeAll(async () => {
           const { router, controllers } = await getTestApp();
 
           // $FlowIgnore
@@ -138,7 +137,7 @@ describe('module "router/route/action"', () => {
         let subject: Action<any>;
         let createRequest;
 
-        before(async () => {
+        beforeAll(async () => {
           const { router, controllers } = await getTestApp();
 
           // $FlowIgnore
@@ -176,7 +175,7 @@ describe('module "router/route/action"', () => {
         let subject: Action<any>;
         let createRequest;
 
-        before(async () => {
+        beforeAll(async () => {
           const { router } = await getTestApp();
 
           subject = resource(() => Promise.resolve(null));
@@ -198,7 +197,7 @@ describe('module "router/route/action"', () => {
         it('resolves with the result of the action', async () => {
           const result = await subject(createRequest(), createResponse());
 
-          expect(result).to.be.null;
+          expect(result).toBeNull();
         });
       });
     });

@@ -1,8 +1,6 @@
 // @flow
 import fetch from 'node-fetch';
-import { expect } from 'chai';
 import { createServer } from 'http';
-import { it, before, describe } from 'mocha';
 
 import { MIME_TYPE, VERSION } from '../../../jsonapi';
 import { createRequest } from '../../request';
@@ -14,12 +12,12 @@ import { getTestApp } from '../../../../../test/utils/get-test-app';
 const DOMAIN = 'http://localhost:4100';
 
 describe('module "server/responder"', () => {
-  let test;
+  let run;
 
-  before(async () => {
+  beforeAll(async () => {
     const { logger, router } = await getTestApp();
 
-    test = fn => new Promise((resolve, reject) => {
+    run = fn => new Promise((resolve, reject) => {
       const server = createServer((req, res) => {
         req = createRequest(req, {
           logger,
@@ -51,55 +49,48 @@ describe('module "server/responder"', () => {
 
   describe('#createResponder()', () => {
     it('creates a #respond() function', () => {
-      return test((req, res) => {
+      return run((req, res) => {
         const result = createResponder(req, res);
 
-        expect(result).to.be.a('function');
-        expect(result.length).to.equal(1);
-        expect(result).to.not.throw(Error);
+        expect(result).toBe(expect.any(Function));
+        expect(result.length).toBe(1);
+        expect(result).not.toThrow();
       });
     });
 
     describe('#respond()', () => {
       describe('- responding with a string', () => {
         it('works as expected', async () => {
-          const result = await test((req, res) => {
-            const respond = createResponder(req, res);
-
+          const result = await run((req, res) => {
             res.setHeader('Content-Type', 'text/plain');
-
-            respond('Hello World');
+            createResponder(req, res)('Hello World');
           });
 
-          expect(result.status).to.equal(200);
-          expect(result.headers.get('Content-Type')).to.equal('text/plain');
-          expect(await result.text()).to.equal('Hello World');
+          expect(result.status).toBe(200);
+          expect(result.headers.get('Content-Type')).toBe('text/plain');
+          expect(await result.text()).toBe('Hello World');
         });
       });
 
       describe('- responding with a number', () => {
         it('works with `204`', async () => {
-          const result = await test((req, res) => {
-            const respond = createResponder(req, res);
-
-            respond(204);
+          const result = await run((req, res) => {
+            createResponder(req, res)(204);
           });
 
-          expect(result.status).to.equal(204);
-          expect(result.headers.get('Content-Type')).to.be.null;
-          expect(await result.text()).to.equal('');
+          expect(result.status).toBe(204);
+          expect(result.headers.get('Content-Type')).toBeNull();
+          expect(await result.text()).toBe('');
         });
 
         it('works with `400`', async () => {
-          const result = await test((req, res) => {
-            const respond = createResponder(req, res);
-
-            respond(400);
+          const result = await run((req, res) => {
+            createResponder(req, res)(400);
           });
 
-          expect(result.status).to.equal(400);
-          expect(result.headers.get('Content-Type')).to.equal(MIME_TYPE);
-          expect(await result.json()).to.deep.equal({
+          expect(result.status).toBe(400);
+          expect(result.headers.get('Content-Type')).toBe(MIME_TYPE);
+          expect(await result.json()).toEqual({
             errors: [
               {
                 status: '400',
@@ -115,27 +106,23 @@ describe('module "server/responder"', () => {
 
       describe('- responding with a boolean', () => {
         it('works with `true`', async () => {
-          const result = await test((req, res) => {
-            const respond = createResponder(req, res);
-
-            respond(true);
+          const result = await run((req, res) => {
+            createResponder(req, res)(true);
           });
 
-          expect(result.status).to.equal(204);
-          expect(result.headers.get('Content-Type')).to.be.null;
-          expect(await result.text()).to.equal('');
+          expect(result.status).toBe(204);
+          expect(result.headers.get('Content-Type')).toBeNull();
+          expect(await result.text()).toBe('');
         });
 
         it('works with `false`', async () => {
-          const result = await test((req, res) => {
-            const respond = createResponder(req, res);
-
-            respond(false);
+          const result = await run((req, res) => {
+            createResponder(req, res)(false);
           });
 
-          expect(result.status).to.equal(401);
-          expect(result.headers.get('Content-Type')).to.equal(MIME_TYPE);
-          expect(await result.json()).to.deep.equal({
+          expect(result.status).toBe(401);
+          expect(result.headers.get('Content-Type')).toBe(MIME_TYPE);
+          expect(await result.json()).toEqual({
             errors: [
               {
                 status: '401',
@@ -151,15 +138,13 @@ describe('module "server/responder"', () => {
 
       describe('- responding with an object', () => {
         it('works with `null`', async () => {
-          const result = await test((req, res) => {
-            const respond = createResponder(req, res);
-
-            respond(null);
+          const result = await run((req, res) => {
+            createResponder(req, res)(null);
           });
 
-          expect(result.status).to.equal(404);
-          expect(result.headers.get('Content-Type')).to.equal(MIME_TYPE);
-          expect(await result.json()).to.deep.equal({
+          expect(result.status).toBe(404);
+          expect(result.headers.get('Content-Type')).toBe(MIME_TYPE);
+          expect(await result.json()).toEqual({
             errors: [
               {
                 status: '404',
@@ -173,41 +158,35 @@ describe('module "server/responder"', () => {
         });
 
         it('works with an object', async () => {
-          const result = await test((req, res) => {
-            const respond = createResponder(req, res);
-
-            respond({ test: true });
+          const result = await run((req, res) => {
+            createResponder(req, res)({ test: true });
           });
 
-          expect(result.status).to.equal(200);
-          expect(result.headers.get('Content-Type')).to.equal(MIME_TYPE);
-          expect(await result.json()).to.deep.equal({ test: true });
+          expect(result.status).toBe(200);
+          expect(result.headers.get('Content-Type')).toBe(MIME_TYPE);
+          expect(await result.json()).toEqual({ test: true });
         });
 
         it('works with an array', async () => {
-          const result = await test((req, res) => {
-            const respond = createResponder(req, res);
-
-            respond(['test', true]);
+          const result = await run((req, res) => {
+            createResponder(req, res)(['test', true]);
           });
 
-          expect(result.status).to.equal(200);
-          expect(result.headers.get('Content-Type')).to.equal(MIME_TYPE);
-          expect(await result.json()).to.deep.equal(['test', true]);
+          expect(result.status).toBe(200);
+          expect(result.headers.get('Content-Type')).toBe(MIME_TYPE);
+          expect(await result.json()).toEqual(['test', true]);
         });
       });
 
       describe('- responding with an error', () => {
         it('works with vanilla errors', async () => {
-          const result = await test((req, res) => {
-            const respond = createResponder(req, res);
-
-            respond(new Error('test'));
+          const result = await run((req, res) => {
+            createResponder(req, res)(new Error('test'));
           });
 
-          expect(result.status).to.equal(500);
-          expect(result.headers.get('Content-Type')).to.equal(MIME_TYPE);
-          expect(await result.json()).to.deep.equal({
+          expect(result.status).toBe(500);
+          expect(result.headers.get('Content-Type')).toBe(MIME_TYPE);
+          expect(await result.json()).toEqual({
             errors: [
               {
                 status: '500',
@@ -222,19 +201,17 @@ describe('module "server/responder"', () => {
         });
 
         it('works with errors containing a `statusCode` property', async () => {
-          const result = await test((req, res) => {
-            const respond = createResponder(req, res);
-
+          const result = await run((req, res) => {
             class ForbiddenError extends Error {
               statusCode = 403;
             }
 
-            respond(new ForbiddenError('test'));
+            createResponder(req, res)(new ForbiddenError('test'));
           });
 
-          expect(result.status).to.equal(403);
-          expect(result.headers.get('Content-Type')).to.equal(MIME_TYPE);
-          expect(await result.json()).to.deep.equal({
+          expect(result.status).toBe(403);
+          expect(result.headers.get('Content-Type')).toBe(MIME_TYPE);
+          expect(await result.json()).toEqual({
             errors: [
               {
                 status: '403',
@@ -251,15 +228,13 @@ describe('module "server/responder"', () => {
 
       describe('- responding with undefined', () => {
         it('works as expected', async () => {
-          const result = await test((req, res) => {
-            const respond = createResponder(req, res);
-
-            respond();
+          const result = await run((req, res) => {
+            createResponder(req, res)();
           });
 
-          expect(result.status).to.equal(404);
-          expect(result.headers.get('Content-Type')).to.equal(MIME_TYPE);
-          expect(await result.json()).to.deep.equal({
+          expect(result.status).toBe(404);
+          expect(result.headers.get('Content-Type')).toBe(MIME_TYPE);
+          expect(await result.json()).toEqual({
             errors: [
               {
                 status: '404',

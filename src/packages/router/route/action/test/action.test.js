@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe, before } from 'mocha';
+
 
 import type Controller from '../../../../controller';
 import type { Request, Response } from '../../../../server';
@@ -18,7 +17,7 @@ describe('module "router/route/action"', () => {
     let createRequest;
     let createResponse;
 
-    before(async () => {
+    beforeAll(async () => {
       const { router, controllers } = await getTestApp();
 
       // $FlowIgnore
@@ -48,7 +47,7 @@ describe('module "router/route/action"', () => {
       const fn = result.slice().pop();
       const data = await fn(createRequest(), createResponse());
 
-      expect(data).to.equal(204);
+      expect(data).toBe(204);
     });
   });
 
@@ -111,7 +110,7 @@ describe('module "router/route/action"', () => {
             break;
         }
 
-        expect(createPageLinks(opts)).to.deep.equal(target);
+        expect(createPageLinks(opts)).toEqual(target);
       });
     });
 
@@ -161,7 +160,7 @@ describe('module "router/route/action"', () => {
             break;
         }
 
-        expect(createPageLinks(opts)).to.deep.equal(target);
+        expect(createPageLinks(opts)).toEqual(target);
       });
     });
 
@@ -223,7 +222,7 @@ describe('module "router/route/action"', () => {
             break;
         }
 
-        expect(createPageLinks(opts)).to.deep.equal(target);
+        expect(createPageLinks(opts)).toEqual(target);
       });
     });
 
@@ -233,7 +232,7 @@ describe('module "router/route/action"', () => {
         total: 0
       });
 
-      expect(createPageLinks(opts)).to.deep.equal({
+      expect(createPageLinks(opts)).toEqual({
         self: base,
         first: base,
         last: base,
@@ -252,7 +251,7 @@ describe('module "router/route/action"', () => {
         }
       });
 
-      expect(createPageLinks(opts)).to.deep.equal({
+      expect(createPageLinks(opts)).toEqual({
         self: null,
         first: base,
         last: `${base}?page%5Bnumber%5D=4`,

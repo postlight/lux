@@ -1,6 +1,5 @@
 // @flow
-import { expect } from 'chai';
-import { it, describe, before } from 'mocha';
+
 
 import type { Request } from '../../../../server';
 import getControllerName from '../utils/get-controller-name';
@@ -10,7 +9,7 @@ describe('module "router/route/action"', () => {
   describe('util getControllerName()', () => {
     let subject: Request;
 
-    before(async () => {
+    beforeAll(async () => {
       const { router } = await getTestApp();
 
       // $FlowIgnore
@@ -22,7 +21,7 @@ describe('module "router/route/action"', () => {
     it('returns the correct controller name', () => {
       const result = getControllerName(subject);
 
-      expect(result).to.equal('PostsController');
+      expect(result).toBe('PostsController');
     });
   });
 });

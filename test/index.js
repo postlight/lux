@@ -1,5 +1,4 @@
 // @flow
-import { before } from 'mocha';
 import { resolve as resolvePath } from 'path';
 
 import exec from '../src/utils/exec';
@@ -9,9 +8,7 @@ import { getTestApp } from './utils/get-test-app';
 
 const { env: { APPVEYOR, CIRCLECI } } = process;
 
-before(function (done) {
-  this.timeout(120000);
-
+beforeAll(done => {
   process.once('ready', done);
 
   tryCatch(async () => {
