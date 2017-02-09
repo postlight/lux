@@ -1,19 +1,43 @@
 // @flow
-import { Model } from '../database';
+// eslint-disable-next-line no-unused-vars
+import { Model, Query } from '../database';
+import { line } from '../logger';
 import { getDomain } from '../server';
 import { freezeProps } from '../freezeable';
 import type Serializer from '../serializer';
-import type { Query } from '../database'; // eslint-disable-line max-len, no-duplicate-imports
-import type { Request, Response } from '../server'; // eslint-disable-line max-len, no-duplicate-imports
+// eslint-disable-next-line no-duplicate-imports
+import type { Request, Response } from '../server';
+import type { Thenable } from '../../interfaces';
 
 import findOne from './utils/find-one';
 import findMany from './utils/find-many';
 import resolveRelationships from './utils/resolve-relationships';
-import type {
-  Controller$opts,
-  Controller$beforeAction,
-  Controller$afterAction
-} from './interfaces';
+
+/**
+ * @private
+ */
+export type BeforeAction = (
+  request: Request,
+  response: Response
+) => Promise<any>;
+
+/**
+ * @private
+ */
+export type AfterAction = (
+  request: Request,
+  response: Response,
+  responseData: any
+) => Promise<any>;
+
+/**
+ * @private
+ */
+export type Options<T: Model> = {
+  model?: ?Class<T>;
+  namespace?: string;
+  serializer?: Serializer<T>;
+};
 
 /**
  * ## Overview
@@ -274,7 +298,7 @@ import type {
  * @class Controller
  * @public
  */
-class Controller {
+class Controller<T: Model> {
   /**
    * An array of custom query parameter keys that are allowed to reach a
    * Controller instance from an incoming `HTTP` request.
@@ -397,7 +421,7 @@ class Controller {
    * @default []
    * @public
    */
-  beforeAction: Array<Controller$beforeAction> = [];
+  beforeAction: Array<BeforeAction> = [];
 
   /**
    * Functions to execute on each request handled by a `Controller` after the
@@ -448,7 +472,7 @@ class Controller {
    * @default []
    * @public
    */
-  afterAction: Array<Controller$afterAction> = [];
+  afterAction: Array<AfterAction> = [];
 
   /**
    * The default amount of items to include per each response of the index
@@ -468,7 +492,7 @@ class Controller {
    * @type {Model}
    * @private
    */
-  model: Class<Model>;
+  model: ?Class<T>;
 
   /**
    * A reference to the root Controller for the namespace that a Controller
@@ -478,7 +502,7 @@ class Controller {
    * @type {?Controller}
    * @private
    */
-  parent: ?Controller;
+  parent: ?Controller<*>;
 
   /**
    * The namespace that a Controller instance is a member of.
@@ -506,7 +530,7 @@ class Controller {
    * @type {Map}
    * @private
    */
-  controllers: Map<string, Controller>;
+  controllers: Map<string, Controller<*>>;
 
   /**
    * A boolean value representing whether or not a Controller instance has a
@@ -538,7 +562,7 @@ class Controller {
    */
   hasSerializer: boolean;
 
-  constructor({ model, namespace, serializer }: Controller$opts) {
+  constructor({ model, namespace, serializer }: Options<T>) {
     Object.assign(this, {
       model,
       namespace,
@@ -573,8 +597,14 @@ class Controller {
    * @return {Promise} Resolves with an array of Model instances.
    * @public
    */
-  index(req: Request): Query<Array<Model>> {
-    return findMany(this.model, req);
+  index(request: Request): Thenable<Array<T>> {
+    const { model } = this;
+
+    if (model) {
+      return findMany(model, request);
+    }
+
+    return Query.resolve([]);
   }
 
   /**
@@ -589,8 +619,14 @@ class Controller {
    * id url parameter.
    * @public
    */
-  show(req: Request): Query<Model> {
-    return findOne(this.model, req);
+  show(request: Request): Thenable<?T> {
+    const { model } = this;
+
+    if (model) {
+      return findOne(model, request);
+    }
+
+    return Promise.resolve(null);
   }
 
   /**
@@ -604,8 +640,14 @@ class Controller {
    * @return {Promise} Resolves with the newly created Model instance.
    * @public
    */
-  async create(req: Request, res: Response): Promise<Model> {
+  async create(req: Request, res: Response): Promise<T> {
     const { model } = this;
+
+    if (!model) {
+      throw new Error(line`
+        Controllers without a Model must override the built in "create" action.
+      `);
+    }
 
     const {
       url: {
@@ -629,7 +671,7 @@ class Controller {
       `${getDomain(req) + pathname}/${record.getPrimaryKey()}`
     );
 
-    Reflect.set(res, 'statusCode', 201);
+    res.status(201);
 
     return record.unwrap();
   }
@@ -646,32 +688,36 @@ class Controller {
    * Resolves with the number `204` if no changes occur.
    * @public
    */
-  update(req: Request): Promise<number | Model> {
+  update(request: Request): Promise<?(number | T)> {
     const { model } = this;
 
-    return findOne(model, req)
-      .then(record => {
-        const {
-          params: {
-            data: {
-              attributes,
-              relationships
+    if (model) {
+      return findOne(model, request)
+        .then(record => {
+          const {
+            params: {
+              data: {
+                attributes,
+                relationships
+              }
             }
+          } = request;
+
+          return record.update({
+            ...attributes,
+            ...resolveRelationships(model, relationships)
+          });
+        })
+        .then(record => {
+          if (record.didPersist) {
+            return record.unwrap();
           }
-        } = req;
 
-        return record.update({
-          ...attributes,
-          ...resolveRelationships(model, relationships)
+          return 204;
         });
-      })
-      .then(record => {
-        if (record.didPersist) {
-          return record.unwrap();
-        }
+    }
 
-        return 204;
-      });
+    return Promise.resolve(null);
   }
 
   /**
@@ -685,10 +731,16 @@ class Controller {
    * @return {Promise} Resolves with the number `204`.
    * @public
    */
-  destroy(req: Request): Promise<number> {
-    return findOne(this.model, req)
-      .then(record => record.destroy())
-      .then(() => 204);
+  destroy(request: Request): Promise<?number> {
+    const { model } = this;
+
+    if (model) {
+      return findOne(model, request)
+        .then(record => record.destroy())
+        .then(() => 204);
+    }
+
+    return Promise.resolve(null);
   }
 
   /**

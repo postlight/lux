@@ -110,21 +110,23 @@ function updateBelongsTo({
   trx
 }: Params): Array<Object> {
   if (value instanceof opts.model) {
+    const target = record;
     const inverseOpts = opts.model.relationshipFor(opts.inverse);
     const foreignKeyValue = value.getPrimaryKey();
 
-    Reflect.set(record, opts.foreignKey, foreignKeyValue);
+    // $FlowIgnore
+    target[opts.foreignKey] = foreignKeyValue;
 
     if (inverseOpts && inverseOpts.type === 'hasOne') {
       return [
-        record.constructor
+        target.constructor
           .table()
           .transacting(trx)
           .update(opts.foreignKey, null)
           .where(opts.foreignKey, foreignKeyValue)
           .whereNot(
-            `${record.constructor.tableName}.${record.constructor.primaryKey}`,
-            record.getPrimaryKey()
+            `${target.constructor.tableName}.${target.constructor.primaryKey}`,
+            target.getPrimaryKey()
           )
       ];
     }

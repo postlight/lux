@@ -91,11 +91,14 @@ describe('module "serializer"', () => {
       } = {}, transaction) => {
         let include = [];
         const run = async trx => {
-          const post = await Post.transacting(trx).create({
-            body: faker.lorem.paragraphs(),
-            title: faker.lorem.sentence(),
-            isPublic: faker.random.boolean()
-          });
+          const post = await Post
+            .transacting(trx)
+            .create({
+              body: faker.lorem.paragraphs(),
+              title: faker.lorem.sentence(),
+              isPublic: faker.random.boolean()
+            })
+            .then(record => record.unwrap());
 
           const postId = post.getPrimaryKey();
 
@@ -110,7 +113,8 @@ describe('module "serializer"', () => {
             instances.add(user);
             include = [...include, 'user'];
 
-            Reflect.set(post, 'user', user);
+            // $FlowIgnore
+            post.user = user;
           }
 
           if (includeImage) {
@@ -232,10 +236,14 @@ describe('module "serializer"', () => {
           image,
           comments
         ] = await Promise.all([
-          Reflect.get(post, 'user'),
-          Reflect.get(post, 'tags'),
-          Reflect.get(post, 'image'),
-          Reflect.get(post, 'comments')
+          // $FlowIgnore
+          post.user,
+          // $FlowIgnore
+          post.tags,
+          // $FlowIgnore
+          post.image,
+          // $FlowIgnore
+          post.comments
         ]);
 
         const postId = post.getPrimaryKey();
@@ -329,7 +337,7 @@ describe('module "serializer"', () => {
 
       it('works with a single instance of `Model`', async () => {
         const post = await createPost();
-        const result = await subject.format({
+        const result = subject.format({
           data: post,
           domain: DOMAIN,
           include: [],
@@ -369,7 +377,7 @@ describe('module "serializer"', () => {
           .map(post => post.getPrimaryKey())
           .map(String);
 
-        const result = await subject.format({
+        const result = subject.format({
           data: posts,
           domain: DOMAIN,
           include: [],
@@ -403,7 +411,7 @@ describe('module "serializer"', () => {
         subject = createSerializer('admin');
 
         const post = await createPost();
-        const result = await subject.format({
+        const result = subject.format({
           data: post,
           domain: DOMAIN,
           include: [],
@@ -437,7 +445,7 @@ describe('module "serializer"', () => {
           includeComments: true
         });
 
-        const result = await subject.format({
+        const result = subject.format({
           data: post,
           domain: DOMAIN,
           include: [],
@@ -465,8 +473,9 @@ describe('module "serializer"', () => {
 
       it('supports including a has-one relationship', async () => {
         const post = await createPost();
-        const image = await Reflect.get(post, 'image');
-        const result = await subject.format({
+        // $FlowIgnore
+        const image = await post.image;
+        const result = subject.format({
           data: post,
           domain: DOMAIN,
           include: ['image'],
@@ -496,8 +505,9 @@ describe('module "serializer"', () => {
 
       it('supports including belongs-to relationships', async () => {
         const post = await createPost();
-        const user = await Reflect.get(post, 'user');
-        const result = await subject.format({
+        // $FlowIgnore
+        const user = await post.user;
+        const result = subject.format({
           data: post,
           domain: DOMAIN,
           include: ['user'],
@@ -528,8 +538,9 @@ describe('module "serializer"', () => {
 
       it('supports including a one-to-many relationship', async () => {
         const post = await createPost();
-        const comments = await Reflect.get(post, 'comments');
-        const result = await subject.format({
+        // $FlowIgnore
+        const comments = await post.comments;
+        const result = subject.format({
           data: post,
           domain: DOMAIN,
           include: ['comments'],
@@ -567,8 +578,9 @@ describe('module "serializer"', () => {
 
       it('supports including a many-to-many relationship', async () => {
         const post = await createPost();
-        const tags = await Reflect.get(post, 'tags');
-        const result = await subject.format({
+        // $FlowIgnore
+        const tags = await post.tags;
+        const result = subject.format({
           data: post,
           domain: DOMAIN,
           include: ['tags'],

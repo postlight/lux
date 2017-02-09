@@ -31,8 +31,8 @@
     "max-len": ["error", 80],
     "arrow-parens": 0,
     "comma-dangle": [2, "only-multiline"],
-    "prefer-reflect": 2,
     "global-require": 0,
+    "operator-assignment": 0,
     "class-methods-use-this": 0,
     "no-restricted-syntax": [
       "error",

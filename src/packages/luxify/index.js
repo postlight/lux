@@ -21,7 +21,7 @@ export default function luxify(
 ): Action<any> {
   const result = function (req, res) { // eslint-disable-line func-names
     return new Promise((resolve, reject) => {
-      Reflect.apply(middleware, null, [
+      middleware(
         req,
         createResponseProxy(res, resolve),
         (err) => {
@@ -31,11 +31,11 @@ export default function luxify(
             resolve();
           }
         }
-      ]);
+      );
     });
   };
 
-  Reflect.defineProperty(result, 'name', {
+  Object.defineProperty(result, 'name', {
     value: middleware.name
   });
 

@@ -43,7 +43,7 @@ describe('module "loader"', () => {
 
       result.forEach(value => {
         expect(
-          Reflect.getPrototypeOf(value).name.endsWith('Controller')
+          Object.getPrototypeOf(value).name.endsWith('Controller')
         ).to.be.true;
       });
     });
@@ -64,7 +64,7 @@ describe('module "loader"', () => {
       expect(result).to.be.an.instanceof(FreezeableMap);
 
       result.forEach(value => {
-        expect(Reflect.getPrototypeOf(value).name).to.equal('Model');
+        expect(Object.getPrototypeOf(value).name).to.equal('Model');
       });
     });
 
@@ -83,7 +83,7 @@ describe('module "loader"', () => {
 
       result.forEach(value => {
         expect(
-          Reflect.getPrototypeOf(value).name.endsWith('Serializer')
+          Object.getPrototypeOf(value).name.endsWith('Serializer')
         ).to.be.true;
       });
     });

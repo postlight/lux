@@ -5,7 +5,7 @@ import type Controller from '../../controller';
  * @private
  */
 export default function createReplacer(
-  controllers: Map<string, Controller>
+  controllers: Map<string, Controller<*>>
 ): RegExp {
   const names = Array
     .from(controllers)

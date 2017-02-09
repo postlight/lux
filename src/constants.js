@@ -23,3 +23,4 @@ export const LUX_CONSOLE = ENV.LUX_CONSOLE || false;
 export const PLATFORM = platform();
 export const CIRCLECI = ENV.CIRCLECI;
 export const APPVEYOR = ENV.APPVEYOR;
+export const IS_PRODUCTION = NODE_ENV === 'production';

@@ -10,7 +10,7 @@ export default function hasRequiredParams(
   params: Object
 ): boolean {
   for (const [key, { path, required }] of group) {
-    if (required && !Reflect.has(params, key)) {
+    if (required && !(key in params)) {
       throw new ParameterRequiredError(path);
     }
   }

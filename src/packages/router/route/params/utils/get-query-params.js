@@ -21,7 +21,7 @@ function getPageParam(): [string, ParameterLike] {
  */
 function getSortParam({
   sort
-}: Controller): [string, ParameterLike] {
+}: Controller<*>): [string, ParameterLike] {
   return ['sort', new Parameter({
     path: 'sort',
     type: 'string',
@@ -38,7 +38,7 @@ function getSortParam({
  */
 function getFilterParam({
   filter
-}: Controller): [string, ParameterLike] {
+}: Controller<*>): [string, ParameterLike] {
   return ['filter', new ParameterGroup(filter.map(param => [
     param,
     new Parameter({
@@ -52,48 +52,56 @@ function getFilterParam({
 /**
  * @private
  */
-function getFieldsParam({
-  model,
-  serializer: {
-    hasOne,
-    hasMany,
-    attributes
-  }
-}: Controller): [string, ParameterLike] {
-  const relationships = [...hasOne, ...hasMany];
-
-  return ['fields', new ParameterGroup([
-    [model.resourceName, new Parameter({
-      path: `fields.${model.resourceName}`,
-      type: 'array',
-      values: attributes,
-      sanitize: true
-    })],
-    ...relationships.reduce((result, relationship) => {
-      const opts = model.relationshipFor(relationship);
-
-      if (opts) {
-        return [
-          ...result,
-
-          [opts.model.resourceName, new Parameter({
-            path: `fields.${opts.model.resourceName}`,
-            type: 'array',
-            sanitize: true,
-
-            values: [
-              opts.model.primaryKey,
-              ...opts.model.serializer.attributes
-            ]
-          })]
-        ];
+function getFieldsParam(controller: Controller<*>): [string, ParameterLike] {
+  if (controller.model) {
+    const {
+      model,
+      serializer: {
+        hasOne,
+        hasMany,
+        attributes
       }
+    } = controller;
 
-      return result;
-    }, [])
-  ], {
-    path: 'fields',
-    sanitize: true
+    const relationships = [...hasOne, ...hasMany];
+
+    return ['fields', new ParameterGroup([
+      [model.resourceName, new Parameter({
+        path: `fields.${model.resourceName}`,
+        type: 'array',
+        values: attributes,
+        sanitize: true
+      })],
+      ...relationships.reduce((result, relationship) => {
+        const opts = model.relationshipFor(relationship);
+
+        if (opts) {
+          return [
+            ...result,
+
+            [opts.model.resourceName, new Parameter({
+              path: `fields.${opts.model.resourceName}`,
+              type: 'array',
+              sanitize: true,
+
+              values: [
+                opts.model.primaryKey,
+                ...opts.model.serializer.attributes
+              ]
+            })]
+          ];
+        }
+
+        return result;
+      }, [])
+    ], {
+      path: 'fields',
+      sanitize: true
+    })];
+  }
+
+  return ['fields', new ParameterGroup([], {
+    path: 'fields'
   })];
 }
 
@@ -105,7 +113,7 @@ function getIncludeParam({
     hasOne,
     hasMany
   }
-}: Controller): [string, ParameterLike] {
+}: Controller<*>): [string, ParameterLike] {
   const relationships = [...hasOne, ...hasMany];
 
   return ['include', new Parameter({
@@ -120,7 +128,7 @@ function getIncludeParam({
  */
 export function getCustomParams({
   query
-}: Controller): Array<[string, ParameterLike]> {
+}: Controller<*>): Array<[string, ParameterLike]> {
   return query.map(param => [param, new Parameter({
     path: param
   })]);
@@ -130,7 +138,7 @@ export function getCustomParams({
  * @private
  */
 export function getMemberQueryParams(
-  controller: Controller
+  controller: Controller<*>
 ): Array<[string, ParameterLike]> {
   if (controller.hasModel) {
     return [
@@ -147,7 +155,7 @@ export function getMemberQueryParams(
  * @private
  */
 export function getCollectionQueryParams(
-  controller: Controller
+  controller: Controller<*>
 ): Array<[string, ParameterLike]> {
   if (controller.hasModel) {
     return [

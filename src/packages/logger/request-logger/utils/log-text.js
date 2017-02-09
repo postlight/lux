@@ -50,7 +50,7 @@ export default function logText(logger: Logger, {
       statusColor = 'red';
     }
 
-    let colorStr = Reflect.get(chalk, statusColor);
+    let colorStr = chalk[statusColor];
 
     if (typeof colorStr === 'undefined') {
       colorStr = (str: string) => str;

@@ -13,7 +13,14 @@ import type { Response, Response$opts } from './interfaces';
  * @private
  */
 export function createResponse(res: any, opts: Response$opts): Response {
-  return Object.assign(res, opts, {
-    stats: []
+  const response = res;
+
+  return Object.assign(response, opts, {
+    stats: [],
+
+    status(value: number): Response {
+      response.statusCode = value;
+      return response;
+    }
   });
 }

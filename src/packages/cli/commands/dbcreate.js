@@ -13,7 +13,7 @@ import { createLoader } from '../../loader';
  */
 export function dbcreate() {
   const load = createLoader(CWD);
-  const config = Reflect.get(load('config').database, NODE_ENV);
+  const config = load('config').database[NODE_ENV];
 
   if (!config) {
     throw new DatabaseConfigMissingError(NODE_ENV);

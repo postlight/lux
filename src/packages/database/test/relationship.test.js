@@ -189,11 +189,10 @@ describe('module "database/relationship"', () => {
     let subjectId;
 
     const setup = async () => {
-      subject = await Post.create({
-        title: '#set() test'
-      });
+      subject = await Post
+        .create({ title: '#set() test' })
+        .then(post => post.unwrap());
 
-      subject = subject.unwrap();
       subjectId = subject.getPrimaryKey();
     };
 
@@ -212,11 +211,9 @@ describe('module "database/relationship"', () => {
       beforeEach(async () => {
         await setup();
 
-        image = await Image.create({
-          url: 'http://postlight.com'
-        });
-
-        image = image.unwrap();
+        image = await Image
+          .create({ url: 'http://postlight.com' })
+          .then(img => img.unwrap());
 
         instances.add(image);
         set(subject, 'image', image);
@@ -226,7 +223,8 @@ describe('module "database/relationship"', () => {
 
       it('can add a record to the relationship', async () => {
         expect(image).to.have.property('postId', subjectId);
-        expect(await Reflect.get(image, 'post')).be.an.instanceof(Post);
+        // $FlowIgnore
+        expect(await image.post).be.an.instanceof(Post);
       });
     });
 
@@ -252,14 +250,16 @@ describe('module "database/relationship"', () => {
 
       it('can add a record to the relationship', async () => {
         expect(subject).to.have.property('userId', user.getPrimaryKey());
-        expect(await Reflect.get(subject, 'user')).to.be.an.instanceof(User);
+        // $FlowIgnore
+        expect(await subject.user).to.be.an.instanceof(User);
       });
 
       it('can remove a record from the relationship', async () => {
         set(subject, 'user', null);
 
         expect(subject).to.have.property('userId', null);
-        expect(await Reflect.get(subject, 'user')).to.be.null;
+        // $FlowIgnore
+        expect(await subject.user).to.be.null;
       });
     });
 

@@ -49,13 +49,13 @@ export function createRunner(target: Query<*>, opts: {
           name = 'select';
         }
 
-        const method = Reflect.get(query, name);
+        const method = query[name];
 
         if (!Array.isArray(params)) {
           params = [params];
         }
 
-        return Reflect.apply(method, query, params);
+        return method.apply(query, params);
       }, model.table());
 
       if (model.store.debug) {

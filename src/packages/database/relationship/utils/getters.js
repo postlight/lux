@@ -27,7 +27,7 @@ async function getHasManyThrough(owner: Model, {
     if (records.length) {
       value = await model.where({
         [model.primaryKey]: records
-          .map(record => Reflect.get(record, foreignKey))
+          .map(record => record[foreignKey])
           .filter(Boolean)
       });
     }
@@ -66,7 +66,8 @@ export function getBelongsTo(owner: Model, {
   model,
   foreignKey
 }: Relationship$opts) {
-  const foreignValue = Reflect.get(owner, foreignKey);
+  // $FlowIgnore
+  const foreignValue = owner[foreignKey];
 
   return foreignValue ? model.find(foreignValue) : Promise.resolve(null);
 }

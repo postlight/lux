@@ -4,29 +4,39 @@ import type Controller from '../../../../controller';
 /**
  * @private
  */
-export default function getDefaultMemberParams({
-  model,
-  serializer: {
-    hasOne,
-    hasMany,
-    attributes
+function getDefaultMemberParams(controller: Controller<*>): Object {
+  if (controller.model) {
+    const {
+      model,
+      serializer: {
+        hasOne,
+        hasMany,
+        attributes
+      }
+    } = controller;
+
+    return {
+      fields: {
+        [model.resourceName]: attributes,
+        ...[...hasOne, ...hasMany].reduce((include, key) => {
+          const opts = model.relationshipFor(key);
+
+          if (!opts) {
+            return include;
+          }
+
+          return {
+            ...include,
+            [opts.model.resourceName]: [opts.model.primaryKey]
+          };
+        }, {})
+      }
+    };
   }
-}: Controller): Object {
+
   return {
-    fields: {
-      [model.resourceName]: attributes,
-      ...[...hasOne, ...hasMany].reduce((include, key) => {
-        const opts = model.relationshipFor(key);
-
-        if (!opts) {
-          return include;
-        }
-
-        return {
-          ...include,
-          [opts.model.resourceName]: [opts.model.primaryKey]
-        };
-      }, {})
-    }
+    fields: {}
   };
 }
+
+export default getDefaultMemberParams;

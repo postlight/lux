@@ -41,15 +41,21 @@ export function freezeProps<T>(
   makePublic: boolean,
   ...props: Array<string>
 ): T {
-  Object.defineProperties(target, props.reduce((obj, key) => ({
-    ...obj,
-    [key]: {
-      value: Reflect.get(target, key),
+  const properties = props.reduce((obj, key) => {
+    const result = obj;
+
+    result[key] = {
+      // $FlowIgnore
+      value: target[key],
       writable: false,
       enumerable: makePublic,
       configurable: false,
-    }
-  }), {}));
+    };
+
+    return result;
+  }, {});
+
+  Object.defineProperties(target, properties);
 
   return target;
 }
@@ -62,8 +68,10 @@ export function deepFreezeProps<T>(
   makePublic: boolean,
   ...props: Array<string>
 ): T {
-  Object.defineProperties(target, props.reduce((obj, key) => {
-    let value = Reflect.get(target, key);
+  const properties = props.reduce((obj, key) => {
+    const result = obj;
+    // $FlowIgnore
+    let value = target[key];
 
     if (Array.isArray(value)) {
       value = freezeArray(value);
@@ -71,16 +79,17 @@ export function deepFreezeProps<T>(
       value = freezeValue(value);
     }
 
-    return {
-      ...obj,
-      [key]: {
-        value,
-        writable: false,
-        enumerable: makePublic,
-        configurable: false,
-      }
+    result[key] = {
+      value,
+      writable: false,
+      enumerable: makePublic,
+      configurable: false,
     };
-  }, {}));
+
+    return result;
+  }, {});
+
+  Object.defineProperties(target, properties);
 
   return target;
 }

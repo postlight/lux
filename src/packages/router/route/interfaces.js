@@ -12,5 +12,5 @@ export type Route$opts = {
   path: string;
   action: string;
   method: Request$method;
-  controller: Controller;
+  controller: Controller<*>;
 };

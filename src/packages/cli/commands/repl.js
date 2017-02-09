@@ -7,9 +7,8 @@ import type Application from '../../application';
 
 export function repl(): Promise<void> {
   return new Promise(async (resolve) => {
-    const app: Application = await Reflect.apply(require, null, [
-      path.join(CWD, 'dist', 'boot')
-    ]);
+    // $FlowIgnore
+    const app: Application = require(path.join(CWD, 'dist', 'boot'));
 
     const instance = startRepl({
       prompt: '> '

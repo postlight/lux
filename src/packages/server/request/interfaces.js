@@ -63,7 +63,7 @@ declare export class Request extends stream$Readable {
   defaultParams: Request$params;
   route: Route;
   action: string;
-  controller: Controller;
+  controller: Controller<*>;
   url: Request$url;
 
   connection: {

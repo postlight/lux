@@ -19,9 +19,9 @@ class Namespace extends FreezeableSet<Route | Router$Namespace> {
 
   namespace: Router$Namespace;
 
-  controller: Controller;
+  controller: Controller<*>;
 
-  controllers: Map<string, Controller>;
+  controllers: Map<string, Controller<*>>;
 
   constructor({
     name,

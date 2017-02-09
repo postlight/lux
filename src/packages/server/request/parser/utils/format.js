@@ -78,10 +78,12 @@ export function formatSort(sort: string): string {
  * @private
  */
 export function formatFields(fields: Object): Object {
-  return entries(fields).reduce((result, [key, value]) => ({
-    ...result,
-    [key]: makeArray(value)
-  }), {});
+  return entries(fields).reduce((obj, [key, value]) => {
+    const result = obj;
+
+    result[key] = makeArray(value);
+    return result;
+  }, {});
 }
 
 /**
@@ -96,30 +98,29 @@ export function formatInclude(include: string | Array<string>): Array<string> {
  */
 export default function format(params: Object, method: Request$method): Object {
   const result = entries(params).reduce((obj, param) => {
+    const data = obj;
     const [, value] = param;
     let [key] = param;
+    let formatted;
 
     key = key.replace(BRACKETS, '');
 
     switch (typeof value) {
       case 'object':
-        return {
-          ...obj,
-          [key]: isNull(value) ? null : formatObject(value, method, format)
-        };
+        formatted = isNull(value) ? null : formatObject(value, method, format);
+        break;
 
       case 'string':
-        return {
-          ...obj,
-          [key]: formatString(value, key === 'id' ? 'GET' : method)
-        };
+        formatted = formatString(value, key === 'id' ? 'GET' : method);
+        break;
 
       default:
-        return {
-          ...obj,
-          [key]: value
-        };
+        formatted = value;
+        break;
     }
+
+    data[key] = formatted;
+    return data;
   }, {});
 
   return camelizeKeys(result, true);

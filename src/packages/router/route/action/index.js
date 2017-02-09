@@ -1,4 +1,6 @@
 // @flow
+import { IS_PRODUCTION } from '../../../../constants';
+import insert from '../../../../utils/insert';
 import type Controller from '../../../controller';
 
 import resource from './enhancers/resource';
@@ -11,25 +13,26 @@ import type { Action } from './interfaces';
 export function createAction(
   type: string,
   action: Action<any>,
-  controller: Controller
+  controller: Controller<*>
 ): Array<Action<any>> {
-  let fn = action.bind(controller);
+  let controllerAction = action.bind(controller);
 
   if (type !== 'custom' && controller.hasModel && controller.hasSerializer) {
-    fn = resource(fn);
+    controllerAction = resource(controllerAction);
   }
 
-  return [
+  let handlers = [
     ...controller.beforeAction,
-    // eslint-disable-next-line no-underscore-dangle
-    function __FINAL_HANDLER__(req, res) {
-      return fn(req, res);
-    },
-    ...controller.afterAction,
-  ].map(trackPerf);
+    controllerAction,
+    ...controller.afterAction
+  ];
+
+  if (!IS_PRODUCTION) {
+    handlers = handlers.map(trackPerf);
+  }
+
+  return insert(new Array(handlers.length), handlers);
 }
 
-export { FINAL_HANDLER } from './constants';
 export { default as createPageLinks } from './utils/create-page-links';
-
 export type { Action } from './interfaces';

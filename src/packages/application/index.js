@@ -88,7 +88,7 @@ class Application {
    * @type {Map}
    * @private
    */
-  controllers: FreezeableMap<string, Controller>;
+  controllers: FreezeableMap<string, Controller<*>>;
 
   /**
    * A map containing each `Serializer` instance.

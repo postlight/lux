@@ -3,17 +3,14 @@ import { expect } from 'chai';
 import { it, describe, before, beforeEach } from 'mocha';
 
 import Namespace from '../namespace';
-
-import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/get-test-app';
-
 import type Controller from '../../controller';
 
 describe('module "router/namespace"', () => {
   describe('class Namespace', () => {
     describe('#constructor()', () => {
       let root;
-      let controller: Controller;
+      let controller: Controller<*>;
       let controllers;
       let createRootNamespace;
       const expectNamspaceToBeValid = (subject: Namespace, name, path) => {
@@ -27,20 +24,25 @@ describe('module "router/namespace"', () => {
 
       before(async () => {
         const app = await getTestApp();
+        const rootController = app.controllers.get('application');
+        const namespaceController = controllers.get('admin/application');
+
+        if (!rootController) {
+          throw new Error('Could not find controller "application".');
+        }
+
+        if (!namespaceController) {
+          throw new Error('Could not find controller "admin/application".');
+        }
 
         controllers = app.controllers;
-
-        controller = setType(() => {
-          return controllers.get('admin/application');
-        });
+        controller = namespaceController;
 
         createRootNamespace = (): Namespace => new Namespace({
           controllers,
           path: '/',
           name: 'root',
-          controller: setType(() => {
-            return app.controllers.get('application');
-          })
+          controller: rootController
         });
       });
 

@@ -35,7 +35,7 @@ export default (name: string, attrs: Array<string>) => {
           .pipe(str => camelize(str, true))
           .value();
 
-        const value = Reflect.get(types, key);
+        const value = types[key];
 
         if (value) {
           const inverse = camelize(normalized, true);

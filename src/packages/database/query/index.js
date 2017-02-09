@@ -446,16 +446,12 @@ class Query<+T: any> extends Promise {
       relationships
     } = src;
 
-    const dest = Reflect.construct(this, [model]);
-
-    Object.assign(dest, {
+    return Object.assign(new this(model), {
       snapshots,
       collection,
       shouldCount,
       relationships
     });
-
-    return dest;
   }
 }
 

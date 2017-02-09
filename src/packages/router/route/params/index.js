@@ -69,7 +69,7 @@ export function defaultParamsFor({
   controller
 }: {
   type: string;
-  controller: Controller
+  controller: Controller<*>
 }): Object {
   const { hasModel } = controller;
 

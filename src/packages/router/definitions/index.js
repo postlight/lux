@@ -40,7 +40,7 @@ export function build<T: Router$Namespace>(builder?: () => void, namespace: T) {
   }
 
   if (builder) {
-    Reflect.apply(builder, context, []);
+    builder.call(context);
   }
 
   return namespace;

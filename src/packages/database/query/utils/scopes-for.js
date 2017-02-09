@@ -1,17 +1,20 @@
 // @flow
+import type { ObjectMap } from '../../../../interfaces';
 import type Query from '../index';
 
-export default function scopesFor<T>(target: Query<T>): {
-  [key: string]: () => Query<T>
-} {
-  return Object.keys(target.model.scopes).reduce((scopes, name) => ({
-    ...scopes,
-    [name]: {
+export default function scopesFor<T>(
+  target: Query<T>
+): ObjectMap<string, (...args: Array<any>) => Query<T>> {
+  return Object.keys(target.model.scopes).reduce((scopes, name) => {
+    const result = scopes;
+
+    result[name] = {
       get() {
         // eslint-disable-next-line func-names
         const scope = function (...args: Array<any>) {
-          const fn = Reflect.get(target.model, name);
-          const { snapshots } = Reflect.apply(fn, target.model, args);
+          // $FlowIgnore
+          const fn = target.model[name];
+          const { snapshots } = fn.apply(target.model, args);
 
           Object.assign(target, {
             snapshots: [
@@ -26,7 +29,7 @@ export default function scopesFor<T>(target: Query<T>): {
           return target;
         };
 
-        Reflect.defineProperty(scope, 'name', {
+        Object.defineProperty(scope, 'name', {
           value: name,
           writable: false,
           enumerable: false,
@@ -35,6 +38,8 @@ export default function scopesFor<T>(target: Query<T>): {
 
         return scope;
       }
-    }
-  }), {});
+    };
+
+    return result;
+  }, {});
 }

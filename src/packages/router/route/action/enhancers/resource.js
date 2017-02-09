@@ -9,72 +9,71 @@ import type { Action } from '../interfaces';
 */
 export default function resource(action: Action<any>): Action<any> {
   // eslint-disable-next-line func-names
-  const resourceAction = async function (req, res) {
-    const { route: { action: actionName } } = req;
-    const result = action(req, res);
-    let links = {};
-    let data;
-    let total;
+  const resourceAction = function (req, res) {
+    const isIndex = req.route.action === 'index';
 
-    if (actionName === 'index' && result instanceof Query) {
-      [data, total] = await Promise.all([
-        result,
-        Query.from(result).count()
-      ]);
-    } else {
-      data = await result;
+    const init = [
+      action(req, res),
+      Promise.resolve(0)
+    ];
+
+    if (isIndex && init[0] instanceof Query) {
+      init[1] = Query.from(init[0]).count();
     }
 
-    if (Array.isArray(data) || (data && data.isModelInstance)) {
-      const domain = getDomain(req);
+    return Promise
+      .all(init)
+      .then(([data, total]) => {
+        if (Array.isArray(data) || (data && data.isModelInstance)) {
+          const domain = getDomain(req);
+          let links = {};
 
-      const {
-        params,
-        url: {
-          path,
-          pathname
-        },
-        route: {
-          controller: {
-            namespace,
-            serializer,
-            defaultPerPage
+          const {
+            params,
+            url: {
+              path,
+              pathname
+            },
+            route: {
+              controller: {
+                namespace,
+                serializer,
+                defaultPerPage
+              }
+            }
+          } = req;
+
+          if (isIndex) {
+            links = createPageLinks({
+              params,
+              domain,
+              pathname,
+              defaultPerPage,
+              total: total || 0
+            });
+          } else if (namespace) {
+            links = {
+              self: domain.replace(`/${namespace}`, '') + path
+            };
+          } else {
+            links = {
+              self: domain + path
+            };
           }
+
+          return serializer.format({
+            data,
+            links,
+            domain,
+            include: params.include || []
+          });
         }
-      } = req;
 
-      const include = params.include || [];
-
-      if (actionName === 'index') {
-        links = createPageLinks({
-          params,
-          domain,
-          pathname,
-          defaultPerPage,
-          total: total || 0
-        });
-      } else if (actionName !== 'index' && namespace) {
-        links = {
-          self: domain.replace(`/${namespace}`, '') + path
-        };
-      } else if (actionName !== 'index' && !namespace) {
-        links = {
-          self: domain + path
-        };
-      }
-
-      return serializer.format({
-        data,
-        links,
-        domain,
-        include
+        return data;
       });
-    }
-
-    return data;
   };
 
-  Reflect.defineProperty(resourceAction, 'name', {
+  Object.defineProperty(resourceAction, 'name', {
     value: action.name
   });
 

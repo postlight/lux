@@ -56,7 +56,7 @@ class ParameterGroup extends FreezeableMap<string, ParameterLike> {
         const match = this.get(key);
 
         if (match) {
-          Reflect.set(validated, key, match.validate(value));
+          validated[key] = match.validate(value);
         } else if (!match && !sanitize) {
           throw new InvalidParameterError(`${path}${key}`);
         }

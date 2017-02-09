@@ -21,7 +21,7 @@ export default function paramsToQuery(model: Class<Model>, {
   let query = {
     id,
     filter,
-    select: [model.primaryKey, ...Reflect.get(fields, model.resourceName)]
+    select: [model.primaryKey, ...fields[model.resourceName]]
   };
 
   if (page) {

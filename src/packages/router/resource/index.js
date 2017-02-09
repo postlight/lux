@@ -15,7 +15,7 @@ class Resource extends Namespace {
   constructor({ only, ...opts }: Resource$opts) {
     super(opts);
 
-    Reflect.defineProperty(this, 'only', {
+    Object.defineProperty(this, 'only', {
       value: new FreezeableSet(normalizeOnly(only)),
       writable: false,
       enumerable: false,

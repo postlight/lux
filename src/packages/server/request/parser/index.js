@@ -11,10 +11,9 @@ export function parseRequest(req: Request): Promise<Object> {
   switch (req.method) {
     case 'POST':
     case 'PATCH':
-      return parseWrite(req).then(params => ({
-        ...parseRead(req),
-        ...params
-      }));
+      return parseWrite(req).then(params => (
+        Object.assign(params, parseRead(req))
+      ));
 
     default:
       return Promise.resolve(parseRead(req));

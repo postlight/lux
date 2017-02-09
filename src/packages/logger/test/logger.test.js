@@ -106,7 +106,7 @@ function hookWrite (cb) {
 
   const cbWrapper = (...args) => {
     if (isLoggerData(...args)) {
-      Reflect.apply(cb, null, args);
+      cb(...args);
     }
   };
 

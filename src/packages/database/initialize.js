@@ -20,7 +20,7 @@ export default async function initialize<T: Database>(
   const { path, models, logger, checkMigrations } = opts;
   let { config } = opts;
 
-  config = Reflect.get(config, NODE_ENV);
+  config = config[NODE_ENV];
 
   if (!config) {
     throw new ConfigMissingError(NODE_ENV);
@@ -29,7 +29,7 @@ export default async function initialize<T: Database>(
   const {
     debug = (NODE_ENV === 'development')
   }: {
-    debug: boolean
+    debug?: boolean
   } = config;
 
   Object.defineProperties(instance, {

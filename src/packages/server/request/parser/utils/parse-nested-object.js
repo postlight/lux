@@ -7,23 +7,23 @@ const DELIMITER = /^(.+)\[(.+)]$/g;
  * @private
  */
 export default function parseNestedObject(source: Object): Object {
-  return entries(source).reduce((result, [key, value]) => {
+  return entries(source).reduce((obj, [key, value]) => {
+    const result = obj;
+
     if (DELIMITER.test(key)) {
       const parentKey = key.replace(DELIMITER, '$1');
-      const parentValue = Reflect.get(result, parentKey);
+      let parentValue = result[parentKey];
 
-      return {
-        ...result,
-        [parentKey]: {
-          ...(parentValue || {}),
-          [key.replace(DELIMITER, '$2')]: value
-        }
-      };
+      if (!parentValue) {
+        parentValue = {};
+        result[parentKey] = parentValue;
+      }
+
+      parentValue[key.replace(DELIMITER, '$2')] = value;
+    } else {
+      result[key] = value;
     }
 
-    return {
-      ...result,
-      [key]: value
-    };
+    return result;
   }, {});
 }

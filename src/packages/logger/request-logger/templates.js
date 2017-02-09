@@ -41,8 +41,8 @@ export const debugTemplate = ({
 }: RequestLogger$templateData) => `\
 ${line`
   Processed ${cyan(`${method}`)} "${path}" from ${remoteAddress}
-  with ${Reflect.apply(colorStr, null, [`${statusCode}`])}
-  ${Reflect.apply(colorStr, null, [`${statusMessage}`])} by ${
+  with ${colorStr(String(statusCode))}
+  ${colorStr(String(statusMessage))} by ${
     route
     ? `${yellow(route.controller.constructor.name)}#${blue(route.action)}`
     : null
@@ -91,9 +91,9 @@ export const infoTemplate = ({
 Processed ${cyan(`${method}`)} "${path}" ${magenta('Params')} ${
   JSON.stringify(params)} from ${remoteAddress
 } in ${(endTime - startTime).toString()} ms with ${
-  Reflect.apply(colorStr, null, [`${statusCode}`])
+  colorStr(String(statusCode))
 } ${
-  Reflect.apply(colorStr, null, [`${statusMessage}`])
+  colorStr(String(statusMessage))
 } by ${
   route
   ? `${yellow(route.controller.constructor.name)}#${blue(route.action)}`

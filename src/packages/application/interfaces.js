@@ -10,7 +10,7 @@ export type Application$opts = Config & {
   database: Database$config;
 };
 
-export type Application$factoryOpts<T: Controller | Serializer<*>> = {
+export type Application$factoryOpts<T: Controller<*> | Serializer<*>> = {
   key: string;
   store: Database;
   parent: ?T;

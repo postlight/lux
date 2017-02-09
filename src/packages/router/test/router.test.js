@@ -14,7 +14,7 @@ const CONTROLLER_MISSING_MESSAGE = /Could not resolve controller by name '.+'/;
 
 describe('module "router"', () => {
   describe('class Router', () => {
-    let controller: Controller;
+    let controller: Controller<*>;
     let controllers;
 
     before(async () => {

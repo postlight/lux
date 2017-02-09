@@ -48,7 +48,7 @@ export default async function initialize<T: Application>(app: T, {
   );
 
   models.forEach(model => {
-    Reflect.defineProperty(model, 'serializer', {
+    Object.defineProperty(model, 'serializer', {
       value: closestChild(serializers, model.resourceName),
       writable: false,
       enumerable: false,
@@ -67,7 +67,7 @@ export default async function initialize<T: Application>(app: T, {
   );
 
   controllers.forEach(controller => {
-    Reflect.defineProperty(controller, 'controllers', {
+    Object.defineProperty(controller, 'controllers', {
       value: controllers,
       writable: true,
       enumerable: false,

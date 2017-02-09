@@ -16,13 +16,17 @@ import Route from '../index';
 describe('module "router/route"', () => {
   describe('class Route', () => {
     describe('#constructor()', () => {
-      let controller: Controller;
+      let controller: Controller<*>;
 
       before(async () => {
         const { controllers } = await getTestApp();
+        const postsController = controllers.get('posts');
 
-        // $FlowIgnore
-        controller = controllers.get('posts');
+        if (!postsController) {
+          throw new Error('Could not find controller "posts".');
+        }
+
+        controller = postsController;
       });
 
       it('creates an instance of route', () => {
@@ -327,7 +331,7 @@ describe('module "router/route"', () => {
     });
 
     describe('#visit', () => {
-      let controller: Controller;
+      let controller: Controller<*>;
 
       before(async () => {
         const { controllers } = await getTestApp();

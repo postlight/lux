@@ -57,6 +57,8 @@ function initializeProps(prototype, attributes, relationships) {
 function initializeHooks({ model, hooks, logger }) {
   return Object.freeze(
     entries(hooks).reduce((obj, [key, value]) => {
+      const result = obj;
+
       if (!VALID_HOOKS.has(key)) {
         logger.warn(line`
           Invalid hook '${key}' will not be added to Model '${model.name}'.
@@ -65,15 +67,14 @@ function initializeHooks({ model, hooks, logger }) {
           }.
         `);
 
-        return obj;
+        return result;
       }
 
-      return {
-        ...obj,
-        [key]: async (instance, transaction) => {
-          await Reflect.apply(value, model, [instance, transaction]);
-        }
-      };
+      result[key] = (instance, transaction) => Promise.resolve(
+        value.call(model, instance, transaction)
+      );
+
+      return result;
     }, {})
   );
 }

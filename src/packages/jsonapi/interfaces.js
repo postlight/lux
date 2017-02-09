@@ -6,7 +6,7 @@ type JSONAPI$value =
   | ?JSONAPI$BaseObject
   | Array<JSONAPI$BaseObject>;
 
-interface JSONAPI$BaseObject {
+type JSONAPI$BaseObject = {
   [key: void | string]: JSONAPI$value;
   meta?: JSONAPI$BaseObject;
 }
@@ -75,7 +75,6 @@ export interface JSONAPI$ErrorObject {
 }
 
 export interface JSONAPI$Document {
-  // $FlowIgnore
   data?: Array<JSONAPI$ResourceObject> | JSONAPI$ResourceObject;
   links?: JSONAPI$DocumentLinks;
   errors?: Array<JSONAPI$ErrorObject>;

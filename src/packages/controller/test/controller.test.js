@@ -7,8 +7,8 @@ import Controller from '../index';
 import Serializer from '../../serializer';
 import { Model } from '../../database';
 
-import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/get-test-app';
+import { createResponse } from '../../../../test/utils/mocks';
 
 import type { Request, Response } from '../../server';
 
@@ -17,7 +17,7 @@ const HOST = 'localhost:4000';
 describe('module "controller"', () => {
   describe('class Controller', () => {
     let Post: Class<Model>;
-    let subject: Controller;
+    let subject: Controller<*>;
 
     const attributes = [
       'id',
@@ -58,7 +58,8 @@ describe('module "controller"', () => {
     });
 
     describe('#index()', () => {
-      const createRequest = (params = {}): Request => setType(() => ({
+      // $FlowIgnore
+      const createRequest = (params = {}): Request => ({
         params,
         route: {
           controller: subject
@@ -74,60 +75,67 @@ describe('module "controller"', () => {
             number: 1
           }
         }
-      }));
-
-      it('returns an array of records', async () => {
-        const request = createRequest();
-        const result = await subject.index(request);
-
-        expect(result).to.be.an('array').with.lengthOf(25);
-        result.forEach(item => assertRecord(item));
       });
 
-      it('supports specifying page size', async () => {
+      it('returns an array of records', () => {
+        return subject
+          .index(createRequest())
+          .then(result => {
+            expect(result).to.be.an('array').with.lengthOf(25);
+            result.forEach(item => assertRecord(item));
+          });
+      });
+
+      it('supports specifying page size', () => {
         const request = createRequest({
           page: {
             size: 10
           }
         });
 
-        const result = await subject.index(request);
-
-        expect(result).to.be.an('array').with.lengthOf(10);
-        result.forEach(item => assertRecord(item));
+        return subject
+          .index(request)
+          .then(result => {
+            expect(result).to.be.an('array').with.lengthOf(10);
+            result.forEach(item => assertRecord(item));
+          });
       });
 
-      it('supports filter parameters', async () => {
+      it('supports filter parameters', () => {
         const request = createRequest({
           filter: {
             isPublic: false
           }
         });
 
-        const result = await subject.index(request);
+        return subject
+          .index(request)
+          .then(result => {
+            expect(result).to.be.an('array').with.length.above(0);
 
-        expect(result).to.be.an('array').with.length.above(0);
-
-        result.forEach(item => {
-          assertRecord(item);
-          expect(Reflect.get(item, 'isPublic')).to.be.false;
-        });
+            result.forEach(item => {
+              assertRecord(item);
+              expect(item).to.have.property('isPublic', false);
+            });
+          });
       });
 
-      it('supports sparse field sets', async () => {
+      it('supports sparse field sets', () => {
         const request = createRequest({
           fields: {
             posts: ['id', 'title']
           }
         });
 
-        const result = await subject.index(request);
-
-        expect(result).to.be.an('array').with.lengthOf(25);
-        result.forEach(item => assertRecord(item, ['id', 'title']));
+        return subject
+          .index(request)
+          .then(result => {
+            expect(result).to.be.an('array').with.lengthOf(25);
+            result.forEach(item => assertRecord(item, ['id', 'title']));
+          });
       });
 
-      it('supports eager loading relationships', async () => {
+      it('supports eager loading relationships', () => {
         const request = createRequest({
           include: ['user'],
           fields: {
@@ -139,27 +147,30 @@ describe('module "controller"', () => {
           }
         });
 
-        const result = await subject.index(request);
+        return subject
+          .index(request)
+          .then(result => {
+            expect(result).to.be.an('array').with.lengthOf(25);
 
-        expect(result).to.be.an('array').with.lengthOf(25);
+            result.forEach(item => {
+              assertRecord(item, [
+                ...attributes,
+                'user'
+              ]);
 
-        result.forEach(item => {
-          assertRecord(item, [
-            ...attributes,
-            'user'
-          ]);
-
-          expect(item.rawColumnData.user).to.have.all.keys([
-            'id',
-            'name',
-            'email'
-          ]);
+              expect(item.rawColumnData.user).to.have.all.keys([
+                'id',
+                'name',
+                'email'
+              ]);
+          });
         });
       });
     });
 
     describe('#show()', () => {
-      const createRequest = (params = {}): Request => setType(() => ({
+      // $FlowIgnore
+      const createRequest = (params = {}): Request => ({
         params,
         route: {
           controller: subject
@@ -169,7 +180,7 @@ describe('module "controller"', () => {
             posts: attributes
           }
         }
-      }));
+      });
 
       it('returns a single record', async () => {
         const request = createRequest({ id: 1 });
@@ -204,7 +215,7 @@ describe('module "controller"', () => {
         assertRecord(result, ['id', 'title']);
       });
 
-      it('supports eager loading relationships', async () => {
+      it('supports eager loading relationships', () => {
         const request = createRequest({
           id: 1,
           include: ['user'],
@@ -217,29 +228,32 @@ describe('module "controller"', () => {
           }
         });
 
-        const result = await subject.show(request);
+        return subject
+          .show(request)
+          .then(result => {
+            expect(result).to.be.ok;
 
-        expect(result).to.be.ok;
+            if (result) {
+              assertRecord(result, [
+                ...attributes,
+                'user'
+              ]);
 
-        if (result) {
-          assertRecord(result, [
-            ...attributes,
-            'user'
-          ]);
-
-          expect(result.rawColumnData.user).to.have.all.keys([
-            'id',
-            'name',
-            'email'
-          ]);
-        }
+              expect(result.rawColumnData.user).to.have.all.keys([
+                'id',
+                'name',
+                'email'
+              ]);
+            }
+          });
       });
     });
 
     describe('#create()', () => {
       let result: Model;
 
-      const createRequest = (params = {}): Request => setType(() => ({
+      // $FlowIgnore
+      const createRequest = (params = {}): Request => ({
         params,
         url: {
           pathname: '/posts'
@@ -259,20 +273,7 @@ describe('module "controller"', () => {
             users: ['id']
           }
         }
-      }));
-
-      const createResponse = (): Response => setType(() => ({
-        headers: new Map(),
-        statusCode: 200,
-
-        setHeader(key: string, value: string): void {
-          this.headers.set(key, value);
-        },
-
-        getHeader(key: string): string | void {
-          return this.headers.get(key);
-        }
-      }));
+      });
 
       afterEach(async () => {
         await result.destroy();
@@ -314,9 +315,9 @@ describe('module "controller"', () => {
           'updatedAt'
         ]);
 
-        const user = await Reflect.get(result, 'user');
-        const title = Reflect.get(result, 'title');
-        const isPublic = Reflect.get(result, 'isPublic');
+        const user = await result.user;
+        const title = result.title;
+        const isPublic = result.isPublic;
 
         expect(user.id).to.equal(1);
         expect(title).to.equal('#create() Test');
@@ -354,7 +355,7 @@ describe('module "controller"', () => {
 
         result = await subject.create(request, response);
 
-        const id = Reflect.get(result, 'id');
+        const id = result.getPrimaryKey();
         const location = response.getHeader('Location');
 
         expect(location).to.equal(`http://${HOST}/posts/${id}`);
@@ -362,10 +363,11 @@ describe('module "controller"', () => {
     });
 
     describe('#update()', () => {
-      let User;
-      let record;
+      let User: Class<Model>;
+      let record: Model;
 
-      const createRequest = (params = {}): Request => setType(() => ({
+      // $FlowIgnore
+      const createRequest = (params = {}): Request => ({
         params,
         route: {
           controller: subject
@@ -375,7 +377,7 @@ describe('module "controller"', () => {
             posts: attributes
           }
         }
-      }));
+      });
 
       beforeEach(async () => {
         const { models } = await getTestApp();
@@ -403,7 +405,10 @@ describe('module "controller"', () => {
 
       it('returns a record if attribute(s) change', async () => {
         let item = record;
-        const id = Reflect.get(item, 'id');
+        // $FlowIgnore
+        let isPublic = item.isPublic;
+        // $FlowIgnore
+        const id = item.id;
 
         expect(item).to.have.property('isPublic', false);
 
@@ -423,8 +428,10 @@ describe('module "controller"', () => {
 
       it('returns a record if relationships(s) change', async () => {
         let item = record;
-        let user = await Reflect.get(item, 'user');
-        let comments = await Reflect.get(item, 'comments');
+        // $FlowIgnore
+        let user = await item.user;
+        // $FlowIgnore
+        let comments = await item.comments;
         const id = item.getPrimaryKey();
 
         expect(user).to.be.null;
@@ -559,7 +566,9 @@ describe('module "controller"', () => {
 
     describe('#destroy()', () => {
       let record: Model;
-      const createRequest = (params = {}): Request => setType(() => ({
+
+      // $FlowIgnore
+      const createRequest = (params = {}): Request => ({
         params,
         route: {
           controller: subject
@@ -569,7 +578,7 @@ describe('module "controller"', () => {
             posts: attributes
           }
         }
-      }));
+      });
 
       before(async () => {
         record = await Post.create({
@@ -578,7 +587,7 @@ describe('module "controller"', () => {
       });
 
       it('returns the number `204` if the record is destroyed', async () => {
-        const id = Reflect.get(record, 'id');
+        const id = record.getPrimaryKey();
         const result = await subject.destroy(createRequest({ id }));
 
         expect(result).to.equal(204);

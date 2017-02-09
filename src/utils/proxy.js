@@ -13,7 +13,7 @@ export function trapGet<T>(traps: Object): Proxy$get<T> {
     }
 
     if (hasOwnProperty(traps, key)) {
-      const value = Reflect.get(traps, key);
+      const value = traps[key];
 
       if (typeof value === 'function') {
         return value.bind(receiver, target);
@@ -22,6 +22,7 @@ export function trapGet<T>(traps: Object): Proxy$get<T> {
       return value;
     }
 
-    return Reflect.get(target, key);
+    // $FlowIgnore
+    return target[key];
   };
 }

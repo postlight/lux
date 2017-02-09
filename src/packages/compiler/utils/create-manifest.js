@@ -106,7 +106,7 @@ export default async function createManifest(
     Array
       .from(assets)
       .map(([key, value]) => {
-        const write = Reflect.get(writer, key);
+        const write = writer[key];
 
         if (write) {
           return write(value);

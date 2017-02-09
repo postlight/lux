@@ -23,6 +23,11 @@ export const createResponse = (): Response => ({
   statusCode: 200,
   statusMessage: 'OK',
 
+  status(value: number): Response {
+    this.statusCode = value;
+    return this;
+  },
+
   getHeader(key: string) {
     return headersFor(this).get(key);
   },

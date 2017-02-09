@@ -20,7 +20,7 @@ export default function createResponseProxy(
           return resolve;
 
         default:
-          return Reflect.get(target, key);
+          return target[key];
       }
     }
   });

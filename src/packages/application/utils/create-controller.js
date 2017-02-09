@@ -9,12 +9,12 @@ import type Controller from '../../controller';
 import type Serializer from '../../serializer';
 import type { Bundle$Namespace } from '../../loader'; // eslint-disable-line max-len, no-duplicate-imports
 
-export default function createController<T: Controller>(
+export default function createController<T: Controller<*>>(
   constructor: Class<T>,
   opts: {
     key: string;
     store: Database;
-    parent: ?Controller;
+    parent: ?Controller<*>;
     serializers: Bundle$Namespace<Serializer<*>>;
   }
 ): T {
@@ -36,11 +36,11 @@ export default function createController<T: Controller>(
     serializer = closestAncestor(serializers, key);
   }
 
-  const instance: T = Reflect.construct(constructor, [{
+  const instance: T = new constructor({
     model,
     namespace,
     serializer
-  }]);
+  });
 
   if (serializer) {
     if (!instance.filter.length) {
@@ -64,7 +64,7 @@ export default function createController<T: Controller>(
     ];
   }
 
-  Reflect.defineProperty(instance, 'parent', {
+  Object.defineProperty(instance, 'parent', {
     value: parent,
     writable: false,
     enumerable: true,

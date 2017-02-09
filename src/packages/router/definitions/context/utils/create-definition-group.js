@@ -1,8 +1,17 @@
 // @flow
-import { REQUEST_METHODS } from '../../../../server';
 import type { Route$type, Router$Namespace } from '../../../index'; // eslint-disable-line max-len, no-unused-vars
+import type { Router$Definition } from '../../interfaces';
 
 import createDefinition from './create-definition';
+
+type Router$DefinitionGroup = {
+  get: Router$Definition;
+  head: Router$Definition;
+  post: Router$Definition;
+  patch: Router$Definition;
+  delete: Router$Definition;
+  options: Router$Definition;
+};
 
 /**
  * @private
@@ -10,13 +19,37 @@ import createDefinition from './create-definition';
 export default function createDefinitionGroup<T: Router$Namespace>(
   type: Route$type,
   namespace: T
-) {
-  return REQUEST_METHODS.reduce((methods, method) => ({
-    ...methods,
-    [method.toLowerCase()]: createDefinition({
+): Router$DefinitionGroup {
+  return {
+    get: createDefinition({
       type,
-      method,
-      namespace
+      namespace,
+      method: 'GET'
+    }),
+    head: createDefinition({
+      type,
+      namespace,
+      method: 'HEAD'
+    }),
+    post: createDefinition({
+      type,
+      namespace,
+      method: 'POST'
+    }),
+    patch: createDefinition({
+      type,
+      namespace,
+      method: 'PATCH'
+    }),
+    delete: createDefinition({
+      type,
+      namespace,
+      method: 'DELETE'
+    }),
+    options: createDefinition({
+      type,
+      namespace,
+      method: 'OPTIONS'
     })
-  }), {});
+  };
 }

@@ -7,7 +7,7 @@ import type { Lux$Collection } from '../../../../interfaces';
 export type Params$opts = {
   type: Route$type;
   method: Request$method;
-  controller: Controller;
+  controller: Controller<*>;
   dynamicSegments: Array<string>;
 };
 

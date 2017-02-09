@@ -5,11 +5,14 @@ import type { Model } from '../../index'; // eslint-disable-line no-unused-vars
  * @private
  */
 function unassociateOne<T: void | ?Model>(value: T, foreignKey: string): T {
-  if (value) {
-    Reflect.set(value, foreignKey, null);
+  const target = value;
+
+  if (target) {
+    // $FlowIgnore
+    target[foreignKey] = null;
   }
 
-  return value;
+  return target;
 }
 
 /**

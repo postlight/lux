@@ -17,25 +17,24 @@ const SUFFIX_PATTERN = /^.+(Controller|Down|Serializer|Up)/;
  */
 function normalize(manifest: Object) {
   return entries(manifest).reduce((obj, [key, value]) => {
+    const result = obj;
+
     if (SUFFIX_PATTERN.test(key)) {
       const suffix = key.replace(SUFFIX_PATTERN, '$1');
       const stripSuffix = source => source.replace(suffix, '');
 
       switch (suffix) {
         case 'Controller':
-          obj.controllers.set(formatKey(key, stripSuffix), value);
+          result.controllers.set(formatKey(key, stripSuffix), value);
           break;
 
         case 'Serializer':
-          obj.serializers.set(formatKey(key, stripSuffix), value);
+          result.serializers.set(formatKey(key, stripSuffix), value);
           break;
 
         case 'Up':
         case 'Down':
-          obj.migrations.set(
-            formatKey(key),
-            Reflect.construct(Migration, [value])
-          );
+          result.migrations.set(formatKey(key), new Migration(value));
           break;
 
         default:
@@ -46,32 +45,30 @@ function normalize(manifest: Object) {
         case 'Application':
         case 'routes':
         case 'seed':
-          Reflect.set(obj, formatKey(key), value);
+          result[formatKey(key)] = value;
           break;
 
         case 'config':
-          Reflect.set(obj, 'config', {
-            ...merge(createDefaultConfig(), {
-              ...obj.config,
-              ...value
-            })
+          result.config = merge(createDefaultConfig(), {
+            ...result.config,
+            ...value
           });
           break;
 
         case 'database':
-          Reflect.set(obj, 'config', {
-            ...obj.config,
+          result.config = {
+            ...result.config,
             database: value
-          });
+          };
           break;
 
         default:
-          obj.models.set(formatKey(key), value);
+          result.models.set(formatKey(key), value);
           break;
       }
     }
 
-    return obj;
+    return result;
   }, {
     config: {},
     controllers: new FreezeableMap(),
@@ -85,9 +82,8 @@ function normalize(manifest: Object) {
  * @private
  */
 export default function bundleFor(path: string): FreezeableMap<string, any> {
-  const manifest: Object = Reflect.apply(require, null, [
-    joinPath(path, 'dist', 'bundle')
-  ]);
+  // $FlowIgnore
+  const manifest: Object = require(joinPath(path, 'dist', 'bundle'));
 
   return chain(manifest)
     .pipe(normalize)

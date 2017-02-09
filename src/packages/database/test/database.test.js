@@ -5,9 +5,13 @@ import { it, before, describe } from 'mocha';
 import Database from '../index';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
-const DATABASE_DRIVER: string = Reflect.get(process.env, 'DATABASE_DRIVER');
-const DATABASE_USERNAME: string = Reflect.get(process.env, 'DATABASE_USERNAME');
-const DATABASE_PASSWORD: string = Reflect.get(process.env, 'DATABASE_PASSWORD');
+
+// $FlowIgnore
+const DATABASE_DRIVER: string = process.env.DATABASE_DRIVER;
+// $FlowIgnore
+const DATABASE_USERNAME: string = process.env.DATABASE_USERNAME;
+// $FlowIgnore
+const DATABASE_PASSWORD: string = process.env.DATABASE_PASSWORD;
 
 const DEFAULT_CONFIG = {
   development: {

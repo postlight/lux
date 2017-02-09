@@ -1,7 +1,9 @@
 // @flow
 import merge from '../../../utils/merge';
-import type { Model, Query } from '../../database';
+// eslint-disable-next-line no-unused-vars
+import type { Model } from '../../database';
 import type { Request } from '../../server';
+import type { Thenable } from '../../../interfaces';
 
 import paramsToQuery from './params-to-query';
 
@@ -10,9 +12,9 @@ import paramsToQuery from './params-to-query';
  */
 export default function findMany<T: Model>(
   model: Class<T>,
-  req: Request
-): Query<Array<Model>> {
-  const params = merge(req.defaultParams, req.params);
+  request: Request
+): Thenable<Array<T>> {
+  const params = merge(request.defaultParams, request.params);
   const {
     sort,
     page,

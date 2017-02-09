@@ -1,9 +1,10 @@
 // @flow
 import { FreezeableSet, freezeProps, deepFreezeProps } from '../../freezeable';
+import { tryCatchSync } from '../../../utils/try-catch';
 import type Controller from '../../controller';
 import type { Request, Response, Request$method } from '../../server';
 
-import { FINAL_HANDLER, createAction } from './action';
+import { createAction } from './action';
 import { paramsFor, defaultParamsFor, validateResourceId } from './params';
 import getStaticPath from './utils/get-static-path';
 import getDynamicSegments from './utils/get-dynamic-segments';
@@ -25,9 +26,13 @@ class Route extends FreezeableSet<Action<any>> {
 
   method: Request$method;
 
-  controller: Controller;
+  handlers: Array<Action<any>>;
+
+  controller: Controller<*>;
 
   staticPath: string;
+
+  actionIndex: number;
 
   defaultParams: Object;
 
@@ -40,73 +45,71 @@ class Route extends FreezeableSet<Action<any>> {
     method,
     controller
   }: Route$opts) {
-    const dynamicSegments = getDynamicSegments(path);
+    // $FlowIgnore
+    const handler = controller[action];
 
-    if (action && controller) {
-      const handler = Reflect.get(controller, action);
+    if (typeof handler !== 'function') {
+      const {
+        constructor: {
+          name: controllerName
+        }
+      } = controller;
 
-      if (typeof handler === 'function') {
-        const params = paramsFor({
-          type,
-          method,
-          controller,
-          dynamicSegments
-        });
-
-        const staticPath = getStaticPath(path, dynamicSegments);
-
-        const defaultParams = defaultParamsFor({
-          type,
-          controller
-        });
-
-        super(createAction(type, handler, controller));
-
-        Object.assign(this, {
-          type,
-          path,
-          params,
-          action,
-          method,
-          controller,
-          staticPath,
-          defaultParams,
-          dynamicSegments
-        });
-
-        freezeProps(this, true,
-          'type',
-          'path'
-        );
-
-        freezeProps(this, false,
-          'action',
-          'params',
-          'method',
-          'controller',
-          'staticPath'
-        );
-
-        deepFreezeProps(this, false,
-          'defaultParams',
-          'dynamicSegments'
-        );
-      } else {
-        const {
-          constructor: {
-            name: controllerName
-          }
-        } = controller;
-
-        throw new TypeError(
-          `Handler for ${controllerName}#${action} is not a function.`
-        );
-      }
-    } else {
       throw new TypeError(
-        'Arguements `controller` and `action`  must not be undefined'
+        `Handler for ${controllerName}#${action} is not a function.`
       );
     }
+
+    const dynamicSegments = getDynamicSegments(path);
+    const staticPath = getStaticPath(path, dynamicSegments);
+
+    const params = paramsFor({
+      type,
+      method,
+      controller,
+      dynamicSegments
+    });
+
+    const defaultParams = defaultParamsFor({
+      type,
+      controller
+    });
+
+    const handlers = createAction(type, handler, controller);
+
+    super(handlers);
+
+    Object.assign(this, {
+      type,
+      path,
+      params,
+      action,
+      method,
+      handlers,
+      controller,
+      staticPath,
+      defaultParams,
+      dynamicSegments,
+      actionIndex: controller.beforeAction.length
+    });
+
+    freezeProps(this, true,
+      'type',
+      'path'
+    );
+
+    freezeProps(this, false,
+      'action',
+      'params',
+      'method',
+      'controller',
+      'staticPath'
+    );
+
+    deepFreezeProps(this, false,
+      'defaultParams',
+      'dynamicSegments'
+    );
 
     this.freeze();
   }
@@ -126,44 +129,64 @@ class Route extends FreezeableSet<Action<any>> {
     }, {});
   }
 
-  async execHandlers(req: Request, res: Response): Promise<any> {
+  execHandlers(req: Request, res: Response): Promise<any> {
+    let result = Promise.resolve();
     let calledFinal = false;
-    let data;
+    let shouldContinue = true;
+    const { handlers, actionIndex } = this;
 
-    for (const handler of this) {
-      // eslint-disable-next-line no-await-in-loop
-      data = await handler(req, res, data);
-
-      if (handler.name === FINAL_HANDLER) {
-        calledFinal = true;
-      }
-
+    const step = (prev, nextIdx) => prev.then(data => {
       if (!calledFinal && typeof data !== 'undefined') {
-        break;
+        shouldContinue = false;
+        return prev;
       }
-    }
 
-    return data;
-  }
-
-  async visit(req: Request, res: Response): Promise<any> {
-    const { defaultParams } = this;
-    let params = {
-      ...req.params,
-      ...this.parseParams(req.url.params)
-    };
-
-    if (req.method !== 'OPTIONS') {
-      params = this.params.validate(params);
-    }
-
-    Object.assign(req, {
-      params,
-      defaultParams
+      return handlers[nextIdx](req, res, data);
     });
 
-    if (this.type === 'member' && req.method === 'PATCH') {
-      validateResourceId(req);
+    for (let i = 0; i < handlers.length; i = i + 1) {
+      if (!shouldContinue) {
+        break;
+      }
+
+      result = step(result, i);
+
+      if (i === actionIndex) {
+        calledFinal = true;
+      }
+    }
+
+    return result;
+  }
+
+  visit(req: Request, res: Response): Promise<any> {
+    let error;
+
+    tryCatchSync(() => {
+      const { defaultParams } = this;
+      let params = {
+        ...req.params,
+        ...this.parseParams(req.url.params)
+      };
+
+      if (req.method !== 'OPTIONS') {
+        params = this.params.validate(params);
+      }
+
+      Object.assign(req, {
+        params,
+        defaultParams
+      });
+
+      if (this.type === 'member' && req.method === 'PATCH') {
+        validateResourceId(req);
+      }
+    }, err => {
+      error = err;
+    });
+
+    if (error) {
+      return Promise.reject(error);
     }
 
     return this.execHandlers(req, res);

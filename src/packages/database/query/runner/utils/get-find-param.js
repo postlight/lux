@@ -17,7 +17,7 @@ export default function getFindParam({
       const [, params] = snapshot;
 
       if (params && isObject(params)) {
-        return Reflect.get(params, `${tableName}.${primaryKey}`);
+        return params[`${tableName}.${primaryKey}`];
       }
     }
   }

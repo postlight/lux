@@ -12,7 +12,7 @@ export type Response$opts = {
   logger: Logger
 };
 
-declare export class Response extends stream$Writable {
+export interface Response extends stream$Writable {
   [key: string]: void | ?mixed;
 
   stats: Array<Response$stat>;
@@ -20,6 +20,7 @@ declare export class Response extends stream$Writable {
   statusCode: number;
   statusMessage: string;
 
+  status(value: number): Response;
   getHeader(name: string): void | string;
   setHeader(name: string, value: string): void;
   removeHeader(name: string): void;

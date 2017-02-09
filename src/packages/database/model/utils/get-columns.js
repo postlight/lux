@@ -7,14 +7,22 @@ import type Model from '../index';
  * @private
  */
 export default function getColumns(record: Model, only?: Array<string>) {
-  let { constructor: { attributes: columns } } = record;
+  let {
+    constructor: {
+      attributes: columns
+    }
+  } = record;
 
   if (only) {
     columns = pick(columns, ...only);
   }
 
-  return entries(columns).reduce((obj, [key, { columnName }]) => ({
-    ...obj,
-    [columnName]: Reflect.get(record, key)
-  }), {});
+  return entries(columns).reduce((obj, [key, { columnName }]) => {
+    const result = obj;
+
+    // $FlowIgnore
+    result[columnName] = record[key];
+
+    return result;
+  }, {});
 }

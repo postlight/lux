@@ -15,7 +15,8 @@ export default function chain<T>(source: T): Chain<T> {
     },
 
     construct<U, V: Class<U>>(constructor: V): Chain<U> {
-      return chain(Reflect.construct(constructor, [source]));
+      // $FlowIgnore
+      return chain(new constructor(source));
     }
   };
 }

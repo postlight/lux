@@ -9,17 +9,17 @@ import hasContentType from './utils/has-content-type';
  * @private
  */
 export function createResponder(req: Request, res: Response) {
-  return function respond(data?: ?mixed) {
-    const normalized = normalize(data);
+  return function respond(input: any) {
+    const { data, statusCode } = normalize(input);
 
-    if (normalized.statusCode) {
-      Reflect.set(res, 'statusCode', normalized.statusCode);
+    if (statusCode) {
+      res.status(statusCode);
     }
 
-    if (res.statusCode !== 204 && !hasContentType(res)) {
+    if (statusCode !== 204 && !hasContentType(res)) {
       res.setHeader('Content-Type', MIME_TYPE);
     }
 
-    res.end(normalized.data);
+    res.end(data);
   };
 }

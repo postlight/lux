@@ -25,7 +25,7 @@ class Router extends FreezeableMap<string, Route> {
     super();
     define(this, definitions);
 
-    Reflect.defineProperty(this, 'replacer', {
+    Object.defineProperty(this, 'replacer', {
       value: createReplacer(controllers),
       writable: false,
       enumerable: false,
@@ -35,14 +35,16 @@ class Router extends FreezeableMap<string, Route> {
     this.freeze();
   }
 
-  match({ method, url }: Request): void | Route {
+  match(req: Request): void | Route {
     const params = [];
+    const { url, method } = req;
+
     const staticPath = url.pathname.replace(this.replacer, (str, g1, g2) => {
       params.push(g2);
       return `${g1}/:dynamic`;
     });
 
-    Reflect.set(url, 'params', params);
+    url.params = params;
 
     return this.get(`${method}:${staticPath}`);
   }

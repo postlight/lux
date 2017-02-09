@@ -2,21 +2,21 @@
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
 
-import luxify from '../index';
-
 import K from '../../../utils/k';
-import setType from '../../../utils/set-type';
+import luxify from '../index';
+import type { Request, Response } from '../../server';
 
 describe('module "luxify"', () => {
   describe('#luxify()', () => {
-    const [request, response] = setType(() => [
-      {},
-      {
-        getHeader: K,
-        setHeader: K,
-        removeHeader: K
-      }
-    ]);
+    // $FlowIgnore
+    const request: Request = {};
+
+    // $FlowIgnore
+    const response: Response = {
+      getHeader: K,
+      setHeader: K,
+      removeHeader: K
+    };
 
     it('promisifies a callback based middleware function', () => {
       const subject = luxify((req, res, next) => {
@@ -38,7 +38,8 @@ describe('module "luxify"', () => {
 
     it('resolves when Response#send is called', () => {
       const subject = luxify((req, res) => {
-        Reflect.apply(Reflect.get(res, 'send'), res, ['Hello world!']);
+        // $FlowIgnore
+        res.send('Hello world!');
       });
 
       return subject(request, response).then(data => {
@@ -48,9 +49,10 @@ describe('module "luxify"', () => {
 
     it('resolves when Response#json is called', () => {
       const subject = luxify((req, res) => {
-        Reflect.apply(Reflect.get(res, 'json'), res, [{
+        // $FlowIgnore
+        res.json({
           data: 'Hello world!'
-        }]);
+        });
       });
 
       return subject(request, response).then(data => {

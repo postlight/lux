@@ -1,6 +1,7 @@
 // @flow
 import { camelize, singularize } from 'inflection';
 
+// eslint-disable-next-line no-unused-vars
 import Model from '../../../model';
 import entries from '../../../../../utils/entries';
 import underscore from '../../../../../utils/underscore';
@@ -27,110 +28,103 @@ export default async function buildResults<T: Model>({
   }
 
   if (Object.keys(relationships).length) {
-    related = entries(relationships)
-      .reduce((obj, entry) => {
-        const [name, relationship] = entry;
-        let foreignKey = camelize(relationship.foreignKey, true);
+    related = entries(relationships).reduce((obj, entry) => {
+      const result = obj;
+      const [name, relationship] = entry;
+      let foreignKey = camelize(relationship.foreignKey, true);
 
-        if (relationship.through) {
-          const query = relationship.model.select(...relationship.attrs);
+      if (relationship.through) {
+        const query = relationship.model.select(...relationship.attrs);
 
-          const baseKey = `${relationship.through.tableName}.` +
-            `${singularize(underscore(name))}_id`;
+        const baseKey = `${relationship.through.tableName}.` +
+          `${singularize(underscore(name))}_id`;
 
-          foreignKey = `${relationship.through.tableName}.` +
-            `${relationship.foreignKey}`;
+        foreignKey = `${relationship.through.tableName}.` +
+          `${relationship.foreignKey}`;
 
-          query.snapshots.push(
-            ['select', [
-              `${baseKey} as ${camelize(baseKey.split('.').pop(), true)}`,
-              `${foreignKey} as ${camelize(foreignKey.split('.').pop(), true)}`
-            ]],
+        query.snapshots.push(
+          ['select', [
+            `${baseKey} as ${camelize(baseKey.split('.').pop(), true)}`,
+            `${foreignKey} as ${camelize(foreignKey.split('.').pop(), true)}`
+          ]],
 
-            ['innerJoin', [
-              relationship.through.tableName,
-              `${relationship.model.tableName}.` +
-                `${relationship.model.primaryKey}`,
-              '=',
-              baseKey
-            ]],
+          ['innerJoin', [
+            relationship.through.tableName,
+            `${relationship.model.tableName}.` +
+              `${relationship.model.primaryKey}`,
+            '=',
+            baseKey
+          ]],
 
-            ['whereIn', [
-              foreignKey,
-              results.map(({ id }) => id)
-            ]]
-          );
+          ['whereIn', [
+            foreignKey,
+            results.map(({ id }) => id)
+          ]]
+        );
 
-          return {
-            ...obj,
-            [name]: query
-          };
-        }
+        result[name] = query;
 
-        return {
-          ...obj,
-          [name]: relationship.model
-            .select(...relationship.attrs)
-            .where({
-              [foreignKey]: results.map(({ id }) => id)
-            })
-        };
-      }, {});
+        return result;
+      }
+
+      result[name] = relationship.model
+        .select(...relationship.attrs)
+        .where({
+          [foreignKey]: results.map(({ id }) => id)
+        });
+
+      return result;
+    }, {});
 
     related = await promiseHash(related);
   }
 
   return results.map(record => {
     if (related) {
-      entries(related)
-        .forEach(([name, relatedResults]: [string, Array<Model>]) => {
-          const relationship = model.relationshipFor(name);
+      const target = record;
 
-          if (relationship) {
-            let { foreignKey } = relationship;
+      entries(related).forEach(([name, relatedResults]) => {
+        const relationship = model.relationshipFor(name);
 
-            foreignKey = camelize(foreignKey, true);
+        if (relationship) {
+          let { foreignKey } = relationship;
 
-            Reflect.set(record, name, relatedResults.filter(({
-              rawColumnData
-            }) => {
-              const fk = Reflect.get(rawColumnData, foreignKey);
-              const pk = Reflect.get(record, model.primaryKey);
-
-              return fk === pk;
-            }));
-          }
-        });
+          foreignKey = camelize(foreignKey, true);
+          target[name] = relatedResults.filter(({ rawColumnData }) => (
+            rawColumnData[foreignKey] === record[model.primaryKey]
+          ));
+        }
+      });
     }
 
-    const instance = Reflect.construct(model, [
-      entries(record)
-        .reduce((r, entry) => {
-          let [key, value] = entry;
+    // eslint-disable-next-line new-cap
+    const instance = new model(
+      entries(record).reduce((obj, entry) => {
+        const result = obj;
+        let [key, value] = entry;
 
-          if (!value && pkPattern.test(key)) {
-            return r;
-          } else if (key.indexOf('.') >= 0) {
-            const [a, b] = key.split('.');
-            let parent: ?Object = r[a];
+        if (!value && pkPattern.test(key)) {
+          return result;
+        } else if (key.indexOf('.') >= 0) {
+          const [a, b] = key.split('.');
+          let parent: ?Object = result[a];
 
-            if (!parent) {
-              parent = {};
-            }
-
-            key = a;
-            value = {
-              ...parent,
-              [b]: value
-            };
+          if (!parent) {
+            parent = {};
           }
 
-          return {
-            ...r,
-            [key]: value
+          key = a;
+          value = {
+            ...parent,
+            [b]: value
           };
-        }, {})
-    ]);
+        }
+
+        result[key] = value;
+
+        return result;
+      }, {})
+    );
 
     instance.currentChangeSet.persist();
 

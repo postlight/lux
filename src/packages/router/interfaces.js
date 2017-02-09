@@ -4,8 +4,8 @@ import type Controller from '../controller';
 import type { FreezeableSet } from '../freezeable';
 
 export type Router$opts = {
-  controller: Controller;
-  controllers: Map<string, Controller>;
+  controller: Controller<*>;
+  controllers: Map<string, Controller<*>>;
 
   routes(): void;
 };
@@ -19,6 +19,6 @@ export interface Router$Namespace extends FreezeableSet<Router$NS$content> {
   path: string;
   isRoot: boolean;
   namespace: Router$Namespace;
-  controller: Controller;
-  controllers: Map<string, Controller>;
+  controller: Controller<*>;
+  controllers: Map<string, Controller<*>>;
 }

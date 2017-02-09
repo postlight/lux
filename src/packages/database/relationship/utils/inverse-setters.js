@@ -2,6 +2,15 @@
 import type { Model } from '../../index';
 import type { Relationship$opts } from '../index';
 
+type Setter$opts = {
+  type: $PropertyType<Relationship$opts, 'type'>;
+  model: $PropertyType<Relationship$opts, 'model'>;
+  inverse: $PropertyType<Relationship$opts, 'inverse'>;
+  through?: $PropertyType<Relationship$opts, 'through'>;
+  foreignKey: $PropertyType<Relationship$opts, 'foreignKey'>;
+  inverseModel: Class<Model>;
+};
+
 /**
  * @private
  */
@@ -9,11 +18,16 @@ export function setHasManyInverse(owner: Model, value: Array<Model>, {
   inverse,
   foreignKey,
   inverseModel
-}: Relationship$opts & {
-  inverseModel: Class<Model>;
-}) {
-  const primaryKey = Reflect.get(owner, owner.constructor.primaryKey);
-  const { type: inverseType } = inverseModel.relationshipFor(inverse);
+}: Setter$opts) {
+  // $FlowIgnore
+  const primaryKey = owner[owner.constructor.primaryKey];
+  const relationship = inverseModel.relationshipFor(inverse);
+
+  if (!relationship) {
+    return;
+  }
+
+  const { type: inverseType } = relationship;
 
   for (const record of value) {
     let { currentChangeSet: changeSet } = record;
@@ -26,7 +40,8 @@ export function setHasManyInverse(owner: Model, value: Array<Model>, {
       changeSet.set(inverse, owner);
 
       if (inverseType === 'belongsTo') {
-        Reflect.set(record, foreignKey, primaryKey);
+        // $FlowIgnore
+        record[foreignKey] = primaryKey;
       }
     }
   }
@@ -39,11 +54,16 @@ export function setHasOneInverse(owner: Model, value?: ?Model, {
   inverse,
   foreignKey,
   inverseModel
-}: Relationship$opts & {
-  inverseModel: Class<Model>;
-}) {
+}: Setter$opts) {
   if (value) {
-    const { type: inverseType } = inverseModel.relationshipFor(inverse);
+    const nextValue = value;
+    const relationship = inverseModel.relationshipFor(inverse);
+
+    if (!relationship) {
+      return;
+    }
+
+    const { type: inverseType } = relationship;
     let inverseValue = value.currentChangeSet.get(inverse);
 
     if (inverseType === 'hasMany') {
@@ -58,14 +78,15 @@ export function setHasOneInverse(owner: Model, value?: ?Model, {
       inverseValue = owner;
 
       if (inverseType === 'belongsTo') {
-        Reflect.set(value, foreignKey, inverseValue.getPrimaryKey());
+        // $FlowIgnore
+        nextValue[foreignKey] = inverseValue.getPrimaryKey();
       }
     }
 
-    let { currentChangeSet: changeSet } = value;
+    let { currentChangeSet: changeSet } = nextValue;
 
     if (changeSet.isPersisted) {
-      changeSet = changeSet.applyTo(value);
+      changeSet = changeSet.applyTo(nextValue);
     }
 
     changeSet.set(inverse, inverseValue || null);

@@ -18,22 +18,21 @@ describe('module "loader/builder"', () => {
     class ApiV1ApplicationController extends Controller {}
 
     beforeEach(() => {
-      subject = createParentBuilder((key, target, parent) => {
+      subject = createParentBuilder((key, Target, parent) => {
         const namespace = posix.dirname(key).replace('.', '');
 
-        // $FlowIgnore
         const serializer = new Serializer({
           namespace,
           model: null,
           parent: null
         });
 
-        return Reflect.construct(target, [{
+        return new Target({
           parent,
           namespace,
           serializer,
           model: null
-        }]);
+        });
       });
     });
 

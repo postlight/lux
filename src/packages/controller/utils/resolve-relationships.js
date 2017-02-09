@@ -11,23 +11,26 @@ export default function resolveRelationships<T: Model>(
   relationships: Object = {}
 ): Object {
   return entries(relationships).reduce((obj, [key, value]) => {
-    let { data = null } = value || {};
+    const result = obj;
 
-    if (data) {
+    if (value && value.data) {
       const opts = model.relationshipFor(key);
 
       if (opts) {
-        if (Array.isArray(data)) {
-          data = data.map(item => Reflect.construct(opts.model, [item]));
+        /* eslint-disable new-cap */
+        if (Array.isArray(value.data)) {
+          result[key] = value.data.map(item => new opts.model(item));
         } else {
-          data = Reflect.construct(opts.model, [data]);
+          result[key] = new opts.model(value.data);
         }
+        /* eslint-enable new-cap */
+
+        return result;
       }
     }
 
-    return {
-      ...obj,
-      [key]: data
-    };
+    result[key] = null;
+
+    return result;
   }, {});
 }

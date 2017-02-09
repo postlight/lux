@@ -39,7 +39,7 @@ describe('module "fs"', () => {
     // unwrap spies of node fs methods
     spies = spiedMethods.reduce((memo, methodName) => {
       memo[methodName].restore();
-      Reflect.deleteProperty(memo, methodName);
+      delete memo[methodName];
       return memo;
     }, spies);
   });
@@ -62,7 +62,7 @@ describe('module "fs"', () => {
     it('delegates to node fs#mkdir', async () => {
       const dirPath = join(tmpDirPath, 'test-mkdir');
       await fs.mkdir(dirPath);
-      expect(spies['mkdir'].calledWith(dirPath)).to.be.true;
+      expect(spies.mkdir.calledWith(dirPath)).to.be.true;
     });
     it('returns a promise', () => {
       const dirPath = join(tmpDirPath, 'test-mkdir');
@@ -73,7 +73,7 @@ describe('module "fs"', () => {
   describe('#rmdir()', () => {
     it('delegates to node fs#rmdir', async () => {
       await fs.rmdir(tmpDirPath);
-      expect(spies['rmdir'].calledWith(tmpDirPath)).to.be.true;
+      expect(spies.rmdir.calledWith(tmpDirPath)).to.be.true;
     });
     it('returns a promise', returnsPromiseSpec('rmdir', tmpDirPath));
   });
@@ -81,7 +81,7 @@ describe('module "fs"', () => {
   describe('#readdir()', () => {
     it('delegates to node fs#readdir', async () => {
       await fs.readdir(tmpDirPath);
-      expect(spies['readdir'].calledWith(tmpDirPath)).to.be.true;
+      expect(spies.readdir.calledWith(tmpDirPath)).to.be.true;
     });
     it('returns a promise', returnsPromiseSpec('readdir', tmpDirPath));
   });
@@ -96,7 +96,7 @@ describe('module "fs"', () => {
 
     it('delegates to node fs#readFile', async () => {
       await fs.readFile(tmpFilePath);
-      expect(spies['readFile'].calledWith(tmpFilePath)).to.be.true;
+      expect(spies.readFile.calledWith(tmpFilePath)).to.be.true;
     });
     it('returns a promise', returnsPromiseSpec('readFile', tmpFilePath));
   });
@@ -111,7 +111,7 @@ describe('module "fs"', () => {
 
     it('delegates to node fs#writeFile', async () => {
       await fs.writeFile(tmpFilePath, 'test data');
-      expect(spies['writeFile'].calledWith(tmpFilePath)).to.be.true;
+      expect(spies.writeFile.calledWith(tmpFilePath)).to.be.true;
     });
     it('returns a promise', returnsPromiseSpec('writeFile', tmpFilePath));
   });
@@ -126,7 +126,7 @@ describe('module "fs"', () => {
 
     it('delegates to node fs#appendFile', async () => {
       await fs.appendFile(tmpFilePath, 'test data');
-      expect(spies['appendFile'].calledWith(tmpFilePath));
+      expect(spies.appendFile.calledWith(tmpFilePath));
     });
     it('returns a promise', returnsPromiseSpec('appendFile', tmpFilePath));
   });
@@ -141,7 +141,7 @@ describe('module "fs"', () => {
 
     it('delegates to node fs#stat', async () => {
       await fs.stat(tmpFilePath);
-      expect(spies['stat'].calledWith(tmpFilePath));
+      expect(spies.stat.calledWith(tmpFilePath));
     });
     it('returns a promise', returnsPromiseSpec('stat', tmpFilePath));
   });
@@ -156,7 +156,7 @@ describe('module "fs"', () => {
 
     it('delegates to node fs#unlink', async () => {
       await fs.unlink(tmpFilePath);
-      expect(spies['unlink'].calledWith(tmpFilePath));
+      expect(spies.unlink.calledWith(tmpFilePath));
     });
     it('returns a promise', returnsPromiseSpec('unlink', tmpFilePath));
   });
@@ -187,7 +187,7 @@ function returnsPromiseSpec(
   ...args: Array<mixed>
 ): (done?: () => void) => void | Promise<mixed> {
   return function () {
-    const res = Reflect.apply(fs[method], fs, args);
+    const res = fs[method].apply(fs, args);
     expect(res).to.be.an.instanceOf(Promise);
   };
 }

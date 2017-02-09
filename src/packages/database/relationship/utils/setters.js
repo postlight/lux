@@ -60,7 +60,7 @@ export function setHasOne(owner: Model, key: string, value?: ?Model, {
   let valueToSet = value;
 
   if (value && typeof value === 'object' && !model.isInstance(value)) {
-    valueToSet = Reflect.construct(model, [valueToSet]);
+    valueToSet = new model(value); // eslint-disable-line new-cap
   }
 
   let { currentChangeSet: changeSet } = owner;
@@ -99,16 +99,15 @@ export function setBelongsTo(owner: Model, key: string, value?: ?Model, {
   inverse,
   foreignKey
 }: Relationship$opts) {
-  setHasOne(owner, key, value, {
+  const target = owner;
+
+  setHasOne(target, key, value, {
     type,
     model,
     inverse,
     foreignKey
   });
 
-  if (value) {
-    Reflect.set(owner, foreignKey, Reflect.get(value, model.primaryKey));
-  } else {
-    Reflect.set(owner, foreignKey, null);
-  }
+  // $FlowIgnore
+  target[foreignKey] = value ? value[model.primaryKey] : null;
 }

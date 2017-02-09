@@ -3,6 +3,7 @@ import { createServer } from 'http';
 import type { Writable } from 'stream';
 import type { IncomingMessage, Server as HTTPServer } from 'http'; // eslint-disable-line max-len, no-duplicate-imports
 
+import { freezeProps } from '../freezeable';
 import { tryCatchSync } from '../../utils/try-catch';
 import type Logger from '../logger';
 import type Router from '../router';
@@ -30,36 +31,22 @@ class Server {
 
   instance: HTTPServer;
 
-  constructor({ logger, router, cors }: Server$opts) {
-    Object.defineProperties(this, {
-      router: {
-        value: router,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      logger: {
-        value: logger,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      cors: {
-        value: cors,
-        writable: false,
-        enumerable: false,
-        configurable: false
-      },
-
-      instance: {
-        value: createServer(this.receiveRequest),
-        writable: false,
-        enumerable: false,
-        configurable: false
-      }
+  constructor({ logger, router, cors }: Server$opts): this {
+    Object.assign(this, {
+      cors,
+      router,
+      logger,
+      instance: createServer(this.receiveRequest)
     });
+
+    freezeProps(this, false,
+      'cors',
+      'router',
+      'logger',
+      'instance'
+    );
+
+    return this;
   }
 
   listen(port: number): void {
@@ -67,22 +54,21 @@ class Server {
   }
 
   initializeRequest(req: IncomingMessage, res: Writable): [Request, Response] {
-    const { logger, router, cors } = this;
-
-    req.setEncoding('utf8');
-
     const response = createResponse(res, {
-      logger
+      logger: this.logger
     });
 
-    setCORSHeaders(response, cors);
+    setCORSHeaders(response, this.cors);
 
     const request = createRequest(req, {
-      logger,
-      router
+      logger: this.logger,
+      router: this.router
     });
 
-    return [request, response];
+    return [
+      request,
+      response
+    ];
   }
 
   validateRequest({ method, headers }: Request): true {
@@ -96,11 +82,10 @@ class Server {
   }
 
   receiveRequest = (req: IncomingMessage, res: Writable): void => {
-    const { logger } = this;
     const [request, response] = this.initializeRequest(req, res);
     const respond = createResponder(request, response);
 
-    logger.request(request, response, {
+    this.logger.request(request, response, {
       startTime: Date.now()
     });
 
@@ -109,21 +94,19 @@ class Server {
     if (isValid) {
       parseRequest(request)
         .then(params => {
-          const { route } = request;
-
           Object.assign(request, {
             params
           });
 
-          if (route) {
-            return route.visit(request, response);
+          if (request.route) {
+            return request.route.visit(request, response);
           }
 
           return undefined;
         })
         .then(respond)
         .catch(err => {
-          logger.error(err);
+          this.logger.error(err);
           respond(err);
         });
     }

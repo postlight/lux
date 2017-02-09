@@ -29,15 +29,11 @@ export function contextFor(build: Router$DefinitionBuilder<*>) {
           ...context,
 
           member(builder: () => void) {
-            const childCtx = createDefinitionGroup('member', namespace);
-
-            Reflect.apply(builder, childCtx, []);
+            builder.call(createDefinitionGroup('member', namespace));
           },
 
           collection(builder: () => void) {
-            const childCtx = createDefinitionGroup('collection', namespace);
-
-            Reflect.apply(builder, childCtx, []);
+            builder.call(createDefinitionGroup('collection', namespace));
           }
         };
       } else {

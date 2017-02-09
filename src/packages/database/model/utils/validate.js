@@ -11,7 +11,7 @@ export default function validate(instance: Model): true {
     .map(([key, value]) => ({
       key,
       value,
-      validator: Reflect.get(instance.constructor.validates, key)
+      validator: instance.constructor.validates[key]
     }))
     .filter(({ validator }) => validator)
     .map(props => new Validation(props))
