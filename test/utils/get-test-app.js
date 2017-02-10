@@ -6,7 +6,6 @@ import type Application from '../../src/packages/application';
 let instance;
 
 async function setupTestApp(): Promise<Application> {
-  const port = 4000;
   const path = joinPath(__dirname, '..', 'test-app');
 
   const {
@@ -21,11 +20,10 @@ async function setupTestApp(): Promise<Application> {
     joinPath(path, 'dist', 'bundle')
   ]);
 
-  return await new TestApp({
+  return new TestApp({
     ...config,
     database,
     path,
-    port
   });
 }
 

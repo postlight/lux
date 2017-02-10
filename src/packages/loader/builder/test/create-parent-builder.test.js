@@ -19,8 +19,6 @@ describe('module "loader/builder"', () => {
     beforeEach(() => {
       subject = createParentBuilder((key, target, parent) => {
         const namespace = posix.dirname(key).replace('.', '');
-
-        // $FlowIgnore
         const serializer = new Serializer({
           namespace,
           model: null,

@@ -1,6 +1,4 @@
 // @flow
-
-
 import { BUILT_IN_ACTIONS } from '../../../controller';
 
 import normalizeResourceArgs from '../context/utils/normalize-resource-args';
@@ -10,19 +8,16 @@ describe('module "router/definitions/context"', () => {
     it('normalizes arguments with a name only', () => {
       const result = normalizeResourceArgs(['posts']);
 
-      expect(result).toBe(expect.any(Array));
-
-      expect(result)
-        .to.have.property('0')
-        .and.deep.equal({
-          name: 'posts',
-          path: '/posts',
-          only: BUILT_IN_ACTIONS
-        });
-
-      expect(result)
-        .to.have.property('1')
-        .and.be.a('function');
+      expect(result).toEqual(
+        expect.arrayContaining([
+          {
+            name: 'posts',
+            path: '/posts',
+            only: BUILT_IN_ACTIONS,
+          },
+          expect.any(Function),
+        ])
+      );
     });
 
     it('normalizes arguments with a name and options', () => {
@@ -33,22 +28,19 @@ describe('module "router/definitions/context"', () => {
         ]
       }]);
 
-      expect(result).toBe(expect.any(Array));
-
-      expect(result)
-        .to.have.property('0')
-        .and.deep.equal({
-          name: 'posts',
-          path: '/posts',
-          only: [
-            'show',
-            'index'
-          ]
-        });
-
-      expect(result)
-        .to.have.property('1')
-        .and.be.a('function');
+      expect(result).toEqual(
+        expect.arrayContaining([
+          {
+            name: 'posts',
+            path: '/posts',
+            only: [
+              'show',
+              'index',
+            ],
+          },
+          expect.any(Function),
+        ])
+      );
     });
 
     it('normalizes arguments with a name and builder', () => {
@@ -56,19 +48,16 @@ describe('module "router/definitions/context"', () => {
         return undefined;
       }]);
 
-      expect(result).toBe(expect.any(Array));
-
-      expect(result)
-        .to.have.property('0')
-        .and.deep.equal({
-          name: 'posts',
-          path: '/posts',
-          only: BUILT_IN_ACTIONS
-        });
-
-      expect(result)
-        .to.have.property('1')
-        .and.be.a('function');
+      expect(result).toEqual(
+        expect.arrayContaining([
+          {
+            name: 'posts',
+            path: '/posts',
+            only: BUILT_IN_ACTIONS,
+          },
+          expect.any(Function),
+        ])
+      );
     });
 
     it('normalizes arguments with a name, options, and builder', () => {
@@ -81,22 +70,19 @@ describe('module "router/definitions/context"', () => {
         return undefined;
       }]);
 
-      expect(result).toBe(expect.any(Array));
-
-      expect(result)
-        .to.have.property('0')
-        .and.deep.equal({
-          name: 'posts',
-          path: '/posts',
-          only: [
-            'show',
-            'index'
-          ]
-        });
-
-      expect(result)
-        .to.have.property('1')
-        .and.be.a('function');
+      expect(result).toEqual(
+        expect.arrayContaining([
+          {
+            name: 'posts',
+            path: '/posts',
+            only: [
+              'show',
+              'index',
+            ],
+          },
+          expect.any(Function),
+        ])
+      );
     });
   });
 });

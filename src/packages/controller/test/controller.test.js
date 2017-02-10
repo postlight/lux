@@ -4,11 +4,11 @@ import faker from 'faker';
 import Controller from '../index';
 import Serializer from '../../serializer';
 import { Model } from '../../database';
+import type { Request } from '../../request';
+import type { Response } from '../../response';
 
 import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/get-test-app';
-
-import type { Request, Response } from '../../server';
 
 const HOST = 'localhost:4000';
 

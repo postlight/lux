@@ -1,8 +1,7 @@
 // @flow
-
-
 import type Controller from '../../../../controller';
-import type { Request, Response } from '../../../../server';
+import type { Request } from '../../../../request';
+import type { Response } from '../../../../response';
 import { getTestApp } from '../../../../../../test/utils/get-test-app';
 
 import { createAction, createPageLinks } from '../index';
@@ -20,18 +19,15 @@ describe('module "router/route/action"', () => {
     beforeAll(async () => {
       const { router, controllers } = await getTestApp();
 
-      // $FlowIgnore
       const controller: Controller = controllers.get('health');
       const action: Action<any> = controller.index;
 
-      // $FlowIgnore
       createRequest = (): Request => ({
         route: router.get('GET:/health'),
         method: 'GET',
         params: {}
       });
 
-      // $FlowIgnore
       createResponse = (): Response => ({
         stats: []
       });
@@ -40,7 +36,8 @@ describe('module "router/route/action"', () => {
     });
 
     it('returns an array of functions', () => {
-      expect(result).to.be.an('array').with.lengthOf(1);
+      expect(result).toEqual(expect.any(Array));
+      expect(result).toHaveLength(1);
     });
 
     it('resolves with the expected value', async () => {

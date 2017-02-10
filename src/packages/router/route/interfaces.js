@@ -1,6 +1,6 @@
 // @flow
 import type Controller from '../../controller';
-import type { Request, Response, Request$method } from '../../server';
+import type { Method } from '../../request';
 
 export type Route$type =
   | 'custom'
@@ -11,6 +11,6 @@ export type Route$opts = {
   type: Route$type;
   path: string;
   action: string;
-  method: Request$method;
+  method: Method;
   controller: Controller;
 };

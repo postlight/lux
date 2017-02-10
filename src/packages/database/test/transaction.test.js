@@ -26,7 +26,6 @@ describe('module "database/transaction"', () => {
 
   describe('.createTransactionResultProxy()', () => {
     it('has a #didPersist property', () => {
-      // $FlowIgnore
       const proxy = createTransactionResultProxy({}, true);
 
       expect(proxy.didPersist).toBe(true);

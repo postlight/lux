@@ -1,13 +1,13 @@
 // @flow
 import type { Config } from '../config';
-import type Database, { Database$config } from '../database';
+import type Database, { Config as DatabaseConfig } from '../database';
 import type Controller from '../controller';
 import type Serializer from '../serializer';
 
 export type Application$opts = Config & {
   path: string;
   port: string | number;
-  database: Database$config;
+  database: DatabaseConfig;
 };
 
 export type Application$factoryOpts<T: Controller | Serializer<*>> = {

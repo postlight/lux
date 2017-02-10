@@ -19,17 +19,11 @@ describe('module "database/relationship"', () => {
   beforeAll(async () => {
     const { models } = await getTestApp();
 
-    // $FlowIgnore
     Tag = models.get('tag');
-    // $FlowIgnore
     Post = models.get('post');
-    // $FlowIgnore
     User = models.get('user');
-    // $FlowIgnore
     Image = models.get('image');
-    // $FlowIgnore
     Comment = models.get('comment');
-    // $FlowIgnore
     Categorization = models.get('categorization');
   });
 
@@ -142,12 +136,19 @@ describe('module "database/relationship"', () => {
       it('resolves with the correct value when present', async () => {
         const result = await get(subject, 'comments');
 
-        expect(result).to.be.an('array').with.lengthOf(5);
+        expect(result).toEqual(expect.any(Array));
+        expect(result).toHaveLength(5);
 
         if (Array.isArray(result)) {
           result.forEach(comment => {
-            expect(comment instanceof Comment).toBe(true);
-            expect(comment.rawColumnData.postId).toBe(subjectId);
+            expect(comment).toEqual(expect.any(Comment));
+            expect(comment).toEqual(
+              expect.objectContaining({
+                rawColumnData: expect.objectContaining({
+                  postId: subjectId,
+                })
+              })
+            );
           });
         }
       });
@@ -200,7 +201,6 @@ describe('module "database/relationship"', () => {
         title: '#set() test'
       });
 
-      // $FlowIgnore
       subject = subject.unwrap();
       subjectId = subject.getPrimaryKey();
     };
@@ -301,7 +301,6 @@ describe('module "database/relationship"', () => {
 
       it('can add records to the relationship', () => {
         comments.forEach(comment => {
-          // $FlowIgnore
           expect(comment.postId).toBe(subjectId);
         });
       });
@@ -309,7 +308,6 @@ describe('module "database/relationship"', () => {
       it('can remove records from the relationship', () => {
         set(subject, 'comments', []);
         comments.forEach(comment => {
-          // $FlowIgnore
           expect(comment.postId).toBe(null);
         });
       });

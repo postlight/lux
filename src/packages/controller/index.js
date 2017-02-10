@@ -1,10 +1,12 @@
 // @flow
 import { Model } from '../database';
-import { getDomain } from '../server';
 import { freezeProps } from '../freezeable';
+import getDomain from '../../utils/get-domain';
 import type Serializer from '../serializer';
-import type { Query } from '../database'; // eslint-disable-line max-len, no-duplicate-imports
-import type { Request, Response } from '../server'; // eslint-disable-line max-len, no-duplicate-imports
+// eslint-disable-next-line no-duplicate-imports
+import type { Query } from '../database';
+import type { Request } from '../request';
+import type { Response } from '../response';
 
 import findOne from './utils/find-one';
 import findMany from './utils/find-many';
@@ -626,7 +628,7 @@ class Controller {
 
     res.setHeader(
       'Location',
-      `${getDomain(req) + pathname}/${record.getPrimaryKey()}`
+      `${getDomain(req) + (pathname || '')}/${record.getPrimaryKey()}`
     );
 
     Reflect.set(res, 'statusCode', 201);

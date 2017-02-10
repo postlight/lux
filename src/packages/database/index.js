@@ -63,4 +63,4 @@ export { default as typeForColumn } from './utils/type-for-column';
 export { default as createMigrations } from './utils/create-migrations';
 export { default as pendingMigrations } from './utils/pending-migrations';
 
-export type { Database$opts, Database$config } from './interfaces';
+export type { Database$opts, Config } from './interfaces';

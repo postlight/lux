@@ -1,6 +1,6 @@
 // @flow
 import type { Model } from '../../database';
-import type { Request$params } from '../../server';
+import type { Request } from '../../request';
 import merge from '../../../utils/merge';
 import setType from '../../../utils/set-type';
 import paramsToQuery from '../utils/params-to-query';
@@ -9,8 +9,8 @@ import { getTestApp } from '../../../../test/utils/get-test-app';
 describe('module "controller"', () => {
   describe('util paramsToQuery()', () => {
     let Post: Class<Model>;
-    const createParams = (obj: Object): Request$params => setType(() => {
-      return merge({
+    const createParams = (obj: Object): $PropertyType<Request, 'params'> => (
+      merge({
         sort: 'createdAt',
         filter: {},
         fields: {
@@ -21,8 +21,8 @@ describe('module "controller"', () => {
             'updatedAt'
           ]
         }
-      }, obj);
-    });
+      }, obj)
+    );
 
     beforeAll(async () => {
       const { models } = await getTestApp();

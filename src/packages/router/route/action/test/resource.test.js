@@ -1,8 +1,7 @@
 // @flow
-
-
 import type Controller from '../../../../controller';
-import type { Request, Response } from '../../../../server';
+import type { Request } from '../../../../request';
+import type { Response } from '../../../../response';
 import merge from '../../../../../utils/merge';
 import { getTestApp } from '../../../../../../test/utils/get-test-app';
 
@@ -14,12 +13,10 @@ const DOMAIN = 'localhost:4000';
 
 describe('module "router/route/action"', () => {
   describe('enhancer resource()', () => {
-    // $FlowIgnore
     const createResponse = (): Response => ({
       stats: []
     });
 
-    //$FlowIgnore
     const createRequestBuilder = ({ path, route, params }) => (): Request => ({
       route,
       method: 'GET',
@@ -61,8 +58,6 @@ describe('module "router/route/action"', () => {
 
       beforeAll(async () => {
         const { router, controllers } = await getTestApp();
-
-        // $FlowIgnore
         const controller: Controller = controllers.get('posts');
 
         subject = resource(controller.index.bind(controller));
@@ -81,9 +76,8 @@ describe('module "router/route/action"', () => {
       });
 
       it('returns an enhanced action', () => {
-        expect(subject)
-          .to.be.a('function')
-          .with.a.lengthOf(2);
+        expect(subject).toEqual(expect.any(Function));
+        expect(subject).toHaveLength(2);
       });
 
       it('resolves with a serialized payload', async () => {
@@ -102,7 +96,6 @@ describe('module "router/route/action"', () => {
         beforeAll(async () => {
           const { router, controllers } = await getTestApp();
 
-          // $FlowIgnore
           const controller: Controller = controllers.get('posts');
 
           subject = resource(controller.show.bind(controller));
@@ -116,19 +109,23 @@ describe('module "router/route/action"', () => {
         });
 
         it('returns an enhanced action', () => {
-          expect(subject)
-            .to.be.a('function')
-            .with.a.lengthOf(2);
+          expect(subject).toEqual(expect.any(Function));
+          expect(subject).toHaveLength(2);
         });
 
         it('resolves with a serialized payload', async () => {
-          const result = await subject(createRequest(), createResponse());
+          const result = await subject(
+            createRequest(),
+            createResponse()
+          );
 
-          expect(result)
-            .to.be.an('object')
-            .and.to.have.property('links')
-            .and.be.an('object')
-            .with.property('self', `http://${DOMAIN}${path}`);
+          expect(result).toEqual(
+            expect.objectContaining({
+              links: expect.objectContaining({
+                self: `http://${DOMAIN}${path}`,
+              }),
+            })
+          );
         });
       });
 
@@ -139,8 +136,6 @@ describe('module "router/route/action"', () => {
 
         beforeAll(async () => {
           const { router, controllers } = await getTestApp();
-
-          // $FlowIgnore
           const controller: Controller = controllers.get('admin/posts');
 
           subject = resource(controller.show.bind(controller));
@@ -154,19 +149,23 @@ describe('module "router/route/action"', () => {
         });
 
         it('returns an enhanced action', () => {
-          expect(subject)
-            .to.be.a('function')
-            .with.a.lengthOf(2);
+          expect(subject).toEqual(expect.any(Function));
+          expect(subject).toHaveLength(2);
         });
 
         it('resolves with a serialized payload', async () => {
-          const result = await subject(createRequest(), createResponse());
+          const result = await subject(
+            createRequest(),
+            createResponse()
+          );
 
-          expect(result)
-            .to.be.an('object')
-            .and.to.have.property('links')
-            .and.be.an('object')
-            .with.property('self', `http://${DOMAIN}${path}`);
+          expect(result).toEqual(
+            expect.objectContaining({
+              links: expect.objectContaining({
+                self: `http://${DOMAIN}${path}`,
+              }),
+            })
+          );
         });
       });
 
@@ -189,13 +188,15 @@ describe('module "router/route/action"', () => {
         });
 
         it('returns an enhanced action', () => {
-          expect(subject)
-            .to.be.a('function')
-            .with.a.lengthOf(2);
+          expect(subject).toEqual(expect.any(Function));
+          expect(subject).toHaveLength(2);
         });
 
         it('resolves with the result of the action', async () => {
-          const result = await subject(createRequest(), createResponse());
+          const result = await subject(
+            createRequest(),
+            createResponse()
+          );
 
           expect(result).toBeNull();
         });

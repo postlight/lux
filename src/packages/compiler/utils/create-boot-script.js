@@ -13,22 +13,49 @@ export default async function createBootScript(dir: string, {
   useStrict: boolean;
 }): Promise<void> {
   let data = template`
-    const CWD = process.cwd();
-    const { env: { PORT } } = process;
-    const { Application, config, database } = require('./bundle');
+    const bundle = require('./bundle');
 
-    module.exports = new Application(
-      Object.assign(config, {
-        database,
-        path: CWD,
-        port: PORT
-      })
-    ).catch(err => {
-      process.send({
-        error: err ? err.stack : void 0,
-        message: 'error'
-      });
+    const hasIPC = typeof process.send === 'function';
+    const config = Object.assign({}, bundle.config, {
+      path: process.cwd(),
+      database: bundle.database,
     });
+
+    module.exports = new bundle.Application(config)
+      .then(app => {
+        if (hasIPC) {
+          process.send('ready');
+        } else {
+          process.emit('ready');
+        }
+
+        return app
+          .on('error', err => {
+            setImmediate(() => {
+              app.logger.error(err);
+            });
+          })
+          .on('request:error', (request, response, err) => {
+            setImmediate(() => {
+              app.logger.error(err);
+            });
+          })
+          .on('request:complete', (request, response) => {
+            setImmediate(() => {
+              app.logger.info(\`\${request.method} \${response.statusCode} \`);
+            });
+          });
+      })
+      .catch(err => {
+        if (hasIPC) {
+          process.send({
+            error: err ? err.stack : void 0,
+            message: 'error'
+          });
+        } else {
+          process.emit('error', err);
+        }
+      });
   `;
 
   if (useStrict) {

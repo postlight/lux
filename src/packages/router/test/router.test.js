@@ -1,13 +1,9 @@
 // @flow
-
-
 import Route from '../route';
 import Router from '../index';
-import type Controller from '../../controller';
-
 import { getTestApp } from '../../../../test/utils/get-test-app';
-
-import type { Request } from '../../server';
+import type Controller from '../../controller';
+import type { Request } from '../../request';
 
 const CONTROLLER_MISSING_MESSAGE = /Could not resolve controller by name '.+'/;
 
@@ -20,8 +16,6 @@ describe('module "router"', () => {
       const app = await getTestApp();
 
       controllers = app.controllers;
-
-      // $FlowIgnore
       controller = controllers.get('application');
     });
 
@@ -133,7 +127,6 @@ describe('module "router"', () => {
       });
 
       it('can match a route for a request with a dynamic url', () => {
-        // $FlowIgnore
         const req: Request = {
           method: 'GET',
           url: {
@@ -145,7 +138,6 @@ describe('module "router"', () => {
       });
 
       it('can match a route for a request with a non-dynamic url', () => {
-        // $FlowIgnore
         const req: Request = {
           method: 'GET',
           url: {

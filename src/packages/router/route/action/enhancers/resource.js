@@ -1,16 +1,20 @@
 // @flow
 import { Query } from '../../../../database';
-import { getDomain } from '../../../../server';
+import getDomain from '../../../../../utils/get-domain';
 import createPageLinks from '../utils/create-page-links';
+import type Controller from '../../../../controller';
 import type { Action } from '../interfaces';
 
 /**
 * @private
 */
-export default function resource(action: Action<any>): Action<any> {
+export default function resource(
+  action: Action<any>,
+  controller: Controller
+): Action<any> {
   // eslint-disable-next-line func-names
   const resourceAction = async function (req, res) {
-    const { route: { action: actionName } } = req;
+    const { name: actionName } = action;
     const result = action(req, res);
     let links = {};
     let data;
@@ -26,24 +30,10 @@ export default function resource(action: Action<any>): Action<any> {
     }
 
     if (Array.isArray(data) || (data && data.isModelInstance)) {
-      const domain = getDomain(req);
-
-      const {
-        params,
-        url: {
-          path,
-          pathname
-        },
-        route: {
-          controller: {
-            namespace,
-            serializer,
-            defaultPerPage
-          }
-        }
-      } = req;
-
+      const { namespace, serializer, defaultPerPage } = controller;
+      const { params, url: { path, pathname } } = req;
       const include = params.include || [];
+      const domain = getDomain(req);
 
       if (actionName === 'index') {
         links = createPageLinks({
@@ -54,9 +44,13 @@ export default function resource(action: Action<any>): Action<any> {
           total: total || 0
         });
       } else if (actionName !== 'index' && namespace) {
-        links = {
-          self: domain.replace(`/${namespace}`, '') + path
-        };
+        let self = domain.replace(`/${namespace}`, '');
+
+        if (path) {
+          self += path;
+        }
+
+        links = { self };
       } else if (actionName !== 'index' && !namespace) {
         links = {
           self: domain + path
@@ -74,8 +68,16 @@ export default function resource(action: Action<any>): Action<any> {
     return data;
   };
 
-  Reflect.defineProperty(resourceAction, 'name', {
-    value: action.name
+  Object.defineProperties(resourceAction, {
+    name: {
+      value: action.name,
+    },
+    isFinal: {
+      value: action.isFinal,
+      writable: false,
+      enumerable: false,
+      configurable: false,
+    },
   });
 
   return resourceAction;

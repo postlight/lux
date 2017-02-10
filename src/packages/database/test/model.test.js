@@ -19,11 +19,8 @@ describe('module "database/model"', () => {
       const app = await getTestApp();
 
       store = app.store;
-      // $FlowIgnore
       User = app.models.get('user');
-      // $FlowIgnore
       Image = app.models.get('image');
-      // $FlowIgnore
       Comment = app.models.get('comment');
     });
 
@@ -273,18 +270,14 @@ describe('module "database/model"', () => {
       });
 
       it('removes invalid hooks from the `hooks` property', () => {
-        expect(Subject)
-          .to.have.property('hooks')
-          .and.be.an('object')
-          .and.not.have.any.keys(['duringDestroy']);
-
-        expect(Subject)
-          .to.have.deep.property('hooks.afterCreate')
-          .and.be.a('function');
-
-        expect(Subject)
-          .to.have.deep.property('hooks.beforeDestroy')
-          .and.be.a('function');
+        expect(Subject).toEqual(
+          expect.objectContaining({
+            hooks: expect.objectContaining({
+              afterCreate: expect.any(Function),
+              beforeDestroy: expect.any(Function),
+            }),
+          })
+        );
       });
 
       it('adds each scope to `Model`', () => {
@@ -411,7 +404,6 @@ describe('module "database/model"', () => {
         expect(result.createdAt).toBe(expect.any(Date));
         expect(result.updatedAt).toBe(expect.any(Date));
 
-        // $FlowIgnore
         expect(await result.user).to.have.property('id', user.getPrimaryKey());
       });
     });
@@ -801,16 +793,14 @@ describe('module "database/model"', () => {
       });
 
       it('returns the column data for an attribute if it exists', () => {
-        const result = Subject.columnFor('isPublic');
-
-        expect(result).to.be.an('object').and.have.all.keys([
-          'type',
-          'docName',
-          'nullable',
-          'maxLength',
-          'columnName',
-          'defaultValue'
-        ]);
+        expect(Subject.columnFor('isPublic')).toEqual({
+          type: expect.any(String),
+          docName: expect.any(String),
+          nullable: expect.anything(),
+          maxLength: expect.anything(),
+          columnName: expect.any(String),
+          defaultValue: expect.anything(),
+        });
       });
     });
 
@@ -852,7 +842,7 @@ describe('module "database/model"', () => {
       it('returns the data for a relationship if it exists', () => {
         const result = Subject.relationshipFor('user');
 
-        expect(Reflect.ownKeys(result)).to.include.all.members([
+        expect(Reflect.ownKeys(result)).toEqual([
           'type',
           'model',
           'inverse',
@@ -1353,13 +1343,11 @@ describe('module "database/model"', () => {
 
         describe('- not nullable', () => {
           it('does not update the current value when passed null', () => {
-            // $FlowIgnore
             instance.title = null;
             expect(instance.title).toBe(ogTitle);
           });
 
           it('does not update the current value when passed undefined', () => {
-            // $FlowIgnore
             instance.title = undefined;
             expect(instance.title).toBe(ogTitle);
           });
@@ -1485,6 +1473,7 @@ describe('module "database/model"', () => {
 
       class Subject extends Model {
         id: number;
+        body: string;
         title: string;
         isPublic: boolean;
 
@@ -1564,15 +1553,12 @@ describe('module "database/model"', () => {
         expect(instance.body).toBe(body);
         expect(instance.isPublic).toBe(true);
 
-        // $FlowIgnore
         expect(await instance.user)
           .to.have.property('id', user.getPrimaryKey());
 
-        // $FlowIgnore
         expect(await instance.image)
           .to.have.property('id', image.getPrimaryKey());
 
-        // $FlowIgnore
         expect(await instance.comments)
           .to.be.an('array')
           .with.lengthOf(3);
@@ -1584,15 +1570,19 @@ describe('module "database/model"', () => {
         expect(result.body).toBe(body);
         expect(result.isPublic).toBe(true);
 
-        expect(await result.user)
-          .to.have.property('id', user.getPrimaryKey());
+        expect(await result.user).toEqual(
+          expect.objectContaining({
+            id: user.getPrimaryKey(),
+          })
+        );
 
-        expect(await result.image)
-          .to.have.property('id', image.getPrimaryKey());
+        expect(await result.image).toEqual(
+          expect.objectContaining({
+            id: image.getPrimaryKey(),
+          })
+        );
 
-        expect(await result.comments)
-          .to.be.an('array')
-          .with.lengthOf(3);
+        expect(await result.comments).toEqual(expect.any(Array));
       });
 
       it('fails if a validation is not met', async () => {
@@ -1687,7 +1677,7 @@ describe('module "database/model"', () => {
 
         const ref = await instance.reload();
 
-        expect(ref).to.not.equal(instance);
+        expect(ref).not.toBe(instance);
         expect(ref.title).toBe(prevTitle);
         expect(instance.title).toBe(nextTitle);
       });

@@ -1,34 +1,30 @@
 // @flow
-import { LUX_CONSOLE } from '../../constants';
 import Database from '../database';
 import Logger from '../logger';
 import Router from '../router';
-import Server from '../server';
 import { build, createLoader, closestChild } from '../loader';
 import { freezeProps, deepFreezeProps } from '../freezeable';
 import ControllerMissingError from '../../errors/controller-missing-error';
 
-import normalizePort from './utils/normalize-port';
 import createController from './utils/create-controller';
 import createSerializer from './utils/create-serializer';
 
-import type Application, { Application$opts } from './index'; // eslint-disable-line no-unused-vars, max-len
+ // eslint-disable-next-line no-unused-vars
+import type Application, { Options } from './index';
 
 /**
  * @private
  */
 export default async function initialize<T: Application>(app: T, {
   path,
-  port,
+  adapter,
   logging,
   database,
-  server: serverConfig
-}: Application$opts): Promise<T> {
+}: Options): Promise<T> {
   const load = createLoader(path);
   const routes = load('routes');
   const models = load('models');
   const logger = new Logger(logging);
-  const normalizedPort = normalizePort(port);
 
   const store = await new Database({
     path,
@@ -87,27 +83,11 @@ export default async function initialize<T: Application>(app: T, {
     controller: ApplicationController
   });
 
-  const server = new Server({
-    router,
-    logger,
-    ...serverConfig
-  });
-
-  if (!LUX_CONSOLE) {
-    server.instance.listen(normalizedPort).once('listening', () => {
-      if (typeof process.send === 'function') {
-        process.send('ready');
-      } else {
-        process.emit('ready');
-      }
-    });
-  }
-
   Object.assign(app, {
     logger,
     models,
     controllers,
-    serializers
+    serializers,
   });
 
   deepFreezeProps(app, true,
@@ -121,8 +101,7 @@ export default async function initialize<T: Application>(app: T, {
     path,
     store,
     router,
-    server,
-    port: normalizedPort
+    adapter: adapter(app),
   });
 
   freezeProps(app, false,
@@ -130,8 +109,8 @@ export default async function initialize<T: Application>(app: T, {
     'port',
     'store',
     'router',
-    'server'
+    'adapter'
   );
 
-  return Object.freeze(app);
+  return app;
 }

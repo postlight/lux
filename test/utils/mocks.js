@@ -1,6 +1,7 @@
 // @flow
 import K from '../../src/utils/k';
-import type { Request, Response } from '../../src/packages/server';
+import type { Request } from '../../src/packages/request';
+import type { Response } from '../../src/packages/response';
 
 const RESPONSE_HEADERS = new WeakMap();
 
@@ -15,8 +16,7 @@ function headersFor(res: Response): Map<string, string> {
   return headers;
 }
 
-// $FlowIgnore
-export const createResponse = (): Response => ({
+export const createResponse = (): any => ({
   on: K,
   end: K,
   stats: [],
@@ -36,14 +36,13 @@ export const createResponse = (): Response => ({
   }
 });
 
-//$FlowIgnore
+// $FlowIgnore
 export const createRequestBuilder = ({
   path,
   route,
   params,
   method = 'GET'
-  //$FlowIgnore
-}) => (): Request => ({
+}) => (): any => ({
   route,
   params,
   method,

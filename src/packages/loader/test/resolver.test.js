@@ -33,9 +33,14 @@ describe('module "loader/resolver"', () => {
     it('can find the closest ancestor by a namespaced key', () => {
       const result = closestAncestor(serializers, 'admin/users');
 
-      expect(result)
-        .to.be.ok
-        .and.have.deep.property('constructor.name', 'UsersSerializer');
+      expect(result).not.toThrow();
+      expect(result).toEqual(
+        expect.objectContaining({
+          constructor: expect.objectContaining({
+            name: 'UsersSerializer',
+          }),
+        })
+      );
     });
   });
 });

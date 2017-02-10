@@ -1,4 +1,7 @@
 // @flow
+import * as Adapters from './packages/adapter';
+
+export { Adapters };
 export { Model } from './packages/database';
 export { default as Logger } from './packages/logger';
 export { default as Controller } from './packages/controller';

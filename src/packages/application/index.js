@@ -1,22 +1,30 @@
 // @flow
+import EventEmitter from 'events';
+
 import { createDefaultConfig } from '../config';
+import * as responder from '../responder';
 import merge from '../../utils/merge';
 import type Logger from '../logger';
 import type Router from '../router';
-import type Server from '../server';
 import type Controller from '../controller';
 import type Serializer from '../serializer';
-import type Database, { Model } from '../database';
+import type { Config } from '../config';
+import type { Adapter } from '../adapter';
 import type { FreezeableMap } from '../freezeable';
+import type Database, { Model, Config as DatabaseConfig } from '../database';
 
 import initialize from './initialize';
-import type { Application$opts } from './interfaces';
+
+export type Options = Config & {
+  path: string;
+  database: DatabaseConfig;
+};
 
 /**
  * @class Application
  * @public
  */
-class Application {
+class Application extends EventEmitter {
   /**
    * The path of `Application` instance.
    *
@@ -27,14 +35,11 @@ class Application {
   path: string;
 
   /**
-   * The port that an `Application` instance is listening for incomming HTTP
-   * requests.
-   *
-   * @property port
-   * @type {Number}
-   * @public
+   * @property adapter
+   * @type {Adapter}
+   * @private
    */
-  port: number;
+  adapter: Adapter;
 
   /**
    * A reference to the `Database` instance.
@@ -62,15 +67,6 @@ class Application {
    * @private
    */
   router: Router;
-
-  /**
-   * A reference to the `Server` instance.
-   *
-   * @property server
-   * @type {Server}
-   * @private
-   */
-  server: Server;
 
   /**
    * A map containing each `Model` class.
@@ -105,9 +101,46 @@ class Application {
    * @return {Promise}
    * @public
    */
-  constructor(opts: Application$opts): Promise<Application> {
-    return initialize(this, merge(createDefaultConfig(), opts));
+  constructor(options: Options): Promise<Application> {
+    super();
+    return initialize(this, merge(createDefaultConfig(), options));
   }
+
+  /**
+   * @method exec
+   * @private
+   */
+  exec: (...args: Array<any>) => void = (...args) => {
+    this
+      .adapter(...args)
+      .then(([request, response]) => {
+        this.emit('request:start', request, response);
+
+        const respond = responder.create(request, response);
+        const route = this.router.match(request);
+
+        if (route) {
+          this.emit('request:match', request, response, route);
+
+          route
+            .visit(request, response)
+            .then(data => {
+              respond(data);
+              this.emit('request:complete', request, response);
+            })
+            .catch(err => {
+              respond(err);
+              this.emit('request:error', request, response, err);
+            });
+        } else {
+          respond(404);
+          this.emit('request:complete', request, response);
+        }
+      })
+      .catch(err => {
+        this.emit('error', err);
+      });
+  };
 }
 
 export default Application;

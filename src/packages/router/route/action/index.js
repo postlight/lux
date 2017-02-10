@@ -2,7 +2,6 @@
 import type Controller from '../../../controller';
 
 import resource from './enhancers/resource';
-import trackPerf from './enhancers/track-perf';
 import type { Action } from './interfaces';
 
 /**
@@ -15,18 +14,22 @@ export function createAction(
 ): Array<Action<any>> {
   let fn = action.bind(controller);
 
+  Object.defineProperty(fn, 'isFinal', {
+    value: true,
+    writable: false,
+    enumerable: false,
+    configurable: false,
+  });
+
   if (type !== 'custom' && controller.hasModel && controller.hasSerializer) {
-    fn = resource(fn);
+    fn = resource(fn, controller);
   }
 
   return [
     ...controller.beforeAction,
-    // eslint-disable-next-line no-underscore-dangle
-    function __FINAL_HANDLER__(req, res) {
-      return fn(req, res);
-    },
+    fn,
     ...controller.afterAction,
-  ].map(trackPerf);
+  ];
 }
 
 export { FINAL_HANDLER } from './constants';

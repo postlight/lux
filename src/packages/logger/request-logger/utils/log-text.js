@@ -4,42 +4,29 @@ import chalk from 'chalk';
 import { DEBUG } from '../../constants';
 import { infoTemplate, debugTemplate } from '../templates';
 import type Logger from '../../index';
-import type { Request, Response } from '../../../server';
+import type { Request } from '../../../request';
+import type { Response } from '../../../response';
 
 import filterParams from './filter-params';
+
+type Options = {
+  request: Request;
+  response: Response;
+  startTime: number;
+};
 
 /**
  * @private
  */
-export default function logText(logger: Logger, {
-  startTime,
-  request: req,
-  response: res
-}: {
-  request: Request;
-  response: Response;
-  startTime: number;
-}): void {
-  res.once('finish', () => {
+export default function logText(logger: Logger, options: Options): void {
+  const { request, response, startTime } = options;
+
+  response.once('finish', () => {
     const endTime = Date.now();
-
-    const {
-      route,
-      method,
-
-      url: {
-        path
-      },
-
-      connection: {
-        remoteAddress
-      }
-    } = req;
-
-    const { stats, statusMessage } = res;
-
-    let { params } = req;
-    let { statusCode } = res;
+    const { route, method, url: { path } } = request;
+    const { stats, statusMessage } = response;
+    let { params } = request;
+    let { statusCode } = response;
     let statusColor;
 
     params = filterParams(params, ...logger.filter.params);
@@ -56,7 +43,7 @@ export default function logText(logger: Logger, {
       colorStr = (str: string) => str;
     }
 
-    statusCode = statusCode.toString();
+    statusCode = String(statusCode);
 
     const templateData = {
       path,
@@ -69,7 +56,7 @@ export default function logText(logger: Logger, {
       endTime,
       statusCode,
       statusMessage,
-      remoteAddress
+      remoteAddress: '::1'
     };
 
     if (logger.level === DEBUG) {

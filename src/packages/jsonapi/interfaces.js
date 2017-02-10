@@ -74,15 +74,16 @@ export interface JSONAPI$ErrorObject {
   };
 }
 
-export interface JSONAPI$Document {
+export type Document = {
   // $FlowIgnore
   data?: Array<JSONAPI$ResourceObject> | JSONAPI$ResourceObject;
   links?: JSONAPI$DocumentLinks;
   errors?: Array<JSONAPI$ErrorObject>;
   included?: Array<JSONAPI$ResourceObject>;
-
   jsonapi?: {
     version: JSONAPI$versions;
     meta?: JSONAPI$BaseObject;
-  }
-}
+  };
+};
+
+export type JSONAPI$Document = Document;

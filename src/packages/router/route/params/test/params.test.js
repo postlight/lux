@@ -44,9 +44,7 @@ describe('module "router/route/params"', () => {
     beforeAll(async () => {
       const { controllers } = await getTestApp();
 
-      getController = (name: string): Controller => setType(() => {
-        return controllers.get(name);
-      });
+      getController = (name: string): Controller => controllers.get(name);
     });
 
     describe('with collection route', () => {
@@ -62,19 +60,34 @@ describe('module "router/route/params"', () => {
       });
 
       it('contains sort', () => {
-        expect(params).to.include.keys('sort');
+        expect(params).toEqual(
+          expect.objectContaining({
+            sort: expect.anything(),
+          })
+        );
       });
 
       it('contains page cursor', () => {
-        expect(params).to.include.keys('page');
-        expect(params.page).to.include.keys('size', 'number');
+        expect(params).toEqual(
+          expect.objectContaining({
+            page: {
+              size: expect.anything(),
+              number: expect.anything(),
+            },
+          })
+        );
       });
 
       it('contains model fields', () => {
         const { model, serializer: { attributes } } = controller;
 
-        expect(params.fields).to.include.keys(model.resourceName);
-        expect(params.fields[model.resourceName]).toEqual(attributes);
+        expect(params).toEqual(
+          expect.objectContaining({
+            fields: expect.objectContaining({
+              [model.resourceName]: attributes,
+            }),
+          })
+        );
       });
     });
 
@@ -93,8 +106,13 @@ describe('module "router/route/params"', () => {
       it('contains model fields', () => {
         const { model, serializer: { attributes } } = controller;
 
-        expect(params.fields).to.include.keys(model.resourceName);
-        expect(params.fields[model.resourceName]).toEqual(attributes);
+        expect(params).toEqual(
+          expect.objectContaining({
+            fields: expect.objectContaining({
+              [model.resourceName]: attributes,
+            }),
+          })
+        );
       });
     });
 

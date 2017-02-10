@@ -2,7 +2,7 @@
 import omit from '../../../utils/omit';
 import entries from '../../../utils/entries';
 import type { Model } from '../../database';
-import type { Request$params } from '../../server';
+import type { Request } from '../../request';
 
 /**
  * @private
@@ -14,7 +14,7 @@ export default function paramsToQuery(model: Class<Model>, {
   filter,
   fields,
   include
-}: Request$params): Object {
+}: $PropertyType<Request, 'params'>): Object {
   const relationships = entries(model.relationships);
   let includedFields = omit(fields, model.resourceName);
 

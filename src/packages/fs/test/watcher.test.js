@@ -42,7 +42,7 @@ describe('module "fs"', () => {
 
         describe('#destroy()', () => {
           it('does not throw an error', () => {
-            expect(() => subject.destroy()).to.not.throw(Error);
+            expect(() => subject.destroy()).not.toThrow();
           });
         });
       });
@@ -67,7 +67,7 @@ describe('module "fs"', () => {
 
       describe('#destroy()', () => {
         it('does not throw an error', () => {
-          expect(() => subject.destroy()).to.not.throw(Error);
+          expect(() => subject.destroy()).not.toThrow();
         });
       });
     });

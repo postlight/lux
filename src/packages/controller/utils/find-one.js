@@ -1,7 +1,8 @@
 // @flow
 import merge from '../../../utils/merge';
-import type { Model, Query } from '../../database'; // eslint-disable-line max-len, no-unused-vars
-import type { Request } from '../../server';
+// eslint-disable-next-line no-unused-vars
+import type { Model, Query } from '../../database';
+import type { Request } from '../../request';
 
 import paramsToQuery from './params-to-query';
 

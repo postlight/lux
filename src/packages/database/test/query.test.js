@@ -90,7 +90,7 @@ describe('module "database/query"', () => {
       it('creates a new `Query` from a source instance of `Query`', () => {
         const result = Query.from(source);
 
-        expect(result).to.not.equal(source);
+        expect(result).not.toBe(source);
         expect(result.model).toBe(source.model);
         expect(result.isFind).toBe(source.isFind);
         expect(result.collection).toBe(source.collection);
@@ -114,19 +114,18 @@ describe('module "database/query"', () => {
       });
 
       it('does not modify #snapshots', () => {
-        const result = subject.all();
+        const { snapshots } = subject.all();
 
-        expect(result.snapshots).to.be.an('array').with.lengthOf(0);
+        expect(snapshots).toEqual(expect.any(Array));
+        expect(snapshots).toHaveLength(0);
       });
 
       it('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.all();
 
-        expect(result).to.be.an('array').with.lengthOf(100);
-
-        if (Array.isArray(result)) {
-          result.forEach(assertItem);
-        }
+        expect(result).toEqual(expect.any(Array));
+        expect(result).toHaveLength(100);
+        result.forEach(assertItem);
       });
     });
 
@@ -230,9 +229,12 @@ describe('module "database/query"', () => {
       it('resolves with the correct `Model` instance', async () => {
         const result = await subject.find(1);
 
-        expect(result)
-          .to.be.an.instanceof(TestModel)
-          .and.have.property('id', 1);
+        expect(result).toEqual(expect.any(TestModel));
+        expect(result).toEqual(
+          expect.objectContaining({
+            id: 1,
+          })
+        );
       });
     });
 
@@ -269,11 +271,9 @@ describe('module "database/query"', () => {
       it('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.page(2);
 
-        expect(result).to.be.an('array').with.lengthOf(25);
-
-        if (Array.isArray(result)) {
-          result.forEach(assertItem);
-        }
+        expect(result).toEqual(expect.any(Array));
+        expect(result).toHaveLength(25);
+        result.forEach(assertItem);
       });
     });
 
@@ -309,11 +309,9 @@ describe('module "database/query"', () => {
       it('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.limit(5);
 
-        expect(result).to.be.an('array').with.lengthOf(5);
-
-        if (Array.isArray(result)) {
-          result.forEach(assertItem);
-        }
+        expect(result).toEqual(expect.any(Array));
+        expect(result).toHaveLength(5);
+        result.forEach(assertItem);
       });
     });
 
@@ -358,14 +356,9 @@ describe('module "database/query"', () => {
         const limit = 100;
         const result = await subject.order('id', 'DESC');
 
-        expect(result).to.be.an('array').with.lengthOf(limit);
-
-        if (Array.isArray(result)) {
-          result.forEach((item, index) => {
-            assertItem(item);
-            expect(item.id).toBe(limit - index);
-          });
-        }
+        expect(result).toEqual(expect.any(Array));
+        expect(result).toHaveLength(limit);
+        result.forEach(assertItem);
       });
     });
 
@@ -470,9 +463,12 @@ describe('module "database/query"', () => {
       it('resolves with the correct `Model` instance', async () => {
         const result = await subject.first();
 
-        expect(result)
-          .to.be.an.instanceof(TestModel)
-          .and.have.property('id', 1);
+        expect(result).toEqual(expect.any(TestModel));
+        expect(result).toEqual(
+          expect.objectContaining({
+            id: 1,
+          })
+        );
       });
     });
 
@@ -524,9 +520,12 @@ describe('module "database/query"', () => {
       it('resolves with the correct `Model` instance', async () => {
         const result = await subject.last();
 
-        expect(result)
-          .to.be.an.instanceof(TestModel)
-          .and.have.property('id', 100);
+        expect(result).toEqual(expect.any(TestModel));
+        expect(result).toEqual(
+          expect.objectContaining({
+            id: 100,
+          })
+        );
       });
     });
 
@@ -610,11 +609,9 @@ describe('module "database/query"', () => {
       it('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.offset(10);
 
-        expect(result).to.be.an('array').with.lengthOf(90);
-
-        if (Array.isArray(result)) {
-          result.forEach(assertItem);
-        }
+        expect(result).toEqual(expect.any(Array));
+        expect(result).toHaveLength(90);
+        result.forEach(assertItem);
       });
     });
 
@@ -705,29 +702,20 @@ describe('module "database/query"', () => {
         'userId',
         'postId',
         'createdAt',
-        'updatedAt',
-        'postId'
+        'updatedAt'
       ]) => {
-        const { comments } = relationships;
-
-        expect(relationships).to.have.property('comments');
-
-        expect(comments).toEqual([
-          'attrs',
-          'type',
-          'model',
-          'through',
-          'foreignKey'
-        ]);
-
-        expect(comments.type).toBe('hasMany');
-        expect(comments.model).toBe(Comment);
-        expect(comments.through).toBe(undefined);
-        expect(comments.foreignKey).toBe('post_id');
-
-        expect(comments)
-          .to.have.property('attrs')
-          .and.include.all.members(attrs);
+        expect(relationships).toEqual(
+          expect.objectContaining({
+            type: 'hasMany',
+            model: Comment,
+            attrs: attrs.reduce((obj, key) => ({
+              ...obj,
+              [key]: expect.anything(),
+            }), {}),
+            through: undefined,
+            foreignKey: 'post_id',
+          })
+        );
       };
 
       beforeEach(() => {
@@ -741,36 +729,39 @@ describe('module "database/query"', () => {
       });
 
       it('properly modifies #snapshots when using an array of strings', () => {
-        const {
-          snapshots,
-          relationships
-        } = subject.include('user', 'comments');
+        const { snapshots, relationships } = subject.include(
+          'user',
+          'comments'
+        );
 
-        expect(snapshots)
-          .to.have.deep.property('[0][0]', 'includeSelect');
-
-        expect(snapshots)
-          .to.have.deep.property('[0][1]')
-          .and.include.all.members([
-            'users.id AS user.id',
-            'users.name AS user.name',
-            'users.email AS user.email',
-            'users.password AS user.password',
-            'users.created_at AS user.createdAt',
-            'users.updated_at AS user.updatedAt'
-          ]);
-
-        expect(snapshots)
-          .to.have.deep.property('[1][0]', 'leftOuterJoin');
-
-        expect(snapshots)
-          .to.have.deep.property('[1][1]')
-          .and.include.all.members([
-            'users',
-            'posts.user_id',
-            '=',
-            'users.id'
-          ]);
+        expect(snapshots).toEqual(
+          expect.arrayContaining([
+            expect.arrayContaining([
+              expect.arrayContaining([
+                'includeSelect',
+                expect.arrayContaining([
+                  'users.id AS user.id',
+                  'users.name AS user.name',
+                  'users.email AS user.email',
+                  'users.password AS user.password',
+                  'users.created_at AS user.createdAt',
+                  'users.updated_at AS user.updatedAt',
+                ]),
+              ]),
+            ]),
+            expect.arrayContaining([
+              expect.arrayContaining([
+                'leftOuterJoin',
+                expect.arrayContaining([
+                  'users',
+                  'posts.user_id',
+                  '=',
+                  'users.id'
+                ]),
+              ]),
+            ]),
+          ])
+        );
 
         assertRelationships(relationships);
       });
@@ -791,27 +782,26 @@ describe('module "database/query"', () => {
 
         const { snapshots, relationships } = subject.include(params);
 
-        expect(snapshots)
-          .to.have.deep.property('[0][0]', 'includeSelect');
-
-        expect(snapshots)
-          .to.have.deep.property('[0][1]')
-          .and.include.all.members([
-            'users.id AS user.id',
-            'users.name AS user.name'
-          ]);
-
-        expect(snapshots)
-          .to.have.deep.property('[1][0]', 'leftOuterJoin');
-
-        expect(snapshots)
-          .to.have.deep.property('[1][1]')
-          .and.include.all.members([
-            'users',
-            'posts.user_id',
-            '=',
-            'users.id'
-          ]);
+        expect(snapshots).toEqual(
+          expect.arrayContaining([
+            expect.arrayContaining([
+              'includeSelect',
+              expect.arrayContaining([
+                'users.id AS user.id',
+                'users.name AS user.name'
+              ]),
+            ]),
+            expect.arrayContaining([
+              'leftOuterJoin',
+              expect.arrayContaining([
+                'users',
+                'posts.user_id',
+                '=',
+                'users.id'
+              ]),
+            ]),
+          ])
+        );
 
         assertRelationships(relationships, params.comments);
       });
@@ -820,10 +810,7 @@ describe('module "database/query"', () => {
         const result = await subject.include('user', 'comments');
 
         expect(result).toBe(expect.any(Array));
-
-        if (Array.isArray(result)) {
-          result.forEach(assertItem);
-        }
+        result.forEach(assertItem);
       });
     });
 

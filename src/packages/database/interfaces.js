@@ -28,7 +28,7 @@ export type Database$environment = {
   url?: string;
 };
 
-export type Database$config = {
+export type Config = {
   development: Database$environment;
   test: Database$environment;
   production: Database$environment;
@@ -37,7 +37,7 @@ export type Database$config = {
 export type Database$opts = {
   path: string;
   models: Map<string, Class<Model>>;
-  config: Database$config;
+  config: Config;
   logger: Logger;
   checkMigrations: boolean;
 };

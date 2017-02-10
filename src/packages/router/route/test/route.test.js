@@ -2,7 +2,8 @@
 import { spy } from 'sinon';
 
 import Controller from '../../../controller';
-import type { Request, Response } from '../../../server';
+import type Controller from '../../controller';
+import type { Request } from '../../request';
 import { getTestApp } from '../../../../../test/utils/get-test-app';
 import {
   createResponse,
@@ -19,7 +20,6 @@ describe('module "router/route"', () => {
       beforeAll(async () => {
         const { controllers } = await getTestApp();
 
-        // $FlowIgnore
         controller = controllers.get('posts');
       });
 
@@ -49,7 +49,6 @@ describe('module "router/route"', () => {
 
       it('throws when an an action is not provided', () => {
         expect(() => {
-          // $FlowIgnore
           new Route({
             controller,
             type: 'collection',
@@ -61,7 +60,6 @@ describe('module "router/route"', () => {
 
       it('throws when an an controller is not provided', () => {
         expect(() => {
-          // $FlowIgnore
           new Route({
             type: 'collection',
             path: 'posts',
@@ -79,7 +77,6 @@ describe('module "router/route"', () => {
 
       beforeAll(async () => {
         const { controllers } = await getTestApp();
-        // $FlowIgnore
         const controller: Controller = controllers.get('posts');
 
         staticRoute = new Route({
@@ -106,7 +103,7 @@ describe('module "router/route"', () => {
       });
 
       it('is empty for static paths', () => {
-        expect(staticRoute.parseParams(['1'])).to.be.empty;
+        expect(staticRoute.parseParams(['1'])).toHaveLength(0);
       });
 
       it('contains params matching dynamic segments', () => {
@@ -125,7 +122,6 @@ describe('module "router/route"', () => {
       describe('- with action only', () => {
         beforeAll(async () => {
           class TestController extends Controller {
-            // $FlowIgnore
             index = async () => ({
               meta: {
                 success: true
@@ -175,7 +171,6 @@ describe('module "router/route"', () => {
               })
             ];
 
-            // $FlowIgnore
             index = async () => ({
               meta: {
                 success: true
@@ -217,7 +212,6 @@ describe('module "router/route"', () => {
       describe('- with `afterAction`', () => {
         beforeAll(async () => {
           class TestController extends Controller {
-            // $FlowIgnore
             index = async () => ({
               meta: {
                 success: true,
@@ -282,7 +276,6 @@ describe('module "router/route"', () => {
               })
             ];
 
-            // $FlowIgnore
             index = async () => ({
               meta: {
                 success: true
@@ -330,7 +323,6 @@ describe('module "router/route"', () => {
       beforeAll(async () => {
         const { controllers } = await getTestApp();
 
-        // $FlowIgnore
         controller = await controllers.get('posts');
       });
 
