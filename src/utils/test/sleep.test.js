@@ -1,5 +1,6 @@
 // @flow
 import sleep from '../sleep';
+import range from '../range';
 
 describe('util sleep()', () => {
   const amount = 500;
@@ -15,6 +16,6 @@ describe('util sleep()', () => {
 
   it('sleeps for the correct amount of time', async () => {
     await sleep(amount);
-    expect(Date.now() - time).toBeCloseTo(amount, 25);
+    expect(Array.from(range(475, 525))).toContain(Date.now() - time);
   });
 });

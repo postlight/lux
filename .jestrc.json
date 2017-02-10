@@ -1,5 +1,9 @@
 {
-  "testRegex": "\\.test\\.js",
+  "testRegex": "\\.test\\.js$",
   "testEnvironment": "node",
-  "collectCoverage": true
+  "collectCoverage": true,
+  "coveragePathIgnorePatterns": [
+    "/test/",
+    "/node_modules/"
+  ]
 }

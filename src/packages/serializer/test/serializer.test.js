@@ -12,17 +12,13 @@ import { getTestApp } from '../../../../test/utils/get-test-app';
 import type Application from '../../application';
 import type { Model } from '../../database';
 
-import type {
-  JSONAPI$DocumentLinks,
-  JSONAPI$ResourceObject,
-  JSONAPI$IdentifierObject
-} from '../../jsonapi';
-
 const DOMAIN = 'http://localhost:4000';
 
 const linkFor = (type, id) => (
   id ? `${DOMAIN}/${type}/${id}` : `${DOMAIN}/${type}`
 );
+
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 20 * 1000;
 
 describe('module "serializer"', () => {
   describe('class Serializer', () => {
@@ -190,148 +186,23 @@ describe('module "serializer"', () => {
       };
     });
 
-    describe('#format()', function () {
-      this.timeout(20 * 1000);
-
+    describe('#format()', () => {
       beforeEach(setup);
       afterEach(teardown);
 
-      const expectResourceToBeCorrect = async (
-        post,
-        result,
-        includeImage = true
-      ) => {
-        const { namespace } = subject;
-        const { attributes, relationships } = result;
-        const {
-          body,
-          title,
-          isPublic,
-          createdAt,
-          updatedAt
-        } = post.getAttributes(
-          'body',
-          'title',
-          'isPublic',
-          'createdAt',
-          'updatedAt'
-        );
-
-        const [
-          user,
-          tags,
-          image,
-          comments
-        ] = await Promise.all([
-          post.user,
-          post.tags,
-          post.image,
-          post.comments,
-        ]);
-
-        const postId = post.getPrimaryKey();
-        const userId = user.getPrimaryKey();
-
-        expect(result).toEqual(
-          expect.objectContaining({
-            id: String(postId),
-            type: 'posts',
-            attributes: expect.objectContaining({
-              body,
-              title,
-              'is-public': isPublic,
-              'created-at': createdAt,
-              'updated-at': updatedAt,
-            }),
-            relationships: expect.objectContaining({
-              user: expect.objectContaining({
-                data: {
-                  id: String(userId),
-                  type: 'users',
-                },
-                links: {
-                  self: (() => {
-                    if (namespace) {
-                      return linkFor(`${namespace}/users`, userId);
-                    }
-                    return linkFor('users', userId);
-                  })(),
-                },
-              }),
-              image: (() => {
-                if (includeImage) {
-                  const imageId = image.getPrimaryKey();
-
-                  return expect.objectContaining({
-                    data: {
-                      id: String(imageId),
-                      type: 'images',
-                    },
-                    links: {
-                      self: (() => {
-                        if (namespace) {
-                          return linkFor(`${namespace}/images`, imageId);
-                        }
-                        return linkFor('images', imageId);
-                      })(),
-                    }
-                  });
-                }
-                return expect.objectContaining({
-                  data: null,
-                });
-              })(),
-              tags: expect.arrayContaining(
-                tags.reduce((arr, tag) => [
-                  ...arr,
-                  expect.objectContaining({
-                    data: {
-                      id: String(tag.getPrimaryKey()),
-                      type: 'tags',
-                    },
-                  }),
-                ], [])
-              ),
-              comments: expect.arrayContaining(
-                comments.reduce((arr, comment) => [
-                  ...arr,
-                  expect.objectContaining({
-                    data: {
-                      id: String(comment.getPrimaryKey()),
-                      type: 'comments',
-                    },
-                  }),
-                ], [])
-              ),
-            }),
-          })
-        );
-      };
-
       it('works with a single instance of `Model`', async () => {
         const post = await createPost();
-        const result = await subject.format({
-          data: post,
-          domain: DOMAIN,
-          include: [],
-          links: {
-            self: linkFor('posts', post.getPrimaryKey())
-          }
-        });
 
-        expect(result).toEqual(
-          expect.objectContaining({
-            data: expect.any(Object),
+        expect(
+          await subject.format({
+            data: post,
+            domain: DOMAIN,
+            include: [],
             links: {
-              self: linkFor('posts', post.getPrimaryKey()),
-            },
-            jsonapi: {
-              version: JSONAPI_VERSION,
-            },
+              self: linkFor('posts', post.getPrimaryKey())
+            }
           })
-        );
-
-        await expectResourceToBeCorrect(post, result.data);
+        ).toMatchSnapshot();
       });
 
       it('works with an array of `Model` instances', async () => {
@@ -341,62 +212,33 @@ describe('module "serializer"', () => {
           )
         ));
 
-        const result = await subject.format({
-          data: posts,
-          domain: DOMAIN,
-          include: [],
-          links: {
-            self: linkFor('posts')
-          }
-        });
-
-        expect(result).toEqual(
-          expect.objectContaining({
-            data: expect.any(Array),
+        expect(
+          await subject.format({
+            data: posts,
+            domain: DOMAIN,
+            include: [],
             links: {
-              self: linkFor('posts'),
-            },
-            jsonapi: {
-              version: JSONAPI_VERSION,
-            },
+              self: linkFor('posts')
+            }
           })
-        );
-
-        expect(result.data).toHaveLength(posts.length);
-
-        await Promise.all(
-          result.data.map((item, idx) => (
-            expectResourceToBeCorrect(posts[idx], item)
-          ))
-        );
+        ).toMatchSnapshot();
       });
 
       it('can build namespaced links', async () => {
         subject = createSerializer('admin');
 
         const post = await createPost();
-        const result = await subject.format({
-          data: post,
-          domain: DOMAIN,
-          include: [],
-          links: {
-            self: linkFor('admin/posts', post.getPrimaryKey())
-          }
-        });
 
-        expect(result).toEqual(
-          expect.objectContaining({
-            data: expect.any(Object),
+        expect(
+          await subject.format({
+            data: post,
+            domain: DOMAIN,
+            include: [],
             links: {
-              self: linkFor('admin/posts', post.getPrimaryKey()),
-            },
-            jsonapi: {
-              version: JSONAPI_VERSION,
-            },
+              self: linkFor('admin/posts', post.getPrimaryKey())
+            }
           })
-        );
-
-        await expectResourceToBeCorrect(post, result.data);
+        ).toMatchSnapshot();
       });
 
       it('supports empty one-to-one relationships', async () => {
@@ -407,178 +249,83 @@ describe('module "serializer"', () => {
           includeComments: true
         });
 
-        const result = await subject.format({
-          data: post,
-          domain: DOMAIN,
-          include: [],
-          links: {
-            self: linkFor('posts', post.getPrimaryKey())
-          }
-        });
-
-        expect(result).toEqual(
-          expect.objectContaining({
-            data: expect.any(Object),
+        expect(
+          await subject.format({
+            data: post,
+            domain: DOMAIN,
+            include: [],
             links: {
-              self: linkFor('posts', post.getPrimaryKey()),
-            },
-            jsonapi: {
-              version: JSONAPI_VERSION,
-            },
+              self: linkFor('posts', post.getPrimaryKey())
+            }
           })
-        );
-
-        await expectResourceToBeCorrect(post, result.data, false);
+        ).toMatchSnapshot();
       });
 
       it('supports including a has-one relationship', async () => {
         const post = await createPost();
         const image = await Reflect.get(post, 'image');
-        const result = await subject.format({
-          data: post,
-          domain: DOMAIN,
-          include: ['image'],
-          links: {
-            self: linkFor('posts', post.getPrimaryKey())
-          }
-        });
 
-        expect(result).toEqual(
-          expect.objectContaining({
-            data: expect.any(Object),
+        expect(
+          await subject.format({
+            data: post,
+            domain: DOMAIN,
+            include: ['image'],
             links: {
-              self: linkFor('posts', post.getPrimaryKey()),
-            },
-            jsonapi: {
-              version: JSONAPI_VERSION,
-            },
-            included: expect.arrayContaining([
-              expect.objectContaining({
-                id: String(image.getPrimaryKey()),
-                type: 'images',
-                attributes: expect.objectContaining({
-                  url: image.url,
-                }),
-              })
-            ]),
+              self: linkFor('posts', post.getPrimaryKey())
+            }
           })
-        );
-
-        await expectResourceToBeCorrect(post, result.data);
+        ).toMatchSnapshot();
       });
 
       it('supports including belongs-to relationships', async () => {
         const post = await createPost();
         const user = await Reflect.get(post, 'user');
-        const result = await subject.format({
-          data: post,
-          domain: DOMAIN,
-          include: ['user'],
-          links: {
-            self: linkFor('posts', post.getPrimaryKey())
-          }
-        });
 
-        expect(result).toEqual(
-          expect.objectContaining({
-            data: expect.any(Object),
+        expect(
+          await subject.format({
+            data: post,
+            domain: DOMAIN,
+            include: ['user'],
             links: {
-              self: linkFor('posts', post.getPrimaryKey()),
-            },
-            jsonapi: {
-              version: JSONAPI_VERSION,
-            },
-            included: expect.arrayContaining([
-              expect.objectContaining({
-                id: String(user.getPrimaryKey()),
-                type: 'users',
-                attributes: expect.objectContaining({
-                  name: user.name,
-                  email: user.email,
-                }),
-              })
-            ]),
+              self: linkFor('posts', post.getPrimaryKey())
+            }
           })
-        );
-
-        await expectResourceToBeCorrect(post, result.data);
+        ).toMatchSnapshot();
       });
 
       it('supports including a one-to-many relationship', async () => {
         const post = await createPost();
         const comments = await Reflect.get(post, 'comments');
-        const result = await subject.format({
-          data: post,
-          domain: DOMAIN,
-          include: ['comments'],
-          links: {
-            self: linkFor('posts', post.getPrimaryKey())
-          }
-        });
 
-        expect(result).toEqual(
-          expect.objectContaining({
-            data: expect.any(Object),
+        expect(
+          await subject.format({
+            data: post,
+            domain: DOMAIN,
+            include: ['comments'],
             links: {
-              self: linkFor('posts', post.getPrimaryKey()),
-            },
-            jsonapi: {
-              version: JSONAPI_VERSION,
-            },
-            included: expect.arrayContaining([
-              expect.objectContaining({
-                id: expect.any(String),
-                type: 'comments',
-                attributes: expect.any(Object),
-              }),
-              expect.objectContaining({
-                id: expect.any(String),
-                type: 'comments',
-                attributes: expect.any(Object),
-              }),
-              expect.objectContaining({
-                id: expect.any(String),
-                type: 'comments',
-                attributes: expect.any(Object),
-              }),
-            ]),
+              self: linkFor('posts', post.getPrimaryKey())
+            }
           })
-        );
-
-        await expectResourceToBeCorrect(post, result.data);
+        ).toMatchSnapshot();
       });
 
       it('supports including a many-to-many relationship', async () => {
         const post = await createPost();
 
-        await post.reload().include('tags');
+        await post
+          .reload()
+          .include('tags');
 
-        const result = await subject.format({
-          data: post,
-          domain: DOMAIN,
-          include: ['tags'],
-          links: {
-            self: linkFor('posts', post.getPrimaryKey())
-          }
-        });
-
-        await expectResourceToBeCorrect(post, result.data);
-
-        expect(result).toEqual({
-          data: expect.any(Object),
-          links: expect.any(Object),
-          jsonapi: { verison: JSONAPI_VERSION },
-          included: expect.any(Array),
-        });
-
-        result.included.forEach(item => {
-          expect(item).toEqual({
-            id: expect.any(String),
-            type: 'tags',
-            links: expect.any(Object),
-            attributes: expect.any(Object),
-          });
-        });
+        expect(
+          await subject.format({
+            data: post,
+            domain: DOMAIN,
+            include: ['tags'],
+            links: {
+              self: linkFor('posts', post.getPrimaryKey())
+            }
+          })
+        ).toMatchSnapshot();
       });
     });
   });

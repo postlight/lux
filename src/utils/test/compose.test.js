@@ -43,7 +43,7 @@ describe('util compose', () => {
         str => Promise.resolve(str.toUpperCase())
       );
 
-      expect(shout).toBe(expect.any(Function));
+      expect(shout).toEqual(expect.any(Function));
       expect(shout.length).toBe(1);
 
       return shout('hello world').then(str => {

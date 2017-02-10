@@ -1,6 +1,4 @@
 // @flow
-
-
 import Migration from '../migration';
 import generateTimestamp, {
   padding
@@ -22,7 +20,7 @@ describe('module "database/migration"', () => {
       const tableName = 'migration_test';
       let subject;
 
-      beforeAll(() => {
+      beforeEach(() => {
         subject = new Migration(schema => {
           return schema.createTable(tableName, table => {
             table.increments();
@@ -39,15 +37,15 @@ describe('module "database/migration"', () => {
         });
       });
 
-      afterAll(async () => {
-        await store.schema().dropTable(tableName);
-      });
+      afterEach(() => (
+        store.schema().dropTable(tableName)
+      ));
 
       it('runs a migration function', () => {
         return subject
           .run(store.schema())
           .then(result => {
-            expect(result).not.toThrow();
+            expect(result).toEqual(expect.anything());
           });
       });
     });

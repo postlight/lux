@@ -1,0 +1,25 @@
+exports[`module "logger" util filterParams() handles nested parameters 1`] = `
+Object {
+  "params": Object {
+    "id": 1,
+    "password": "[FILTERED]",
+    "username": "[FILTERED]",
+  },
+}
+`;
+
+exports[`module "logger" util filterParams() leaves non-filtered params unchanged 1`] = `
+Object {
+  "id": 1,
+  "password": "[FILTERED]",
+  "username": "[FILTERED]",
+}
+`;
+
+exports[`module "logger" util filterParams() replaces the value of filtered params 1`] = `
+Object {
+  "id": 1,
+  "password": "[FILTERED]",
+  "username": "[FILTERED]",
+}
+`;

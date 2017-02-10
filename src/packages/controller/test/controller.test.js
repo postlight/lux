@@ -1,13 +1,15 @@
 // @flow
 import faker from 'faker';
 
+import { MIME_TYPE } from '../../jsonapi';
 import Controller from '../index';
 import Serializer from '../../serializer';
 import { Model } from '../../database';
+import * as Adapters from '../../adapter';
+import K from '../../../utils/k';
 import type { Request } from '../../request';
 import type { Response } from '../../response';
 
-import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 const HOST = 'localhost:4000';
@@ -16,6 +18,7 @@ describe('module "controller"', () => {
   describe('class Controller', () => {
     let Post: Class<Model>;
     let subject: Controller;
+    let adapter;
 
     const attributes = [
       'id',
@@ -27,7 +30,7 @@ describe('module "controller"', () => {
     ];
 
     const assertRecord = (item, keys = attributes) => {
-      expect(item instanceof Post).toBe(true);
+      expect(item).toBeInstanceOf(Post);
       if (item instanceof Post) {
         expect(Object.keys(item.rawColumnData)).toEqual(keys);;
       }
@@ -41,6 +44,7 @@ describe('module "controller"', () => {
         Post = model;
       }
 
+      adapter = Adapters.mock(app);
       subject = new Controller({
         model: Post,
         namespace: '',
@@ -55,93 +59,76 @@ describe('module "controller"', () => {
     });
 
     describe('#index()', () => {
-      const createRequest = (params = {}): Request => setType(() => ({
-        params,
-        route: {
-          controller: subject
-        },
-        defaultParams: {
+      const mockArgs = async (query = '') => {
+        const [request, response] = await adapter({
+          url: '/posts' + query,
+          method: 'GET',
+          headers: {},
+          resolve: K,
+        });
+
+        Object.assign(request.defaultParams, {
           sort: 'createdAt',
           filter: {},
           fields: {
-            posts: attributes
+            posts: attributes,
           },
           page: {
             size: 25,
-            number: 1
-          }
-        }
-      }));
+            number: 1,
+          },
+        });
+
+        return [request, response];
+      };
 
       it('returns an array of records', async () => {
-        const request = createRequest();
-        const result = await subject.index(request);
+        const [request, response] = await mockArgs();
+        const result = await subject.index(request, response);
 
-        expect(result).toBe(expect.any(Array));
+        expect(result).toEqual(expect.any(Array));
         expect(result).toHaveLength(25);
         result.forEach(item => assertRecord(item));
       });
 
       it('supports specifying page size', async () => {
-        const request = createRequest({
-          page: {
-            size: 10
-          }
-        });
+        const [request, response] = await mockArgs('?page[size]=10');
+        const result = await subject.index(request, response);
 
-        const result = await subject.index(request);
-
-        expect(result).toBe(expect.any(Array));
+        expect(result).toEqual(expect.any(Array));
         expect(result).toHaveLength(10);
         result.forEach(item => assertRecord(item));
       });
 
       it('supports filter parameters', async () => {
-        const result = await subject.index(
-          createRequest({
-            filter: {
-              isPublic: false
-            }
-          })
-        );
+        const [request, response] = await mockArgs('?filter[is-public]=false');
+        const result = await subject.index(request, response);
 
-        expect(result).toBe(expect.any(Array));
+        expect(result).toEqual(expect.any(Array));
 
         result.forEach(item => {
           assertRecord(item);
-          expect(item.rawColumnData.isPublic).toBe(false);
+          expect(item.isPublic).toBe(false);
         });
       });
 
       it('supports sparse field sets', async () => {
-        const request = createRequest({
-          fields: {
-            posts: ['id', 'title']
-          }
-        });
+        const [request, response] = await mockArgs('?fields[posts]=id,title');
+        const result = await subject.index(request, response);
 
-        const result = await subject.index(request);
-
-        expect(result).toBe(expect.any(Array));
+        expect(result).toEqual(expect.any(Array));
         expect(result).toHaveLength(25);
         result.forEach(item => assertRecord(item, ['id', 'title']));
       });
 
       it('supports eager loading relationships', async () => {
-        const request = createRequest({
-          include: ['user'],
-          fields: {
-            users: [
-              'id',
-              'name',
-              'email'
-            ]
-          }
-        });
+        const [request, response] = await mockArgs(
+          '?include=user&fields[users]=id,name,email'
+        );
 
-        const result = await subject.index(request);
+        const result = await subject.index(request, response);
 
-        expect(result).toBe(expect.any(Array));
+        expect(result).toEqual(expect.any(Array));
         expect(result).toHaveLength(25);
         result.forEach(item => {
           assertRecord(item, [
@@ -149,7 +136,7 @@ describe('module "controller"', () => {
             'user'
           ]);
 
-          expect(item.rawColumnData.user).toEqual([
+          expect(Object.keys(item.rawColumnData.user)).toEqual([
             'id',
             'name',
             'email'
@@ -159,23 +146,38 @@ describe('module "controller"', () => {
     });
 
     describe('#show()', () => {
-      const createRequest = (params = {}): Request => setType(() => ({
-        params,
-        route: {
-          controller: subject
-        },
-        defaultParams: {
+      const mockArgs = async (id, query = '') => {
+        const [request, response] = await adapter({
+          url: `/posts/${id}` + query,
+          method: 'GET',
+          headers: {},
+          resolve: K,
+        });
+
+        Object.assign(request.params, {
+          id,
+        });
+
+        Object.assign(request.defaultParams, {
+          sort: 'createdAt',
+          filter: {},
           fields: {
-            posts: attributes
-          }
-        }
-      }));
+            posts: attributes,
+          },
+          page: {
+            size: 25,
+            number: 1,
+          },
+        });
+
+        return [request, response];
+      };
 
       it('returns a single record', async () => {
-        const request = createRequest({ id: 1 });
-        const result = await subject.show(request);
+        const [request, response] = await mockArgs(1);
+        const result = await subject.show(request, response);
 
-        expect(result).not.toThrow();
+        expect(result).toBeTruthy();
 
         if (result) {
           assertRecord(result);
@@ -183,43 +185,34 @@ describe('module "controller"', () => {
       });
 
       it('throws an error if the record is not found', async () => {
-        const request = createRequest({ id: 10000 });
+        const [request, response] = await mockArgs(10000);
 
-        await subject.show(request).catch(err => {
-          expect(err instanceof Error).toBe(true);
-        });
+        await subject
+          .show(request, response)
+          .catch(err => {
+            expect(err).toEqual(expect.any(Error));
+          });
       });
 
       it('supports sparse field sets', async () => {
-        const request = createRequest({
-          id: 1,
-          fields: {
-            posts: ['id', 'title']
-          }
-        });
+        const [
+          request,
+          response,
+        ] = await mockArgs(1, '?fields[posts]=id,title');
+        const result = await subject.show(request, response);
 
-        const result = await subject.show(request);
-
-        expect(result).not.toThrow();
+        expect(result).toBeTruthy();
         assertRecord(result, ['id', 'title']);
       });
 
       it('supports eager loading relationships', async () => {
-        const request = createRequest({
-          id: 1,
-          include: ['user'],
-          fields: {
-            users: [
-              'id',
-              'name',
-              'email'
-            ]
-          }
-        });
+        const [
+          request,
+          response,
+        ] = await mockArgs(1, '?include=user,fields[users]=id,name,email');
+        const result = await subject.show(request, response);
 
-        const result = await subject.show(request);
-
-        expect(result).not.toThrow();
+        expect(result).toBeTruthy();
 
         if (result) {
           assertRecord(result, [
@@ -227,7 +220,7 @@ describe('module "controller"', () => {
             'user'
           ]);
 
-          expect(result.rawColumnData.user).toEqual([
+          expect(Object.keys(result.rawColumnData.user)).toEqual([
             'id',
             'name',
             'email'
@@ -239,49 +232,37 @@ describe('module "controller"', () => {
     describe('#create()', () => {
       let result: Model;
 
-      const createRequest = (params = {}): Request => setType(() => ({
-        params,
-        url: {
-          pathname: '/posts'
-        },
-        route: {
-          controller: subject
-        },
-        headers: new Map([
-          ['host', HOST]
-        ]),
-        connection: {
-          encrypted: false
-        },
-        defaultParams: {
+      const mockArgs = async params => {
+        const [request, response] = await adapter({
+          url: '/posts',
+          method: 'POST',
+          headers: { 'Content-Type': MIME_TYPE },
+          resolve: K,
+        });
+
+        Object.assign(request.params, params);
+
+        Object.assign(request.defaultParams, {
+          sort: 'createdAt',
+          filter: {},
           fields: {
             posts: attributes,
-            users: ['id']
-          }
-        }
-      }));
+          },
+          page: {
+            size: 25,
+            number: 1,
+          },
+        });
 
-      const createResponse = (): Response => setType(() => ({
-        headers: new Map(),
-        statusCode: 200,
-
-        setHeader(key: string, value: string): void {
-          this.headers.set(key, value);
-        },
-
-        getHeader(key: string): string | void {
-          return this.headers.get(key);
-        }
-      }));
+        return [request, response];
+      };
 
       afterEach(async () => {
         await result.destroy();
       });
 
       it('returns the newly created record', async () => {
-        const response = createResponse();
-
-        const request = createRequest({
+        const [request, response] = await mockArgs({
           include: ['user'],
           data: {
             type: 'posts',
@@ -324,14 +305,16 @@ describe('module "controller"', () => {
       });
 
       it('sets `response.statusCode` to the number `201`', async () => {
-        const response = createResponse();
-
-        const request = createRequest({
+        const [request, response] = await mockArgs({
+          include: ['user'],
           data: {
             type: 'posts',
             attributes: {
               title: '#create() Test'
             }
+          },
+          fields: {
+            users: ['id']
           }
         });
 
@@ -341,21 +324,23 @@ describe('module "controller"', () => {
       });
 
       it('sets the correct `Location` header', async () => {
-        const response = createResponse();
-
-        const request = createRequest({
+        const [request, response] = await mockArgs({
+          include: ['user'],
           data: {
             type: 'posts',
             attributes: {
               title: '#create() Test'
             }
+          },
+          fields: {
+            users: ['id']
           }
         });
 
         result = await subject.create(request, response);
 
         const id = Reflect.get(result, 'id');
-        const location = response.getHeader('Location');
+        const location = response.headers.get('location');
 
         expect(location).toBe(`http://${HOST}/posts/${id}`);
       });
@@ -365,17 +350,33 @@ describe('module "controller"', () => {
       let User;
       let record;
 
-      const createRequest = (params = {}): Request => setType(() => ({
-        params,
-        route: {
-          controller: subject
-        },
-        defaultParams: {
+      const mockArgs = async (id, params) => {
+        const [request, response] = await adapter({
+          url: `/posts/${id}`,
+          method: 'PATCH',
+          headers: { 'Content-Type': MIME_TYPE },
+          resolve: K,
+        });
+
+        Object.assign(request.params, {
+          id,
+          ...params,
+        });
+
+        Object.assign(request.defaultParams, {
+          sort: 'createdAt',
+          filter: {},
           fields: {
-            posts: attributes
-          }
-        }
-      }));
+            posts: attributes,
+          },
+          page: {
+            size: 25,
+            number: 1,
+          },
+        });
+
+        return [request, response];
+      };
 
       beforeEach(async () => {
         const { models } = await getTestApp();
@@ -399,10 +400,9 @@ describe('module "controller"', () => {
 
       afterEach(() => record.destroy());
 
-      it('returns a record if attribute(s) change', () => {
+      it('returns a record if attribute(s) change', async () => {
         const id = record.getPrimaryKey();
-        const request = createRequest({
-          id,
+        const [request, response] = await mockArgs(id, {
           type: 'posts',
           data: {
             attributes: {
@@ -414,7 +414,7 @@ describe('module "controller"', () => {
         expect(record.rawColumnData.isPublic).toBe(false);
 
         return subject
-          .update(request)
+          .update(request, response)
           .then(result => {
             assertRecord(result);
             return Post.find(id);
@@ -441,8 +441,7 @@ describe('module "controller"', () => {
           })
           .then(res => res.unwrap());
 
-        const request = createRequest({
-          id,
+        const [request, response] = await mockArgs(id, {
           type: 'posts',
           include: ['user'],
           data: {
@@ -477,7 +476,7 @@ describe('module "controller"', () => {
           }
         });
 
-        const result = await subject.update(request);
+        const result = await subject.update(request, response);
 
         assertRecord(result, [
           ...attributes,
@@ -490,13 +489,12 @@ describe('module "controller"', () => {
         ({ rawColumnData: { user, comments } } = item);
 
         expect(user.id).toBe(newUser.getPrimaryKey());
-        expect(comments).toBe(expect.any(Array));
+        expect(comments).toEqual(expect.any(Array));
         expect(comments).toHaveLength(3);
       });
 
       it('returns the number `204` if no changes occur', async () => {
-        const request = createRequest({
-          id: record.getPrimaryKey(),
+        const [request, response] = await mockArgs(record.getPrimaryKey(), {
           type: 'posts',
           data: {
             attributes: {
@@ -505,12 +503,11 @@ describe('module "controller"', () => {
           }
         });
 
-        expect(await subject.update(request)).toBe(204);
+        expect(await subject.update(request, response)).toBe(204);
       });
 
       it('throws an error if the record is not found', async () => {
-        const request = createRequest({
-          id: 10000,
+        const [request, response] = await mockArgs(10000, {
           type: 'posts',
           data: {
             attributes: {
@@ -519,25 +516,26 @@ describe('module "controller"', () => {
           }
         });
 
-        await subject.update(request).catch(err => {
-          expect(err instanceof Error).toBe(true);
-        });
+        await subject
+          .update(request, response)
+          .catch(err => {
+            expect(err).toBeInstanceOf(Error);
+          });
       });
 
       it('supports sparse field sets', async () => {
-        const request = createRequest({
-          id: record.getPrimaryKey(),
+        const [request, response] = await mockArgs(record.getPrimaryKey(), {
           type: 'posts',
           data: {
             attributes: {
-              title: 'Sparse Field Sets Work With #update()!'
-            }
+              title: 'Sparse Field Sets Work With #update()!',
+            },
           },
           fields: {
             posts: [
               'id',
-              'title'
-            ]
+              'title',
+            ],
           }
         });
 
@@ -549,7 +547,7 @@ describe('module "controller"', () => {
           })
         );
 
-        assertRecord(await subject.update(request), [
+        assertRecord(await subject.update(request, response), [
           'id',
           'title'
         ]);
@@ -566,17 +564,33 @@ describe('module "controller"', () => {
 
     describe('#destroy()', () => {
       let record: Model;
-      const createRequest = (params = {}): Request => setType(() => ({
-        params,
-        route: {
-          controller: subject
-        },
-        defaultParams: {
+
+      const mockArgs = async id => {
+        const [request, response] = await adapter({
+          url: `/posts/${id}`,
+          method: 'DELETE',
+          resolve: K,
+          headers: {},
+        });
+
+        Object.assign(request.params, {
+          id,
+        });
+
+        Object.assign(request.defaultParams, {
+          sort: 'createdAt',
+          filter: {},
           fields: {
-            posts: attributes
-          }
-        }
-      }));
+            posts: attributes,
+          },
+          page: {
+            size: 25,
+            number: 1,
+          },
+        });
+
+        return [request, response];
+      };
 
       beforeAll(async () => {
         record = await Post.create({
@@ -585,30 +599,58 @@ describe('module "controller"', () => {
       });
 
       it('returns the number `204` if the record is destroyed', async () => {
-        const id = Reflect.get(record, 'id');
-        const result = await subject.destroy(createRequest({ id }));
+        const id = record.getPrimaryKey();
+        const [request, response] = await mockArgs(id);
+        const result = await subject.destroy(request, response);
 
         expect(result).toBe(204);
 
-        await Post.find(id).catch(err => {
-          expect(err instanceof Error).toBe(true);
-        });
+        await Post
+          .find(id)
+          .catch(err => {
+            expect(err).toBeInstanceOf(Error);
+          });
       });
 
       it('throws an error if the record is not found', async () => {
-        const request = createRequest({ id: 10000 });
+        const [request, response] = await mockArgs(10000);
 
-        await subject.destroy(request).catch(err => {
-          expect(err instanceof Error).toBe(true);
-        });
+        await subject
+          .destroy(request, response)
+          .catch(err => {
+            expect(err).toBeInstanceOf(Error);
+          });
       });
     });
 
     describe('#preflight()', () => {
-      it('returns the number `204`', async () => {
-        const result = await subject.preflight();
+      const mockArgs = async () => {
+        const [request, response] = await adapter({
+          url: '/posts',
+          method: 'OPTIONS',
+          resolve: K,
+          headers: {},
+        });
 
-        expect(result).toBe(204);
+        Object.assign(request.defaultParams, {
+          sort: 'createdAt',
+          filter: {},
+          fields: {
+            posts: attributes,
+          },
+          page: {
+            size: 25,
+            number: 1,
+          },
+        });
+
+        return [request, response];
+      };
+
+      it('returns the number `204`', async () => {
+        const [request, response] = await mockArgs();
+
+        expect(await subject.preflight(request, response)).toBe(204);
       });
     });
   });

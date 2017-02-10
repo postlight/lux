@@ -171,7 +171,7 @@ describe('module "database/query"', () => {
           isPublic: true
         });
 
-        expect(result).toBe(expect.any(Array));
+        expect(result).toEqual(expect.any(Array));
 
         if (Array.isArray(result)) {
           result.forEach(item => {
@@ -404,7 +404,7 @@ describe('module "database/query"', () => {
           isPublic: true
         });
 
-        expect(result).toBe(expect.any(Array));
+        expect(result).toEqual(expect.any(Array));
 
         if (Array.isArray(result)) {
           result.forEach(item => {
@@ -564,16 +564,11 @@ describe('module "database/query"', () => {
           .where({ isPublic: true })
           .count();
 
-        expect(result.snapshots).toEqual([
-          ['count', '* as countAll'],
-          ['where', { 'posts.is_public': true }]
-        ]);
+        expect(result.snapshots).toMatchSnapshot();
       });
 
       it('resolves with the number of matching records', async () => {
-        const result = await subject.count();
-
-        expect(result).toBe(100);
+        expect(await subject.count()).toBe(100);
       });
     });
 
@@ -585,17 +580,13 @@ describe('module "database/query"', () => {
       });
 
       it('returns `this`', () => {
-        const result = subject.offset(10);
-
-        expect(result).toBe(subject);
+        expect(subject.offset(10)).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
         const result = subject.offset(10);
 
-        expect(result.snapshots).toEqual([
-          ['offset', 10]
-        ]);
+        expect(result.snapshots).toMatchSnapshot();
       });
 
       it('does not modify #snapshots if #shouldCount', () => {
@@ -603,7 +594,7 @@ describe('module "database/query"', () => {
 
         const result = subject.offset(10);
 
-        expect(result.snapshots).toHaveLength(0);
+        expect(result.snapshots).toMatchSnapshot();
       });
 
       it('resolves with the correct array of `Model` instances', async () => {
@@ -624,27 +615,19 @@ describe('module "database/query"', () => {
       });
 
       it('returns `this`', () => {
-        const result = subject.select(...attrs);
-
-        expect(result).toBe(subject);
+        expect(subject.select(...attrs)).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
         const result = subject.select(...attrs);
 
-        expect(result.snapshots).toEqual([
-          ['select', [
-            'posts.id AS id',
-            'posts.title AS title',
-            'posts.created_at AS createdAt'
-          ]]
-        ]);
+        expect(result.snapshots).toMatchSnapshot();
       });
 
       it('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.select(...attrs);
 
-        expect(result).toBe(expect.any(Array));
+        expect(result).toEqual(expect.any(Array));
 
         if (Array.isArray(result)) {
           result.forEach(item => {
@@ -664,24 +647,19 @@ describe('module "database/query"', () => {
       });
 
       it('returns `this`', () => {
-        const result = subject.distinct(...attrs);
-
-        expect(result).toBe(subject);
+        expect(subject.distinct(...attrs)).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
         const result = subject.distinct(...attrs);
 
-        expect(result.snapshots).toEqual([
-          ['distinct', ['posts.title AS title']],
-          ['select', []]
-        ]);
+        expect(result.snapshots).toMatchSnapshot();
       });
 
       it('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.distinct(...attrs);
 
-        expect(result).toBe(expect.any(Array));
+        expect(result).toEqual(expect.any(Array));
 
         if (Array.isArray(result)) {
           result.forEach(item => {
@@ -695,79 +673,25 @@ describe('module "database/query"', () => {
     describe('#include()', () => {
       let subject;
 
-      const assertRelationships = (relationships, attrs = [
-        'id',
-        'message',
-        'edited',
-        'userId',
-        'postId',
-        'createdAt',
-        'updatedAt'
-      ]) => {
-        expect(relationships).toEqual(
-          expect.objectContaining({
-            type: 'hasMany',
-            model: Comment,
-            attrs: attrs.reduce((obj, key) => ({
-              ...obj,
-              [key]: expect.anything(),
-            }), {}),
-            through: undefined,
-            foreignKey: 'post_id',
-          })
-        );
-      };
-
       beforeEach(() => {
         subject = new Query(TestModel);
       });
 
       it('returns `this`', () => {
-        const result = subject.include('user', 'comments');
-
-        expect(result).toBe(subject);
+        expect(subject.include('user', 'comments')).toBe(subject);
       });
 
       it('properly modifies #snapshots when using an array of strings', () => {
-        const { snapshots, relationships } = subject.include(
-          'user',
-          'comments'
-        );
+        const result = subject.include('user', 'comments');
 
-        expect(snapshots).toEqual(
-          expect.arrayContaining([
-            expect.arrayContaining([
-              expect.arrayContaining([
-                'includeSelect',
-                expect.arrayContaining([
-                  'users.id AS user.id',
-                  'users.name AS user.name',
-                  'users.email AS user.email',
-                  'users.password AS user.password',
-                  'users.created_at AS user.createdAt',
-                  'users.updated_at AS user.updatedAt',
-                ]),
-              ]),
-            ]),
-            expect.arrayContaining([
-              expect.arrayContaining([
-                'leftOuterJoin',
-                expect.arrayContaining([
-                  'users',
-                  'posts.user_id',
-                  '=',
-                  'users.id'
-                ]),
-              ]),
-            ]),
-          ])
-        );
-
-        assertRelationships(relationships);
+        expect([
+          result.snapshots,
+          result.relationships,
+        ]).toMatchSnapshot();
       });
 
       it('properly modifies #snapshots when using an object', () => {
-        const params = {
+        const result = subject.include({
           user: [
             'id',
             'name'
@@ -778,39 +702,18 @@ describe('module "database/query"', () => {
             'edited',
             'updatedAt'
           ]
-        };
+        });
 
-        const { snapshots, relationships } = subject.include(params);
-
-        expect(snapshots).toEqual(
-          expect.arrayContaining([
-            expect.arrayContaining([
-              'includeSelect',
-              expect.arrayContaining([
-                'users.id AS user.id',
-                'users.name AS user.name'
-              ]),
-            ]),
-            expect.arrayContaining([
-              'leftOuterJoin',
-              expect.arrayContaining([
-                'users',
-                'posts.user_id',
-                '=',
-                'users.id'
-              ]),
-            ]),
-          ])
-        );
-
-        assertRelationships(relationships, params.comments);
+        expect([
+          result.snapshots,
+          result.relationships,
+        ]).toMatchSnapshot();
       });
 
       it('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.include('user', 'comments');
 
-        expect(result).toBe(expect.any(Array));
-        result.forEach(assertItem);
+        expect(result).toMatchSnapshot();
       });
     });
 
@@ -827,11 +730,7 @@ describe('module "database/query"', () => {
           .select('id', 'title')
           .limit(10);
 
-        expect(result.snapshots).toEqual([
-          ['where', { 'posts.is_public': true }, 'isPublic'],
-          ['select', ['posts.id AS id', 'posts.title AS title']],
-          ['limit', 10]
-        ]);
+        expect(result.snapshots).toMatchSnapshot();
       });
 
       it('can be chained from other query methods', () => {
@@ -841,11 +740,7 @@ describe('module "database/query"', () => {
           .limit(10)
           .isPublic();
 
-        expect(result.snapshots).toEqual([
-          ['select', ['posts.id AS id', 'posts.title AS title']],
-          ['limit', 10],
-          ['where', { 'posts.is_public': true }, 'isPublic']
-        ]);
+        expect(result.snapshots).toMatchSnapshot();
       });
     });
 
@@ -857,9 +752,7 @@ describe('module "database/query"', () => {
       });
 
       it('returns `this`', () => {
-        const result = subject.isPublic().unscope('isPublic');
-
-        expect(result).toBe(subject);
+        expect(subject.isPublic().unscope('isPublic')).toBe(subject);
       });
 
       it('removes a named scope from #snapshots', () => {
@@ -869,10 +762,7 @@ describe('module "database/query"', () => {
           .limit(10)
           .unscope('isPublic');
 
-        expect(result.snapshots).toEqual([
-          ['select', ['posts.id AS id', 'posts.title AS title']],
-          ['limit', 10]
-        ]);
+        expect(result.snapshots).toMatchSnapshot();
       });
     });
   });

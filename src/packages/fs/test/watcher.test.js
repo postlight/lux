@@ -33,7 +33,7 @@ describe('module "fs"', () => {
         describe('event "change"', () => {
           it('is called when a file is modified', async () => {
             subject.once('change', files => {
-              expect(files).toBe(expect.any(Array));
+              expect(files).toEqual(expect.any(Array));
             });
 
             await writeFile(joinPath(tmpAppPath, 'index.js'), '');
@@ -58,7 +58,7 @@ describe('module "fs"', () => {
       describe('event "change"', () => {
         it('is called when a file is modified', async () => {
           subject.once('change', files => {
-            expect(files).toBe(expect.any(Array));
+            expect(files).toEqual(expect.any(Array));
           });
 
           await writeFile(joinPath(tmpAppPath, 'index.js'), '');

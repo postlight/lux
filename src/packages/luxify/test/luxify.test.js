@@ -22,7 +22,7 @@ describe('module "luxify"', () => {
         next();
       });
 
-      expect(subject(request, response)).toBe(expect.any(Promise));
+      expect(subject(request, response)).toEqual(expect.any(Promise));
     });
 
     it('resolves when Response#end is called', () => {
@@ -65,15 +65,15 @@ describe('module "luxify"', () => {
       });
 
       return subject(request, response).catch(err => {
-        expect(err).toBe(expect.any(Error));
+        expect(err).toEqual(expect.any(Error));
       });
     });
 
     it('properly proxies untrapped response properties', () => {
       luxify((req, res) => {
-        expect(res.getHeader).toBe(expect.any(Function));
-        expect(res.setHeader).toBe(expect.any(Function));
-        expect(res.removeHeader).toBe(expect.any(Function));
+        expect(res.getHeader).toEqual(expect.any(Function));
+        expect(res.setHeader).toEqual(expect.any(Function));
+        expect(res.removeHeader).toEqual(expect.any(Function));
       });
     });
   });

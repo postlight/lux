@@ -14,6 +14,7 @@ const DEFAULT_CONFIG = {
   },
   test: {
     pool: 5,
+    port: 3307,
     driver: DATABASE_DRIVER || 'sqlite3',
     database: 'lux_test',
     username: DATABASE_USERNAME,
@@ -85,11 +86,11 @@ describe('module "database"', () => {
       });
 
       it('works with a singular key', () => {
-        expect(subject.modelFor('post')).not.toThrow();
+        expect(() => subject.modelFor('post')).not.toThrow();
       });
 
       it('works with a plural key', () => {
-        expect(subject.modelFor('posts')).not.toThrow();
+        expect(() => subject.modelFor('posts')).not.toThrow();
       });
 
       it('throws an error if a model does not exist', () => {

@@ -3,9 +3,7 @@ import { join as joinPath } from 'path';
 
 import type Application from '../../src/packages/application';
 
-let instance;
-
-async function setupTestApp(): Promise<Application> {
+export async function getTestApp() {
   const path = joinPath(__dirname, '..', 'test-app');
 
   const {
@@ -25,12 +23,4 @@ async function setupTestApp(): Promise<Application> {
     database,
     path,
   });
-}
-
-export async function getTestApp() {
-  if (!instance) {
-    instance = await setupTestApp();
-  }
-
-  return instance;
 }

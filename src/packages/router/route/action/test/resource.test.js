@@ -60,7 +60,7 @@ describe('module "router/route/action"', () => {
         const { router, controllers } = await getTestApp();
         const controller: Controller = controllers.get('posts');
 
-        subject = resource(controller.index.bind(controller));
+        subject = resource(controller.index.bind(controller), controller);
         createRequest = createRequestBuilder({
           path: '/posts',
           route: router.get('GET:/posts'),
@@ -81,9 +81,10 @@ describe('module "router/route/action"', () => {
       });
 
       it('resolves with a serialized payload', async () => {
-        const result = await subject(createRequest(), createResponse());
+        const request = createRequest();
+        const response = createResponse();
 
-        expect(result).toBe(expect.any(Object));
+        expect(await subject(request, response)).toMatchSnapshot();
       });
     });
 
@@ -95,10 +96,9 @@ describe('module "router/route/action"', () => {
 
         beforeAll(async () => {
           const { router, controllers } = await getTestApp();
-
           const controller: Controller = controllers.get('posts');
 
-          subject = resource(controller.show.bind(controller));
+          subject = resource(controller.show.bind(controller), controller);
           createRequest = createRequestBuilder({
             path,
             route: router.get('GET:/posts/:dynamic'),
@@ -114,18 +114,10 @@ describe('module "router/route/action"', () => {
         });
 
         it('resolves with a serialized payload', async () => {
-          const result = await subject(
-            createRequest(),
-            createResponse()
-          );
+          const request = createRequest();
+          const response = createResponse();
 
-          expect(result).toEqual(
-            expect.objectContaining({
-              links: expect.objectContaining({
-                self: `http://${DOMAIN}${path}`,
-              }),
-            })
-          );
+          expect(await subject(request, response)).toMatchSnapshot();
         });
       });
 
@@ -138,7 +130,7 @@ describe('module "router/route/action"', () => {
           const { router, controllers } = await getTestApp();
           const controller: Controller = controllers.get('admin/posts');
 
-          subject = resource(controller.show.bind(controller));
+          subject = resource(controller.show.bind(controller), controller);
           createRequest = createRequestBuilder({
             path,
             route: router.get('GET:/admin/posts/:dynamic'),
@@ -154,18 +146,10 @@ describe('module "router/route/action"', () => {
         });
 
         it('resolves with a serialized payload', async () => {
-          const result = await subject(
-            createRequest(),
-            createResponse()
-          );
+          const request = createRequest();
+          const response = createResponse();
 
-          expect(result).toEqual(
-            expect.objectContaining({
-              links: expect.objectContaining({
-                self: `http://${DOMAIN}${path}`,
-              }),
-            })
-          );
+          expect(await subject(request, response)).toMatchSnapshot();
         });
       });
 
@@ -175,9 +159,10 @@ describe('module "router/route/action"', () => {
         let createRequest;
 
         beforeAll(async () => {
-          const { router } = await getTestApp();
+          const { router, controllers } = await getTestApp();
+          const controller: Controller = controllers.get('posts');
 
-          subject = resource(() => Promise.resolve(null));
+          subject = resource(() => Promise.resolve(null), controller);
           createRequest = createRequestBuilder({
             path,
             route: router.get('GET:/posts/:dynamic'),
@@ -193,12 +178,10 @@ describe('module "router/route/action"', () => {
         });
 
         it('resolves with the result of the action', async () => {
-          const result = await subject(
-            createRequest(),
-            createResponse()
-          );
+          const request = createRequest();
+          const response = createResponse();
 
-          expect(result).toBeNull();
+          expect(await subject(request, response)).toBeNull();
         });
       });
     });

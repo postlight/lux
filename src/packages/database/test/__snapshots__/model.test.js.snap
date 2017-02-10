@@ -1,0 +1,97 @@
+exports[`module "database/model" class Model .columnFor() returns the column data for an attribute if it exists 1`] = `
+Object {
+  "columnName": "is_public",
+  "defaultValue": "0",
+  "docName": "is-public",
+  "maxLength": null,
+  "nullable": false,
+  "type": "tinyint",
+}
+`;
+
+exports[`module "database/model" class Model .initialize() adds a \`belongsTo\` property to the \`Model\` 1`] = `
+Object {
+  "user": Object {
+    "inverse": "posts",
+    "model": [Function],
+  },
+}
+`;
+
+exports[`module "database/model" class Model .initialize() adds a \`hasMany\` property to the \`Model\` 1`] = `
+Object {
+  "comments": Object {
+    "inverse": "post",
+    "model": [Function],
+  },
+  "reactions": Object {
+    "inverse": "post",
+    "model": [Function],
+  },
+  "tags": Object {
+    "inverse": "posts",
+    "model": [Function],
+    "through": [Function],
+  },
+}
+`;
+
+exports[`module "database/model" class Model .initialize() adds a \`hasOne\` property to the \`Model\` 1`] = `Object {}`;
+
+exports[`module "database/model" class Model .initialize() adds a \`relationshipNames\` property to the \`Model\` 1`] = `
+Array [
+  "comments",
+  "reactions",
+  "tags",
+  "user",
+]
+`;
+
+exports[`module "database/model" class Model .initialize() adds a \`relationships\` property to the \`Model\` 1`] = `
+Object {
+  "comments": Object {
+    "inverse": "post",
+    "model": [Function],
+  },
+  "reactions": Object {
+    "inverse": "post",
+    "model": [Function],
+  },
+  "tags": Object {
+    "inverse": "posts",
+    "model": [Function],
+    "through": [Function],
+  },
+  "user": Object {
+    "inverse": "posts",
+    "model": [Function],
+  },
+}
+`;
+
+exports[`module "database/model" class Model .initialize() adds each scope to \`Model\` 1`] = `
+Object {
+  "isDraft": [Function],
+  "isPublic": [Function],
+}
+`;
+
+exports[`module "database/model" class Model .initialize() removes invalid hooks from the \`hooks\` property 1`] = `
+Object {
+  "afterCreate": [Function],
+  "beforeDestroy": [Function],
+}
+`;
+
+exports[`module "database/model" class Model .initialize() removes invalid validations from the \`validates\` property 1`] = `
+Object {
+  "title": [Function],
+}
+`;
+
+exports[`module "database/model" class Model .relationshipFor() returns the data for a relationship if it exists 1`] = `
+Object {
+  "inverse": "posts",
+  "model": [Function],
+}
+`;

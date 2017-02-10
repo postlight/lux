@@ -7,6 +7,7 @@
 .*/node_modules/*
 .*/scripts/*
 .*/test/test-app/*
+.*/__snapshots__/*
 
 [libs]
 decl/

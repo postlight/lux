@@ -1,0 +1,1282 @@
+exports[`module "router/route/action" enhancer resource() - type "collection" resolves with a serialized payload 1`] = `
+Object {
+  "data": Array [
+    Object {
+      "attributes": Object {
+        "body": "Et perferendis dolorum distinctio nesciunt maxime iusto. Accusantium ipsum officia nulla velit distinctio enim rerum. Quia quas dolorem quos sed ut. Velit consequuntur minus in. Repudiandae sapiente ipsum sint nisi optio voluptas. Minus molestiae nostrum molestiae cum ad corporis.
+ Incidunt commodi veniam perferendis aliquid. Omnis ad maiores praesentium dolorem natus quasi impedit suscipit provident. Illum eius eos ut doloremque praesentium omnis aut libero possimus. Delectus eos consectetur maxime distinctio qui vitae.
+ Iste et rerum. Voluptatem culpa id esse itaque error incidunt facilis harum. Qui iure consequatur voluptate quidem voluptatum non itaque harum velit. Dolor velit qui earum eius qui. A omnis corporis voluptatum commodi repellat incidunt magni. Vel dignissimos alias cum doloremque laborum aut harum dolorem.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Officiis voluptas quia ratione.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "3",
+      "links": Object {
+        "self": "http://localhost:4000/posts/3",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [
+            Object {
+              "id": "81",
+              "type": "comments",
+            },
+          ],
+        },
+        "image": Object {
+          "data": null,
+        },
+        "reactions": Object {
+          "data": Array [
+            Object {
+              "id": "98",
+              "type": "reactions",
+            },
+          ],
+        },
+        "tags": Object {
+          "data": Array [],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Quia esse reiciendis autem quod et. Et magnam illo tenetur vel cumque aut voluptatem unde. Amet delectus est consectetur ut suscipit molestias natus magnam nesciunt. Ipsa maiores debitis eaque fuga veritatis fugiat cumque.
+ Nihil facere et blanditiis rerum et. Minus debitis ipsa optio voluptate qui voluptate. Earum aut et nihil et inventore consequuntur omnis et quia. Eveniet porro et voluptatum ut iure nobis repudiandae dolorem atque.
+ Nostrum vel iste fuga eos saepe quos esse eum dolor. Dignissimos sit quis illo rem doloremque quidem quasi. Nulla quis dignissimos adipisci in at consequuntur eveniet commodi rerum.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Odio voluptatem et et et.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "4",
+      "links": Object {
+        "self": "http://localhost:4000/posts/4",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [
+            Object {
+              "id": "50",
+              "type": "comments",
+            },
+          ],
+        },
+        "image": Object {
+          "data": null,
+        },
+        "reactions": Object {
+          "data": Array [
+            Object {
+              "id": "69",
+              "type": "reactions",
+            },
+          ],
+        },
+        "tags": Object {
+          "data": Array [],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Optio consequatur cumque est quisquam odio modi et. Reprehenderit impedit qui voluptatem quaerat blanditiis. Autem consequatur aliquid modi molestiae. Eum et laborum et. Et quidem sit voluptatem iure sunt perspiciatis. Ipsam voluptas quis.
+ Similique tempora maiores id vel nostrum. Quasi aperiam nihil quaerat. In optio non id. Aliquid sint aut aut aspernatur reprehenderit aperiam.
+ Omnis animi occaecati pariatur doloremque quam sed. Dolorem dolorum vel dolorum unde adipisci ex laudantium. Pariatur tempora velit tempora est veniam. Vel molestiae nam quis maxime eaque at officia commodi quo.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Rerum natus animi amet qui voluptatibus.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "8",
+      "links": Object {
+        "self": "http://localhost:4000/posts/8",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [],
+        },
+        "image": Object {
+          "data": Object {
+            "id": "8",
+            "type": "images",
+          },
+          "links": Object {
+            "self": "http://localhost:4000/images/8",
+          },
+        },
+        "reactions": Object {
+          "data": Array [],
+        },
+        "tags": Object {
+          "data": Array [],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Minus ut quo libero suscipit consectetur molestiae totam. Voluptas qui nostrum quam quisquam et esse qui magni. Nostrum ea omnis ad inventore et omnis velit eum eveniet. Similique in ut quis. Neque deserunt illo non et et vel impedit repudiandae.
+ Sint quia velit accusantium. Quia corporis aut hic voluptatem. Delectus dolorum rerum et quo voluptas at sint saepe.
+ Quis voluptate minus accusantium fugit quos laboriosam rerum atque. Laborum itaque quia molestias non. Qui eveniet aliquid eum sed ex.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Qui debitis mollitia asperiores libero.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "12",
+      "links": Object {
+        "self": "http://localhost:4000/posts/12",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [
+            Object {
+              "id": "23",
+              "type": "comments",
+            },
+            Object {
+              "id": "40",
+              "type": "comments",
+            },
+            Object {
+              "id": "55",
+              "type": "comments",
+            },
+          ],
+        },
+        "image": Object {
+          "data": Object {
+            "id": "4",
+            "type": "images",
+          },
+          "links": Object {
+            "self": "http://localhost:4000/images/4",
+          },
+        },
+        "reactions": Object {
+          "data": Array [],
+        },
+        "tags": Object {
+          "data": Array [],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Aperiam est rerum consequuntur velit sed exercitationem saepe. Labore quibusdam officiis libero voluptatem id. Aspernatur voluptatem ea voluptatem.
+ Officia quisquam dolorem repellendus deserunt. Nesciunt accusantium quidem quia. Repudiandae optio rerum accusamus adipisci doloribus laudantium molestiae. Explicabo qui doloribus sed quos provident deleniti sunt facilis et. Ex pariatur ipsam assumenda aliquam iste quos totam. Voluptatem similique voluptates explicabo perspiciatis cupiditate alias qui omnis odio.
+ Magni maiores nisi ut modi culpa itaque quia. Culpa reprehenderit molestias. Ipsam voluptate et qui fugiat architecto aliquam nulla. Maxime provident eaque labore ab consequatur repudiandae error.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Aperiam corrupti ex odit dignissimos quae perferendis dolor quae ab.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "13",
+      "links": Object {
+        "self": "http://localhost:4000/posts/13",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [],
+        },
+        "image": Object {
+          "data": null,
+        },
+        "reactions": Object {
+          "data": Array [],
+        },
+        "tags": Object {
+          "data": Array [
+            Object {
+              "id": "69",
+              "type": "tags",
+            },
+            Object {
+              "id": "81",
+              "type": "tags",
+            },
+          ],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Nesciunt ut ut deleniti et quasi perferendis et. Similique ullam corrupti. Quaerat numquam voluptatem id sequi quia. Voluptas quas minima illum et molestiae soluta non.
+ Modi et modi magnam. Tempore minima sunt minima eos. Quos impedit aut sed molestias vel occaecati. Itaque quis nostrum possimus.
+ Similique non et mollitia totam architecto ratione temporibus numquam. Maiores modi at voluptate aliquid eos accusamus ad dolor. Soluta rerum dolorem. Voluptatibus animi voluptate dolorum sapiente similique perferendis. Eius similique ipsa impedit.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Labore similique iusto nihil.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "14",
+      "links": Object {
+        "self": "http://localhost:4000/posts/14",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [
+            Object {
+              "id": "6",
+              "type": "comments",
+            },
+            Object {
+              "id": "7",
+              "type": "comments",
+            },
+            Object {
+              "id": "70",
+              "type": "comments",
+            },
+          ],
+        },
+        "image": Object {
+          "data": Object {
+            "id": "87",
+            "type": "images",
+          },
+          "links": Object {
+            "self": "http://localhost:4000/images/87",
+          },
+        },
+        "reactions": Object {
+          "data": Array [],
+        },
+        "tags": Object {
+          "data": Array [
+            Object {
+              "id": "26",
+              "type": "tags",
+            },
+          ],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Facere exercitationem qui qui provident veritatis. Velit dolor odio quia omnis illo vero neque aut. Culpa omnis perferendis. Id corporis iusto sit consequuntur. Assumenda ut rerum reprehenderit accusamus voluptas.
+ Quae itaque impedit quis voluptates autem amet et temporibus. Consequatur quia modi perferendis ex a qui voluptas consequatur. Eum quae sit ea voluptas.
+ Ipsam exercitationem vel voluptatem quo vel. Voluptatem dolore voluptas. Est doloremque molestias sit.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Rem omnis aut.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "16",
+      "links": Object {
+        "self": "http://localhost:4000/posts/16",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [
+            Object {
+              "id": "16",
+              "type": "comments",
+            },
+            Object {
+              "id": "41",
+              "type": "comments",
+            },
+          ],
+        },
+        "image": Object {
+          "data": Object {
+            "id": "22",
+            "type": "images",
+          },
+          "links": Object {
+            "self": "http://localhost:4000/images/22",
+          },
+        },
+        "reactions": Object {
+          "data": Array [],
+        },
+        "tags": Object {
+          "data": Array [],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Hic est occaecati veritatis. Non consequatur quibusdam aut aut eos dolor enim dolorum. Qui rerum error. Voluptas quia blanditiis eveniet nam velit et vitae quia delectus.
+ Neque iste est dolore at atque. Nihil enim culpa. Inventore dolores voluptas omnis.
+ Facilis est provident eius laborum labore reprehenderit sint occaecati odit. Id ea hic deserunt. Rerum voluptatibus natus quae. Voluptas consequatur id cumque. Voluptas rem consequuntur aut sint.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Recusandae aut maiores qui.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "17",
+      "links": Object {
+        "self": "http://localhost:4000/posts/17",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [
+            Object {
+              "id": "13",
+              "type": "comments",
+            },
+            Object {
+              "id": "29",
+              "type": "comments",
+            },
+            Object {
+              "id": "85",
+              "type": "comments",
+            },
+          ],
+        },
+        "image": Object {
+          "data": Object {
+            "id": "47",
+            "type": "images",
+          },
+          "links": Object {
+            "self": "http://localhost:4000/images/47",
+          },
+        },
+        "reactions": Object {
+          "data": Array [
+            Object {
+              "id": "37",
+              "type": "reactions",
+            },
+          ],
+        },
+        "tags": Object {
+          "data": Array [],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Quidem distinctio est commodi qui. Reprehenderit explicabo odit provident sint odio corrupti dolorem eius voluptatem. Consequatur rem quisquam ut omnis doloribus eaque eligendi enim. Eaque quasi voluptate quo. Vero corrupti reprehenderit consequatur impedit ad. Hic quia ipsam maiores quis consectetur recusandae a.
+ Ipsa ad occaecati. Explicabo ut exercitationem voluptate possimus asperiores dolor quis fugit. Et labore velit quibusdam fuga. Iure possimus fugit veritatis fuga eaque sequi aliquid.
+ Nam aperiam ut et dolorem similique optio repellendus. Et est consectetur quasi labore est quo illum. Architecto voluptatum dicta quos ipsa.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Sapiente laudantium provident molestiae et a quia sint enim et.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "22",
+      "links": Object {
+        "self": "http://localhost:4000/posts/22",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [],
+        },
+        "image": Object {
+          "data": null,
+        },
+        "reactions": Object {
+          "data": Array [],
+        },
+        "tags": Object {
+          "data": Array [],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Eius rerum quibusdam molestiae amet. Facilis consequatur modi. Eos autem non. Atque impedit perferendis id dignissimos officiis aliquid id a facilis. Aut id voluptas iusto doloremque adipisci nobis qui.
+ Autem quod aut id sed accusantium dolor. Expedita totam dolorem. Omnis soluta nesciunt. Ipsam veritatis quisquam veritatis aut occaecati dolor. Consequatur sed minima ex eum et ut ut consequatur. Voluptatum vero et et repellendus assumenda dignissimos facere culpa.
+ Ad consequuntur adipisci minima aut et consequatur at accusamus expedita. Corrupti modi provident omnis quod dolorum. Praesentium distinctio ut cupiditate voluptatibus voluptatem commodi omnis.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Vel magnam voluptates laudantium.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "23",
+      "links": Object {
+        "self": "http://localhost:4000/posts/23",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [
+            Object {
+              "id": "98",
+              "type": "comments",
+            },
+          ],
+        },
+        "image": Object {
+          "data": null,
+        },
+        "reactions": Object {
+          "data": Array [],
+        },
+        "tags": Object {
+          "data": Array [
+            Object {
+              "id": "91",
+              "type": "tags",
+            },
+          ],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Quo libero expedita sequi magni ipsum. Cupiditate cum quaerat. Ut pariatur reiciendis omnis et impedit. Nulla aut tempora est dolorum id enim aut. Id aperiam neque voluptatibus odit aliquam eos voluptate eaque.
+ Suscipit labore dicta excepturi aut sed nulla et. Ab autem aspernatur quis. Corrupti nostrum laboriosam quae velit. Et vitae odit aspernatur quia molestiae est nulla ipsum. Et veritatis accusamus debitis quam ut pariatur consectetur unde.
+ Pariatur rerum atque vero totam. Quia odio et earum. Temporibus quo exercitationem asperiores voluptates assumenda. Quia iste optio. At ut dolor qui et asperiores quidem sunt.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Qui unde sapiente.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "24",
+      "links": Object {
+        "self": "http://localhost:4000/posts/24",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [
+            Object {
+              "id": "79",
+              "type": "comments",
+            },
+            Object {
+              "id": "80",
+              "type": "comments",
+            },
+          ],
+        },
+        "image": Object {
+          "data": Object {
+            "id": "43",
+            "type": "images",
+          },
+          "links": Object {
+            "self": "http://localhost:4000/images/43",
+          },
+        },
+        "reactions": Object {
+          "data": Array [
+            Object {
+              "id": "82",
+              "type": "reactions",
+            },
+          ],
+        },
+        "tags": Object {
+          "data": Array [],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Minus quibusdam similique reiciendis. Vero a hic recusandae aut accusantium. Omnis cupiditate et sint voluptas impedit et hic id.
+ Error ea totam id vel aliquam sapiente vel adipisci. Quae ipsam asperiores quia consequatur numquam aliquid. Et nam aliquam dolor. Vel quidem tempore reprehenderit quasi et accusantium voluptas. Rerum quaerat est illum molestiae vel molestiae labore.
+ Reprehenderit optio nisi amet et. Non veritatis qui inventore sunt hic aut. Maiores aut natus ipsa explicabo possimus labore enim occaecati.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Iure repudiandae tenetur.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "25",
+      "links": Object {
+        "self": "http://localhost:4000/posts/25",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [
+            Object {
+              "id": "58",
+              "type": "comments",
+            },
+            Object {
+              "id": "91",
+              "type": "comments",
+            },
+          ],
+        },
+        "image": Object {
+          "data": Object {
+            "id": "6",
+            "type": "images",
+          },
+          "links": Object {
+            "self": "http://localhost:4000/images/6",
+          },
+        },
+        "reactions": Object {
+          "data": Array [],
+        },
+        "tags": Object {
+          "data": Array [
+            Object {
+              "id": "81",
+              "type": "tags",
+            },
+          ],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Voluptatibus accusantium saepe autem et at aut. Voluptatem et sed eveniet quas libero. Similique voluptate accusamus rerum neque qui accusantium distinctio.
+ Debitis ratione quia. Modi saepe facere eaque officiis officia id eaque harum quod. Sequi molestias suscipit earum perferendis enim aspernatur aspernatur. Quo qui ipsa et mollitia.
+ Illum enim sunt dolor perferendis modi a ut. Similique est est dolores esse nobis. Hic modi qui qui voluptates enim perferendis vero iure. Sit sit accusamus numquam repellendus unde doloribus et. Esse iste enim.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Tempora voluptatum facere.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "26",
+      "links": Object {
+        "self": "http://localhost:4000/posts/26",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [
+            Object {
+              "id": "35",
+              "type": "comments",
+            },
+            Object {
+              "id": "67",
+              "type": "comments",
+            },
+          ],
+        },
+        "image": Object {
+          "data": Object {
+            "id": "71",
+            "type": "images",
+          },
+          "links": Object {
+            "self": "http://localhost:4000/images/71",
+          },
+        },
+        "reactions": Object {
+          "data": Array [],
+        },
+        "tags": Object {
+          "data": Array [
+            Object {
+              "id": "83",
+              "type": "tags",
+            },
+          ],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Non quasi id omnis in. Vitae libero et saepe et quidem est ipsum inventore quo. Repellendus quisquam qui quia officia fugit eligendi consequuntur numquam.
+ Odio vero aperiam et eaque non tenetur consequatur qui. Non aut velit aspernatur soluta culpa quia in est quisquam. Et dolorem at dolores et iure. Nam sequi in corporis.
+ Voluptatibus est ut nemo et ipsam. Dolorem explicabo voluptatum nam. Eum expedita debitis sit delectus enim ex dolorem non eos. Ullam qui ea. Magni culpa aut est debitis magnam ex nesciunt est dolores. Iste dolorum sint eos et et praesentium id voluptatibus voluptas.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Earum praesentium sit voluptatem temporibus.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "27",
+      "links": Object {
+        "self": "http://localhost:4000/posts/27",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [],
+        },
+        "image": Object {
+          "data": Object {
+            "id": "50",
+            "type": "images",
+          },
+          "links": Object {
+            "self": "http://localhost:4000/images/50",
+          },
+        },
+        "reactions": Object {
+          "data": Array [
+            Object {
+              "id": "48",
+              "type": "reactions",
+            },
+          ],
+        },
+        "tags": Object {
+          "data": Array [],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Perspiciatis numquam omnis et quia ex. Vitae aut molestiae hic occaecati sit. Sed ullam nostrum modi expedita architecto magni sint et et. Et autem voluptate sunt minima accusantium culpa in. Architecto et aut nostrum. Et non illum.
+ Cumque delectus consequatur qui eos quidem. Facere ipsam quia a qui. Accusamus voluptatem libero sint officiis illum ut fugiat ex. Amet modi et vel.
+ Ut ut adipisci esse. Quia ipsa voluptatem explicabo modi deserunt maxime accusantium. Molestias voluptatem explicabo similique esse.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Nemo quasi quos sed est beatae.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "31",
+      "links": Object {
+        "self": "http://localhost:4000/posts/31",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [],
+        },
+        "image": Object {
+          "data": null,
+        },
+        "reactions": Object {
+          "data": Array [
+            Object {
+              "id": "47",
+              "type": "reactions",
+            },
+            Object {
+              "id": "87",
+              "type": "reactions",
+            },
+          ],
+        },
+        "tags": Object {
+          "data": Array [],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Ad est distinctio aut nobis temporibus voluptatibus et et. Est rerum magni. In consequuntur porro. Sint rem aspernatur.
+ Voluptas vitae ab. Ullam perferendis quia natus iste expedita aliquam. Distinctio magni et et aliquam modi. Ut id quidem ducimus vitae velit. Molestias inventore rerum aspernatur minima iure voluptates quis sint. Itaque quia cumque veritatis.
+ Sint alias quia optio delectus eligendi quis. Accusamus iusto nobis cumque ut. Illo et ut expedita. Perferendis qui molestiae possimus minus et asperiores.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Et alias est est ratione.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "32",
+      "links": Object {
+        "self": "http://localhost:4000/posts/32",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [],
+        },
+        "image": Object {
+          "data": Object {
+            "id": "21",
+            "type": "images",
+          },
+          "links": Object {
+            "self": "http://localhost:4000/images/21",
+          },
+        },
+        "reactions": Object {
+          "data": Array [],
+        },
+        "tags": Object {
+          "data": Array [
+            Object {
+              "id": "46",
+              "type": "tags",
+            },
+          ],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Dolor tempore id veritatis. Quia voluptatibus voluptas doloremque sit sit debitis quam dolores eveniet. Qui distinctio perferendis mollitia et est. Voluptatem ducimus incidunt dolorem veniam eos.
+ Nulla perferendis consequatur voluptatem reprehenderit ad aut nostrum consequatur. Pariatur mollitia et cupiditate. Quia non quia est ea placeat tempora. Dolorum officia qui. Fuga sit praesentium earum mollitia.
+ Debitis sunt mollitia quae. Omnis accusantium est non et illum illum excepturi temporibus. Quia et inventore molestiae consequatur aut voluptas quae corporis quod. Est voluptatem dolorem rerum corrupti ut. Nesciunt architecto nobis ut.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Eos et corporis sed praesentium esse.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "34",
+      "links": Object {
+        "self": "http://localhost:4000/posts/34",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [
+            Object {
+              "id": "32",
+              "type": "comments",
+            },
+            Object {
+              "id": "64",
+              "type": "comments",
+            },
+            Object {
+              "id": "89",
+              "type": "comments",
+            },
+          ],
+        },
+        "image": Object {
+          "data": Object {
+            "id": "53",
+            "type": "images",
+          },
+          "links": Object {
+            "self": "http://localhost:4000/images/53",
+          },
+        },
+        "reactions": Object {
+          "data": Array [
+            Object {
+              "id": "85",
+              "type": "reactions",
+            },
+          ],
+        },
+        "tags": Object {
+          "data": Array [],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Blanditiis dolor est unde illum labore quia aliquam esse autem. Eius atque est dolore tenetur aut dolores aut dolore expedita. Excepturi alias corporis aut cum ad quaerat error eum. Porro voluptatem nihil numquam voluptatem ipsam. Quibusdam pariatur ut quia dolorem modi molestias ut fugit ad.
+ Iusto enim et et harum dolore eaque. Expedita nisi animi ea ut rerum et. Nemo nihil vel sunt sint asperiores explicabo.
+ In et omnis in possimus tempore autem laborum eveniet. Et tempore distinctio facere et aut. At ut impedit earum autem omnis labore ut eos. Rem natus sit voluptate quaerat qui error. Quis impedit rem ipsa libero adipisci laudantium. Quia quasi praesentium officiis nemo.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Ab officia molestias illum atque error voluptatibus ea.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "35",
+      "links": Object {
+        "self": "http://localhost:4000/posts/35",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [
+            Object {
+              "id": "20",
+              "type": "comments",
+            },
+          ],
+        },
+        "image": Object {
+          "data": Object {
+            "id": "54",
+            "type": "images",
+          },
+          "links": Object {
+            "self": "http://localhost:4000/images/54",
+          },
+        },
+        "reactions": Object {
+          "data": Array [
+            Object {
+              "id": "28",
+              "type": "reactions",
+            },
+          ],
+        },
+        "tags": Object {
+          "data": Array [
+            Object {
+              "id": "10",
+              "type": "tags",
+            },
+            Object {
+              "id": "48",
+              "type": "tags",
+            },
+          ],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Excepturi blanditiis ut eveniet maiores corporis itaque repellat. Facere quia delectus esse id quia maiores est et eligendi. Temporibus ut amet cupiditate. Occaecati rerum aspernatur aut molestias qui voluptatem itaque sit corporis. Voluptatem quia eos labore ea quia et et omnis sit. Praesentium nihil sed voluptatibus amet alias.
+ Quas reprehenderit provident vitae et rerum praesentium dolore. Voluptates eveniet et nisi aperiam debitis eligendi ad voluptatibus rerum. Rerum deleniti quisquam dolorem iste quaerat.
+ Laudantium architecto sed. Laboriosam vel autem quia. Doloribus architecto quis vel quas. Nostrum nihil vero dolorum tenetur enim. Velit in eum libero temporibus et cum nihil ducimus in.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Optio veritatis laboriosam quaerat doloremque.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "37",
+      "links": Object {
+        "self": "http://localhost:4000/posts/37",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [],
+        },
+        "image": Object {
+          "data": null,
+        },
+        "reactions": Object {
+          "data": Array [
+            Object {
+              "id": "53",
+              "type": "reactions",
+            },
+          ],
+        },
+        "tags": Object {
+          "data": Array [
+            Object {
+              "id": "53",
+              "type": "tags",
+            },
+          ],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Aut ad eum qui odit. Nam totam a sunt aspernatur nesciunt voluptatum error ut omnis. Excepturi similique sed quia qui sunt velit. Explicabo qui beatae vel dolor vel eos. Excepturi dicta qui ut voluptatum. Perferendis autem omnis quia adipisci corporis occaecati quas beatae sit.
+ Nisi corrupti et tempore rerum laudantium dicta quibusdam quod. Ut sed praesentium et. Vel laudantium voluptas saepe facere velit laudantium dolorem et sed. Reprehenderit perspiciatis explicabo atque voluptas nostrum accusamus sapiente. Velit natus fugit harum amet. Unde facilis consectetur.
+ Assumenda eum quod distinctio sequi. Est et ut id quis ad est sapiente. Expedita eaque dolores id amet ab fugit.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Nisi aut deleniti adipisci adipisci et.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "43",
+      "links": Object {
+        "self": "http://localhost:4000/posts/43",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [
+            Object {
+              "id": "74",
+              "type": "comments",
+            },
+          ],
+        },
+        "image": Object {
+          "data": Object {
+            "id": "10",
+            "type": "images",
+          },
+          "links": Object {
+            "self": "http://localhost:4000/images/10",
+          },
+        },
+        "reactions": Object {
+          "data": Array [],
+        },
+        "tags": Object {
+          "data": Array [],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Ipsam magni ipsum tempora ipsum iste. Omnis adipisci est voluptatem ducimus. Est minus sapiente magnam cum animi. Odio corporis accusantium aut facilis impedit aut. Similique quos delectus. Quos enim excepturi non.
+ Maiores at tenetur quia praesentium omnis laborum voluptatum blanditiis officia. Alias soluta error atque ea. Nemo vel consectetur iste autem. Autem est sed tempore. Omnis magni aliquam illum voluptatibus sunt sunt.
+ Quia saepe est aut eum. Facilis id vitae alias unde qui cumque. Dolor dolor laboriosam.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Est sed dignissimos sunt.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "44",
+      "links": Object {
+        "self": "http://localhost:4000/posts/44",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [],
+        },
+        "image": Object {
+          "data": null,
+        },
+        "reactions": Object {
+          "data": Array [
+            Object {
+              "id": "80",
+              "type": "reactions",
+            },
+          ],
+        },
+        "tags": Object {
+          "data": Array [],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Ex molestias harum sint consequuntur sed saepe fugit quo. Provident ea sequi. Sit incidunt sit distinctio voluptas cupiditate ut omnis perferendis beatae.
+ Reiciendis et omnis. A similique unde nisi facilis et dolor rerum quisquam. Voluptatem officia illo est. Id aut nihil soluta quam ut. Impedit est explicabo at magnam. Natus nihil placeat.
+ Ut asperiores non non qui. Assumenda ut minima debitis natus eum architecto. Et laudantium harum repellat consequatur. Et occaecati dolor quia id. Officia delectus a porro qui deleniti ea.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Quia harum voluptas asperiores earum qui quisquam expedita.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "48",
+      "links": Object {
+        "self": "http://localhost:4000/posts/48",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [
+            Object {
+              "id": "44",
+              "type": "comments",
+            },
+          ],
+        },
+        "image": Object {
+          "data": Object {
+            "id": "28",
+            "type": "images",
+          },
+          "links": Object {
+            "self": "http://localhost:4000/images/28",
+          },
+        },
+        "reactions": Object {
+          "data": Array [],
+        },
+        "tags": Object {
+          "data": Array [
+            Object {
+              "id": "3",
+              "type": "tags",
+            },
+          ],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Et sed sed fugiat similique ut totam optio eligendi ad. Et ut accusamus unde voluptatem sapiente voluptatum culpa vitae perferendis. Omnis et ut animi ad eligendi voluptas est et. Quidem animi molestiae facilis molestiae id praesentium sed blanditiis. Minus praesentium tenetur est ipsum placeat ratione aut nam.
+ Dolorem omnis aut ut commodi ea totam voluptate vitae facere. Rem molestias et aspernatur vitae accusamus commodi impedit aut. Possimus molestiae qui voluptatem enim eos veritatis dolor earum. Ipsam amet quia maiores dolor aut modi vitae.
+ Velit qui officiis quasi eum deleniti odio accusantium qui. Ut at aut sunt dolorem nostrum qui. Ullam similique autem voluptates soluta aut rem nostrum quasi unde. Quae alias ad animi. Quia dolores minima enim et.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Aut possimus nostrum.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "49",
+      "links": Object {
+        "self": "http://localhost:4000/posts/49",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [],
+        },
+        "image": Object {
+          "data": Object {
+            "id": "82",
+            "type": "images",
+          },
+          "links": Object {
+            "self": "http://localhost:4000/images/82",
+          },
+        },
+        "reactions": Object {
+          "data": Array [],
+        },
+        "tags": Object {
+          "data": Array [
+            Object {
+              "id": "11",
+              "type": "tags",
+            },
+          ],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Quia impedit ex est perspiciatis ex voluptas. Provident laudantium eos voluptatum maiores eos qui doloribus ut. Sunt veritatis illum earum dolores id id cum beatae. Perferendis aut excepturi aut ratione odit adipisci fugiat accusantium. Aut sapiente excepturi neque quasi expedita reiciendis at incidunt est.
+ Enim quia accusamus omnis et aspernatur ratione. Libero alias et enim sunt enim porro voluptas qui ratione. Est officiis et at rerum in et quia doloribus provident. Occaecati est quia. Cupiditate omnis culpa rerum consequatur adipisci sunt libero repudiandae.
+ Quia dolorum provident numquam ducimus enim. Error modi quo occaecati iure. Autem delectus dicta corporis voluptates rerum eius est adipisci fuga. Soluta blanditiis magni nisi asperiores molestias placeat. Voluptas doloremque eveniet non. Modi voluptate quisquam qui sequi iste quidem illum.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Quia possimus ab debitis alias.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "52",
+      "links": Object {
+        "self": "http://localhost:4000/posts/52",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [],
+        },
+        "image": Object {
+          "data": Object {
+            "id": "42",
+            "type": "images",
+          },
+          "links": Object {
+            "self": "http://localhost:4000/images/42",
+          },
+        },
+        "reactions": Object {
+          "data": Array [],
+        },
+        "tags": Object {
+          "data": Array [
+            Object {
+              "id": "48",
+              "type": "tags",
+            },
+            Object {
+              "id": "62",
+              "type": "tags",
+            },
+          ],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+    Object {
+      "attributes": Object {
+        "body": "Quibusdam quibusdam pariatur. Expedita voluptatum modi ex dolorem aliquam ipsa enim. Rerum ut laboriosam et eos inventore quisquam. Ducimus ut repellendus aut quas aliquam. Est architecto est consequatur sunt ullam est eius. Et culpa quidem iure sunt quibusdam est quis in.
+ Sunt magnam quis magnam sed consequatur repellat doloribus inventore tenetur. Quia qui beatae a non commodi consequatur iste. Et harum a nam commodi aut. Dolor qui magnam nostrum amet ex amet ad. Aut rerum magnam unde itaque pariatur temporibus.
+ Similique asperiores modi exercitationem doloremque veniam. Vero mollitia aperiam perferendis. Quia ipsa at. Voluptas inventore laboriosam nihil laudantium vero. Corporis dolorum animi aut tempore.",
+        "created-at": 2017-02-10T21:02:17.000Z,
+        "title": "Architecto sit rem dolores mollitia modi cupiditate non.",
+        "updated-at": 2017-02-10T21:02:17.000Z,
+      },
+      "id": "53",
+      "links": Object {
+        "self": "http://localhost:4000/posts/53",
+      },
+      "relationships": Object {
+        "comments": Object {
+          "data": Array [
+            Object {
+              "id": "19",
+              "type": "comments",
+            },
+            Object {
+              "id": "65",
+              "type": "comments",
+            },
+          ],
+        },
+        "image": Object {
+          "data": null,
+        },
+        "reactions": Object {
+          "data": Array [],
+        },
+        "tags": Object {
+          "data": Array [],
+        },
+        "user": Object {
+          "data": null,
+        },
+      },
+      "type": "posts",
+    },
+  ],
+  "jsonapi": Object {
+    "version": "1.0",
+  },
+  "links": Object {
+    "self": "http://localhost:4000/posts",
+  },
+}
+`;
+
+exports[`module "router/route/action" enhancer resource() - type "member" - with "admin" namespace resolves with a serialized payload 1`] = `
+Object {
+  "data": Object {
+    "attributes": Object {
+      "body": "Vero et est aliquam quaerat eos nihil temporibus dignissimos aut. Aspernatur et error. Possimus eligendi numquam exercitationem id eum ex recusandae.
+ Magni ut magnam iure temporibus id odio aut. Ut voluptates sequi quidem. Aut ut ut voluptates et. Aut corrupti voluptas quia qui soluta. Sint et officia explicabo eligendi voluptas qui. Sit cumque adipisci.
+ Dignissimos tempore ducimus quae ipsam. Omnis et dignissimos non at et repellendus deserunt doloribus. Iusto eius repellat facere omnis.",
+      "created-at": 2017-02-10T21:02:17.000Z,
+      "title": "Aut quia dignissimos voluptas ipsam perspiciatis.",
+      "updated-at": 2017-02-10T21:02:17.000Z,
+    },
+    "id": "1",
+    "relationships": Object {
+      "comments": Object {
+        "data": Array [
+          Object {
+            "id": "38",
+            "type": "comments",
+          },
+        ],
+      },
+      "image": Object {
+        "data": null,
+      },
+      "reactions": Object {
+        "data": Array [
+          Object {
+            "id": "93",
+            "type": "reactions",
+          },
+        ],
+      },
+      "tags": Object {
+        "data": Array [
+          Object {
+            "id": "20",
+            "type": "tags",
+          },
+          Object {
+            "id": "29",
+            "type": "tags",
+          },
+          Object {
+            "id": "49",
+            "type": "tags",
+          },
+        ],
+      },
+      "user": Object {
+        "data": null,
+      },
+    },
+    "type": "posts",
+  },
+  "jsonapi": Object {
+    "version": "1.0",
+  },
+  "links": Object {
+    "self": "http://localhost:4000/admin/posts/1",
+  },
+}
+`;
+
+exports[`module "router/route/action" enhancer resource() - type "member" - with "root" namespace resolves with a serialized payload 1`] = `
+Object {
+  "data": Object {
+    "attributes": Object {
+      "body": "Vero et est aliquam quaerat eos nihil temporibus dignissimos aut. Aspernatur et error. Possimus eligendi numquam exercitationem id eum ex recusandae.
+ Magni ut magnam iure temporibus id odio aut. Ut voluptates sequi quidem. Aut ut ut voluptates et. Aut corrupti voluptas quia qui soluta. Sint et officia explicabo eligendi voluptas qui. Sit cumque adipisci.
+ Dignissimos tempore ducimus quae ipsam. Omnis et dignissimos non at et repellendus deserunt doloribus. Iusto eius repellat facere omnis.",
+      "created-at": 2017-02-10T21:02:17.000Z,
+      "title": "Aut quia dignissimos voluptas ipsam perspiciatis.",
+      "updated-at": 2017-02-10T21:02:17.000Z,
+    },
+    "id": "1",
+    "relationships": Object {
+      "comments": Object {
+        "data": Array [
+          Object {
+            "id": "38",
+            "type": "comments",
+          },
+        ],
+      },
+      "image": Object {
+        "data": null,
+      },
+      "reactions": Object {
+        "data": Array [
+          Object {
+            "id": "93",
+            "type": "reactions",
+          },
+        ],
+      },
+      "tags": Object {
+        "data": Array [
+          Object {
+            "id": "20",
+            "type": "tags",
+          },
+          Object {
+            "id": "29",
+            "type": "tags",
+          },
+          Object {
+            "id": "49",
+            "type": "tags",
+          },
+        ],
+      },
+      "user": Object {
+        "data": null,
+      },
+    },
+    "type": "posts",
+  },
+  "jsonapi": Object {
+    "version": "1.0",
+  },
+  "links": Object {
+    "self": "http://localhost:4000/posts/1",
+  },
+}
+`;

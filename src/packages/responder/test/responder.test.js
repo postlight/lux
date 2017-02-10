@@ -51,7 +51,7 @@
 //       return run((req, res) => {
 //         const result = createResponder(req, res);
 //
-//         expect(result).toBe(expect.any(Function));
+//         expect(result).toEqual(expect.any(Function));
 //         expect(result.length).toBe(1);
 //         expect(result).not.toThrow();
 //       });

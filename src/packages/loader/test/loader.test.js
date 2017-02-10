@@ -22,7 +22,7 @@ describe('module "loader"', () => {
     });
 
     it('can create a loader function', () => {
-      expect(subject).toBe(expect.any(Function));
+      expect(subject).toEqual(expect.any(Function));
       expect(subject).toHaveLength(1);
     });
 
@@ -67,11 +67,11 @@ describe('module "loader"', () => {
     });
 
     it('can load a routes function', () => {
-      expect(subject('routes')).toBe(expect.any(Function));
+      expect(subject('routes')).toEqual(expect.any(Function));
     });
 
     it('can load a database seed function', () => {
-      expect(subject('seed')).toBe(expect.any(Function));
+      expect(subject('seed')).toEqual(expect.any(Function));
     });
 
     it('can load Serializers', () => {

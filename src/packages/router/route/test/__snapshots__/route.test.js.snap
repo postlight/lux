@@ -1,0 +1,41 @@
+exports[`module "router/route" class Route #execHandlers() - with \`afterAction\` resolves with the correct data 1`] = `
+Object {
+  "meta": Object {
+    "afterSuccess": true,
+    "success": true,
+  },
+}
+`;
+
+exports[`module "router/route" class Route #execHandlers() - with \`beforeAction\` and \`afterAction\` resolves with the correct data 1`] = `
+Object {
+  "meta": Object {
+    "afterSuccess": true,
+    "success": true,
+  },
+}
+`;
+
+exports[`module "router/route" class Route #execHandlers() - with \`beforeAction\` resolves with the correct data 1`] = `
+Object {
+  "meta": Object {
+    "beforeSuccess": true,
+  },
+}
+`;
+
+exports[`module "router/route" class Route #execHandlers() - with action only resolves with the correct data 1`] = `
+Object {
+  "meta": Object {
+    "success": true,
+  },
+}
+`;
+
+exports[`module "router/route" class Route #visit - method "GET" - with params works 1`] = `204`;
+
+exports[`module "router/route" class Route #visit - method "GET" - without params works 1`] = `204`;
+
+exports[`module "router/route" class Route #visit - method "OPTIONS" - with params works 1`] = `204`;
+
+exports[`module "router/route" class Route #visit - method "OPTIONS" - without params works 1`] = `204`;

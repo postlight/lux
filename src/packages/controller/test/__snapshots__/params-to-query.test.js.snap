@@ -1,0 +1,145 @@
+exports[`module "controller" util paramsToQuery() - fields can properly build included fields 1`] = `
+Object {
+  "filter": Object {},
+  "id": undefined,
+  "include": Object {
+    "user": Array [
+      "id",
+      "name",
+    ],
+  },
+  "select": Array [
+    "id",
+    "body",
+    "title",
+    "createdAt",
+    "updatedAt",
+  ],
+  "sort": Array [
+    "createdAt",
+    "ASC",
+  ],
+}
+`;
+
+exports[`module "controller" util paramsToQuery() - fields ignores invalid field sets 1`] = `
+Object {
+  "filter": Object {},
+  "id": undefined,
+  "include": Object {},
+  "select": Array [
+    "id",
+    "body",
+    "title",
+    "createdAt",
+    "updatedAt",
+  ],
+  "sort": Array [
+    "createdAt",
+    "ASC",
+  ],
+}
+`;
+
+exports[`module "controller" util paramsToQuery() - fields only adds \`id\` when the include array is \`undefined\` 1`] = `
+Object {
+  "filter": Object {},
+  "id": undefined,
+  "include": Object {
+    "image": Array [
+      "id",
+    ],
+  },
+  "select": Array [
+    "id",
+    "body",
+    "title",
+    "createdAt",
+    "updatedAt",
+  ],
+  "sort": Array [
+    "createdAt",
+    "ASC",
+  ],
+}
+`;
+
+exports[`module "controller" util paramsToQuery() - page converts \`number\` and \`size\` to \`page\` and \`limit\` 1`] = `
+Object {
+  "filter": Object {},
+  "id": undefined,
+  "include": Object {},
+  "limit": 10,
+  "page": 2,
+  "select": Array [
+    "id",
+    "body",
+    "title",
+    "createdAt",
+    "updatedAt",
+  ],
+  "sort": Array [
+    "createdAt",
+    "ASC",
+  ],
+}
+`;
+
+exports[`module "controller" util paramsToQuery() - sort converts asc parameters 1`] = `
+Object {
+  "filter": Object {},
+  "id": undefined,
+  "include": Object {},
+  "select": Array [
+    "id",
+    "body",
+    "title",
+    "createdAt",
+    "updatedAt",
+  ],
+  "sort": Array [
+    "title",
+    "ASC",
+  ],
+}
+`;
+
+exports[`module "controller" util paramsToQuery() - sort converts desc parameters 1`] = `
+Object {
+  "filter": Object {},
+  "id": undefined,
+  "include": Object {},
+  "select": Array [
+    "id",
+    "body",
+    "title",
+    "createdAt",
+    "updatedAt",
+  ],
+  "sort": Array [
+    "title",
+    "DESC",
+  ],
+}
+`;
+
+exports[`module "controller" util paramsToQuery() returns the correct params object 1`] = `
+Object {
+  "filter": Object {
+    "title": "New Post",
+  },
+  "id": 1,
+  "include": Object {},
+  "limit": 10,
+  "page": 5,
+  "select": Array [
+    "id",
+    "body",
+    "title",
+  ],
+  "sort": Array [
+    "title",
+    "ASC",
+  ],
+}
+`;

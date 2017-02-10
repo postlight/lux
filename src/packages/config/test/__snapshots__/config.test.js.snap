@@ -1,0 +1,18 @@
+exports[`module "config" #createDefaultConfig() creates a default config object in the context of NODE_ENV 1`] = `
+Object {
+  "adapter": [Function],
+  "logging": Object {
+    "enabled": false,
+    "filter": Object {
+      "params": Array [],
+    },
+    "format": "text",
+    "level": "DEBUG",
+  },
+  "server": Object {
+    "cors": Object {
+      "enabled": false,
+    },
+  },
+}
+`;

@@ -14,6 +14,7 @@ export default {
   },
   test: {
     pool: 5,
+    port: 3307,
     driver: DATABASE_DRIVER,
     database: 'lux_test',
     username: DATABASE_USERNAME,

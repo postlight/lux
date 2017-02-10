@@ -49,23 +49,7 @@ describe('module "controller"', () => {
         }
       });
 
-      expect(paramsToQuery(Post, subject)).toEqual({
-        id: 1,
-        page: 5,
-        sort: [
-          'title',
-          'ASC'
-        ],
-        limit: 10,
-        filter: {
-          title: 'New Post',
-        },
-        select: [
-          'id',
-          'body',
-          'title',
-        ],
-      });
+      expect(paramsToQuery(Post, subject)).toMatchSnapshot();
     });
 
     describe('- page', () => {
@@ -81,12 +65,7 @@ describe('module "controller"', () => {
       });
 
       it('converts `number` and `size` to `page` and `limit`', () => {
-        expect(paramsToQuery(Post, subject)).toEqual(
-          expect.objectContaining({
-            page: 2,
-            limit: 10,
-          })
-        );
+        expect(paramsToQuery(Post, subject)).toMatchSnapshot();
       });
     });
 
@@ -96,14 +75,7 @@ describe('module "controller"', () => {
           sort: 'title'
         });
 
-        expect(paramsToQuery(Post, subject)).toEqual(
-          expect.objectContaining({
-            sort: [
-              'title',
-              'ASC'
-            ]
-          })
-        );
+        expect(paramsToQuery(Post, subject)).toMatchSnapshot();
       });
 
       it('converts desc parameters', () => {
@@ -111,14 +83,7 @@ describe('module "controller"', () => {
           sort: '-title'
         });
 
-        expect(paramsToQuery(Post, subject)).toEqual(
-          expect.objectContaining({
-            sort: [
-              'title',
-              'DESC'
-            ]
-          })
-        );
+        expect(paramsToQuery(Post, subject)).toMatchSnapshot();
       });
     });
 
@@ -135,16 +100,7 @@ describe('module "controller"', () => {
           ],
         });
 
-        expect(paramsToQuery(Post, subject)).toEqual(
-          expect.objectContaining({
-            include: {
-              user: [
-                'id',
-                'name',
-              ],
-            },
-          })
-        );
+        expect(paramsToQuery(Post, subject)).toMatchSnapshot();
       });
 
       it('ignores invalid field sets', () => {
@@ -159,11 +115,7 @@ describe('module "controller"', () => {
           ]
         });
 
-        expect(paramsToQuery(Post, subject)).toEqual(
-          expect.objectContaining({
-            include: {},
-          })
-        );
+        expect(paramsToQuery(Post, subject)).toMatchSnapshot();
       });
 
       it('only adds `id` when the include array is `undefined`', () => {
@@ -176,15 +128,7 @@ describe('module "controller"', () => {
           }
         });
 
-        expect(paramsToQuery(Post, subject)).toEqual(
-          expect.objectContaining({
-            include: {
-              image: [
-                'id',
-              ],
-            },
-          })
-        );
+        expect(paramsToQuery(Post, subject)).toMatchSnapshot();
       });
     });
   });

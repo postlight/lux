@@ -1,19 +1,22 @@
 // @flow
-import { spy } from 'sinon';
-
 import Controller from '../../../controller';
-import type Controller from '../../controller';
-import type { Request } from '../../request';
+import * as Adapters from '../../../adapter';
+import type { Request } from '../../../request';
+import K from '../../../../utils/k';
 import { getTestApp } from '../../../../../test/utils/get-test-app';
-import {
-  createResponse,
-  createRequestBuilder
-} from '../../../../../test/utils/mocks';
 
 import Route from '../index';
 
 describe('module "router/route"', () => {
   describe('class Route', () => {
+    let adapter;
+
+    beforeAll(async () => {
+      const app = await getTestApp();
+
+      adapter = Adapters.mock(app);
+    });
+
     describe('#constructor()', () => {
       let controller: Controller;
 
@@ -32,7 +35,7 @@ describe('module "router/route"', () => {
           method: 'GET'
         });
 
-        expect(result instanceof Route).toBe(true);
+        expect(result).toBeInstanceOf(Route);
       });
 
       it('throws when a handler is not found', () => {
@@ -103,7 +106,7 @@ describe('module "router/route"', () => {
       });
 
       it('is empty for static paths', () => {
-        expect(staticRoute.parseParams(['1'])).toHaveLength(0);
+        expect(staticRoute.parseParams(['1'])).toEqual({});
       });
 
       it('contains params matching dynamic segments', () => {
@@ -117,7 +120,15 @@ describe('module "router/route"', () => {
 
     describe('#execHandlers()', () => {
       let subject: Route;
-      let createRequest;
+
+      const mockArgs = () => (
+        adapter({
+          url: '/tests',
+          method: 'GET',
+          headers: {},
+          resolve: K,
+        })
+      );
 
       describe('- with action only', () => {
         beforeAll(async () => {
@@ -138,25 +149,13 @@ describe('module "router/route"', () => {
               namespace: ''
             })
           });
-
-          createRequest = createRequestBuilder({
-            path: '/tests',
-            route: subject,
-            params: {}
-          });
         });
 
         it('resolves with the correct data', async () => {
-          const result = await subject.execHandlers(
-            createRequest(),
-            createResponse()
-          );
+          const [request, response] = await mockArgs();
+          const result = await subject.execHandlers(request, response);
 
-          expect(result).toEqual({
-            meta: {
-              success: true
-            }
-          });
+          expect(result).toMatchSnapshot();
         });
       });
 
@@ -187,25 +186,13 @@ describe('module "router/route"', () => {
               namespace: ''
             })
           });
-
-          createRequest = createRequestBuilder({
-            path: '/tests',
-            route: subject,
-            params: {}
-          });
         });
 
         it('resolves with the correct data', async () => {
-          const result = await subject.execHandlers(
-            createRequest(),
-            createResponse()
-          );
+          const [request, response] = await mockArgs();
+          const result = await subject.execHandlers(request, response);
 
-          expect(result).toEqual({
-            meta: {
-              beforeSuccess: true
-            }
-          });
+          expect(result).toMatchSnapshot();
         });
       });
 
@@ -229,43 +216,24 @@ describe('module "router/route"', () => {
               namespace: ''
             })
           });
-
-          createRequest = createRequestBuilder({
-            path: '/tests',
-            route: subject,
-            params: {}
-          });
         });
 
         it('resolves with the correct data', async () => {
-          const result = await subject.execHandlers(
-            createRequest(),
-            createResponse()
-          );
+          const [request, response] = await mockArgs();
+          const result = await subject.execHandlers(request, response);
 
-          expect(result).toEqual({
-            meta: {
-              success: true,
-              afterSuccess: true
-            }
-          });
+          expect(result).toMatchSnapshot();
         });
       });
 
       describe('- with `beforeAction` and `afterAction`', () => {
-        let beforeSpy;
+        let beforeAction;
 
         beforeAll(async () => {
-          const beforeHooks = {
-            call: async () => undefined
-          };
-
-          beforeSpy = spy(beforeHooks, 'call');
+          beforeAction = jest.fn();
 
           class TestController extends Controller {
-            beforeAction = [
-              beforeHooks.call
-            ];
+            beforeAction = [beforeAction];
 
             afterAction = [
               async (req, res, { meta }) => ({
@@ -292,27 +260,18 @@ describe('module "router/route"', () => {
               namespace: ''
             })
           });
+        });
 
-          createRequest = createRequestBuilder({
-            path: '/tests',
-            route: subject,
-            params: {}
-          });
+        afterEach(() => {
+          beforeAction.mockReset();
         });
 
         it('resolves with the correct data', async () => {
-          const result = await subject.execHandlers(
-            createRequest(),
-            createResponse()
-          );
+          const [request, response] = await mockArgs();
+          const result = await subject.execHandlers(request, response);
 
-          expect(beforeSpy.calledOnce).toBe(true);
-          expect(result).toEqual({
-            meta: {
-              success: true,
-              afterSuccess: true
-            }
-          });
+          expect(result).toMatchSnapshot();
+          expect(beforeAction).toBeCalledWith(request, response, undefined);
         });
       });
     });
@@ -329,11 +288,21 @@ describe('module "router/route"', () => {
       ['GET', 'OPTIONS'].forEach(method => {
         describe(`- method "${method}"`, () => {
           let subject;
-          let createRequest;
 
-          beforeAll(async () => {
+          const mockArgs = async (params = {}) => {
+            const [request, response] = await adapter({
+              method,
+              url: '/posts',
+              headers: {},
+              resolve: K,
+            });
 
+            Object.assign(request.params, params);
 
+            return [request, response];
+          };
+
+          beforeAll(() => {
             subject = new Route({
               method,
               controller,
@@ -344,46 +313,25 @@ describe('module "router/route"', () => {
           });
 
           describe('- with params', () => {
-            beforeAll(() => {
-              createRequest = createRequestBuilder({
-                method,
-                controller,
-                path: '/posts',
-                route: subject,
-                params: {
-                  filter: {
-                    title: 'New Post'
-                  }
-                }
-              });
-            });
-
             it('works', async () => {
-              const result = await subject.visit(
-                createRequest(),
-                createResponse()
-              );
+              const [request, response] = await mockArgs({
+                filter: {
+                  title: 'New Post',
+                },
+              });
 
-              expect(result).not.toThrow();
+              const result = await subject.visit(request, response);
+
+              expect(result).toMatchSnapshot();
             });
           });
 
           describe('- without params', () => {
-            beforeAll(() => {
-              createRequest = createRequestBuilder({
-                method,
-                path: '/posts',
-                route: subject
-              });
-            });
-
             it('works', async () => {
-              const result = await subject.visit(
-                createRequest(),
-                createResponse()
-              );
+              const [request, response] = await mockArgs();
+              const result = await subject.visit(request, response);
 
-              expect(result).not.toThrow();
+              expect(result).toMatchSnapshot();
             });
           });
         });

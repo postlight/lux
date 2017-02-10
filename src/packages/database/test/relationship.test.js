@@ -106,7 +106,7 @@ describe('module "database/relationship"', () => {
       it('resolves with the correct value when present', async () => {
         const result = await get(subject, 'image');
 
-        expect(result instanceof Image).toBe(true);
+        expect(result).toBeInstanceOf(Image);
 
         if (result instanceof Image) {
           expect(result.rawColumnData.postId).toBe(subjectId);
@@ -121,7 +121,7 @@ describe('module "database/relationship"', () => {
       it('resolves with the correct value when present', async () => {
         const result = await get(subject, 'user');
 
-        expect(result instanceof User).toBe(true);
+        expect(result).toBeInstanceOf(User);
 
         if (result instanceof User) {
           expect(result.getPrimaryKey()).toBe(1);
@@ -161,12 +161,12 @@ describe('module "database/relationship"', () => {
       it('resolves with the correct value when present', async () => {
         const result = await get(subject, 'tags');
 
-        expect(result).toBe(expect.any(Array));
+        expect(result).toEqual(expect.any(Array));
         expect(result).toHaveLength(5);
 
         if (Array.isArray(result)) {
           result.forEach(tag => {
-            expect(tag instanceof Tag).toBe(true);
+            expect(tag).toBeInstanceOf(Tag);
           });
 
           const categorizations = await Promise.all(
@@ -179,11 +179,11 @@ describe('module "database/relationship"', () => {
             ))
           );
 
-          expect(categorizations).toBe(expect.any(Array));
+          expect(categorizations).toBeInstanceOf(Array);
           expect(categorizations).toHaveLength(5);
 
           categorizations.forEach(categorization => {
-            expect(categorization instanceof Categorization).toBe(true);
+            expect(categorization).toBeInstanceOf(Categorization);
             expect(categorization.postId).toBe(subjectId);
           });
         }
@@ -232,7 +232,7 @@ describe('module "database/relationship"', () => {
 
       it('can add a record to the relationship', async () => {
         expect(image.rawColumnData.postId).toBe(subjectId);
-        expect(image.rawColumnData.post instanceof Post).toBe(true);
+        expect(image.rawColumnData.post).toBeInstanceOf(Post);
       });
     });
 
@@ -256,7 +256,7 @@ describe('module "database/relationship"', () => {
 
       it('can add a record to the relationship', async () => {
         expect(subject.rawColumnData.userId).toBe(user.getPrimaryKey());
-        expect(subject.rawColumnData.user instanceof User).toBe(true);
+        expect(subject.rawColumnData.user).toBeInstanceOf(User);
       });
 
       it('can remove a record from the relationship', async () => {

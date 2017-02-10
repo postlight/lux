@@ -165,85 +165,23 @@ describe('module "database/model"', () => {
       });
 
       it('adds a `hasOne` property to the `Model`', () => {
-        expect(Subject.hasOne).toEqual({});
+        expect(Subject.hasOne).toMatchSnapshot();
       });
 
       it('adds a `hasMany` property to the `Model`', () => {
-        expect(Subject.hasMany).toEqual({
-          tags: expect.objectContaining({
-            type: 'hasMany',
-            model: expect.anything(),
-            inverse: expect.any(String),
-            through: expect.anything(),
-            foreignKey: expect.any(String),
-          }),
-          comments: expect.objectContaining({
-            type: 'hasMany',
-            model: expect.anything(),
-            inverse: expect.any(String),
-            through: expect.anything(),
-            foreignKey: expect.any(String),
-          }),
-          reactions: expect.objectContaining({
-            type: 'hasMany',
-            model: expect.anything(),
-            inverse: expect.any(String),
-            through: expect.anything(),
-            foreignKey: expect.any(String),
-          }),
-        });
+        expect(Subject.hasMany).toMatchSnapshot();
       });
 
       it('adds a `belongsTo` property to the `Model`', () => {
-        expect(Subject.belongsTo).toEqual({
-          user: expect.objectContaining({
-            type: 'belongsTo',
-            model: expect.anything(),
-            inverse: expect.any(String),
-            foreignKey: expect.any(String),
-          }),
-        });
+        expect(Subject.belongsTo).toMatchSnapshot();
       });
 
       it('adds a `relationships` property to the `Model`', () => {
-        expect(Subject.relationships).toEqual({
-          user: expect.objectContaining({
-            type: 'belongsTo',
-            model: expect.anything(),
-            inverse: expect.any(String),
-            foreignKey: expect.any(String),
-          }),
-          tags: expect.objectContaining({
-            type: 'hasMany',
-            model: expect.anything(),
-            inverse: expect.any(String),
-            through: expect.anything(),
-            foreignKey: expect.any(String),
-          }),
-          comments: expect.objectContaining({
-            type: 'hasMany',
-            model: expect.anything(),
-            inverse: expect.any(String),
-            through: expect.anything(),
-            foreignKey: expect.any(String),
-          }),
-          reactions: expect.objectContaining({
-            type: 'hasMany',
-            model: expect.anything(),
-            inverse: expect.any(String),
-            through: expect.anything(),
-            foreignKey: expect.any(String),
-          }),
-        });
+        expect(Subject.relationships).toMatchSnapshot();
       });
 
       it('adds a `relationshipNames` property to the `Model`', () => {
-        expect(Subject.relationshipNames).toEqual([
-          'user',
-          'tags',
-          'comments',
-          'reactions',
-        ]);
+        expect(Subject.relationshipNames).toMatchSnapshot();
       });
 
       it('adds relationship accessors to the `prototype`', () => {
@@ -270,35 +208,15 @@ describe('module "database/model"', () => {
       });
 
       it('removes invalid hooks from the `hooks` property', () => {
-        expect(Subject).toEqual(
-          expect.objectContaining({
-            hooks: expect.objectContaining({
-              afterCreate: expect.any(Function),
-              beforeDestroy: expect.any(Function),
-            }),
-          })
-        );
+        expect(Subject.hooks).toMatchSnapshot();
       });
 
       it('adds each scope to `Model`', () => {
-        expect(Subject).toEqual(
-          expect.objectContaining({
-            scopes: {
-              isDraft: expect.any(Function),
-              isPublic: expect.any(Function),
-            }
-          })
-        );
+        expect(Subject.scopes).toMatchSnapshot();
       });
 
       it('removes invalid validations from the `validates` property', () => {
-        expect(Subject).toEqual(
-          expect.objectContaining({
-            validates: {
-              title: expect.any(Function),
-            }
-          })
-        );
+        expect(Subject.validates).toMatchSnapshot();
       });
 
       it('adds a `modelName` property to the `Model`', () => {
@@ -397,12 +315,12 @@ describe('module "database/model"', () => {
 
         expect(result instanceof Subject).toBe(true);
 
-        expect(result.id).toBe(expect.any(Number));
+        expect(result.id).toEqual(expect.any(Number));
         expect(result.body).toBe(body);
         expect(result.title).toBe(title);
         expect(result.isPublic).toBe(true);
-        expect(result.createdAt).toBe(expect.any(Date));
-        expect(result.updatedAt).toBe(expect.any(Date));
+        expect(result.createdAt).toEqual(expect.any(Date));
+        expect(result.updatedAt).toEqual(expect.any(Date));
 
         expect(await result.user).to.have.property('id', user.getPrimaryKey());
       });
@@ -423,7 +341,7 @@ describe('module "database/model"', () => {
         await Subject.transaction(trx => {
           const proxy = Subject.transacting(trx);
 
-          expect(proxy.create).toBe(expect.any(Function));
+          expect(proxy.create).toEqual(expect.any(Function));
 
           return Promise.resolve(new Subject());
         });
@@ -793,14 +711,7 @@ describe('module "database/model"', () => {
       });
 
       it('returns the column data for an attribute if it exists', () => {
-        expect(Subject.columnFor('isPublic')).toEqual({
-          type: expect.any(String),
-          docName: expect.any(String),
-          nullable: expect.anything(),
-          maxLength: expect.anything(),
-          columnName: expect.any(String),
-          defaultValue: expect.anything(),
-        });
+        expect(Subject.columnFor('isPublic')).toMatchSnapshot();
       });
     });
 
@@ -840,14 +751,7 @@ describe('module "database/model"', () => {
       });
 
       it('returns the data for a relationship if it exists', () => {
-        const result = Subject.relationshipFor('user');
-
-        expect(Reflect.ownKeys(result)).toEqual([
-          'type',
-          'model',
-          'inverse',
-          'foreignKey'
-        ]);
+        expect(Subject.relationshipFor('user')).toMatchSnapshot();
       });
     });
 
@@ -1448,7 +1352,7 @@ describe('module "database/model"', () => {
           .find(instance.id)
           .include('user');
 
-        expect(user).toBe(expect.any(Object));
+        expect(user).toEqual(expect.any(Object));
         expect(user.id).toBe(userId);
         expect(user.name).toBe('Test User');
         expect(user.email).toBe('test-user@postlight.com');
@@ -1595,7 +1499,7 @@ describe('module "database/model"', () => {
             expect(err instanceof ValidationError).toBe(true);
           });
 
-        expect(instance).toBe(
+        expect(instance).toEqual(
           expect.objectContaining({
             title: 'Test',
             isPublic: true,
@@ -1604,7 +1508,7 @@ describe('module "database/model"', () => {
 
         const result = await Subject.find(instance.id);
 
-        expect(result).toBe(
+        expect(result).toEqual(
           expect.objectContaining({
             title: 'Test Post',
             isPublic: true,
@@ -1792,7 +1696,7 @@ describe('module "database/model"', () => {
       it('returns the value of `instance[Model.primaryKey]`', () => {
         const result = instance.getPrimaryKey();
 
-        expect(result).toBe(expect.any(Number));
+        expect(result).toEqual(expect.any(Number));
       });
     });
 

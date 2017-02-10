@@ -24,7 +24,7 @@ describe('util promiseHash()', () => {
     };
 
     return promiseHash(subject).catch(err => {
-      expect(err).toBe(expect.any(Error));;
+      expect(err).toEqual(expect.any(Error));;
     });
   });
 });

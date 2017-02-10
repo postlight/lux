@@ -13,7 +13,7 @@ describe('util exec()', () => {
 
   it('can properly catch errors', () => {
     exec('this-is-definitely-not-a-command').catch(err => {
-      expect(err).toBe(expect.any(Error));;
+      expect(err).toEqual(expect.any(Error));;
     });
   });
 });

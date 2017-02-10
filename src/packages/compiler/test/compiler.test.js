@@ -1,24 +1,21 @@
 // @flow
 import path from 'path';
 
-import * as Rollup from 'rollup';
 import { spy, stub } from 'sinon';
 
 import { getTestApp } from '../../../../test/utils/get-test-app';
 import { compile, onwarn } from '../index';
 
+const Rollup = jest.mock('rollup');
+
 describe('module "compiler"', () => {
   describe('#compile()', () => {
-    let rollupStub;
-
     beforeEach(() => {
-      rollupStub = stub(Rollup, 'rollup', () => ({
-        write: () => Promise.resolve()
-      }));
+      jest.resetAllMocks();
     });
 
-    afterEach(() => {
-      rollupStub.restore();
+    afterAll(() => {
+      jest.unmock('rollup');
     });
 
     ['use strict', 'use weak'].forEach(opt => {
@@ -31,16 +28,7 @@ describe('module "compiler"', () => {
             useStrict: opt === 'use strict'
           });
 
-          const { args: [rollupConfig] } = rollupStub.getCall(0);
-
-          expect(rollupConfig).toBe(
-            expect.objectContaining({
-              entry,
-              plugins: expect.any(Array),
-            })
-          );
-
-          expect(rollupConfig.plugins.length).toBe(6);
+          expect(Rollup.rollup.calls).toMatchSnapshot();
         });
       });
     });

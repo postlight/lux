@@ -8,7 +8,7 @@ const SRC = path.join(__dirname, '..', '..', '..');
 describe('module "compiler"', () => {
   describe('util isExternal()', () => {
     it('returns a function that accepts a single argument', () => {
-      expect(isExternal(SRC)).toBe(expect.any(Function));
+      expect(isExternal(SRC)).toEqual(expect.any(Function));
     });
 
     describe('external()', () => {
