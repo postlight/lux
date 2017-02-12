@@ -113,51 +113,21 @@ describe('module "database/model"', () => {
       });
 
       it('adds an `attributes` property to the `Model`', () => {
-        expect(Subject).toEqual(
-          expect.objectContaining({
-            attributes: [
-              'id',
-              'body',
-              'title',
-              'isPublic',
-              'userId',
-              'createdAt',
-              'updatedAt'
-            ]
-          })
-        );
-
-        Object
-          .keys(Subject.attributes)
-          .forEach(key => {
-            expect(Subject.attributes[key]).toEqual({
-              type: expect.any(String),
-              docName: expect.any(String),
-              nullable: expect.anything(),
-              maxLength: expect.anything(),
-              columnName: expect.any(String),
-              defaultValue: expect.anything(),
-            });
-          });
+        expect(Subject.attributes).toMatchSnapshot();
       });
 
       it('adds an `attributeNames` property to the `Model`', () => {
-        expect(Subject.attributeNames).toEqual([
-          'id',
-          'body',
-          'title',
-          'isPublic',
-          'userId',
-          'createdAt',
-          'updatedAt',
-        ]);
+        expect(Subject.attributeNames).toMatchSnapshot();
       });
 
       it('adds attribute accessors on the `prototype`', () => {
         Object
           .keys(Subject.attributes)
           .forEach(key => {
-            const desc = Reflect.getOwnPropertyDescriptor(Subject.prototype, key);
+            const desc = Reflect.getOwnPropertyDescriptor(
+              Subject.prototype,
+              key
+            );
 
             expect(typeof desc.get).toBe('function');
             expect(typeof desc.set).toBe('function');
@@ -185,26 +155,16 @@ describe('module "database/model"', () => {
       });
 
       it('adds relationship accessors to the `prototype`', () => {
-        expect(Subject.prototype).toEqual(
-          expect.objectContaining({
-            user: expect.objectContaining({
-              get: expect.any(Function),
-              set: expect.any(Function),
-            }),
-            tags: expect.objectContaining({
-              get: expect.any(Function),
-              set: expect.any(Function),
-            }),
-            comments: expect.objectContaining({
-              get: expect.any(Function),
-              set: expect.any(Function),
-            }),
-            reactions: expect.objectContaining({
+        Subject.relationshipNames.forEach(key => {
+          const desc = Reflect.getOwnPropertyDescriptor(Subject.prototype, key);
+
+          expect(desc).toEqual(
+            expect.objectContaining({
               get: expect.any(Function),
               set: expect.any(Function),
             })
-          })
-        );
+          );
+        });
       });
 
       it('removes invalid hooks from the `hooks` property', () => {
@@ -224,13 +184,7 @@ describe('module "database/model"', () => {
       });
 
       it('adds a `modelName` property to the `prototype`', () => {
-        expect(Subject).toEqual(
-          expect.objectContaining({
-            prototype: {
-              modelName: 'subject',
-            },
-          })
-        );
+        expect(Subject.prototype.modelName).toBe('subject');
       });
 
       it('adds a `resourceName` property to the `Model`', () => {
@@ -238,13 +192,7 @@ describe('module "database/model"', () => {
       });
 
       it('adds a `resourceName` property to the `prototype`', () => {
-        expect(Subject).toEqual(
-          expect.objectContaining({
-            prototype: {
-              resourceName: 'subjects',
-            },
-          })
-        );
+        expect(Subject.prototype.resourceName).toBe('subjects');
       });
 
       it('adds an `initialized` property to the `Model`', () => {
@@ -265,13 +213,7 @@ describe('module "database/model"', () => {
         });
 
         it('adds a `tableName` property to the `prototype`', () => {
-          expect(Post).toEqual(
-            expect.objectContaining({
-              prototype: {
-                tableName: 'posts',
-              },
-            })
-          );
+          expect(Post.prototype.tableName).toBe('posts');
         });
       });
     });
@@ -322,7 +264,9 @@ describe('module "database/model"', () => {
         expect(result.createdAt).toEqual(expect.any(Date));
         expect(result.updatedAt).toEqual(expect.any(Date));
 
-        expect(await result.user).to.have.property('id', user.getPrimaryKey());
+        const userResult = await result.user;
+
+        expect(userResult.id).toEqual(user.getPrimaryKey());
       });
     });
 
@@ -1457,19 +1401,13 @@ describe('module "database/model"', () => {
         expect(instance.body).toBe(body);
         expect(instance.isPublic).toBe(true);
 
-        expect(await instance.user)
-          .to.have.property('id', user.getPrimaryKey());
-
-        expect(await instance.image)
-          .to.have.property('id', image.getPrimaryKey());
-
-        expect(await instance.comments)
-          .to.be.an('array')
-          .with.lengthOf(3);
-
         const result = await Subject
           .find(instance.id)
-          .include('user', 'image', 'comments');
+          .include(
+            'user',
+            'image',
+            'comments'
+          );
 
         expect(result.body).toBe(body);
         expect(result.isPublic).toBe(true);
@@ -1496,24 +1434,16 @@ describe('module "database/model"', () => {
             isPublic: true,
           })
           .catch(err => {
-            expect(err instanceof ValidationError).toBe(true);
+            expect(err).toBeInstanceOf(ValidationError);
           });
 
-        expect(instance).toEqual(
-          expect.objectContaining({
-            title: 'Test',
-            isPublic: true,
-          })
-        );
+        expect(instance.title).toEqual('Test');
+        expect(instance.isPublic).toEqual(true);
 
         const result = await Subject.find(instance.id);
 
-        expect(result).toEqual(
-          expect.objectContaining({
-            title: 'Test Post',
-            isPublic: true,
-          })
-        );
+        expect(result.title).toEqual('Test Post');
+        expect(result.isPublic).toEqual(false);
       });
     });
 

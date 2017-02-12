@@ -14,7 +14,6 @@ const DEFAULT_CONFIG = {
   },
   test: {
     pool: 5,
-    port: 3307,
     driver: DATABASE_DRIVER || 'sqlite3',
     database: 'lux_test',
     username: DATABASE_USERNAME,
@@ -81,7 +80,7 @@ describe('module "database"', () => {
     describe('#modelFor()', () => {
       let subject;
 
-      beforeAll(async () => {
+      beforeEach(async () => {
         subject = await createDatabase();
       });
 

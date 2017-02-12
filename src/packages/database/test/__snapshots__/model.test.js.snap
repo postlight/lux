@@ -1,11 +1,11 @@
 exports[`module "database/model" class Model .columnFor() returns the column data for an attribute if it exists 1`] = `
 Object {
   "columnName": "is_public",
-  "defaultValue": "0",
+  "defaultValue": "\'0\'",
   "docName": "is-public",
   "maxLength": null,
   "nullable": false,
-  "type": "tinyint",
+  "type": "boolean",
 }
 `;
 
@@ -65,6 +65,79 @@ Object {
   "user": Object {
     "inverse": "posts",
     "model": [Function],
+  },
+}
+`;
+
+exports[`module "database/model" class Model .initialize() adds an \`attributeNames\` property to the \`Model\` 1`] = `
+Array [
+  "id",
+  "body",
+  "title",
+  "isPublic",
+  "userId",
+  "createdAt",
+  "updatedAt",
+]
+`;
+
+exports[`module "database/model" class Model .initialize() adds an \`attributes\` property to the \`Model\` 1`] = `
+Object {
+  "body": Object {
+    "columnName": "body",
+    "defaultValue": null,
+    "docName": "body",
+    "maxLength": null,
+    "nullable": true,
+    "type": "text",
+  },
+  "createdAt": Object {
+    "columnName": "created_at",
+    "defaultValue": null,
+    "docName": "created-at",
+    "maxLength": null,
+    "nullable": true,
+    "type": "datetime",
+  },
+  "id": Object {
+    "columnName": "id",
+    "defaultValue": null,
+    "docName": "id",
+    "maxLength": null,
+    "nullable": false,
+    "type": "integer",
+  },
+  "isPublic": Object {
+    "columnName": "is_public",
+    "defaultValue": "\'0\'",
+    "docName": "is-public",
+    "maxLength": null,
+    "nullable": false,
+    "type": "boolean",
+  },
+  "title": Object {
+    "columnName": "title",
+    "defaultValue": "\'New Post\'",
+    "docName": "title",
+    "maxLength": "255",
+    "nullable": false,
+    "type": "varchar",
+  },
+  "updatedAt": Object {
+    "columnName": "updated_at",
+    "defaultValue": null,
+    "docName": "updated-at",
+    "maxLength": null,
+    "nullable": true,
+    "type": "datetime",
+  },
+  "userId": Object {
+    "columnName": "user_id",
+    "defaultValue": null,
+    "docName": "user-id",
+    "maxLength": null,
+    "nullable": true,
+    "type": "integer",
   },
 }
 `;

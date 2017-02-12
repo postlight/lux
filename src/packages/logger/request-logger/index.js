@@ -1,15 +1,24 @@
 // @flow
+import type { Request } from '../../request';
+import type { Response } from '../../response';
 import type Logger from '../index';
 
 import logText from './utils/log-text';
 import logJSON from './utils/log-json';
-import type { Logger$RequestLogger } from './interfaces';
+
+export type RequestLogger = (
+  req: Request,
+  res: Response,
+  options: {
+    startTime: number;
+  }
+) => void;
 
 /**
  * @private
  */
-export function createRequestLogger(logger: Logger): Logger$RequestLogger {
-  return function request(req, res, { startTime }: { startTime: number }) {
+export function createRequestLogger(logger: Logger): RequestLogger {
+  return (req, res, { startTime }) => {
     if (logger.format === 'json') {
       logJSON(logger, {
         startTime,

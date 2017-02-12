@@ -63,7 +63,9 @@ describe('module "controller"', () => {
         const [request, response] = await adapter({
           url: '/posts' + query,
           method: 'GET',
-          headers: {},
+          headers: {
+            Host: HOST,
+          },
           resolve: K,
         });
 
@@ -150,7 +152,9 @@ describe('module "controller"', () => {
         const [request, response] = await adapter({
           url: `/posts/${id}` + query,
           method: 'GET',
-          headers: {},
+          headers: {
+            Host: HOST,
+          },
           resolve: K,
         });
 
@@ -236,7 +240,10 @@ describe('module "controller"', () => {
         const [request, response] = await adapter({
           url: '/posts',
           method: 'POST',
-          headers: { 'Content-Type': MIME_TYPE },
+          headers: {
+            Host: HOST,
+            'Content-Type': MIME_TYPE,
+          },
           resolve: K,
         });
 
@@ -354,7 +361,10 @@ describe('module "controller"', () => {
         const [request, response] = await adapter({
           url: `/posts/${id}`,
           method: 'PATCH',
-          headers: { 'Content-Type': MIME_TYPE },
+          headers: {
+            Host: HOST,
+            'Content-Type': MIME_TYPE,
+          },
           resolve: K,
         });
 
@@ -569,8 +579,10 @@ describe('module "controller"', () => {
         const [request, response] = await adapter({
           url: `/posts/${id}`,
           method: 'DELETE',
+          headers: {
+            Host: HOST,
+          },
           resolve: K,
-          headers: {},
         });
 
         Object.assign(request.params, {
@@ -628,8 +640,10 @@ describe('module "controller"', () => {
         const [request, response] = await adapter({
           url: '/posts',
           method: 'OPTIONS',
+          headers: {
+            Host: HOST,
+          },
           resolve: K,
-          headers: {},
         });
 
         Object.assign(request.defaultParams, {

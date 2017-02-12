@@ -8,15 +8,12 @@ type Options = {
   resolve: Function;
 };
 
-export function create({ logger, resolve }: Options): Response {
-  const send = (data: string) => resolve(data);
+export function create(options: Options): Response {
   const headers = new ResponseHeaders(() => undefined);
   const response = {
-    send,
-    logger,
     headers,
-    end: send,
     stats: [],
+    logger: options.logger,
     status: (code: number) => {
       response.statusCode = code;
       return response;
@@ -27,6 +24,31 @@ export function create({ logger, resolve }: Options): Response {
     statusCode: 200,
     statusMessage: 'OK',
   };
+
+  const send = (body: string) => {
+    const { statusCode } = response;
+    const ok = (): boolean => statusCode >= 200 && statusCode <= 299;
+    const text = (): Promise<string> => Promise.resolve(body);
+    const json = (): Promise<Object> => (
+      new Promise(resolve => {
+        resolve(JSON.parse(body));
+      })
+    );
+
+    options.resolve({
+      ok,
+      text,
+      json,
+      headers,
+      status: statusCode,
+      statusText: response.statusMessage,
+    });
+  };
+
+  Object.assign(response, {
+    send,
+    end: send,
+  });
 
   return response;
 }

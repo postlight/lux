@@ -101,16 +101,16 @@ export default async function initialize<T: Application>(app: T, {
     path,
     store,
     router,
-    adapter: adapter(app),
   });
 
   freezeProps(app, false,
     'path',
-    'port',
     'store',
-    'router',
-    'adapter'
+    'router'
   );
+
+  Object.assign(app, { adapter: adapter(app) });
+  freezeProps(app, false, 'adapter');
 
   return app;
 }

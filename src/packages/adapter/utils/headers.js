@@ -1,12 +1,13 @@
 // @flow
 import entries from '../../../utils/entries';
+import type { ObjectMap } from '../../../interfaces';
 
 type ChangeType = 'SET' | 'DELETE';
 type ChangeData = [string, void | string];
-type HandlerChange = (type: ChangeType, data: ChangeData) => void;
+type HandleChange = (type: ChangeType, data: ChangeData) => void;
 
 class Headers extends Map<string, string> {
-  constructor(value: { [key: string]: string }) {
+  constructor(value: ObjectMap) {
     super(entries(value));
   }
 
@@ -29,21 +30,39 @@ class Headers extends Map<string, string> {
 }
 
 export class RequestHeaders extends Headers {
-  // eslint-disable-next-line no-unused-vars
+  writable: boolean;
+
+  constructor(value: ObjectMap) {
+    super(value);
+    this.writable = false;
+  }
+
   set(key: string, value: string): this {
+    if (this.writable) {
+      super.set(key, value);
+    }
     return this;
   }
 
-  // eslint-disable-next-line no-unused-vars
   delete(key: string): boolean {
+    if (this.writable) {
+      return super.delete(key);
+    }
     return false;
   }
 }
 
-export class ResponseHeaders extends Headers {
-  handleChange: HandlerChange;
+Object.defineProperty(RequestHeaders.prototype, 'writable', {
+  value: true,
+  writable: true,
+  enumerable: false,
+  configurable: false,
+});
 
-  constructor(handleChange: HandlerChange) {
+export class ResponseHeaders extends Headers {
+  handleChange: HandleChange;
+
+  constructor(handleChange: HandleChange) {
     super({});
     this.handleChange = handleChange;
   }

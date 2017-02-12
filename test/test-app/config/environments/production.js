@@ -2,9 +2,9 @@ export default {
   logging: {
     level: 'INFO',
     format: 'json',
-    enabled: true,
+    enabled: false,
     filter: {
-      params: []
-    }
+      params: [],
+    },
   }
 };

@@ -1,11 +1,7 @@
 // @flow
-
-
 import { get, set } from '../relationship';
-
 import range from '../../../utils/range';
 import { getTestApp } from '../../../../test/utils/get-test-app';
-
 import type { Model } from '../index';
 
 describe('module "database/relationship"', () => {
@@ -308,7 +304,7 @@ describe('module "database/relationship"', () => {
       it('can remove records from the relationship', () => {
         set(subject, 'comments', []);
         comments.forEach(comment => {
-          expect(comment.postId).toBe(null);
+          expect(comment.postId).toBeUndefined();
         });
       });
     });

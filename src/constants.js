@@ -1,6 +1,8 @@
 // @flow
-import { platform } from 'os';
+import os from 'os';
 import { worker, isWorker } from 'cluster';
+
+import normalizePort from './utils/normalize-port';
 
 const { env: ENV } = process;
 
@@ -14,18 +16,18 @@ function getPID(): number {
   return pid;
 }
 
-export const CWD = process.cwd();
-export const PID = getPID();
-export const PORT = Number.parseInt(ENV.PORT, 10) || 4000;
-export const NODE_ENV = ENV.NODE_ENV || 'development';
-export const DATABASE_URL = ENV.DATABASE_URL;
-export const LUX_CONSOLE = ENV.LUX_CONSOLE || false;
-export const PLATFORM = platform();
-export const CIRCLECI = ENV.CIRCLECI;
-export const APPVEYOR = ENV.APPVEYOR;
-export const HAS_BODY = /^(?:POST|PATCH)$/;
+export const CWD: string = process.cwd();
+export const PID: number = getPID();
+export const PORT: number = normalizePort(ENV.PORT);
+export const NODE_ENV: string = ENV.NODE_ENV || 'development';
+export const DATABASE_URL: void | string = ENV.DATABASE_URL;
+export const LUX_CONSOLE: boolean = ENV.LUX_CONSOLE || false;
+export const PLATFORM: string = os.platform();
+export const CIRCLECI: boolean = ENV.CIRCLECI;
+export const APPVEYOR: boolean = ENV.APPVEYOR;
+export const HAS_BODY: RegExp = /^(?:POST|PATCH)$/;
 
-export const METHODS = new Set([
+export const METHODS: Set<string> = new Set([
   'GET',
   'HEAD',
   'POST',
@@ -34,7 +36,7 @@ export const METHODS = new Set([
   'OPTIONS',
 ]);
 
-export const STATUS_CODES = new Map([
+export const STATUS_CODES: Map<number, string> = new Map([
   [100, 'Continue'],
   [101, 'Switching Protocols'],
   [102, 'Processing'],
@@ -96,5 +98,5 @@ export const STATUS_CODES = new Map([
   [508, 'Loop Detected'],
   [509, 'Bandwidth Limit Exceeded'],
   [510, 'Not Extended'],
-  [511, 'Network Authentication Required']
+  [511, 'Network Authentication Required'],
 ]);

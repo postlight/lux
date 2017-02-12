@@ -1,8 +1,19 @@
 // @flow
 import { NODE_ENV } from '../../constants';
-import { http } from '../adapter';
+import { mock, http } from '../adapter';
+// eslint-disable-next-line no-duplicate-imports
+import type { AdapterFactory } from '../adapter';
+import type { Config as LoggerConfig } from '../logger';
 
-import type { Config } from './interfaces';
+export type Config = {
+  server: {
+    cors: {
+      enabled: boolean;
+    };
+  };
+  adapter: AdapterFactory;
+  logging: LoggerConfig;
+};
 
 export function createDefaultConfig(): Config {
   const isTestENV = NODE_ENV === 'test';
@@ -11,20 +22,17 @@ export function createDefaultConfig(): Config {
   return {
     server: {
       cors: {
-        enabled: false
-      }
+        enabled: false,
+      },
     },
-    adapter: http,
+    adapter: isTestENV ? mock : http,
     logging: {
       level: isProdENV ? 'INFO' : 'DEBUG',
       format: isProdENV ? 'json' : 'text',
       enabled: !isTestENV,
-
       filter: {
-        params: []
-      }
-    }
+        params: [],
+      },
+    },
   };
 }
-
-export type { Config } from './interfaces';
