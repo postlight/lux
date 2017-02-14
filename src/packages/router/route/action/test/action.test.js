@@ -1,36 +1,33 @@
 // @flow
-import type Controller from '../../../../controller';
-import type { Request } from '../../../../request';
-import type { Response } from '../../../../response';
-import { getTestApp } from '../../../../../../test/utils/get-test-app';
-
+import K from '../../../../../utils/k';
+import Logger from '../../../../logger';
+import { request, response } from '../../../../adapter/mock';
 import { createAction, createPageLinks } from '../index';
+import { getTestApp } from '../../../../../../test/utils/get-test-app';
+import type Controller from '../../../../controller';
 import type { Action } from '../index';
 
 const DOMAIN = 'http://localhost:4000';
 const RESOURCE = 'posts';
 
+const logger = new Logger({
+  level: 'ERROR',
+  format: 'text',
+  filter: {
+    params: [],
+  },
+  enabled: false,
+});
+
 describe('module "router/route/action"', () => {
   describe('#createAction()', () => {
     let result;
-    let createRequest;
-    let createResponse;
 
     beforeAll(async () => {
       const { router, controllers } = await getTestApp();
 
       const controller: Controller = controllers.get('health');
       const action: Action<any> = controller.index;
-
-      createRequest = (): Request => ({
-        route: router.get('GET:/health'),
-        method: 'GET',
-        params: {}
-      });
-
-      createResponse = (): Response => ({
-        stats: []
-      });
 
       result = createAction('custom', action, controller);
     });
@@ -42,7 +39,21 @@ describe('module "router/route/action"', () => {
 
     it('resolves with the expected value', async () => {
       const fn = result.slice().pop();
-      const data = await fn(createRequest(), createResponse());
+      const data = await fn(
+        request.create({
+          logger,
+          url: '/health',
+          method: 'GET',
+          params: {},
+          headers: new Map(),
+          encrypted: false,
+          defaultParams: {},
+        }),
+        response.create({
+          logger,
+          resolve: K,
+        })
+      );
 
       expect(data).toBe(204);
     });
@@ -224,37 +235,23 @@ describe('module "router/route/action"', () => {
     });
 
     it('works when the total is 0', () => {
-      const base = `${DOMAIN}/${RESOURCE}`;
-      const opts = getOptions({
-        total: 0
+      const options = getOptions({
+        total: 0,
       });
 
-      expect(createPageLinks(opts)).toEqual({
-        self: base,
-        first: base,
-        last: base,
-        prev: null,
-        next: null
-      });
+      expect(createPageLinks(options)).toMatchSnapshot();
     });
 
     it('works when the maximum page is exceeded', () => {
-      const base = `${DOMAIN}/${RESOURCE}`;
-      const opts = getOptions({
+      const options = getOptions({
         params: {
           page: {
-            number: 1000
-          }
-        }
+            number: 1000,
+          },
+        },
       });
 
-      expect(createPageLinks(opts)).toEqual({
-        self: null,
-        first: base,
-        last: `${base}?page%5Bnumber%5D=4`,
-        prev: null,
-        next: null
-      });
+      expect(createPageLinks(options)).toMatchSnapshot();
     });
   });
 });

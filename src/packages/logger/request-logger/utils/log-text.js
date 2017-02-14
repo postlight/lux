@@ -20,49 +20,45 @@ type Options = {
  */
 export default function logText(logger: Logger, options: Options): void {
   const { request, response, startTime } = options;
+  const endTime = Date.now();
+  const { method, url: { path } } = request;
+  const { stats, statusMessage } = response;
+  let { params } = request;
+  let { statusCode } = response;
+  let statusColor;
 
-  response.once('finish', () => {
-    const endTime = Date.now();
-    const { route, method, url: { path } } = request;
-    const { stats, statusMessage } = response;
-    let { params } = request;
-    let { statusCode } = response;
-    let statusColor;
+  params = filterParams(params, ...logger.filter.params);
 
-    params = filterParams(params, ...logger.filter.params);
+  if (statusCode >= 200 && statusCode < 400) {
+    statusColor = 'green';
+  } else {
+    statusColor = 'red';
+  }
 
-    if (statusCode >= 200 && statusCode < 400) {
-      statusColor = 'green';
-    } else {
-      statusColor = 'red';
-    }
+  let colorStr = Reflect.get(chalk, statusColor);
 
-    let colorStr = Reflect.get(chalk, statusColor);
+  if (typeof colorStr === 'undefined') {
+    colorStr = (str: string) => str;
+  }
 
-    if (typeof colorStr === 'undefined') {
-      colorStr = (str: string) => str;
-    }
+  statusCode = String(statusCode);
 
-    statusCode = String(statusCode);
+  const templateData = {
+    path,
+    stats,
+    method,
+    params,
+    colorStr,
+    startTime,
+    endTime,
+    statusCode,
+    statusMessage,
+    remoteAddress: '::1'
+  };
 
-    const templateData = {
-      path,
-      stats,
-      route,
-      method,
-      params,
-      colorStr,
-      startTime,
-      endTime,
-      statusCode,
-      statusMessage,
-      remoteAddress: '::1'
-    };
-
-    if (logger.level === DEBUG) {
-      logger.debug(debugTemplate(templateData));
-    } else {
-      logger.info(infoTemplate(templateData));
-    }
-  });
+  if (logger.level === DEBUG) {
+    logger.debug(debugTemplate(templateData));
+  } else {
+    logger.info(infoTemplate(templateData));
+  }
 }

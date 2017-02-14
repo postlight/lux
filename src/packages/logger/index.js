@@ -7,16 +7,16 @@ import { createWriter } from './writer';
 import { createRequestLogger } from './request-logger';
 import type { RequestLogger } from './request-logger';
 
-type Format = 'text' | 'json';
-type LogFunction = (data: string | Object) => void;
+export type Format = 'text' | 'json';
+export type LogFunction = (data: string | Object) => void;
 
-type Level =
+export type Level =
   | 'DEBUG'
   | 'INFO'
   | 'WARN'
   | 'ERROR';
 
-type Filter = {
+export type Filter = {
   params: Array<string>;
 };
 
@@ -220,28 +220,24 @@ class Logger {
         enumerable: true,
         configurable: false
       },
-
       format: {
         value: format,
         writable: false,
         enumerable: true,
         configurable: false
       },
-
       filter: {
         value: filter,
         writable: false,
         enumerable: true,
         configurable: false
       },
-
       enabled: {
         value: Boolean(enabled),
         writable: false,
         enumerable: true,
         configurable: false
       },
-
       request: {
         value: request,
         writable: false,
@@ -252,19 +248,18 @@ class Logger {
 
     const levelNum = LEVELS.get(level) || 0;
 
-    LEVELS.forEach((val, key: Logger$level) => {
-      Reflect.defineProperty(this, key.toLowerCase(), {
-        writable: false,
-        enumerable: false,
-        configurable: false,
-
+    LEVELS.forEach((val, key) => {
+      Object.defineProperty(this, key.toLowerCase(), {
         value: val >= levelNum ? (message: void | ?mixed) => {
           write({
             message,
             level: key,
             timestamp: this.getTimestamp()
           });
-        } : K
+        } : K,
+        writable: false,
+        enumerable: false,
+        configurable: false,
       });
     });
   }

@@ -1,41 +1,4 @@
 // @flow
-import os from 'os';
-import { worker, isWorker } from 'cluster';
-
-import normalizePort from './utils/normalize-port';
-
-const { env: ENV } = process;
-
-function getPID(): number {
-  let { pid } = process;
-
-  if (isWorker && typeof worker.pid === 'number') {
-    pid = worker.pid;
-  }
-
-  return pid;
-}
-
-export const CWD: string = process.cwd();
-export const PID: number = getPID();
-export const PORT: number = normalizePort(ENV.PORT);
-export const NODE_ENV: string = ENV.NODE_ENV || 'development';
-export const DATABASE_URL: void | ?string = ENV.DATABASE_URL;
-export const LUX_CONSOLE: boolean = Boolean(ENV.LUX_CONSOLE);
-export const PLATFORM: string = os.platform();
-export const CIRCLECI: boolean = Boolean(ENV.CIRCLECI);
-export const APPVEYOR: boolean = Boolean(ENV.APPVEYOR);
-export const HAS_BODY: RegExp = /^(?:POST|PATCH)$/;
-
-export const METHODS: Set<string> = new Set([
-  'GET',
-  'HEAD',
-  'POST',
-  'PATCH',
-  'DELETE',
-  'OPTIONS',
-]);
-
 export const STATUS_CODES: Map<number, string> = (
   new Map([
     [100, 'Continue'],

@@ -11,7 +11,7 @@ type Options = {
   headers?: Object;
 };
 
-export type Fetch = (url: string, options: Options) => Promise<>;
+export type Fetch = (url: string, options: Options) => Promise<any>;
 
 const getDefaultHeaders = () => ({
   Accept: MIME_TYPE,

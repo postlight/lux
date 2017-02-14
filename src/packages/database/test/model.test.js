@@ -222,6 +222,13 @@ describe('module "database/model"', () => {
       let result: Subject;
 
       class Subject extends Model {
+        id: number;
+        body: ?string;
+        title: ?string;
+        isPublic: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+
         static tableName = 'posts';
 
         static belongsTo = {
@@ -253,6 +260,7 @@ describe('module "database/model"', () => {
           isPublic: true
         });
 
+        // $FlowIgnore
         result = result.unwrap();
 
         expect(result instanceof Subject).toBe(true);
@@ -1149,7 +1157,7 @@ describe('module "database/model"', () => {
     describe('.attributes', () => {
       class Subject extends Model {
         body: void | ?string;
-        title: string;
+        title: ?string;
 
         static tableName = 'posts';
       }

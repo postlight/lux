@@ -197,6 +197,7 @@ describe('module "database/relationship"', () => {
         title: '#set() test'
       });
 
+      // $FlowIgnore
       subject = subject.unwrap();
       subjectId = subject.getPrimaryKey();
     };
@@ -297,6 +298,7 @@ describe('module "database/relationship"', () => {
 
       it('can add records to the relationship', () => {
         comments.forEach(comment => {
+          // $FlowIgnore
           expect(comment.postId).toBe(subjectId);
         });
       });
@@ -304,6 +306,7 @@ describe('module "database/relationship"', () => {
       it('can remove records from the relationship', () => {
         set(subject, 'comments', []);
         comments.forEach(comment => {
+          // $FlowIgnore
           expect(comment.postId).toBeUndefined();
         });
       });

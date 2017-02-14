@@ -1,9 +1,10 @@
 // @flow
 import Route from '../route';
 import Router from '../index';
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import Logger from '../../logger';
+import { request } from '../../adapter/mock';
 import type Controller from '../../controller';
-import type { Request } from '../../request';
+import { getTestApp } from '../../../../test/utils/get-test-app';
 
 const CONTROLLER_MISSING_MESSAGE = /Could not resolve controller by name '.+'/;
 
@@ -113,9 +114,19 @@ describe('module "router"', () => {
     });
 
     describe('#match()', () => {
-      let subject: Router;
+      let logger;
+      let subject;
 
       beforeAll(() => {
+        logger = new Logger({
+          level: 'ERROR',
+          format: 'text',
+          filter: {
+            params: [],
+          },
+          enabled: false,
+        });
+
         subject = new Router({
           controller,
           controllers,
@@ -127,25 +138,37 @@ describe('module "router"', () => {
       });
 
       it('can match a route for a request with a dynamic url', () => {
-        const req: Request = {
-          method: 'GET',
-          url: {
-            pathname: '/posts/1'
-          }
-        };
-
-        expect(subject.match(req) instanceof Route).toBe(true);
+        expect(
+          subject.match(
+            request.create({
+              logger,
+              url: '/posts/1',
+              params: {
+                id: 1,
+              },
+              method: 'GET',
+              headers: new Map(),
+              encrypted: false,
+              defaultParams: {},
+            })
+          )
+        ).toBeInstanceOf(Route);
       });
 
       it('can match a route for a request with a non-dynamic url', () => {
-        const req: Request = {
-          method: 'GET',
-          url: {
-            pathname: '/posts'
-          }
-        };
-
-        expect(subject.match(req) instanceof Route).toBe(true);
+        expect(
+          subject.match(
+            request.create({
+              logger,
+              url: '/posts',
+              params: {},
+              method: 'GET',
+              headers: new Map(),
+              encrypted: false,
+              defaultParams: {},
+            })
+          )
+        ).toBeInstanceOf(Route);
       });
     });
   });

@@ -6,6 +6,8 @@
     "node": true
   },
   "globals": {
+    "jasmine": true,
+    "jest": true,
     "Class": true,
     "Generator": true,
     "$PropertyType": true,

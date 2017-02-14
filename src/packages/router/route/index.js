@@ -12,7 +12,19 @@ import getDynamicSegments from './utils/get-dynamic-segments';
 import type { Action } from './action';
 // eslint-disable-next-line no-duplicate-imports
 import type { ParameterGroup } from './params';
-import type { Route$opts } from './interfaces';
+
+export type Type =
+  | 'custom'
+  | 'member'
+  | 'collection';
+
+export type Options = {
+  type: Type;
+  path: string;
+  action: string;
+  method: Method;
+  controller: Controller;
+};
 
 /**
  * @private
@@ -42,7 +54,7 @@ class Route extends FreezeableSet<Action<any>> {
     action,
     method,
     controller
-  }: Route$opts) {
+  }: Options) {
     const dynamicSegments = getDynamicSegments(path);
 
     if (action && controller) {
@@ -162,7 +174,7 @@ class Route extends FreezeableSet<Action<any>> {
 
     Object.assign(request, {
       params,
-      defaultParams
+      defaultParams,
     });
 
     if (this.type === 'member' && request.method === 'PATCH') {

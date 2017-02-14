@@ -3,7 +3,7 @@
 /**
  * @private
  */
-export default function normalizePort(port?: string | number): number {
+export default function normalizePort(port: ?(void | string | number)): number {
   switch (typeof port) {
     case 'string':
       return Number.parseInt(port, 10);

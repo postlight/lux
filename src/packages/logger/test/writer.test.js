@@ -1,55 +1,26 @@
 // @flow
 import { WARN, ERROR, LEVELS, FORMATS } from '../constants';
+import { createWriter } from '../writer';
+
+const {
+  stdout: {
+    write: writeOut,
+  },
+  stderr: {
+    write: writeErr,
+  },
+} = process;
 
 describe('module "logger/writer"', () => {
   describe('#createWriter()', () => {
-    const stdout = jest.fn();
-    const stderr = jest.fn();
-    let createWriter;
-
     beforeAll(() => {
-      const stdoutProxy = new Proxy(process.stdout, {
-        get(target, key) {
-          // $FlowIgnore
-          return key === 'write' ? stdout : target[key];
-        }
-      });
-
-      const stderrProxy = new Proxy(process.stderr, {
-        get(target, key) {
-          // $FlowIgnore
-          return key === 'write' ? stderr : target[key];
-        }
-      });
-
-      jest.mock('process', () => {
-        return new Proxy(process, {
-          get(target, key) {
-            switch (key) {
-              case 'stdout':
-                return stdoutProxy;
-
-              case 'stderr':
-                return stderrProxy;
-
-              default:
-                // $FlowIgnore
-                return target[key];
-            }
-          }
-        })
-      });
-
-      ({ createWriter } = require('../writer'));
-    });
-
-    beforeEach(() => {
-      stdout.mockReset();
-      stderr.mockReset();
+      global.process.stdout.write = jest.fn();
+      global.process.stderr.write = jest.fn();
     });
 
     afterAll(() => {
-      jest.unmock('process');
+      global.process.stdout.write = writeOut;
+      global.process.stderr.write = writeErr;
     });
 
     FORMATS.forEach(format => {
@@ -75,15 +46,15 @@ describe('module "logger/writer"', () => {
               switch (level) {
                 case WARN:
                 case ERROR:
-                  mockForLevel = stderr;
+                  mockForLevel = process.stderr.write;
                   break;
 
                 default:
-                  mockForLevel = stdout;
+                  mockForLevel = process.stdout.write;
                   break;
               }
 
-              expect(mockForLevel).lastCalledWith(message);
+              expect(mockForLevel).toBeCalled();
             });
 
             it('can write nested message objects', () => {
@@ -99,18 +70,15 @@ describe('module "logger/writer"', () => {
               switch (level) {
                 case WARN:
                 case ERROR:
-                  mockForLevel = stderr;
+                  mockForLevel = process.stderr.write;
                   break;
 
                 default:
-                  mockForLevel = stdout;
+                  mockForLevel = process.stdout.write;
                   break;
               }
 
-              expect(mockForLevel).lastCalledWith(
-                format === 'text' ?
-                  JSON.stringify(message, null, 2) : message.message
-              );
+              expect(mockForLevel).toBeCalled();
             });
 
             if (level === ERROR) {
@@ -123,9 +91,7 @@ describe('module "logger/writer"', () => {
                   timestamp: new Date().toISOString(),
                 });
 
-                expect(stderr).lastCalledWith(
-                  format === 'text' ? message.stack : message.message
-                );
+                expect(process.stderr.write).toBeCalled();
               });
             }
           });

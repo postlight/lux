@@ -1,9 +1,9 @@
 // @flow
 import { ANSI } from '../constants';
 import stringify from '../../../../utils/stringify';
-import type { Logger$format } from '../../interfaces';
+import type { Format } from '../../index';
 
-export default function formatMessage(data?: ?mixed, format: Logger$format) {
+export default function formatMessage(data?: ?mixed, format: Format): string {
   if (data instanceof Error) {
     return data.stack;
   } else if (format === 'json') {

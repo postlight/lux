@@ -1,6 +1,6 @@
 // @flow
-export type ObjectMap = {
-  [key: string]: string;
+export type ObjectMap<T> = {
+  [key: string]: T;
 };
 
 export interface Lux$Collection<T> {

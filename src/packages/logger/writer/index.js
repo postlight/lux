@@ -5,16 +5,15 @@ import { dim, red, yellow } from 'chalk';
 
 import { WARN, ERROR } from '../constants';
 import omit from '../../../utils/omit';
-import type { Logger$format } from '../interfaces';
+import type { Format } from '../index';
 
 import { STDOUT, STDERR } from './constants';
 import formatMessage from './utils/format-message';
-import type { Logger$Writer } from './interfaces';
 
 /**
  * @private
  */
-export function createWriter(format: Logger$format): Logger$Writer {
+export function createWriter(format: Format): (data: any) => void {
   return function write(data) {
     const { level, ...etc } = data;
     let { message, timestamp } = etc;

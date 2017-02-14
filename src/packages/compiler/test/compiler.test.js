@@ -1,75 +1,79 @@
 // @flow
 import path from 'path';
 
-import { spy, stub } from 'sinon';
-
 import { getTestApp } from '../../../../test/utils/get-test-app';
-import { compile, onwarn } from '../index';
-
-const Rollup = jest.mock('rollup');
 
 describe('module "compiler"', () => {
   describe('#compile()', () => {
-    beforeEach(() => {
-      jest.resetAllMocks();
+    const local = path.join(__dirname, '..', '..', '..', 'index.js');
+    let dir;
+    let rollup;
+    let compile;
+
+    beforeAll(async () => {
+      rollup = jest.mock('rollup');
+      ({ compile } = require('../index'));
+      ({ path: dir } = await getTestApp());
     });
 
     afterAll(() => {
       jest.unmock('rollup');
     });
 
-    ['use strict', 'use weak'].forEach(opt => {
-      describe(`- ${opt}`, () => {
-        it('creates an instance of rollup with the correct config', async () => {
-          const { path: dir } = await getTestApp();
-          const entry = path.join(dir, 'dist', 'index.js')
-
-          await compile(dir, 'test', {
-            useStrict: opt === 'use strict'
-          });
-
-          expect(Rollup.rollup.calls).toMatchSnapshot();
+    describe('- with strict mode', () => {
+      it('creates an instance of rollup with the correct config', async () => {
+        await compile(dir, 'test', {
+          local,
+          useStrict: true,
         });
+
+        expect(rollup.mock.calls).toMatchSnapshot();
+      });
+    });
+
+    describe('- without strict mode', () => {
+      it('creates an instance of rollup with the correct config', async () => {
+        await compile(dir, 'test', {
+          local,
+          useStrict: false,
+        });
+
+        expect(rollup.mock.calls).toMatchSnapshot();
       });
     });
   });
 
   describe('#onwarn()', () => {
-    let warnSpy;
-    const warnings = {
-      EMPTY_BUNDLE: {
-        code: 'EMPTY_BUNDLE',
-        message: 'Generated an empty bundle'
-      },
-      UNUSED_EXTERNAL_IMPORT: {
-        code: 'UNUSED_EXTERNAL_IMPORT',
-        message: (
-          `'unused', 'notused' and 'neverused' are imported from external`
-          + `module 'external' but never used`
-        )
-      }
-    };
+    const { warn } = console;
+    let onwarn;
 
-    beforeEach(() => {
-      warnSpy = spy(console, 'warn');
+    beforeAll(() => {
+      // $FlowIgnore
+      console.warn = jest.fn();
+      ({ onwarn } = require('../index'));
+    });
+
+    afterAll(() => {
+      // $FlowIgnore
+      console.warn = warn;
+      jest.resetModules();
     });
 
     afterEach(() => {
-      warnSpy.restore();
+      jest.resetAllMocks();
     });
 
     it('outputs valid warning types to stderr', () => {
-      onwarn(warnings.EMPTY_BUNDLE);
-      expect(
-        warnSpy.calledWithExactly(warnings.EMPTY_BUNDLE.message)
-      ).toBe(true);
+      onwarn({ code: 'EMPTY_BUNDLE', message: 'TEST' });
+
+      expect(console.warn).toBeCalled();
+      expect(console.warn.mock.calls).toMatchSnapshot();
     });
 
     it('ignores invalid warning types', () => {
-      onwarn(warnings.UNUSED_EXTERNAL_IMPORT);
-      expect(
-        warnSpy.neverCalledWith(warnings.UNUSED_EXTERNAL_IMPORT.message)
-      ).toBe(true);
+      onwarn({ code: 'UNUSED_EXTERNAL_IMPORT', message: 'TEST' });
+
+      expect(console.warn).not.toBeCalled();
     });
   });
 });

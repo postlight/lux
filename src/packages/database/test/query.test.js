@@ -1,14 +1,12 @@
 // @flow
-
-
 import Query from '../query';
 import Model from '../model';
-
-import setType from '../../../utils/set-type';
+import range from '../../../utils/range';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 describe('module "database/query"', () => {
   describe('class Query', () => {
+    let Test;
     let Comment: Class<Model>;
 
     class TestModel extends Model {
@@ -62,11 +60,27 @@ describe('module "database/query"', () => {
     beforeAll(async () => {
       const { store } = await getTestApp();
 
+      Test = store.modelFor('test');
       Comment = store.modelFor('comment');
 
       await TestModel.initialize(store, () => {
         return store.connection(TestModel.tableName);
       });
+    });
+
+    beforeEach(async () => {
+      const records = Array
+        .from(range(1, 100))
+        .map(id => ({ id }));
+
+      await Test.store.connection.batchInsert('tests', records);
+    });
+
+    afterEach(async () => {
+      await Test
+        .table()
+        .del()
+        .whereNot('id', null);
     });
 
     describe('.from()', () => {
@@ -104,28 +118,19 @@ describe('module "database/query"', () => {
       let subject;
 
       beforeEach(() => {
-        subject = new Query(TestModel);
+        subject = new Query(Test);
       });
 
       it('returns `this`', () => {
-        const result = subject.all();
-
-        expect(result).toBe(subject);
+        expect(subject.all()).toBe(subject);
       });
 
       it('does not modify #snapshots', () => {
-        const { snapshots } = subject.all();
-
-        expect(snapshots).toEqual(expect.any(Array));
-        expect(snapshots).toHaveLength(0);
+        expect(subject.all().snapshots).toMatchSnapshot();
       });
 
       it('resolves with the correct array of `Model` instances', async () => {
-        const result = await subject.all();
-
-        expect(result).toEqual(expect.any(Array));
-        expect(result).toHaveLength(100);
-        result.forEach(assertItem);
+        expect(await subject.all()).toMatchSnapshot();
       });
     });
 
@@ -319,46 +324,30 @@ describe('module "database/query"', () => {
       let subject;
 
       beforeEach(() => {
-        subject = new Query(TestModel);
+        subject = new Query(Test);
       });
 
       it('returns `this`', () => {
-        const result = subject.order('id', 'DESC');
-
-        expect(result).toBe(subject);
+        expect(subject.order('id', 'DESC')).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
-        const result = subject.order('id', 'DESC');
-
-        expect(result.snapshots).toEqual([
-          ['orderByRaw', 'posts.id DESC']
-        ]);
+        expect(subject.order('id', 'DESC').snapshots).toMatchSnapshot();
       });
 
       it('defaults sort direction to `ASC`', () => {
-        const result = subject.order('id');
-
-        expect(result.snapshots).toEqual([
-          ['orderByRaw', 'posts.id ASC']
-        ]);
+        expect(subject.order('id').snapshots).toMatchSnapshot();
       });
 
       it('does not modify #snapshots if #shouldCount', () => {
         subject.shouldCount = true;
-
-        const result = subject.order('id', 'DESC');
-
-        expect(result.snapshots).toHaveLength(0);
+        expect(subject.order('id', 'DESC').snapshots).toHaveLength(0);
       });
 
       it('resolves with the correct array of `Model` instances', async () => {
-        const limit = 100;
         const result = await subject.order('id', 'DESC');
 
-        expect(result).toEqual(expect.any(Array));
-        expect(result).toHaveLength(limit);
-        result.forEach(assertItem);
+        expect(result.map(({ id }) => id)).toMatchSnapshot();
       });
     });
 
@@ -476,56 +465,39 @@ describe('module "database/query"', () => {
       let subject;
 
       beforeEach(() => {
-        subject = new Query(TestModel);
+        subject = new Query(Test);
       });
 
       it('returns `this`', () => {
-        const result = subject.last();
-
-        expect(result).toBe(subject);
+        expect(subject.last()).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
-        const result = subject.last();
-
-        expect(result.snapshots).toEqual([
-          ['orderByRaw', 'posts.id DESC'],
-          ['limit', 1]
-        ]);
+        expect(subject.last().snapshots).toMatchSnapshot();
       });
 
       it('sets #collection to `false`', () => {
-        const result = subject.last();
-
-        expect(result.collection).toBe(false);
+        expect(subject.last().collection).toBe(false);
       });
 
       it('respects order if one already exists', () => {
-        const result = subject.order('createdAt', 'DESC').last();
+        const result = subject
+          .order('createdAt', 'DESC')
+          .last();
 
-        expect(result.snapshots).toEqual([
-          ['orderByRaw', 'posts.created_at DESC, posts.id DESC'],
-          ['limit', 1]
-        ]);
+        expect(result.snapshots).toMatchSnapshot();
       });
 
       it('does not modify #snapshots if #shouldCount', () => {
         subject.shouldCount = true;
-
-        const result = subject.last();
-
-        expect(result.snapshots).toHaveLength(0);
+        expect(subject.last().snapshots).toHaveLength(0);
       });
 
       it('resolves with the correct `Model` instance', async () => {
         const result = await subject.last();
 
-        expect(result).toEqual(expect.any(TestModel));
-        expect(result).toEqual(
-          expect.objectContaining({
-            id: 100,
-          })
-        );
+        expect(result).toBeTruthy();
+        expect(result.id).toBe(100);
       });
     });
 
@@ -533,27 +505,19 @@ describe('module "database/query"', () => {
       let subject;
 
       beforeEach(() => {
-        subject = new Query(TestModel);
+        subject = new Query(Test);
       });
 
       it('returns `this`', () => {
-        const result = subject.count();
-
-        expect(result).toBe(subject);
+        expect(subject.count()).toBe(subject);
       });
 
       it('properly modifies #snapshots', () => {
-        const result = subject.count();
-
-        expect(result.snapshots).toEqual([
-          ['count', '* as countAll']
-        ]);
+        expect(subject.count().snapshots).toMatchSnapshot();
       });
 
       it('sets #shouldCount to `true`', () => {
-        const result = subject.count();
-
-        expect(result.shouldCount).toBe(true);
+        expect(subject.count().shouldCount).toBe(true);
       });
 
       it('removes all snapshots except for filter conditions', () => {
@@ -576,7 +540,7 @@ describe('module "database/query"', () => {
       let subject;
 
       beforeEach(() => {
-        subject = new Query(TestModel);
+        subject = new Query(Test);
       });
 
       it('returns `this`', () => {
@@ -584,25 +548,16 @@ describe('module "database/query"', () => {
       });
 
       it('properly modifies #snapshots', () => {
-        const result = subject.offset(10);
-
-        expect(result.snapshots).toMatchSnapshot();
+        expect(subject.offset(10).snapshots).toMatchSnapshot();
       });
 
       it('does not modify #snapshots if #shouldCount', () => {
         subject.shouldCount = true;
-
-        const result = subject.offset(10);
-
-        expect(result.snapshots).toMatchSnapshot();
+        expect(subject.offset(10).snapshots).toMatchSnapshot();
       });
 
       it('resolves with the correct array of `Model` instances', async () => {
-        const result = await subject.offset(10);
-
-        expect(result).toEqual(expect.any(Array));
-        expect(result).toHaveLength(90);
-        result.forEach(assertItem);
+        expect(await subject.offset(10)).toHaveLength(90);
       });
     });
 

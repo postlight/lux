@@ -15,7 +15,7 @@ type Options = {
   body?: Object;
   method: string;
   logger: Logger;
-  headers: ObjectMap;
+  headers: ObjectMap<string>;
 };
 
 export function create(options: Options): Request {

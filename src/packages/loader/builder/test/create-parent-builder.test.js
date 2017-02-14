@@ -1,8 +1,7 @@
 // @flow
 import { posix } from 'path';
 
-
-
+import { Model } from '../../../database';
 import Controller from '../../../controller';
 import Serializer from '../../../serializer';
 import { FreezeableMap } from '../../../freezeable';
@@ -16,20 +15,20 @@ describe('module "loader/builder"', () => {
     class ApiApplicationController extends Controller {}
     class ApiV1ApplicationController extends Controller {}
 
-    beforeEach(() => {
+    beforeEach(async () => {
       subject = createParentBuilder((key, target, parent) => {
         const namespace = posix.dirname(key).replace('.', '');
         const serializer = new Serializer({
           namespace,
-          model: null,
-          parent: null
+          model: Model,
+          parent: null,
         });
 
         return Reflect.construct(target, [{
           parent,
           namespace,
           serializer,
-          model: null
+          model: Model,
         }]);
       });
     });
@@ -48,15 +47,15 @@ describe('module "loader/builder"', () => {
       ])).forEach(({ key, parent }) => {
         switch (key) {
           case 'root':
-            expect(parent instanceof ApplicationController).toBe(true);
+            expect(parent).toBeInstanceOf(ApplicationController);
             break;
 
           case 'api':
-            expect(parent instanceof ApiApplicationController).toBe(true);
+            expect(parent).toBeInstanceOf(ApiApplicationController);
             break;
 
           case 'api/v1':
-            expect(parent instanceof ApiV1ApplicationController).toBe(true);
+            expect(parent).toBeInstanceOf(ApiV1ApplicationController);
             break;
 
           default:

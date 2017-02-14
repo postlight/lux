@@ -1,25 +1,26 @@
 // @flow
-import { spy } from 'sinon';
-
 import { tap, compose, composeAsync } from '../compose';
+
+const log = console.log;
 
 describe('util compose', () => {
   describe('.tap()', () => {
-    let consoleSpy;
-
     beforeEach(() => {
-      consoleSpy = spy(console, 'log');
+      // $FlowIgnore
+      console.log = jest.fn();
     });
 
     afterEach(() => {
-      consoleSpy.restore();
+      // $FlowIgnore
+      console.log = log;
+      jest.resetAllMocks();
     });
 
     it('logs an input and then returns it', () => {
       const val = {};
 
       expect(tap(val)).toBe(val);
-      expect(consoleSpy.calledWithExactly(val)).toBe(true);
+      expect(console.log).toBeCalledWith(val);
     });
   });
 

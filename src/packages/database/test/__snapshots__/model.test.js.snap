@@ -1,11 +1,11 @@
 exports[`module "database/model" class Model .columnFor() returns the column data for an attribute if it exists 1`] = `
 Object {
   "columnName": "is_public",
-  "defaultValue": "\'0\'",
+  "defaultValue": "0",
   "docName": "is-public",
   "maxLength": null,
   "nullable": false,
-  "type": "boolean",
+  "type": "tinyint",
 }
 `;
 
@@ -87,7 +87,7 @@ Object {
     "columnName": "body",
     "defaultValue": null,
     "docName": "body",
-    "maxLength": null,
+    "maxLength": 65535,
     "nullable": true,
     "type": "text",
   },
@@ -105,21 +105,21 @@ Object {
     "docName": "id",
     "maxLength": null,
     "nullable": false,
-    "type": "integer",
+    "type": "int",
   },
   "isPublic": Object {
     "columnName": "is_public",
-    "defaultValue": "\'0\'",
+    "defaultValue": "0",
     "docName": "is-public",
     "maxLength": null,
     "nullable": false,
-    "type": "boolean",
+    "type": "tinyint",
   },
   "title": Object {
     "columnName": "title",
-    "defaultValue": "\'New Post\'",
+    "defaultValue": "New Post",
     "docName": "title",
-    "maxLength": "255",
+    "maxLength": 255,
     "nullable": false,
     "type": "varchar",
   },
@@ -137,7 +137,7 @@ Object {
     "docName": "user-id",
     "maxLength": null,
     "nullable": true,
-    "type": "integer",
+    "type": "int",
   },
 }
 `;

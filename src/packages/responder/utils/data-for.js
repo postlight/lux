@@ -2,7 +2,7 @@
 import { VERSION } from '../../jsonapi';
 import { STATUS_CODES } from '../../../constants';
 // eslint-disable-next-line no-duplicate-imports
-import type { Document } from '../../jsonapi';
+import type { Document, ErrorData } from '../../jsonapi';
 
 /**
  * @private
@@ -13,7 +13,7 @@ function dataFor(status: number, err?: Error): string | Document {
   }
 
   const title = STATUS_CODES.get(status);
-  const errData = {
+  const errData: ErrorData = {
     status: String(status)
   };
 

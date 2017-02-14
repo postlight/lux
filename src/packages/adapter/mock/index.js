@@ -9,7 +9,7 @@ type Options = {
   url: string;
   body?: Object;
   method: string;
-  headers: ObjectMap;
+  headers: ObjectMap<string>;
   resolve: Function;
 };
 
@@ -32,3 +32,4 @@ const mock: AdapterFactory = ({ logger }) => (
 );
 
 export default mock;
+export { request, response };

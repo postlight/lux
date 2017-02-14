@@ -26,7 +26,7 @@ describe('module "database/transaction"', () => {
 
   describe('.createTransactionResultProxy()', () => {
     it('has a #didPersist property', () => {
-      const proxy = createTransactionResultProxy({}, true);
+      const proxy = createTransactionResultProxy(new Subject(), true);
 
       expect(proxy.didPersist).toBe(true);
     });

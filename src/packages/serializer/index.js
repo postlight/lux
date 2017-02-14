@@ -7,15 +7,17 @@ import uniq from '../../utils/uniq';
 import underscore from '../../utils/underscore';
 import promiseHash from '../../utils/promise-hash';
 import { dasherizeKeys } from '../../utils/transform-keys';
-import type { Model } from '../database'; // eslint-disable-line no-unused-vars
-import type { // eslint-disable-line no-duplicate-imports
-  JSONAPI$Document,
-  JSONAPI$DocumentLinks,
-  JSONAPI$ResourceObject,
-  JSONAPI$RelationshipObject
-} from '../jsonapi';
+// eslint-disable-next-line no-unused-vars
+import type { Model } from '../database';
+// eslint-disable-next-line no-duplicate-imports
+import type { Document, Resource, Relationship } from '../jsonapi';
+import type { ObjectMap } from '../../interfaces';
 
-import type { Serializer$opts } from './interfaces';
+type Options<T> = {
+  model: Class<T>;
+  parent: ?Serializer<*>;
+  namespace: string;
+};
 
 /**
  * ## Overview
@@ -423,11 +425,11 @@ class Serializer<T: Model> {
    */
   namespace: string;
 
-  constructor({ model, parent, namespace }: Serializer$opts<T>) {
+  constructor({ model, parent, namespace }: Options<T>) {
     Object.assign(this, {
       model,
       parent,
-      namespace
+      namespace,
     });
 
     freezeProps(this, true,
@@ -474,12 +476,12 @@ class Serializer<T: Model> {
     include
   }: {
     data: T | Array<T>;
-    links: JSONAPI$DocumentLinks;
+    links: $PropertyType<Document, 'links'>;
     domain: string;
     include: Array<string>;
-  }): Promise<JSONAPI$Document> {
+  }): Promise<Document> {
     let serialized = {};
-    const included: Array<JSONAPI$ResourceObject> = [];
+    const included: Array<Resource> = [];
 
     if (Array.isArray(data)) {
       serialized = {
@@ -570,12 +572,12 @@ class Serializer<T: Model> {
     links?: boolean;
     domain: string;
     include: Array<string>;
-    included: Array<JSONAPI$ResourceObject>;
+    included: Array<Resource>;
     formatRelationships?: boolean
-  }): Promise<JSONAPI$ResourceObject> {
+  }): Promise<Resource> {
     const { resourceName: type } = item;
     const id = String(item.getPrimaryKey());
-    let relationships = {};
+    let relationships: ObjectMap<Relationship> = {};
 
     const attributes = dasherizeKeys(
       item.getAttributes(
@@ -585,10 +587,10 @@ class Serializer<T: Model> {
       )
     );
 
-    const serialized: JSONAPI$ResourceObject = {
+    const serialized: Resource = {
       id,
       type,
-      attributes
+      attributes,
     };
 
     if (formatRelationships) {
@@ -691,8 +693,8 @@ class Serializer<T: Model> {
     item: Model;
     domain: string;
     include: boolean;
-    included: Array<JSONAPI$ResourceObject>;
-  }): Promise<JSONAPI$RelationshipObject> {
+    included: Array<Resource>;
+  }): Promise<Relationship> {
     const { namespace } = this;
     const { resourceName: type, constructor: { serializer } } = item;
     const id = String(item.getPrimaryKey());

@@ -20,6 +20,6 @@ export function dbseed() {
       enabled: false
     })
   }).then(store => (
-    store.connection.transaction(seed)
+    store.connection.transaction(trx => seed(trx, store.connection))
   ));
 }

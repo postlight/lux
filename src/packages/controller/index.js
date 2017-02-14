@@ -591,8 +591,8 @@ class Controller {
    * id url parameter.
    * @public
    */
-  show(req: Request): Query<Model> {
-    return findOne(this.model, req);
+  show(request: Request): Query<Model> {
+    return findOne(this.model, request);
   }
 
   /**

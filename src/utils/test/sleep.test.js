@@ -1,21 +1,29 @@
 // @flow
 import sleep from '../sleep';
-import range from '../range';
+
+const AMOUNT = 500;
+
+jest.useFakeTimers();
 
 describe('util sleep()', () => {
-  const amount = 500;
-  let time;
-
-  beforeEach(() => {
-    time = Date.now();
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   it('resolves with undefined', async () => {
-    expect(await sleep(amount)).toBeUndefined();
+    const result = sleep(AMOUNT);
+
+    jest.runAllTimers();
+
+    expect(await result).toBeUndefined();
   });
 
   it('sleeps for the correct amount of time', async () => {
-    await sleep(amount);
-    expect(Array.from(range(475, 525))).toContain(Date.now() - time);
+    sleep(AMOUNT);
+
+    jest.runAllTimers();
+
+    expect(setTimeout.mock.calls).toHaveLength(1);
+    expect(setTimeout.mock.calls).toMatchSnapshot();
   });
 });

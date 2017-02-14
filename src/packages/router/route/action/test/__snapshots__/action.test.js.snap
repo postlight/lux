@@ -1,0 +1,19 @@
+exports[`module "router/route/action" #createPageLinks() works when the maximum page is exceeded 1`] = `
+Object {
+  "first": "http://localhost:4000/posts",
+  "last": "http://localhost:4000/posts?page%5Bnumber%5D=4",
+  "next": null,
+  "prev": null,
+  "self": null,
+}
+`;
+
+exports[`module "router/route/action" #createPageLinks() works when the total is 0 1`] = `
+Object {
+  "first": "http://localhost:4000/posts",
+  "last": "http://localhost:4000/posts",
+  "next": null,
+  "prev": null,
+  "self": "http://localhost:4000/posts",
+}
+`;

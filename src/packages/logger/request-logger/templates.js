@@ -3,8 +3,6 @@ import { blue, cyan, magenta, yellow } from 'chalk';
 
 import line from '../utils/line';
 
-import type { RequestLogger$templateData } from './interfaces';
-
 /**
  * @private
  */
@@ -38,7 +36,7 @@ export const debugTemplate = ({
   statusCode,
   statusMessage,
   remoteAddress
-}: RequestLogger$templateData) => `\
+}: any) => `\
 ${line`
   Processed ${cyan(`${method}`)} "${path}" from ${remoteAddress}
   with ${Reflect.apply(colorStr, null, [`${statusCode}`])}
@@ -78,7 +76,6 @@ ${(endTime - startTime).toString()} ms Actual\
  */
 export const infoTemplate = ({
   path,
-  route,
   method,
   params,
   colorStr,
@@ -87,16 +84,12 @@ export const infoTemplate = ({
   statusCode,
   statusMessage,
   remoteAddress
-}: RequestLogger$templateData) => line`
+}: any) => line`
 Processed ${cyan(`${method}`)} "${path}" ${magenta('Params')} ${
   JSON.stringify(params)} from ${remoteAddress
 } in ${(endTime - startTime).toString()} ms with ${
   Reflect.apply(colorStr, null, [`${statusCode}`])
 } ${
   Reflect.apply(colorStr, null, [`${statusMessage}`])
-} by ${
-  route
-  ? `${yellow(route.controller.constructor.name)}#${blue(route.action)}`
-  : null
 }
 `;

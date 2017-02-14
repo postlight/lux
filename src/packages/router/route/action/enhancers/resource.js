@@ -3,6 +3,7 @@ import { Query } from '../../../../database';
 import getDomain from '../../../../../utils/get-domain';
 import createPageLinks from '../utils/create-page-links';
 import type Controller from '../../../../controller';
+import type { Document } from '../../../../jsonapi';
 import type { Action } from '../interfaces';
 
 /**
@@ -16,7 +17,7 @@ export default function resource(
   const resourceAction = async function (req, res) {
     const { name: actionName } = action;
     const result = action(req, res);
-    let links = {};
+    let links: $PropertyType<Document, 'links'> = {};
     let data;
     let total;
 
@@ -41,7 +42,7 @@ export default function resource(
           domain,
           pathname,
           defaultPerPage,
-          total: total || 0
+          total: total || 0,
         });
       } else if (actionName !== 'index' && namespace) {
         let self = domain.replace(`/${namespace}`, '');
@@ -53,7 +54,7 @@ export default function resource(
         links = { self };
       } else if (actionName !== 'index' && !namespace) {
         links = {
-          self: domain + path
+          self: domain + (path || '')
         };
       }
 

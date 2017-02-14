@@ -1,0 +1,8 @@
+exports[`util sleep() sleeps for the correct amount of time 1`] = `
+Array [
+  Array [
+    [Function],
+    500,
+  ],
+]
+`;

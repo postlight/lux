@@ -1,6 +1,7 @@
 // @flow
 import entries from '../../../utils/entries';
 import isObject from '../../../utils/is-object';
+import type { ObjectMap } from '../../../interfaces';
 
 const INT = /^\d+$/;
 const CSV = /^(?:[\w\d-]+)(?:,[\w\d-]+)*$/;
@@ -9,10 +10,6 @@ const BOOL = /^(?:true|false)$/;
 const DATE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}(Z|\+\d{4})$/;
 const TRUE = /^true$/;
 const DELIMITER = /[_-\s]+/;
-
-type Params = {
-  [key: string]: any;
-};
 
 const camelize = (source: string) => (
   source
@@ -44,13 +41,11 @@ const fromString = (source: string): any => {
   } else if (DATE.test(source)) {
     return new Date(source);
   }
-
   return source;
 };
 
-export const fromObject = (source: Object): Params => (
-  entries(source).reduce((obj, [k, v]) => {
-    const result = obj;
+export const fromObject = (source: ObjectMap<any>): ObjectMap<any> => (
+  entries(source).reduce((target, [k, v]) => {
     const key = camelize(k);
     let value = v;
 
@@ -60,18 +55,25 @@ export const fromObject = (source: Object): Params => (
       value = fromObject(value);
     }
 
-    if (key === 'include' && Array.isArray(value)) {
-      value = value.map(camelize);
+    if (key === 'include') {
+      if (Array.isArray(value)) {
+        value = value.map(camelize);
+      } else if (typeof value === 'string') {
+        value = [camelize(value)];
+      }
     } else if (key === 'fields' && isObject(value)) {
-      value = entries(value).reduce((fields, [resource, names]) => (
-        Object.assign(fields, {
-          [resource]: Array.isArray(names) ? names.map(camelize) : names,
-        })
-      ), {});
+      value = entries(value).reduce((fields, [resource, names]) => {
+        // eslint-disable-next-line no-param-reassign
+        fields[resource] = (
+          Array.isArray(names) ? names.map(camelize) : [camelize(names)]
+        );
+        return fields;
+      }, {});
     }
 
-    result[key] = value;
+    // eslint-disable-next-line no-param-reassign
+    target[key] = value;
 
-    return result;
+    return target;
   }, {})
 );

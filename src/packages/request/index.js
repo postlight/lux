@@ -1,5 +1,6 @@
 // @flow
 import type Logger from '../logger';
+import type { ObjectMap } from '../../interfaces';
 
 export type URL = {
   protocol?: string;
@@ -14,11 +15,10 @@ export type URL = {
   pathname?: string;
   path?: string;
   href: string;
+  params: Array<any>;
 };
 
-export type Params = {
-  [key: string]: any;
-};
+export type Params = ObjectMap<any>;
 
 export type Method =
   | 'GET'
@@ -30,11 +30,12 @@ export type Method =
 
 export type Request = {
   url: URL;
-  params: Params;
+  params: ObjectMap<any>;
   logger: Logger;
   method: Method;
   headers: Map<string, string>;
-  trailers: Map<string, string>;
   encrypted: boolean;
-  defaultParams: Params;
+  defaultParams: ObjectMap<any>;
 };
+
+export * from './constants';

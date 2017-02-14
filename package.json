@@ -23,7 +23,7 @@
     "flow": "flow check",
     "types": "shx rm -rf flow-typed && flow-typed install",
     "lint": "remark . && eslint .",
-    "test": "jest -c .jestrc.json"
+    "test": "jest"
   },
   "author": "Zachary Golba",
   "license": "MIT",
@@ -70,11 +70,22 @@
     "jest-cli": "18.1.0",
     "node-fetch": "1.6.3",
     "nyc": "10.1.2",
+    "object.entries": "1.0.4",
     "remark-cli": "2.1.0",
     "remark-lint": "5.4.0",
     "remark-preset-lint-recommended": "1.0.0",
     "rollup-plugin-multi-entry": "2.0.1",
     "shx": "0.2.2",
     "sinon": "1.17.7"
+  },
+  "jest": {
+    "testRegex": "\\.test\\.js$",
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "coveragePathIgnorePatterns": [
+      "/test/",
+      "/node_modules/"
+    ],
+    "setupTestFrameworkScriptFile": "./test/index.js"
   }
 }

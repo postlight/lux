@@ -1,5 +1,5 @@
 // @flow
-import { METHODS } from '../../../../../constants';
+import { METHODS } from '../../../../request';
 import type { Method } from '../../../../request';
 // eslint-disable-next-line no-unused-vars
 import type { Route$type, Router$Namespace } from '../../../index';
@@ -24,11 +24,13 @@ function createDefinitionGroup<T: Router$Namespace>(
     .from(METHODS)
     .reduce((methods, method) => ({
       ...methods,
-      [method.toLowerCase()]: createDefinition({
-        type,
-        method,
-        namespace,
-      }),
+      [method.toLowerCase()]: (
+        createDefinition({
+          type,
+          method,
+          namespace,
+        })
+      ),
     }), {});
 }
 

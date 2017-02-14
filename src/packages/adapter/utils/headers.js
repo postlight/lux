@@ -2,12 +2,10 @@
 import entries from '../../../utils/entries';
 import type { ObjectMap } from '../../../interfaces';
 
-type ChangeType = 'SET' | 'DELETE';
-type ChangeData = [string, void | string];
-type HandleChange = (type: ChangeType, data: ChangeData) => void;
+type HandleChange = (type: 'SET' | 'DELETE', data: [string, ?string]) => void;
 
 class Headers extends Map<string, string> {
-  constructor(value: ObjectMap) {
+  constructor(value: ObjectMap<string>) {
     super(entries(value));
   }
 
@@ -32,7 +30,7 @@ class Headers extends Map<string, string> {
 export class RequestHeaders extends Headers {
   writable: boolean;
 
-  constructor(value: ObjectMap) {
+  constructor(value: ObjectMap<string>) {
     super(value);
     this.writable = false;
   }
@@ -73,12 +71,13 @@ export class ResponseHeaders extends Headers {
   }
 
   delete(key: string): boolean {
-    this.handleChange('DELETE', [key]);
+    this.handleChange('DELETE', [key, null]);
     return super.delete(key);
   }
 }
 
 Object.defineProperty(ResponseHeaders.prototype, 'handleChange', {
+  value: () => undefined,
   writable: true,
   enumerable: false,
   configurable: false,

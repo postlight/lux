@@ -52,6 +52,7 @@ describe('module "router/route"', () => {
 
       it('throws when an an action is not provided', () => {
         expect(() => {
+          // $FlowIgnore
           new Route({
             controller,
             type: 'collection',
@@ -63,6 +64,7 @@ describe('module "router/route"', () => {
 
       it('throws when an an controller is not provided', () => {
         expect(() => {
+          // $FlowIgnore
           new Route({
             type: 'collection',
             path: 'posts',
@@ -133,6 +135,7 @@ describe('module "router/route"', () => {
       describe('- with action only', () => {
         beforeAll(async () => {
           class TestController extends Controller {
+            // $FlowIgnore
             index = async () => ({
               meta: {
                 success: true
@@ -170,6 +173,7 @@ describe('module "router/route"', () => {
               })
             ];
 
+            // $FlowIgnore
             index = async () => ({
               meta: {
                 success: true
@@ -199,6 +203,7 @@ describe('module "router/route"', () => {
       describe('- with `afterAction`', () => {
         beforeAll(async () => {
           class TestController extends Controller {
+            // $FlowIgnore
             index = async () => ({
               meta: {
                 success: true,
@@ -244,6 +249,7 @@ describe('module "router/route"', () => {
               })
             ];
 
+            // $FlowIgnore
             index = async () => ({
               meta: {
                 success: true
