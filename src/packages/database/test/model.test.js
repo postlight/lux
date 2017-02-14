@@ -348,13 +348,13 @@ describe('module "database/model"', () => {
         };
       }
 
-      before(async () => {
+      beforeEach(async () => {
         await Subject.initialize(store, () => {
           return store.connection(Subject.tableName);
         });
       });
 
-      after(async () => {
+      afterEach(async () => {
         await result.destroy();
       });
 
@@ -382,6 +382,16 @@ describe('module "database/model"', () => {
         // $FlowIgnore
         expect(await result.user).to.have.property('id', user.getPrimaryKey());
       });
+
+      it('constructs and persists a `Model` instance with an integer id specified', async () => {
+        const id = 999;
+
+        result = await Subject.create({ id });
+
+        expect(result).to.be.an.instanceof(Subject);
+        expect(result).to.have.property('id', id);
+      });
+
     });
 
     describe('.transacting()', async () => {
