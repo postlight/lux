@@ -1,39 +1,21 @@
 // @flow
 import type Controller from '../../../../controller';
 
+import getDefaultMemberParams from './get-default-member-params';
+
 /**
  * @private
  */
-export default function getDefaultCollectionParams({
-  model,
-  defaultPerPage,
-  serializer: {
-    hasOne,
-    hasMany,
-    attributes
-  }
-}: Controller): Object {
+function getDefaultCollectionParams(controller: Controller): Object {
   return {
-    sort: 'createdAt',
+    ...getDefaultMemberParams(controller),
     filter: {},
-    fields: {
-      [model.resourceName]: attributes,
-      ...[...hasOne, ...hasMany].reduce((include, key) => {
-        const opts = model.relationshipFor(key);
-
-        if (!opts) {
-          return include;
-        }
-
-        return {
-          ...include,
-          [opts.model.resourceName]: [opts.model.primaryKey]
-        };
-      }, {})
-    },
+    sort: 'createdAt',
     page: {
-      size: defaultPerPage,
+      size: controller.defaultPerPage,
       number: 1
     }
   };
 }
+
+export default getDefaultCollectionParams;
