@@ -10,11 +10,11 @@ type Options = {
   body?: Object;
   method: string;
   headers: ObjectMap<string>;
-  resolve: Function;
+  resolve?: (data: any) => void;
 };
 
 const mock: AdapterFactory = ({ logger }) => (
-  ({ url, body, method, resolve, headers }: Options) => (
+  ({ url, body, method, headers, resolve }: Options) => (
     Promise.resolve([
       request.create({
         url,

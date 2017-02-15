@@ -5,7 +5,7 @@ import type { Response } from '../../../response';
 
 type Options = {
   logger: Logger;
-  resolve: Function;
+  resolve?: (data: any) => void;
 };
 
 export function create(options: Options): Response {
@@ -14,23 +14,14 @@ export function create(options: Options): Response {
     headers,
     end: (body: string) => response.send(body),
     send: (body: string) => {
-      const { statusCode } = response;
-      const ok = (): boolean => statusCode >= 200 && statusCode <= 299;
-      const text = (): Promise<string> => Promise.resolve(body);
-      const json = (): Promise<Object> => (
-        new Promise(resolve => {
-          resolve(JSON.parse(body));
-        })
-      );
-
-      options.resolve({
-        ok,
-        text,
-        json,
-        headers,
-        status: statusCode,
-        statusText: response.statusMessage,
-      });
+      if (options.resolve) {
+        options.resolve({
+          body,
+          headers,
+          status: response.statusCode,
+          statusText: response.statusMessage,
+        });
+      }
     },
     stats: [],
     logger: options.logger,

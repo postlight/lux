@@ -1,0 +1,205 @@
+exports[`module "responder" #createResponder() #respond() - responding with a boolean works with \`false\` 1`] = `
+Array [
+  Array [
+    Object {
+      "body": "{\"errors\":[{\"status\":\"401\",\"title\":\"Unauthorized\"}],\"jsonapi\":{\"version\":\"1.0\"}}",
+      "headers": Array [
+        Array [
+          "content-type",
+          "application/vnd.api+json",
+        ],
+      ],
+      "status": 401,
+      "statusText": "OK",
+    },
+  ],
+]
+`;
+
+exports[`module "responder" #createResponder() #respond() - responding with a boolean works with \`true\` 1`] = `
+Array [
+  Array [
+    Object {
+      "body": "undefined",
+      "headers": Array [],
+      "status": 204,
+      "statusText": "OK",
+    },
+  ],
+]
+`;
+
+exports[`module "responder" #createResponder() #respond() - responding with a number invalid status codes result in \`404\` 1`] = `
+Array [
+  Array [
+    Object {
+      "body": "{\"errors\":[{\"status\":\"404\",\"title\":\"Not Found\"}],\"jsonapi\":{\"version\":\"1.0\"}}",
+      "headers": Array [
+        Array [
+          "content-type",
+          "application/vnd.api+json",
+        ],
+      ],
+      "status": 404,
+      "statusText": "OK",
+    },
+  ],
+]
+`;
+
+exports[`module "responder" #createResponder() #respond() - responding with a number works with \`204\` 1`] = `
+Array [
+  Array [
+    Object {
+      "body": "",
+      "headers": Array [],
+      "status": 204,
+      "statusText": "OK",
+    },
+  ],
+]
+`;
+
+exports[`module "responder" #createResponder() #respond() - responding with a number works with \`400\` 1`] = `
+Array [
+  Array [
+    Object {
+      "body": "{\"errors\":[{\"status\":\"400\",\"title\":\"Bad Request\"}],\"jsonapi\":{\"version\":\"1.0\"}}",
+      "headers": Array [
+        Array [
+          "content-type",
+          "application/vnd.api+json",
+        ],
+      ],
+      "status": 400,
+      "statusText": "OK",
+    },
+  ],
+]
+`;
+
+exports[`module "responder" #createResponder() #respond() - responding with a string works as expected 1`] = `
+Array [
+  Array [
+    Object {
+      "body": "Hello World",
+      "headers": Array [
+        Array [
+          "content-type",
+          "text/plain",
+        ],
+      ],
+      "status": 200,
+      "statusText": "OK",
+    },
+  ],
+]
+`;
+
+exports[`module "responder" #createResponder() #respond() - responding with an error works with errors containing a \`statusCode\` property 1`] = `
+Array [
+  Array [
+    Object {
+      "body": "{\"errors\":[{\"status\":\"403\",\"title\":\"Forbidden\",\"detail\":\"Forbidden\"}],\"jsonapi\":{\"version\":\"1.0\"}}",
+      "headers": Array [
+        Array [
+          "content-type",
+          "application/vnd.api+json",
+        ],
+      ],
+      "status": 403,
+      "statusText": "OK",
+    },
+  ],
+]
+`;
+
+exports[`module "responder" #createResponder() #respond() - responding with an error works with vanilla errors 1`] = `
+Array [
+  Array [
+    Object {
+      "body": "{\"errors\":[{\"status\":\"500\",\"title\":\"Internal Server Error\",\"detail\":\"test\"}],\"jsonapi\":{\"version\":\"1.0\"}}",
+      "headers": Array [
+        Array [
+          "content-type",
+          "application/vnd.api+json",
+        ],
+      ],
+      "status": 500,
+      "statusText": "OK",
+    },
+  ],
+]
+`;
+
+exports[`module "responder" #createResponder() #respond() - responding with an object works with \`null\` 1`] = `
+Array [
+  Array [
+    Object {
+      "body": "{\"errors\":[{\"status\":\"404\",\"title\":\"Not Found\"}],\"jsonapi\":{\"version\":\"1.0\"}}",
+      "headers": Array [
+        Array [
+          "content-type",
+          "application/vnd.api+json",
+        ],
+      ],
+      "status": 404,
+      "statusText": "OK",
+    },
+  ],
+]
+`;
+
+exports[`module "responder" #createResponder() #respond() - responding with an object works with an array 1`] = `
+Array [
+  Array [
+    Object {
+      "body": "[\"test\",true]",
+      "headers": Array [
+        Array [
+          "content-type",
+          "application/vnd.api+json",
+        ],
+      ],
+      "status": 200,
+      "statusText": "OK",
+    },
+  ],
+]
+`;
+
+exports[`module "responder" #createResponder() #respond() - responding with an object works with an object 1`] = `
+Array [
+  Array [
+    Object {
+      "body": "{\"test\":true}",
+      "headers": Array [
+        Array [
+          "content-type",
+          "application/vnd.api+json",
+        ],
+      ],
+      "status": 200,
+      "statusText": "OK",
+    },
+  ],
+]
+`;
+
+exports[`module "responder" #createResponder() #respond() - responding with undefined works as expected 1`] = `
+Array [
+  Array [
+    Object {
+      "body": "{\"errors\":[{\"status\":\"404\",\"title\":\"Not Found\"}],\"jsonapi\":{\"version\":\"1.0\"}}",
+      "headers": Array [
+        Array [
+          "content-type",
+          "application/vnd.api+json",
+        ],
+      ],
+      "status": 404,
+      "statusText": "OK",
+    },
+  ],
+]
+`;

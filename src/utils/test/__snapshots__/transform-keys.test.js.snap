@@ -1,0 +1,164 @@
+exports[`util camelizeKeys() can deep camelize an objects keys 1`] = `
+Object {
+  "keyA": 1,
+  "keyB": 2,
+  "keyC": 3,
+  "keyD": Object {
+    "keyA": 1,
+  },
+}
+`;
+
+exports[`util camelizeKeys() can deep camelize an objects keys 2`] = `
+Object {
+  "keyA": 1,
+  "keyB": 2,
+  "keyC": 3,
+  "keyD": Object {
+    "keyA": 1,
+  },
+}
+`;
+
+exports[`util camelizeKeys() can shallow camelize an objects keys 1`] = `
+Object {
+  "keyA": 1,
+  "keyB": 2,
+  "keyC": 3,
+  "keyD": Object {
+    "key_a": 1,
+  },
+}
+`;
+
+exports[`util camelizeKeys() can shallow camelize an objects keys 2`] = `
+Object {
+  "keyA": 1,
+  "keyB": 2,
+  "keyC": 3,
+  "keyD": Object {
+    "key-a": 1,
+  },
+}
+`;
+
+exports[`util dasherizeKeys() can deep dasherize an objects keys 1`] = `
+Object {
+  "key-a": 1,
+  "key-b": 2,
+  "key-c": 3,
+  "key-d": Object {
+    "key-a": 1,
+  },
+}
+`;
+
+exports[`util dasherizeKeys() can deep dasherize an objects keys 2`] = `
+Object {
+  "key-a": 1,
+  "key-b": 2,
+  "key-c": 3,
+  "key-d": Object {
+    "key-a": 1,
+  },
+}
+`;
+
+exports[`util dasherizeKeys() can shallow dasherize an objects keys 1`] = `
+Object {
+  "key-a": 1,
+  "key-b": 2,
+  "key-c": 3,
+  "key-d": Object {
+    "key_a": 1,
+  },
+}
+`;
+
+exports[`util dasherizeKeys() can shallow dasherize an objects keys 2`] = `
+Object {
+  "key-a": 1,
+  "key-b": 2,
+  "key-c": 3,
+  "key-d": Object {
+    "keyA": 1,
+  },
+}
+`;
+
+exports[`util transformKeys() can deep transform an objects keys 1`] = `
+Object {
+  "keyATransformed": 1,
+  "keyBTransformed": 2,
+  "keyCTransformed": 3,
+  "keyDTransformed": Object {
+    "keyATransformed": 1,
+  },
+}
+`;
+
+exports[`util transformKeys() can shallow transform an objects keys 1`] = `
+Object {
+  "keyATransformed": 1,
+  "keyBTransformed": 2,
+  "keyCTransformed": 3,
+  "keyDTransformed": Object {
+    "keyA": 1,
+  },
+}
+`;
+
+exports[`util transformKeys() does not mutate the source object 1`] = `
+Object {
+  "keyA": 1,
+  "keyB": 2,
+  "keyC": 3,
+  "keyD": Object {
+    "keyA": 1,
+  },
+}
+`;
+
+exports[`util underscoreKeys() can deep underscore an objects keys 1`] = `
+Object {
+  "key_a": 1,
+  "key_b": 2,
+  "key_c": 3,
+  "key_d": Object {
+    "key_a": 1,
+  },
+}
+`;
+
+exports[`util underscoreKeys() can deep underscore an objects keys 2`] = `
+Object {
+  "key_a": 1,
+  "key_b": 2,
+  "key_c": 3,
+  "key_d": Object {
+    "key_a": 1,
+  },
+}
+`;
+
+exports[`util underscoreKeys() can shallow underscore an objects keys 1`] = `
+Object {
+  "key_a": 1,
+  "key_b": 2,
+  "key_c": 3,
+  "key_d": Object {
+    "keyA": 1,
+  },
+}
+`;
+
+exports[`util underscoreKeys() can shallow underscore an objects keys 2`] = `
+Object {
+  "key_a": 1,
+  "key_b": 2,
+  "key_c": 3,
+  "key_d": Object {
+    "key-a": 1,
+  },
+}
+`;

@@ -10,6 +10,7 @@ import {
   createInstanceTransactionProxy
 } from '../transaction';
 import pick from '../../../utils/pick';
+import entries from '../../../utils/entries';
 import underscore from '../../../utils/underscore';
 import { compose } from '../../../utils/compose';
 import { map as diffMap } from '../../../utils/diff';
@@ -1136,7 +1137,13 @@ class Model {
    * and their associated values.
    * @private
    */
-  getAttributes(...keys: Array<string>): Object {
+  getAttributes(...attrs: Array<string>): Object {
+    let keys = attrs;
+
+    if (keys.length === 0) {
+      keys = this.constructor.attributeNames;
+    }
+
     return pick(this, ...keys);
   }
 
@@ -1147,6 +1154,26 @@ class Model {
    */
   getPrimaryKey(): number {
     return Reflect.get(this, this.constructor.primaryKey);
+  }
+
+  toJSON(): Object {
+    const { constructor: { relationships } } = this;
+
+    return entries(relationships).reduce((obj, [key, { type }]) => {
+      let value = this.rawColumnData[key];
+
+      if (value) {
+        if (type === 'hasMany') {
+          value = value.map(item => item.toJSON());
+        } else if (typeof value.toJSON === 'function') {
+          value = value.toJSON();
+        }
+        // eslint-disable-next-line no-param-reassign
+        obj[key] = value;
+      }
+
+      return obj;
+    }, this.getAttributes());
   }
 
   /**

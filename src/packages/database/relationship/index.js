@@ -9,7 +9,7 @@ import { setHasOne, setHasMany, setBelongsTo } from './utils/setters';
 /**
  * @private
  */
-export function set(owner: Model, key: string, value?: Array<Model> | ?Model) {
+function set(owner: Model, key: string, value?: Array<Model> | ?Model): void {
   const opts = owner.constructor.relationshipFor(key);
 
   if (opts) {
@@ -42,10 +42,7 @@ export function set(owner: Model, key: string, value?: Array<Model> | ?Model) {
 /**
  * @private
  */
-export async function get(
-  owner: Model,
-  key: string
-): Promise<Array<Model> | ?Model> {
+async function get(owner: Model, key: string): Promise<Array<Model> | ?Model> {
   const opts = owner.constructor.relationshipFor(key);
   let value = null;
 
@@ -72,15 +69,12 @@ export async function get(
           });
           break;
 
-        case 'belongsTo':
+        default:
           value = await getBelongsTo(owner, {
             ...opts,
             foreignKey
           });
           break;
-
-        default:
-          throw new Error(`Unknown relationship type '${type}'.`);
       }
 
       set(owner, key, value);
@@ -90,5 +84,6 @@ export async function get(
   return value;
 }
 
+export { get, set };
 export { default as updateRelationship } from './utils/update-relationship';
 export type { Relationship$opts } from './interfaces';

@@ -130,7 +130,9 @@ describe('module "database/query"', () => {
       });
 
       it('resolves with the correct array of `Model` instances', async () => {
-        expect(await subject.all()).toMatchSnapshot();
+        const result = await subject.all();
+
+        expect(result.map(item => item.toJSON())).toMatchSnapshot();
       });
     });
 
@@ -666,9 +668,20 @@ describe('module "database/query"', () => {
       });
 
       it('resolves with the correct array of `Model` instances', async () => {
-        const result = await subject.include('user', 'comments');
+        let result = await subject.include({
+          user: ['id'],
+          comments: ['id'],
+        });
 
-        expect(result).toMatchSnapshot();
+        result
+          .map(item => item.toJSON())
+          .filter(item => Boolean(item.user))
+          .forEach(item => {
+            expect(item.user.id).toBe(item.userId);
+            item.comments.forEach(comment => {
+              expect(comment.postId).toBe(item.id);
+            });
+          });
       });
     });
 

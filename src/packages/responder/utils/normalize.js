@@ -1,11 +1,13 @@
 // @flow
-import { STATUS_CODES } from '../../../constants';
+import { MIME_TYPE } from '../../jsonapi';
+import { STATUS_CODES } from '../../response';
 import stringify from '../../../utils/stringify';
 
 import dataFor from './data-for';
 
 type ResponseData = {
   data: string;
+  mimeType: string;
   statusCode: number;
 };
 
@@ -14,10 +16,12 @@ type ResponseData = {
  */
 export default function normalize(content: any): ResponseData {
   let data;
+  let mimeType;
   let statusCode;
 
   switch (typeof content) {
     case 'boolean':
+      mimeType = MIME_TYPE;
       if (content) {
         statusCode = 204;
       } else {
@@ -27,6 +31,7 @@ export default function normalize(content: any): ResponseData {
       break;
 
     case 'number':
+      mimeType = MIME_TYPE;
       if (STATUS_CODES.has(content)) {
         statusCode = content;
       } else {
@@ -36,6 +41,7 @@ export default function normalize(content: any): ResponseData {
       break;
 
     case 'object':
+      mimeType = MIME_TYPE;
       if (content instanceof Error) {
         statusCode = Number.parseInt(content.statusCode, 10) || 500;
         data = dataFor(statusCode, content);
@@ -50,11 +56,13 @@ export default function normalize(content: any): ResponseData {
 
     case 'undefined':
       statusCode = 404;
+      mimeType = MIME_TYPE;
       data = dataFor(statusCode);
       break;
 
     default:
       statusCode = 200;
+      mimeType = 'text/plain';
       data = content;
   }
 
@@ -62,6 +70,7 @@ export default function normalize(content: any): ResponseData {
 
   return {
     data,
+    mimeType,
     statusCode,
   };
 }

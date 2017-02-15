@@ -8,133 +8,61 @@ import {
 
 describe('util camelizeKeys()', () => {
   const subjectA = {
-    key_a: 1, // eslint-disable-line camelcase
-    key_b: 2, // eslint-disable-line camelcase
-    key_c: 3, // eslint-disable-line camelcase
-
-    key_d: { // eslint-disable-line camelcase
-      key_a: 1 // eslint-disable-line camelcase
-    }
+    key_a: 1,
+    key_b: 2,
+    key_c: 3,
+    key_d: {
+      key_a: 1,
+    },
   };
 
   const subjectB = {
     'key-a': 1,
     'key-b': 2,
     'key-c': 3,
-
     'key-d': {
-      'key-a': 1
-    }
+      'key-a': 1,
+    },
   };
 
   it('can shallow camelize an objects keys', () => {
-    expect(camelizeKeys(subjectA)).toEqual({
-      keyA: 1,
-      keyB: 2,
-      keyC: 3,
-
-      keyD: {
-        key_a: 1 // eslint-disable-line camelcase
-      }
-    });
-
-    expect(camelizeKeys(subjectB)).toEqual({
-      keyA: 1,
-      keyB: 2,
-      keyC: 3,
-
-      keyD: {
-        'key-a': 1
-      }
-    });
+    expect(camelizeKeys(subjectA)).toMatchSnapshot();
+    expect(camelizeKeys(subjectB)).toMatchSnapshot();
   });
 
   it('can deep camelize an objects keys', () => {
-    expect(camelizeKeys(subjectA, true)).toEqual({
-      keyA: 1,
-      keyB: 2,
-      keyC: 3,
-
-      keyD: {
-        keyA: 1
-      }
-    });
-
-    expect(camelizeKeys(subjectB, true)).toEqual({
-      keyA: 1,
-      keyB: 2,
-      keyC: 3,
-
-      keyD: {
-        keyA: 1
-      }
-    });
+    expect(camelizeKeys(subjectA, true)).toMatchSnapshot();
+    expect(camelizeKeys(subjectB, true)).toMatchSnapshot();
   });
 });
 
 describe('util dasherizeKeys()', () => {
   const subjectA = {
-    key_a: 1, // eslint-disable-line camelcase
-    key_b: 2, // eslint-disable-line camelcase
-    key_c: 3, // eslint-disable-line camelcase
-
-    key_d: { // eslint-disable-line camelcase
-      key_a: 1 // eslint-disable-line camelcase
-    }
+    key_a: 1,
+    key_b: 2,
+    key_c: 3,
+    key_d: {
+      key_a: 1,
+    },
   };
 
   const subjectB = {
     keyA: 1,
     keyB: 2,
     keyC: 3,
-
     keyD: {
-      keyA: 1
-    }
+      keyA: 1,
+    },
   };
 
   it('can shallow dasherize an objects keys', () => {
-    expect(dasherizeKeys(subjectA)).toEqual({
-      'key-a': 1,
-      'key-b': 2,
-      'key-c': 3,
-
-      'key-d': {
-        key_a: 1 // eslint-disable-line camelcase
-      }
-    });
-
-    expect(dasherizeKeys(subjectB)).toEqual({
-      'key-a': 1,
-      'key-b': 2,
-      'key-c': 3,
-
-      'key-d': {
-        keyA: 1
-      }
-    });
+    expect(dasherizeKeys(subjectA)).toMatchSnapshot();
+    expect(dasherizeKeys(subjectB)).toMatchSnapshot();
   });
 
   it('can deep dasherize an objects keys', () => {
-    expect(dasherizeKeys(subjectA, true)).toEqual({
-      'key-a': 1,
-      'key-b': 2,
-      'key-c': 3,
-
-      'key-d': {
-        'key-a': 1
-      }
-    });
-
-    expect(dasherizeKeys(subjectB, true)).toEqual({
-      'key-a': 1,
-      'key-b': 2,
-      'key-c': 3,
-
-      'key-d': {
-        'key-a': 1
-      }
-    });
+    expect(dasherizeKeys(subjectA, true)).toMatchSnapshot();
+    expect(dasherizeKeys(subjectB, true)).toMatchSnapshot();
   });
 });
 
@@ -143,64 +71,28 @@ describe('util underscoreKeys()', () => {
     keyA: 1,
     keyB: 2,
     keyC: 3,
-
     keyD: {
-      keyA: 1
-    }
+      keyA: 1,
+    },
   };
 
   const subjectB = {
     'key-a': 1,
     'key-b': 2,
     'key-c': 3,
-
     'key-d': {
-      'key-a': 1
-    }
+      'key-a': 1,
+    },
   };
 
   it('can shallow underscore an objects keys', () => {
-    expect(underscoreKeys(subjectA)).toEqual({
-      key_a: 1, // eslint-disable-line camelcase
-      key_b: 2, // eslint-disable-line camelcase
-      key_c: 3, // eslint-disable-line camelcase
-
-      key_d: { // eslint-disable-line camelcase
-        keyA: 1
-      }
-    });
-
-    expect(underscoreKeys(subjectB)).toEqual({
-      key_a: 1, // eslint-disable-line camelcase
-      key_b: 2, // eslint-disable-line camelcase
-      key_c: 3, // eslint-disable-line camelcase
-
-      key_d: { // eslint-disable-line camelcase
-        'key-a': 1
-      }
-    });
+    expect(underscoreKeys(subjectA)).toMatchSnapshot();
+    expect(underscoreKeys(subjectB)).toMatchSnapshot();
   });
 
   it('can deep underscore an objects keys', () => {
-    expect(underscoreKeys(subjectA, true)).toEqual({
-      key_a: 1, // eslint-disable-line camelcase
-      key_b: 2, // eslint-disable-line camelcase
-      key_c: 3, // eslint-disable-line camelcase
-
-      key_d: { // eslint-disable-line camelcase
-        key_a: 1 // eslint-disable-line camelcase
-      }
-    });
-
-    expect(underscoreKeys(subjectB, true)).toEqual({
-      key_a: 1, // eslint-disable-line camelcase
-      key_b: 2, // eslint-disable-line camelcase
-      key_c: 3, // eslint-disable-line camelcase
-
-      key_d: { // eslint-disable-line camelcase
-        key_a: 1 // eslint-disable-line camelcase
-      }
-    });
+    expect(underscoreKeys(subjectA, true)).toMatchSnapshot();
+    expect(underscoreKeys(subjectB, true)).toMatchSnapshot();
   });
 });
 
@@ -209,49 +101,35 @@ describe('util transformKeys()', () => {
     keyA: 1,
     keyB: 2,
     keyC: 3,
-
     keyD: {
-      keyA: 1
-    }
+      keyA: 1,
+    },
   };
 
   it('can shallow transform an objects keys', () => {
     const result = transformKeys(subject, key => `${key}Transformed`);
 
-    expect(result).toEqual({
-      keyATransformed: 1,
-      keyBTransformed: 2,
-      keyCTransformed: 3,
-
-      keyDTransformed: {
-        keyA: 1
-      }
-    });
+    expect(result).toMatchSnapshot();
   });
 
   it('can deep transform an objects keys', () => {
     const result = transformKeys(subject, key => `${key}Transformed`, true);
 
-    expect(result).toEqual({
-      keyATransformed: 1,
-      keyBTransformed: 2,
-      keyCTransformed: 3,
-
-      keyDTransformed: {
-        keyATransformed: 1
-      }
-    });
+    expect(result).toMatchSnapshot();
   });
 
   it('does not mutate the source object', () => {
-    expect(subject).toEqual({
-      keyA: 1,
-      keyB: 2,
-      keyC: 3,
+    expect(subject).toMatchSnapshot();
+  });
 
-      keyD: {
-        keyA: 1
-      }
-    });
+  it('throws when something other than an object is passed in', () => {
+    // $FlowIgnore
+    expect(() => transformKeys('', key => key, true)).toThrow();
+  });
+
+  it('does not fail when an array is used as a source object', () => {
+    const source = [1, 2, 3];
+
+    expect(transformKeys(source, key => key, true)).toEqual(source);
   });
 });
