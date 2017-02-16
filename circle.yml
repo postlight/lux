@@ -2,6 +2,7 @@ machine:
   node:
     version: 6
   environment:
+    NODE_ENV: test
     DROP_DATABASE: DROP DATABASE IF EXISTS lux_test;
     CREATE_DATABASE: CREATE DATABASE lux_test;
     DATABASE_USERNAME: ubuntu
@@ -45,7 +46,7 @@ compile:
   pre:
     - npm run clean
   override:
-    - npm run build
+    - NODE_ENV=production npm run build
 test:
   pre:
     - case $CIRCLE_NODE_INDEX in 0) export DATABASE_DRIVER="pg" ;; 1) export DATABASE_DRIVER="mysql2" ;; 2) export DATABASE_DRIVER="sqlite3" ;; esac:
