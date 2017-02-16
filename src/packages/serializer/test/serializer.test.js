@@ -1,16 +1,8 @@
 // @flow
-import * as faker from 'faker';
-
-import { dasherize, underscore } from 'inflection';
-
 import Serializer from '../index';
-import { VERSION as JSONAPI_VERSION } from '../../jsonapi';
-
-import range from '../../../utils/range';
-import { getTestApp } from '../../../../test/utils/get-test-app';
-
 import type Application from '../../application';
 import type { Model } from '../../database';
+import { getTestApp } from '../../../../test/utils/get-test-app';
 
 const DOMAIN = 'http://localhost:4000';
 
@@ -18,201 +10,81 @@ const linkFor = (type, id) => (
   id ? `${DOMAIN}/${type}/${id}` : `${DOMAIN}/${type}`
 );
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 20 * 1000;
-
 describe('module "serializer"', () => {
   describe('class Serializer', () => {
+    let Post;
     let subject;
-    let createPost;
-    let createSerializer;
-    const instances = new Set();
-
-    const setup = () => {
-      subject = createSerializer();
-    };
-
-    const teardown = () => subject.model.transaction(async trx => {
-      const promises = Array
-        .from(instances)
-        .map(record => record.transacting(trx).destroy());
-
-      await Promise.all(promises);
-    });
+    let adminSubject;
 
     beforeAll(async () => {
-      const { models } = await getTestApp();
-      const Tag = models.get('tag');
-      const Post = models.get('post');
-      const User = models.get('user');
-      const Image = models.get('image');
-      const Comment = models.get('comment');
-      const Categorization = models.get('categorization');
+      const { store, serializers } = await getTestApp();
 
-      if (!Post) {
-        throw new Error('Could not find model "Post".');
-      }
+      const hasOne = [
+        'user',
+        'image',
+      ];
+
+      const hasMany = [
+        'tags',
+        'comments',
+        'reactions',
+      ];
+
+      const attributes = [
+        'body',
+        'title',
+        'createdAt',
+        'updatedAt',
+      ];
 
       class TestSerializer extends Serializer {
-        attributes = [
-          'body',
-          'title',
-          'isPublic',
-          'createdAt',
-          'updatedAt'
-        ];
-
-        hasOne = [
-          'user',
-          'image'
-        ];
-
-        hasMany = [
-          'comments',
-          'tags'
-        ];
+        hasOne = hasOne;
+        hasMany = hasMany;
+        attributes = attributes;
       }
 
-      createSerializer = (namespace = '') => new TestSerializer({
-        namespace,
+      class AdminTestSerializer extends Serializer {
+        hasOne = hasOne;
+        hasMany = hasMany;
+        attributes = attributes;
+      }
+
+      Post = store.modelFor('post');
+
+      subject = new TestSerializer({
         model: Post,
-        parent: null
+        parent: serializers.get('application'),
+        namespace: '',
       });
 
-      createPost = async ({
-        includeUser = true,
-        includeTags = true,
-        includeImage = true,
-        includeComments = true
-      } = {}, transaction) => {
-        let include = [];
-        const run = async trx => {
-          const post = await Post.transacting(trx).create({
-            body: faker.lorem.paragraphs(),
-            title: faker.lorem.sentence(),
-            isPublic: faker.random.boolean()
-          });
-
-          const postId = post.getPrimaryKey();
-
-          if (includeUser) {
-            const user = await User.transacting(trx).create({
-              name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-              email: faker.internet.email(),
-              password: faker.internet.password(8)
-            });
-
-            instances.add(user);
-            include = [...include, 'user'];
-
-            Reflect.set(post, 'user', user);
-          }
-
-          if (includeImage) {
-            const image = await Image.transacting(trx).create({
-              postId,
-              url: faker.image.imageUrl()
-            });
-
-            instances.add(image);
-            include = [...include, 'image'];
-          }
-
-          if (includeTags) {
-            const tags = await Promise.all([
-              Tag.transacting(trx).create({
-                name: faker.lorem.word()
-              }),
-              Tag.transacting(trx).create({
-                name: faker.lorem.word()
-              }),
-              Tag.transacting(trx).create({
-                name: faker.lorem.word()
-              })
-            ]);
-
-            const categorizations = await Promise.all(
-              tags.map(tag => (
-                Categorization.transacting(trx).create({
-                  postId,
-                  tagId: tag.getPrimaryKey()
-                })
-              ))
-            );
-
-            tags.forEach(tag => {
-              instances.add(tag);
-            });
-
-            categorizations.forEach(categorization => {
-              instances.add(categorization);
-            });
-
-            include = [...include, 'tags'];
-          }
-
-          if (includeComments) {
-            const comments = await Promise.all([
-              Comment.transacting(trx).create({
-                postId,
-                message: faker.lorem.sentence()
-              }),
-              Comment.transacting(trx).create({
-                postId,
-                message: faker.lorem.sentence()
-              }),
-              Comment.transacting(trx).create({
-                postId,
-                message: faker.lorem.sentence()
-              })
-            ]);
-
-            comments.forEach(comment => {
-              instances.add(comment);
-            });
-
-            include = [...include, 'comments'];
-          }
-
-          await post.transacting(trx).save();
-
-          return post.unwrap();
-        };
-
-        if (transaction) {
-          return await run(transaction);
-        }
-
-        return await Post.transaction(run);
-      };
+      adminSubject = new AdminTestSerializer({
+        model: Post,
+        parent: serializers.get('admin/application'),
+        namespace: 'admin',
+      });
     });
 
     describe('#format()', () => {
-      beforeEach(setup);
-      afterEach(teardown);
-
       it('works with a single instance of `Model`', async () => {
-        const post = await createPost();
-
-        expect(
+        const id = 1;
+        const post = await Post.find(id);
+        const result = JSON.stringify(
           await subject.format({
             data: post,
             domain: DOMAIN,
             include: [],
             links: {
-              self: linkFor('posts', post.getPrimaryKey())
-            }
+              self: linkFor('posts', id),
+            },
           })
-        ).toMatchSnapshot();
+        );
+
+        expect(result).toMatchSnapshot();
       });
 
       it('works with an array of `Model` instances', async () => {
-        const posts = await subject.model.transaction(trx => (
-          Promise.all(
-            Array.from(range(1, 25)).map(() => createPost({}, trx))
-          )
-        ));
-
-        expect(
+        const posts = await Post.page(1).order('createdAt');
+        const result = JSON.stringify(
           await subject.format({
             data: posts,
             domain: DOMAIN,
@@ -221,111 +93,104 @@ describe('module "serializer"', () => {
               self: linkFor('posts')
             }
           })
-        ).toMatchSnapshot();
+        );
+
+        expect(result).toMatchSnapshot();
       });
 
       it('can build namespaced links', async () => {
-        subject = createSerializer('admin');
-
-        const post = await createPost();
-
-        expect(
-          await subject.format({
+        const post = await Post.page(1).include('user', 'comments');
+        const result = JSON.stringify(
+          await adminSubject.format({
             data: post,
             domain: DOMAIN,
-            include: [],
+            include: [
+              'user',
+              'comments',
+            ],
             links: {
-              self: linkFor('admin/posts', post.getPrimaryKey())
-            }
+              self: linkFor('admin/posts'),
+            },
           })
-        ).toMatchSnapshot();
-      });
+        );
 
-      it('supports empty one-to-one relationships', async () => {
-        const post = await createPost({
-          includeUser: true,
-          includeTags: true,
-          includeImage: false,
-          includeComments: true
-        });
-
-        expect(
-          await subject.format({
-            data: post,
-            domain: DOMAIN,
-            include: [],
-            links: {
-              self: linkFor('posts', post.getPrimaryKey())
-            }
-          })
-        ).toMatchSnapshot();
+        expect(result).toMatchSnapshot();
       });
 
       it('supports including a has-one relationship', async () => {
-        const post = await createPost();
-        const image = await Reflect.get(post, 'image');
-
-        expect(
+        const id = 18;
+        const post = await Post.find(id).include('image');
+        const result = JSON.stringify(
           await subject.format({
             data: post,
             domain: DOMAIN,
-            include: ['image'],
+            include: [
+              'image',
+            ],
             links: {
-              self: linkFor('posts', post.getPrimaryKey())
-            }
+              self: linkFor('posts', id),
+            },
           })
-        ).toMatchSnapshot();
+        );
+
+        expect(result).toMatchSnapshot();
       });
 
       it('supports including belongs-to relationships', async () => {
-        const post = await createPost();
-        const user = await Reflect.get(post, 'user');
-
-        expect(
+        const id = 1;
+        const post = await Post.find(id).include('user');
+        const result = JSON.stringify(
           await subject.format({
             data: post,
             domain: DOMAIN,
-            include: ['user'],
+            include: [
+              'user',
+            ],
             links: {
-              self: linkFor('posts', post.getPrimaryKey())
-            }
+              self: linkFor('posts', id),
+            },
           })
-        ).toMatchSnapshot();
+        );
+
+        expect(result).toMatchSnapshot();
       });
 
       it('supports including a one-to-many relationship', async () => {
-        const post = await createPost();
-        const comments = await Reflect.get(post, 'comments');
-
-        expect(
+        const id = 2;
+        const post = await Post.find(id).include('comments');
+        const result = JSON.stringify(
           await subject.format({
             data: post,
             domain: DOMAIN,
-            include: ['comments'],
+            include: [
+              'comments',
+            ],
             links: {
-              self: linkFor('posts', post.getPrimaryKey())
-            }
+              self: linkFor('posts', id),
+            },
           })
-        ).toMatchSnapshot();
+        );
+
+        expect(result).toMatchSnapshot();
       });
 
       it('supports including a many-to-many relationship', async () => {
-        const post = await createPost();
-
-        await post
-          .reload()
-          .include('tags');
-
-        expect(
+        const id = 8;
+        const post = await Post.find(id).include('tags');
+        const result = JSON.stringify(
           await subject.format({
             data: post,
             domain: DOMAIN,
-            include: ['tags'],
+            include: [
+              'tags',
+            ],
             links: {
-              self: linkFor('posts', post.getPrimaryKey())
-            }
+              self: linkFor('posts', id),
+            },
           })
-        ).toMatchSnapshot();
+        );
+
+        expect(result).toMatchSnapshot();
       });
     });
   });

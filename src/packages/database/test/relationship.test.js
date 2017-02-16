@@ -233,6 +233,7 @@ describe('module "database/relationship"', () => {
       beforeEach(async () => {
         comments = await store
           .modelFor('comment')
+          .select('id', 'edited', 'message')
           .where({
             id: ids,
           });
@@ -252,19 +253,11 @@ describe('module "database/relationship"', () => {
         });
       });
 
-      it('can remove records from the relationship', async () => {
-        await subject.update({
-          comments,
-        });
-
-        comments = await Promise.all(
-          comments.map(comment => comment.reload())
-        );
-
+      it('can remove records from the relationship', () => {
         set(subject, 'comments', []);
 
         expect(subject.dirtyRelationships.get('comments')).toEqual([]);
-        expect(comments.map(comment => comment.toJSON())).toMatchSnapshot();
+        expect(subject.toJSON()).toMatchSnapshot();
       });
     });
   });

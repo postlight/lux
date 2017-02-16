@@ -1110,6 +1110,27 @@ class Model {
     return this.constructor.find(this.getPrimaryKey());
   }
 
+  // reload(): Promise<this> {
+  //   if (this.isNew) {
+  //     return Promise.resolve(this);
+  //   }
+  //
+  //   const {
+  //     currentChangeSet,
+  //     constructor: {
+  //       attributeNames,
+  //       relationshipNames,
+  //     },
+  //   } = this;
+  //
+  //   const filterKey = key => currentChangeSet.has(key);
+  //
+  //   return this.constructor
+  //     .find(this.getPrimaryKey())
+  //     .select(...attributeNames.filter(filterKey))
+  //     .include(...relationshipNames.filter(filterKey));
+  // }
+
   /**
    * Rollback attributes and relationships to the last known persisted set of
    * values.
@@ -1156,24 +1177,30 @@ class Model {
     return Reflect.get(this, this.constructor.primaryKey);
   }
 
-  toJSON(): Object {
-    const { constructor: { relationships } } = this;
+  toJSON(callee?: Model, prev?: Object): Object {
+    const { currentChangeSet, constructor: { relationships } } = this;
+    const result = this.getAttributes();
 
     return entries(relationships).reduce((obj, [key, { type }]) => {
-      let value = this.rawColumnData[key];
+      const value = currentChangeSet.get(key);
 
-      if (value) {
-        if (type === 'hasMany') {
-          value = value.map(item => item.toJSON());
-        } else if (typeof value.toJSON === 'function') {
-          value = value.toJSON();
-        }
-        // eslint-disable-next-line no-param-reassign
-        obj[key] = value;
+      /* eslint-disable no-param-reassign */
+
+      if (type === 'hasMany' && Array.isArray(value)) {
+        obj[key] = value.map(item => {
+          if (item === callee) {
+            return prev;
+          }
+          return item.toJSON(this, result);
+        });
+      } else if (value && typeof value.toJSON === 'function') {
+        obj[key] = value === callee ? prev : value.toJSON(this, result);
       }
 
+      /* eslint-enable no-param-reassign */
+
       return obj;
-    }, this.getAttributes());
+    }, result);
   }
 
   /**

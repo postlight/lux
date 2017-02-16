@@ -162,11 +162,13 @@ class Query<+T: any> extends Promise {
       const columnName = this.model.columnNameFor(attr);
 
       if (columnName) {
+        const dirUpcase = direction.toUpperCase();
+
         this.snapshots = this.snapshots
           .filter(([method]) => method !== 'orderByRaw')
           .concat([
             ['orderByRaw', uniq([columnName, this.model.primaryKey])
-              .map(key => `${this.model.tableName}.${key} ${direction}`)
+              .map(key => `${this.model.tableName}.${key} ${dirUpcase}`)
               .join(', ')
             ]
           ]);

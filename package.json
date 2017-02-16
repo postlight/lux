@@ -23,7 +23,7 @@
     "flow": "flow check",
     "types": "shx rm -rf flow-typed && flow-typed install",
     "lint": "remark . && eslint .",
-    "test": "jest"
+    "test": "node test/index.js"
   },
   "author": "Zachary Golba",
   "license": "MIT",
@@ -85,7 +85,6 @@
     "coveragePathIgnorePatterns": [
       "/test/",
       "/node_modules/"
-    ],
-    "setupTestFrameworkScriptFile": "./test/index.js"
+    ]
   }
 }

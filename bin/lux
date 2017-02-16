@@ -98,8 +98,10 @@ cli
   .command('b')
   .alias('build')
   .description('Build your application')
+  .option('-e, --environment [env]', '(Default: development)')
   .option('-w, --use-weak', 'Use weak mode')
-  .action(({ useWeak }) => {
+  .action(({ environment, useWeak }) => {
+    setEnvVar('NODE_ENV', environment, 'development');
     exec('build', !useWeak)
       .then(exit)
       .catch(rescue);
@@ -111,11 +113,12 @@ cli
   .description('Load your application into a repl')
   .option('-e, --environment [env]', '(Default: development)')
   .option('-w, --use-weak', 'Use weak mode')
-  .action(({ environment, useWeak }) => {
+  .option('--skip-build', 'Skip the application build process')
+  .action(({ environment, useWeak, skipBuild }) => {
     setEnvVar('NODE_ENV', environment, 'development');
     process.env.LUX_CONSOLE = true;
 
-    exec('build', !useWeak)
+    (skipBuild ? Promise.resolve() : exec('build', !useWeak))
       .then(() => exec('repl'))
       .then(exit)
       .catch(rescue);
@@ -134,13 +137,13 @@ cli
   )
   .option('-H, --hot', 'Reload when a file change is detected')
   .option('-w, --use-weak', 'Use weak mode')
-  .action(({ hot, port, cluster, environment, useWeak }) => {
+  .action(({ hot, port, cluster, environment, useWeak, skipBuild }) => {
     const useStrict = !useWeak;
 
     setEnvVar('PORT', port, 4000);
     setEnvVar('NODE_ENV', environment, 'development');
 
-    exec('build', useStrict)
+    (skipBuild ? Promise.resolve() : exec('build', useStrict))
       .then(() => exec('serve', { hot, cluster, useStrict }))
       .catch(rescue);
   });
@@ -170,12 +173,13 @@ cli
   .description('Create your database schema')
   .option('-e, --environment [env]', '(Default: development)')
   .option('-w, --use-weak', 'Use weak mode')
-  .action(({ environment, useWeak }) => {
+  .option('--skip-build', 'Skip the application build process')
+  .action(({ environment, useWeak, skipBuild }) => {
     const useStrict = !useWeak;
 
     setEnvVar('NODE_ENV', environment, 'development');
 
-    exec('build', useStrict)
+    (skipBuild ? Promise.resolve() : exec('build', useStrict))
       .then(() => exec('dbcreate'))
       .then(exit)
       .catch(rescue);
@@ -186,12 +190,13 @@ cli
   .description('Drop your database schema')
   .option('-e, --environment [env]', '(Default: development)')
   .option('-w, --use-weak', 'Use weak mode')
-  .action(({ environment, useWeak }) => {
+  .option('--skip-build', 'Skip the application build process')
+  .action(({ environment, useWeak, skipBuild }) => {
     const useStrict = !useWeak;
 
     setEnvVar('NODE_ENV', environment, 'development');
 
-    exec('build', useStrict)
+    (skipBuild ? Promise.resolve() : exec('build', useStrict))
       .then(() => exec('dbdrop'))
       .then(exit)
       .catch(rescue);
@@ -202,12 +207,13 @@ cli
   .description('Drop your database schema and create a new schema')
   .option('-e, --environment [env]', '(Default: development)')
   .option('-w, --use-weak', 'Use weak mode')
-  .action(({ environment, useWeak }) => {
+  .option('--skip-build', 'Skip the application build process')
+  .action(({ environment, useWeak, skipBuild }) => {
     const useStrict = !useWeak;
 
     setEnvVar('NODE_ENV', environment, 'development');
 
-    exec('build', useStrict)
+    (skipBuild ? Promise.resolve() : exec('build', useStrict))
       .then(() => exec('dbdrop'))
       .then(() => exec('dbcreate'))
       .then(exit)
@@ -219,12 +225,13 @@ cli
   .description('Run database migrations')
   .option('-e, --environment [env]', '(Default: development)')
   .option('-w, --use-weak', 'Use weak mode')
-  .action(({ environment, useWeak }) => {
+  .option('--skip-build', 'Skip the application build process')
+  .action(({ environment, useWeak, skipBuild }) => {
     const useStrict = !useWeak;
 
     setEnvVar('NODE_ENV', environment, 'development');
 
-    exec('build', useStrict)
+    (skipBuild ? Promise.resolve() : exec('build', useStrict))
       .then(() => exec('dbmigrate'))
       .then(exit)
       .catch(rescue);
@@ -235,12 +242,13 @@ cli
   .description('Rollback the last database migration')
   .option('-e, --environment [env]', '(Default: development)')
   .option('-w, --use-weak', 'Use weak mode')
-  .action(({ environment, useWeak }) => {
+  .option('--skip-build', 'Skip the application build process')
+  .action(({ environment, useWeak, skipBuild }) => {
     const useStrict = !useWeak;
 
     setEnvVar('NODE_ENV', environment, 'development');
 
-    exec('build', useStrict)
+    (skipBuild ? Promise.resolve() : exec('build', useStrict))
       .then(() => exec('dbrollback'))
       .then(exit)
       .catch(rescue);
@@ -251,12 +259,13 @@ cli
   .description('Add fixtures to your db from the seed function')
   .option('-e, --environment [env]', '(Default: development)')
   .option('-w, --use-weak', 'Use weak mode')
-  .action(({ environment, useWeak }) => {
+  .option('--skip-build', 'Skip the application build process')
+  .action(({ environment, useWeak, skipBuild }) => {
     const useStrict = !useWeak;
 
     setEnvVar('NODE_ENV', environment, 'development');
 
-    exec('build', useStrict)
+    (skipBuild ? Promise.resolve() : exec('build', useStrict))
       .then(() => exec('dbseed'))
       .then(exit)
       .catch(rescue);

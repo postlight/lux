@@ -648,32 +648,24 @@ class Controller {
    * Resolves with the number `204` if no changes occur.
    * @public
    */
-  update(req: Request): Promise<number | Model> {
+  async update(request: Request): Promise<number | Model> {
     const { model } = this;
+    const { params: { data: { attributes } } } = request;
+    let { params: { data: { relationships } } } = request;
 
-    return findOne(model, req)
-      .then(record => {
-        const {
-          params: {
-            data: {
-              attributes,
-              relationships
-            }
-          }
-        } = req;
+    relationships = resolveRelationships(model, relationships);
 
-        return record.update({
-          ...attributes,
-          ...resolveRelationships(model, relationships)
-        });
-      })
-      .then(record => {
-        if (record.didPersist) {
-          return record.unwrap();
-        }
+    const record = await findOne(this.model, request);
+    const relationshipKeys = Object.keys(relationships);
 
-        return 204;
-      });
+    Object.assign(record, attributes, relationships);
+
+    if (record.isDirty || relationshipKeys.length) {
+      await record.save();
+      return record.reload();
+    }
+
+    return 204;
   }
 
   /**
