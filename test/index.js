@@ -3,6 +3,8 @@
 const path = require('path');
 const { execSync } = require('child_process');
 
+let junitOutput = 'junit.xml';
+
 const createShell = cwd => cmd => {
   try {
     console.log(cmd);
@@ -17,6 +19,7 @@ const createShell = cwd => cmd => {
           '.bin'
         )}`,
         NODE_ENV: 'test',
+        JEST_JUNIT_OUTPUT: junitOutput,
       }),
       stdio: 'inherit',
       encoding: 'utf8',
@@ -28,6 +31,10 @@ const createShell = cwd => cmd => {
 
 const appSh = createShell(path.join(__dirname, 'test-app'));
 const mainSh = createShell(path.join(__dirname, '..'));
+
+if (process.env.CIRCLECI) {
+  junitOutput = `${process.env.CIRCLE_TEST_REPORTS}/junit/test-results.xml`;
+}
 
 appSh('lux build -e test');
 appSh('lux db:migrate -e test --skip-build');
