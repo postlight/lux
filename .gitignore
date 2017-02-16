@@ -1,10 +1,9 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
-.nyc_output/
 coverage/
 dist/
-*test-results.xml
+junit.xml
 
 # dependencies
 node_modules/

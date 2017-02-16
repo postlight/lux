@@ -2,7 +2,6 @@ machine:
   node:
     version: 6
   environment:
-    NODE_ENV: test
     DROP_DATABASE: DROP DATABASE IF EXISTS lux_test;
     CREATE_DATABASE: CREATE DATABASE lux_test;
     DATABASE_USERNAME: ubuntu
