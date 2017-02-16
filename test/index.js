@@ -32,4 +32,5 @@ const mainSh = createShell(path.join(__dirname, '..'));
 appSh('lux build -e test');
 appSh('lux db:migrate -e test --skip-build');
 appSh('lux db:seed -e test --skip-build');
-mainSh(`jest ${process.argv.slice(2).join(' ')}`);
+
+mainSh(`export NODE_ENV=test && jest ${process.argv.slice(2).join(' ')}`);
