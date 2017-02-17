@@ -10,7 +10,6 @@ export type Client =
   | FSWatcher
   | Watchman;
 
-
 /**
  * @private
  */
