@@ -105,7 +105,7 @@ describe('module "database/relationship"', () => {
         expect(result).toBeTruthy();
 
         if (result && typeof result === 'object' && !Array.isArray(result)) {
-          expect(result.toJSON()).toMatchSnapshot();
+          expect(result.toObject()).toMatchSnapshot();
         }
       });
     });
@@ -117,7 +117,7 @@ describe('module "database/relationship"', () => {
         expect(result).toBeTruthy();
 
         if (result && typeof result === 'object' && !Array.isArray(result)) {
-          expect(result.toJSON()).toMatchSnapshot();
+          expect(result.toObject()).toMatchSnapshot();
         }
       });
     });
@@ -174,7 +174,7 @@ describe('module "database/relationship"', () => {
       it('can add a record to the relationship', () => {
         set(subject, 'image', image);
 
-        expect(image.toJSON()).toMatchSnapshot();
+        expect(image.toObject()).toMatchSnapshot();
         expect(image.dirtyRelationships.get('post')).toBe(subject);
         expect(subject.dirtyRelationships.get('image')).toBe(image);
       });
@@ -208,7 +208,7 @@ describe('module "database/relationship"', () => {
       it('can add a record to the relationship', () => {
         set(subject, 'user', user);
 
-        expect(subject.toJSON()).toMatchSnapshot();
+        expect(subject.toObject()).toMatchSnapshot();
         expect(subject.dirtyRelationships.get('user')).toBe(user);
       });
     });
@@ -247,7 +247,7 @@ describe('module "database/relationship"', () => {
         expect(Array.isArray(dirty)).toBe(true);
         dirty.forEach(expect(comments).toContain);
 
-        expect(comments.map(comment => comment.toJSON())).toMatchSnapshot();
+        expect(comments.map(comment => comment.toObject())).toMatchSnapshot();
         comments.forEach(comment => {
           expect(comment.dirtyRelationships.get('post')).toBe(subject);
         });
@@ -257,7 +257,7 @@ describe('module "database/relationship"', () => {
         set(subject, 'comments', []);
 
         expect(subject.dirtyRelationships.get('comments')).toEqual([]);
-        expect(subject.toJSON()).toMatchSnapshot();
+        expect(subject.toObject()).toMatchSnapshot();
       });
     });
   });

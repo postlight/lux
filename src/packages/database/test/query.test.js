@@ -132,7 +132,7 @@ describe('module "database/query"', () => {
       it('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.all();
 
-        expect(result.map(item => item.toJSON())).toMatchSnapshot();
+        expect(result.map(item => item.toObject())).toMatchSnapshot();
       });
     });
 
@@ -674,7 +674,7 @@ describe('module "database/query"', () => {
         });
 
         result
-          .map(item => item.toJSON())
+          .map(item => item.toObject())
           .filter(item => Boolean(item.user))
           .forEach(item => {
             expect(item.user.id).toBe(item.userId);

@@ -23,7 +23,7 @@
     "flow": "flow check",
     "types": "shx rm -rf flow-typed && flow-typed install",
     "lint": "remark . && eslint .",
-    "test": "node test/index.js"
+    "test": "jest"
   },
   "author": "Zachary Golba",
   "license": "MIT",

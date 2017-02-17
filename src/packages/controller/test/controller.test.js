@@ -64,7 +64,7 @@ describe('module "controller"', () => {
       expect(item).toBeInstanceOf(Post);
 
       if (item instanceof Post) {
-        expect(item.toJSON()).toEqual(
+        expect(item.toObject()).toEqual(
           expect.objectContaining(props)
         );
       }

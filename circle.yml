@@ -47,9 +47,17 @@ compile:
     - npm run clean
   override:
     - NODE_ENV=production npm run build
+    - |
+      cd test/test-app
+      lux build -e test
+      cd ../../
 test:
   pre:
     - case $CIRCLE_NODE_INDEX in 0) export DATABASE_DRIVER="pg" ;; 1) export DATABASE_DRIVER="mysql2" ;; 2) export DATABASE_DRIVER="sqlite3" ;; esac:
+        parallel: true
+    - cd test/test-app && lux db:migrate -e test --skip-build && cd ../../
+        parallel: true
+    - cd test/test-app && lux db:seed -e test --skip-build && cd ../../
         parallel: true
   override:
     - npm run flow:
@@ -58,6 +66,8 @@ test:
         parallel: true
     - npm test:
         parallel: true
+        environment:
+          JEST_JUNIT_OUTPUT: $CIRCLE_TEST_REPORTS/junit/test-results.xml
   post:
     - npm run codecov:
         parallel: true
