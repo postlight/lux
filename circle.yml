@@ -64,7 +64,7 @@ test:
         parallel: true
     - npm run lint:
         parallel: true
-    - npm test:
+    - npm test -- -i --no-watchman --forceExit:
         parallel: true
         environment:
           JEST_JUNIT_OUTPUT: $CIRCLE_TEST_REPORTS/junit/test-results.xml
