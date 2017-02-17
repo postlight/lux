@@ -1190,10 +1190,10 @@ class Model {
           if (item === callee) {
             return prev;
           }
-          return item.toJSON(this, obj);
+          return item.toObject(this, obj);
         });
       } else if (value && typeof value.toJSON === 'function') {
-        obj[key] = value === callee ? prev : value.toJSON(this, obj);
+        obj[key] = value === callee ? prev : value.toObject(this, obj);
       }
 
       /* eslint-enable no-param-reassign */
