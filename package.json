@@ -18,8 +18,8 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "clean": "shx rm -rf .nyc_output coverage dist test/test-app/dist test-results.xml",
-    "codecov": "nyc report --reporter=lcov > coverage.lcov && curl -s https://codecov.io/bash | bash",
+    "clean": "shx rm -rf coverage dist test/test-app/dist junit.xml",
+    "codecov": "curl -s https://codecov.io/bash | bash",
     "flow": "flow check",
     "types": "shx rm -rf flow-typed && flow-typed install",
     "lint": "remark . && eslint .",
