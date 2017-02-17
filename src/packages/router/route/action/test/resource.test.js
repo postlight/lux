@@ -79,6 +79,7 @@ describe('module "router/route/action"', () => {
         const { router, controllers } = await getTestApp();
         const controller = controllers.get('posts');
 
+        // $FlowIgnore
         subject = resource(controller.index.bind(controller), controller);
       });
 
@@ -162,6 +163,7 @@ describe('module "router/route/action"', () => {
           const { router, controllers } = await getTestApp();
           const controller = controllers.get('posts');
 
+          // $FlowIgnore
           subject = resource(controller.show.bind(controller), controller);
         });
 
@@ -184,6 +186,7 @@ describe('module "router/route/action"', () => {
           const { router, controllers } = await getTestApp();
           const controller = controllers.get('admin/posts');
 
+          // $FlowIgnore
           subject = resource(controller.show.bind(controller), controller);
         });
 
@@ -206,6 +209,7 @@ describe('module "router/route/action"', () => {
           const { router, controllers } = await getTestApp();
           const controller = controllers.get('posts');
 
+          // $FlowIgnore
           subject = resource(() => Promise.resolve(null), controller);
         });
 

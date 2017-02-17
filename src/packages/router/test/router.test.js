@@ -17,6 +17,7 @@ describe('module "router"', () => {
       const app = await getTestApp();
 
       controllers = app.controllers;
+      // $FlowIgnore
       controller = controllers.get('application');
     });
 

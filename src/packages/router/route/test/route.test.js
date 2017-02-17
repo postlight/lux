@@ -23,6 +23,7 @@ describe('module "router/route"', () => {
       beforeAll(async () => {
         const { controllers } = await getTestApp();
 
+        // $FlowIgnore
         controller = controllers.get('posts');
       });
 
@@ -82,6 +83,7 @@ describe('module "router/route"', () => {
 
       beforeAll(async () => {
         const { controllers } = await getTestApp();
+        // $FlowIgnore
         const controller: Controller = controllers.get('posts');
 
         staticRoute = new Route({
@@ -288,6 +290,7 @@ describe('module "router/route"', () => {
       beforeAll(async () => {
         const { controllers } = await getTestApp();
 
+        // $FlowIgnore
         controller = await controllers.get('posts');
       });
 

@@ -19,9 +19,9 @@ describe('module "database/model"', () => {
       const app = await getTestApp();
 
       store = app.store;
-      User = app.models.get('user');
-      Image = app.models.get('image');
-      Comment = app.models.get('comment');
+      User = store.modelFor('user');
+      Image = store.modelFor('image');
+      Comment = store.modelFor('comment');
     });
 
     describe('.initialize()', () => {

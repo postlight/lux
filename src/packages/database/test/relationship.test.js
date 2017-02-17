@@ -45,6 +45,7 @@ describe('module "database/relationship"', () => {
 
         const insertBatch = (table, data) => (
           store.connection
+            // $FlowIgnore
             .batchInsert(table, data)
             .transacting(trx)
         );
@@ -217,6 +218,7 @@ describe('module "database/relationship"', () => {
       let comments;
 
       beforeAll(() => (
+        // $FlowIgnore
         store.connection.batchInsert('comments', ids.map(val => ({
           id: val,
           message: `#set() test ${1 + (val - id)}`,

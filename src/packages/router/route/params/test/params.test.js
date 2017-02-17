@@ -44,6 +44,7 @@ describe('module "router/route/params"', () => {
     beforeAll(async () => {
       const { controllers } = await getTestApp();
 
+      // $FlowIgnore
       getController = (name: string): Controller => controllers.get(name);
     });
 

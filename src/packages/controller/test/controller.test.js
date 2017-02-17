@@ -386,6 +386,7 @@ describe('module "controller"', () => {
           },
         });
 
+        // $FlowIgnore
         expect(record.isPublic).toBe(!isPublic);
         assertRecord(await subject.update(request, response), {
           ...getDefaultProps(),
@@ -422,7 +423,9 @@ describe('module "controller"', () => {
         });
 
         const [user, comments] = await Promise.all([
+          // $FlowIgnore
           record.user,
+          // $FlowIgnore
           record.comments,
         ]);
 
@@ -500,7 +503,9 @@ describe('module "controller"', () => {
         });
 
         const [user, comments] = await Promise.all([
+          // $FlowIgnore
           record.user,
+          // $FlowIgnore
           record.comments,
         ]);
 

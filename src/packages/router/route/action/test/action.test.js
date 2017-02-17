@@ -26,6 +26,7 @@ describe('module "router/route/action"', () => {
     beforeAll(async () => {
       const { router, controllers } = await getTestApp();
 
+      // $FlowIgnore
       const controller: Controller = controllers.get('health');
       const action: Action<any> = controller.index;
 

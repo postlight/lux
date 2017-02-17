@@ -73,6 +73,7 @@ describe('module "database/query"', () => {
         .from(range(1, 100))
         .map(id => ({ id }));
 
+      // $FlowIgnore
       await Test.store.connection.batchInsert('tests', records);
     });
 
