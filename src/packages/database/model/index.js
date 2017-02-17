@@ -1192,7 +1192,7 @@ class Model {
           }
           return item.toObject(this, obj);
         });
-      } else if (value && typeof value.toJSON === 'function') {
+      } else if (value && typeof value.toObject === 'function') {
         obj[key] = value === callee ? prev : value.toObject(this, obj);
       }
 
