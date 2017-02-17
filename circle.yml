@@ -55,9 +55,9 @@ test:
   pre:
     - case $CIRCLE_NODE_INDEX in 0) export DATABASE_DRIVER="pg" ;; 1) export DATABASE_DRIVER="mysql2" ;; 2) export DATABASE_DRIVER="sqlite3" ;; esac:
         parallel: true
-    - cd test/test-app && lux db:migrate -e test --skip-build && cd ../../
+    - cd test/test-app && lux db:migrate -e test --skip-build && cd ../../:
         parallel: true
-    - cd test/test-app && lux db:seed -e test --skip-build && cd ../../
+    - cd test/test-app && lux db:seed -e test --skip-build && cd ../../:
         parallel: true
   override:
     - npm run flow:
