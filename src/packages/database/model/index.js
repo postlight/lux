@@ -1102,34 +1102,31 @@ class Model {
    * @return {Promise} Resolves with `this`.
    * @public
    */
-  reload(): Promise<this> {
+  reload(): Query<this> {
     if (this.isNew) {
+      // $FlowIgnore
       return Promise.resolve(this);
     }
 
-    return this.constructor.find(this.getPrimaryKey());
-  }
+    const {
+      persistedChangeSet,
+      constructor: {
+        attributeNames,
+        relationshipNames,
+      },
+    } = this;
 
-  // reload(): Promise<this> {
-  //   if (this.isNew) {
-  //     return Promise.resolve(this);
-  //   }
-  //
-  //   const {
-  //     currentChangeSet,
-  //     constructor: {
-  //       attributeNames,
-  //       relationshipNames,
-  //     },
-  //   } = this;
-  //
-  //   const filterKey = key => currentChangeSet.has(key);
-  //
-  //   return this.constructor
-  //     .find(this.getPrimaryKey())
-  //     .select(...attributeNames.filter(filterKey))
-  //     .include(...relationshipNames.filter(filterKey));
-  // }
+    let filterKey = key => attributeNames.includes(key);
+
+    if (persistedChangeSet) {
+      filterKey = key => persistedChangeSet.has(key);
+    }
+
+    return this.constructor
+      .find(this.getPrimaryKey())
+      .select(...attributeNames.filter(filterKey))
+      .include(...relationshipNames.filter(filterKey));
+  }
 
   /**
    * Rollback attributes and relationships to the last known persisted set of

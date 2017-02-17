@@ -650,17 +650,24 @@ class Controller {
    */
   async update(request: Request): Promise<number | Model> {
     const { model } = this;
-    const { params: { data: { attributes } } } = request;
-    let { params: { data: { relationships } } } = request;
-
-    relationships = resolveRelationships(model, relationships);
-
     const record = await findOne(this.model, request);
-    const relationshipKeys = Object.keys(relationships);
 
-    Object.assign(record, attributes, relationships);
+    const {
+      params: {
+        data: {
+          attributes,
+          relationships,
+        },
+      },
+    } = request;
 
-    if (record.isDirty || relationshipKeys.length) {
+    Object.assign(
+      record,
+      attributes,
+      resolveRelationships(model, relationships)
+    );
+
+    if (record.isDirty) {
       await record.save();
       return record.reload();
     }
