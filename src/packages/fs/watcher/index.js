@@ -2,9 +2,14 @@
 import EventEmitter from 'events';
 import type { FSWatcher } from 'fs';
 
-import { Client } from 'fb-watchman';
+import { Client as Watchman } from 'fb-watchman';
 
 import initialize from './initialize';
+
+export type Client =
+  | FSWatcher
+  | Watchman;
+
 
 /**
  * @private
@@ -12,7 +17,7 @@ import initialize from './initialize';
 class Watcher extends EventEmitter {
   path: string;
 
-  client: Client | FSWatcher;
+  client: Client;
 
   constructor(path: string, useWatchman: boolean = true): Promise<Watcher> {
     super();
@@ -22,7 +27,7 @@ class Watcher extends EventEmitter {
   destroy() {
     const { client } = this;
 
-    if (client instanceof Client) {
+    if (client instanceof Watchman) {
       client.end();
     } else {
       client.close();

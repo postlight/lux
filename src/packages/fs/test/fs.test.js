@@ -2,191 +2,98 @@
 import { tmpdir } from 'os';
 import { join } from 'path';
 
+jest.mock('fs');
 
-import { spy } from 'sinon';
-import type { Spy } from 'sinon';
+import * as nativeFs from 'fs';
 
-import Watcher from '../watcher';
 import * as fs from '../index';
-
-import { createTmpDir, getTmpFile, createTmpFiles } from './utils';
+import Watcher from '../watcher';
 
 describe('module "fs"', () => {
-  let tmpDirPath: string;
-  let spies: { [module: string]: Spy } = {};
-  const spiedMethods = [
-    'mkdir',
-    'rmdir',
-    'readdir',
-    'readFile',
-    'writeFile',
-    'appendFile',
-    'stat',
-    'unlink',
-  ];
-
-  beforeAll(() => {
-    // wrap node fs methods in spies to test delegation
-    const nativeFs = require('fs');
-    spies = spiedMethods.reduce((memo, methodName) => {
-      memo[methodName] = spy(nativeFs, methodName);
-      return memo;
-    }, spies);
-  });
+  const cb = expect.any(Function);
 
   afterAll(() => {
-    // unwrap spies of node fs methods
-    spies = spiedMethods.reduce((memo, methodName) => {
-      memo[methodName].restore();
-      Reflect.deleteProperty(memo, methodName);
-      return memo;
-    }, spies);
-  });
-
-  beforeEach(async () => {
-    tmpDirPath = join(tmpdir(), `lux-${Date.now()}`);
-    await createTmpDir(tmpDirPath);
-  });
-
-  afterEach(async () => {
-    if (tmpDirPath) {
-      await fs.rmrf(tmpDirPath);
-      spiedMethods.forEach((methodName) => {
-        spies[methodName].reset();
-      });
-    }
+    jest.unmock('fs');
   });
 
   describe('#mkdir()', () => {
     it('delegates to node fs#mkdir', async () => {
-      const dirPath = join(tmpDirPath, 'test-mkdir');
-      await fs.mkdir(dirPath);
-      expect(spies['mkdir'].calledWith(dirPath)).toBe(true);
-    });
-    it('returns a promise', () => {
-      const dirPath = join(tmpDirPath, 'test-mkdir');
-      returnsPromiseSpec('mkdir', dirPath)();
+      const mode = 511;
+      const name = 'test-mkdir';
+
+      await fs.mkdir(name, mode);
+      expect(nativeFs.mkdir).toBeCalledWith(name, mode, cb);
     });
   });
 
   describe('#rmdir()', () => {
     it('delegates to node fs#rmdir', async () => {
-      await fs.rmdir(tmpDirPath);
-      expect(spies['rmdir'].calledWith(tmpDirPath)).toBe(true);
+      const name = 'test-rmdir';
+
+      await fs.rmdir(name);
+      expect(nativeFs.rmdir).toBeCalledWith(name, cb);
     });
-    it('returns a promise', returnsPromiseSpec('rmdir', tmpDirPath));
   });
 
   describe('#readdir()', () => {
     it('delegates to node fs#readdir', async () => {
-      await fs.readdir(tmpDirPath);
-      expect(spies['readdir'].calledWith(tmpDirPath)).toBe(true);
+      const name = 'test-readdir';
+
+      await fs.readdir(name);
+      expect(nativeFs.readdir).toBeCalledWith(name, cb);
     });
-    it('returns a promise', returnsPromiseSpec('readdir', tmpDirPath));
   });
 
   describe('#readFile()', () => {
-    let tmpFilePath: string;
-
-    beforeEach(async () => {
-      await createTmpFiles(tmpDirPath, 5);
-      tmpFilePath = await getTmpFile(tmpDirPath);
-    });
-
     it('delegates to node fs#readFile', async () => {
-      await fs.readFile(tmpFilePath);
-      expect(spies['readFile'].calledWith(tmpFilePath)).toBe(true);
+      const name = 'test-readFile';
+
+      await fs.readFile(name);
+      expect(nativeFs.readFile).toBeCalledWith(name, {}, cb);
     });
-    it('returns a promise', returnsPromiseSpec('readFile', tmpFilePath));
   });
 
   describe('#writeFile()', () => {
-    let tmpFilePath: string;
-
-    beforeEach(async () => {
-      await createTmpFiles(tmpDirPath, 5);
-      tmpFilePath = await getTmpFile(tmpDirPath);
-    });
-
     it('delegates to node fs#writeFile', async () => {
-      await fs.writeFile(tmpFilePath, 'test data');
-      expect(spies['writeFile'].calledWith(tmpFilePath)).toBe(true);
+      const name = 'test-writeFile';
+      const data = 'test data';
+
+      await fs.writeFile(name, data);
+      expect(nativeFs.writeFile).toBeCalledWith(name, data, undefined, cb);
     });
-    it('returns a promise', returnsPromiseSpec('writeFile', tmpFilePath));
   });
 
   describe('#appendFile()', () => {
-    let tmpFilePath: string;
-
-    beforeEach(async () => {
-      await createTmpFiles(tmpDirPath, 5);
-      tmpFilePath = await getTmpFile(tmpDirPath);
-    });
-
     it('delegates to node fs#appendFile', async () => {
-      await fs.appendFile(tmpFilePath, 'test data');
-      expect(spies['appendFile'].calledWith(tmpFilePath));
+      const name = 'test-appendFile';
+      const data = 'test data';
+
+      await fs.appendFile(name, data);
+      expect(nativeFs.appendFile).toBeCalledWith(name, data, {}, cb);
     });
-    it('returns a promise', returnsPromiseSpec('appendFile', tmpFilePath));
   });
 
   describe('#stat()', () => {
-    let tmpFilePath: string;
-
-    beforeEach(async () => {
-      await createTmpFiles(tmpDirPath, 5);
-      tmpFilePath = await getTmpFile(tmpDirPath);
-    });
-
     it('delegates to node fs#stat', async () => {
-      await fs.stat(tmpFilePath);
-      expect(spies['stat'].calledWith(tmpFilePath));
+      const name = 'test-unlink';
+
+      await fs.stat(name);
+      expect(nativeFs.stat).toBeCalledWith(name, cb);
     });
-    it('returns a promise', returnsPromiseSpec('stat', tmpFilePath));
   });
 
   describe('#unlink()', () => {
-    let tmpFilePath: string;
-
-    beforeEach(async () => {
-      await createTmpFiles(tmpDirPath, 5);
-      tmpFilePath = await getTmpFile(tmpDirPath);
-    });
-
     it('delegates to node fs#unlink', async () => {
-      await fs.unlink(tmpFilePath);
-      expect(spies['unlink'].calledWith(tmpFilePath));
+      const name = 'test-unlink';
+
+      await fs.unlink(name);
+      expect(nativeFs.unlink).toBeCalledWith(name, cb);
     });
-    it('returns a promise', returnsPromiseSpec('unlink', tmpFilePath));
   });
 
   describe('#watch()', () => {
-    const watchPath = join(tmpdir(), `lux-${Date.now()}`);
-    let result;
-
-    beforeAll(async () => {
-      await fs.mkdirRec(join(watchPath, 'app'));
-    });
-
-    afterAll(async () => {
-      result.destroy();
-      await fs.rmrf(watchPath);
-    });
-
     it('resolves with an instance of Watcher', async () => {
-      result = await fs.watch(watchPath);
-
-      expect(result instanceof Watcher).toBe(true);
+      expect(await fs.watch('test-watch')).toBeInstanceOf(Watcher);
     });
   });
 });
-
-function returnsPromiseSpec(
-  method: string,
-  ...args: Array<mixed>
-): (done?: () => void) => void | Promise<mixed> {
-  return function () {
-    const res = Reflect.apply(fs[method], fs, args);
-    expect(res instanceof Promise).toBe(true);
-  };
-}

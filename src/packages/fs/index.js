@@ -1,5 +1,5 @@
 // @flow
-import fs from 'fs';
+import * as fs from 'fs';
 import { join as joinPath, resolve as resolvePath } from 'path';
 import type { Stats } from 'fs'; // eslint-disable-line no-duplicate-imports
 
