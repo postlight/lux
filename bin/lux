@@ -137,6 +137,7 @@ cli
   )
   .option('-H, --hot', 'Reload when a file change is detected')
   .option('-w, --use-weak', 'Use weak mode')
+  .option('--skip-build', 'Skip the application build process')
   .action(({ hot, port, cluster, environment, useWeak, skipBuild }) => {
     const useStrict = !useWeak;
 
