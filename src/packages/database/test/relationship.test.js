@@ -129,7 +129,7 @@ describe('module "database/relationship"', () => {
         expect(Array.isArray(result)).toBe(true);
 
         if (Array.isArray(result)) {
-          expect(result.map(comment => comment.toJSON())).toMatchSnapshot();
+          expect(result.map(comment => comment.toObject())).toMatchSnapshot();
         }
       });
     });
@@ -141,7 +141,7 @@ describe('module "database/relationship"', () => {
         expect(Array.isArray(result)).toBe(true);
 
         if (Array.isArray(result)) {
-          expect(result.map(tag => tag.toJSON())).toMatchSnapshot();
+          expect(result.map(tag => tag.toObject())).toMatchSnapshot();
         }
       });
     });

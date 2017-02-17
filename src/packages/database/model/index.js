@@ -1177,9 +1177,8 @@ class Model {
     return Reflect.get(this, this.constructor.primaryKey);
   }
 
-  toJSON(callee?: Model, prev?: Object): Object {
+  toObject(callee?: Model, prev?: Object): Object {
     const { currentChangeSet, constructor: { relationships } } = this;
-    const result = this.getAttributes();
 
     return entries(relationships).reduce((obj, [key, { type }]) => {
       const value = currentChangeSet.get(key);
@@ -1191,16 +1190,16 @@ class Model {
           if (item === callee) {
             return prev;
           }
-          return item.toJSON(this, result);
+          return item.toJSON(this, obj);
         });
       } else if (value && typeof value.toJSON === 'function') {
-        obj[key] = value === callee ? prev : value.toJSON(this, result);
+        obj[key] = value === callee ? prev : value.toJSON(this, obj);
       }
 
       /* eslint-enable no-param-reassign */
 
       return obj;
-    }, result);
+    }, this.getAttributes());
   }
 
   /**
