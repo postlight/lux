@@ -85,6 +85,7 @@
     "coveragePathIgnorePatterns": [
       "/test/",
       "/node_modules/"
-    ]
+    ],
+    "setupTestFrameworkScriptFile": "./test/index.js"
   }
 }
