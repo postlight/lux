@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "clean": "shx rm -rf coverage dist test/test-app/dist junit.xml",
+    "clean": "shx rm -rf coverage dist test/test-app/dist",
     "codecov": "curl -s https://codecov.io/bash | bash",
     "flow": "flow check",
     "types": "shx rm -rf flow-typed && flow-typed install",
@@ -67,7 +67,6 @@
     "flow-typed": "2.0.0",
     "jest": "18.1.0",
     "jest-cli": "18.1.0",
-    "jest-junit": "1.1.1",
     "object.entries": "1.0.4",
     "remark-cli": "2.1.0",
     "remark-lint": "5.4.0",
@@ -78,7 +77,6 @@
     "testRegex": "\\.test\\.js$",
     "testEnvironment": "node",
     "collectCoverage": true,
-    "testResultsProcessor": "./node_modules/jest-junit",
     "coveragePathIgnorePatterns": [
       "/test/",
       "/node_modules/"

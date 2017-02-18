@@ -3,7 +3,6 @@
 # compiled output
 coverage/
 dist/
-junit.xml
 
 # dependencies
 node_modules/
