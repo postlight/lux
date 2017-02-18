@@ -16,7 +16,7 @@ function validateOne<V>(param: Parameter, value: V): V {
 
     switch (param.path) {
       case 'data.type':
-        [expected] = Array.from(param.values());
+        [expected] = [...param.values()];
         throw new ResourceMismatchError(param.path, expected, value);
 
       default:

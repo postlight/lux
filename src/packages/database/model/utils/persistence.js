@@ -50,10 +50,9 @@ export function update(record: Model, trx: Object): Array<Object> {
       .table()
       .transacting(trx)
       .where(record.constructor.primaryKey, record.getPrimaryKey())
-      .update(getColumns(
-        record,
-        Array.from(record.dirtyAttributes.keys())
-      ))
+      .update(getColumns(record, [
+        ...record.dirtyAttributes.keys()
+      ]))
   ];
 }
 

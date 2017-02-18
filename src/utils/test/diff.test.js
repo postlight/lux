@@ -15,7 +15,7 @@ describe('util diff', () => {
       );
 
       expect(result instanceof Map).toBe(true);
-      expect(Array.from(result)).toEqual([
+      expect([...result]).toEqual([
         ['y', 2]
       ]);
     });

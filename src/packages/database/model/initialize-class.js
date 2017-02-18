@@ -60,9 +60,7 @@ function initializeHooks({ model, hooks, logger }) {
       if (!VALID_HOOKS.has(key)) {
         logger.warn(line`
           Invalid hook '${key}' will not be added to Model '${model.name}'.
-          Valid hooks are ${
-            Array.from(VALID_HOOKS).map(h => `'${h}'`).join(', ')
-          }.
+          Valid hooks are ${[...VALID_HOOKS].map(h => `'${h}'`).join(', ')}.
         `);
 
         return obj;

@@ -9,7 +9,7 @@ describe('module "compiler"', () => {
     beforeEach(async () => {
       const { controllers } = await getTestApp();
 
-      keys = Array.from(controllers.keys());
+      keys = [...controllers.keys()];
     });
 
     it('transforms an array of keys into identifiers', () => {

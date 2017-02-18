@@ -8,7 +8,7 @@ export default function createChildrenBuilder<T>(
     key,
     value,
     parent
-  }) => Array.from(value).map(([name, constructor]) => {
+  }) => [...value].map(([name, constructor]) => {
     const normalized = key === 'root' ? name : `${key}/${name}`;
 
     if (parent && normalized.endsWith('application')) {

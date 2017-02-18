@@ -807,13 +807,11 @@ class Model {
       }
     } = this;
 
-    Array
-      .from(dirtyProperties.keys())
-      .forEach(key => {
-        if (relationshipNames.indexOf(key) >= 0) {
-          dirtyProperties.delete(key);
-        }
-      });
+    dirtyProperties.forEach((prop, key) => {
+      if (relationshipNames.indexOf(key) >= 0) {
+        dirtyProperties.delete(key);
+      }
+    });
 
     return dirtyProperties;
   }
