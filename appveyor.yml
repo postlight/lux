@@ -44,11 +44,22 @@ before_test:
       Remove-Item C:\projects\lux\test\test-app\db\* -Force -Include *.sqlite
       Write-Host $null >> C:\projects\lux\test\test-app\db\lux_test_test.sqlite
   - npm run clean
-  - npm run build
+  - ps: |
+      $env:NODE_ENV=production
+      Set-Location C:\projects\lux
+      npm run build
+
+      $env:NODE_ENV=test
+      Set-Location C:\projects\lux\test\test-app
+      lux build -e test
+      lux db:migrate -e test --skip-build
+      lux db:seed -e test --skip-build
+
+      Set-Location C:\projects\lux
 test_script:
   - npm run flow
   - npm run lint
-  - npm test
+  - npm test -- --no-watchman
 notifications:
 - provider: Webhook
   url: https://webhooks.gitter.im/e/070ebbf83dc0f595c4fb
