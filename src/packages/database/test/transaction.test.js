@@ -1,6 +1,4 @@
 // @flow
-import { spy } from 'sinon';
-
 import Model from '../model';
 import {
   createTransactionResultProxy,
@@ -10,14 +8,20 @@ import {
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 describe('module "database/transaction"', () => {
+  const tableName = 'posts';
+
+  // $FlowIgnore
   class Subject extends Model {
-    static tableName = 'posts';
+    static tableName = tableName;
   }
 
   beforeAll(async () => {
     const { store } = await getTestApp();
 
-    await Subject.initialize(store, () => store.connection(Subject.tableName));
+    await Subject.initialize(
+      store,
+      () => store.connection(tableName)
+    );
   });
 
   describe('.createTransactionResultProxy()', () => {
@@ -30,15 +34,24 @@ describe('module "database/transaction"', () => {
 
   describe('.createStaticTransactionProxy()', () => {
     describe('#create()', () => {
-      let instance: Subject;
-      let createSpy;
+      const { create } = Subject;
+      let mockCreate;
+      let instance;
 
       beforeAll(async () => {
-        createSpy = spy(Subject, 'create');
+        mockCreate = jest.fn().mockImplementation((...args) => (
+          create.apply(Subject, args)
+        ));
+
+        Subject.create = mockCreate;
       });
 
-      afterAll(async () => {
-        createSpy.restore();
+      afterAll(() => {
+        Subject.create = create;
+      });
+
+      afterEach(async () => {
+        mockCreate.mockClear();
 
         if (instance) {
           await instance.destroy();
@@ -53,7 +66,7 @@ describe('module "database/transaction"', () => {
           return createStaticTransactionProxy(Subject, trx).create(args[0]);
         });
 
-        expect(createSpy.calledWith(...args)).toBe(true);
+        expect(mockCreate).toBeCalledWith(...args);
       });
     });
   });
@@ -61,18 +74,30 @@ describe('module "database/transaction"', () => {
   describe('.createInstanceTransactionProxy()', () => {
     ['save', 'update', 'destroy'].forEach(method => {
       describe(`#${method}()`, () => {
-        let instance: Subject;
-        let methodSpy;
+        let instance;
+        let ogMethod;
+        let mockMethod;
 
         beforeAll(async () => {
           await Subject.create().then(proxy => {
+            // $FlowIgnore
             instance = proxy.unwrap();
-            methodSpy = spy(instance, method);
+            ogMethod = instance[method];
+
+            mockMethod = jest.fn().mockImplementation((...args) => (
+              ogMethod.apply(instance, args)
+            ));
+
+            instance[method] = mockMethod;
           });
         });
 
-        afterAll(async () => {
-          methodSpy.restore();
+        afterAll(() => {
+          instance[method] = ogMethod;
+        });
+
+        afterEach(async () => {
+          mockMethod.mockReset();
 
           if (method !== 'destroy') {
             await instance.destroy();
@@ -107,7 +132,7 @@ describe('module "database/transaction"', () => {
             return promise;
           });
 
-          expect(methodSpy.calledWith(...args)).toBe(true);
+          expect(mockMethod).toBeCalledWith(...args);
         });
       });
     });
