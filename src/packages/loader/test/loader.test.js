@@ -1,9 +1,7 @@
 // @flow
 import { FreezeableMap } from '../../freezeable';
 import { createLoader } from '../index';
-
 import { getTestApp } from '../../../../test/utils/get-test-app';
-
 import type Application from '../../application';
 import type { Loader } from '../index';
 

@@ -1,9 +1,7 @@
 // @flow
-import { MIME_TYPE } from '../../jsonapi';
 import Logger from '../../logger';
 import { request, response } from '../../adapter/mock';
 import noop from '../../../utils/noop';
-
 import * as responder from '../index';
 
 describe('module "responder"', () => {

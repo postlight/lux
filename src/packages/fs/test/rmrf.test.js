@@ -1,11 +1,9 @@
 // @flow
 import { tmpdir } from 'os';
-
-
-
 import { join } from 'path';
 
 import { rmrf, exists } from '../index';
+
 import {
   getTmpFile,
   createTmpDir,

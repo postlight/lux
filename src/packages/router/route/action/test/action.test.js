@@ -1,5 +1,5 @@
 // @flow
-import K from '../../../../../utils/k';
+import noop from '../../../../../utils/noop';
 import Logger from '../../../../logger';
 import { request, response } from '../../../../adapter/mock';
 import { createAction, createPageLinks } from '../index';
@@ -24,7 +24,7 @@ describe('module "router/route/action"', () => {
     let result;
 
     beforeAll(async () => {
-      const { router, controllers } = await getTestApp();
+      const { controllers } = await getTestApp();
 
       // $FlowIgnore
       const controller: Controller = controllers.get('health');
@@ -52,7 +52,7 @@ describe('module "router/route/action"', () => {
         }),
         response.create({
           logger,
-          resolve: K,
+          resolve: noop,
         })
       );
 
@@ -95,6 +95,7 @@ describe('module "router/route/action"', () => {
           next: `${base}?page%5Bnumber%5D=${number + 1}`
         };
 
+        // eslint-disable-next-line default-case
         switch (number) {
           case 1:
             target = {
@@ -145,6 +146,7 @@ describe('module "router/route/action"', () => {
           next: `${base}&page%5Bnumber%5D=${number + 1}`
         };
 
+        // eslint-disable-next-line default-case
         switch (number) {
           case 1:
             target = {
@@ -176,7 +178,7 @@ describe('module "router/route/action"', () => {
     it('works with complex parameter sets', () => {
       const base =
         `${DOMAIN}/${RESOURCE}?sort=-created-at&include=user&fields%5Bposts%5D=`
-        + `title&fields%5Busers%5D=name`;
+        + 'title&fields%5Busers%5D=name';
 
       [1, 2, 3, 4].forEach(number => {
         const opts = getOptions({
@@ -207,6 +209,7 @@ describe('module "router/route/action"', () => {
           next: `${base}&page%5Bnumber%5D=${number + 1}`
         };
 
+        // eslint-disable-next-line default-case
         switch (number) {
           case 1:
             target = {

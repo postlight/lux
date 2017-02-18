@@ -1,10 +1,8 @@
 // @flow
 import Controller from '../../../controller';
 import * as Adapters from '../../../adapter';
-import type { Request } from '../../../request';
 import K from '../../../../utils/k';
 import { getTestApp } from '../../../../../test/utils/get-test-app';
-
 import Route from '../index';
 
 describe('module "router/route"', () => {
@@ -40,46 +38,45 @@ describe('module "router/route"', () => {
       });
 
       it('throws when a handler is not found', () => {
-        expect(() => {
+        expect(() => (
           new Route({
             controller,
             type: 'collection',
             path: 'posts',
             action: 'invalidHandler',
             method: 'GET'
-          });
-        }).toThrow();
+          })
+        )).toThrow();
       });
 
       it('throws when an an action is not provided', () => {
-        expect(() => {
+        expect(() => (
           // $FlowIgnore
           new Route({
             controller,
             type: 'collection',
             path: 'posts',
             method: 'GET'
-          });
-        }).toThrow();
+          })
+        )).toThrow();
       });
 
       it('throws when an an controller is not provided', () => {
-        expect(() => {
+        expect(() => (
           // $FlowIgnore
           new Route({
             type: 'collection',
             path: 'posts',
             action: 'index',
             method: 'GET'
-          });
-        }).toThrow();
+          })
+        )).toThrow();
       });
     });
 
     describe('#parseParams()', () => {
       let staticRoute: Route;
       let dynamicRoute: Route;
-      let dataRoute: Route;
 
       beforeAll(async () => {
         const { controllers } = await getTestApp();
@@ -99,13 +96,6 @@ describe('module "router/route"', () => {
           path: 'posts/:id',
           action: 'show',
           method: 'GET',
-        });
-        dataRoute = new Route({
-          controller,
-          type: 'member',
-          path: 'posts/:id',
-          action: 'create',
-          method: 'PATCH',
         });
       });
 

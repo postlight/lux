@@ -1,6 +1,4 @@
 // @flow
-
-
 import isUndefined from '../is-undefined';
 
 describe('util isUndefined()', () => {
@@ -13,7 +11,6 @@ describe('util isUndefined()', () => {
 
   it('returns true when `undefined` is passed in as an argument', () => {
     expect(isUndefined()).toBe(true);
-    expect(isUndefined(void 0)).toBe(true);
     expect(isUndefined(undefined)).toBe(true);
   });
 });

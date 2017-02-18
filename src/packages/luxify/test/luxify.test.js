@@ -1,8 +1,5 @@
 // @flow
-
-
 import luxify from '../index';
-
 import K from '../../../utils/k';
 import setType from '../../../utils/set-type';
 

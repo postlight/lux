@@ -51,14 +51,12 @@ describe('module "database"', () => {
     });
 
     describe('#constructor()', () => {
-      it('creates an instance of `Database`', () => {
-        return createDatabase().then(result => {
-          expect(result instanceof Database).toBe(true);
-        });
+      it('creates an instance of `Database`', async () => {
+        expect(await createDatabase()).toBeInstanceOf(Database);
       });
 
-      it('fails when an invalid database driver is used', () => {
-        return createDatabase({
+      it('fails when an invalid database driver is used', async () => {
+        await createDatabase({
           development: {
             ...DEFAULT_CONFIG.development,
             driver: 'invalid-driver'

@@ -76,7 +76,7 @@ describe('module "router/route/action"', () => {
       };
 
       beforeAll(async () => {
-        const { router, controllers } = await getTestApp();
+        const { controllers } = await getTestApp();
         const controller = controllers.get('posts');
 
         // $FlowIgnore
@@ -160,7 +160,7 @@ describe('module "router/route/action"', () => {
         let subject;
 
         beforeAll(async () => {
-          const { router, controllers } = await getTestApp();
+          const { controllers } = await getTestApp();
           const controller = controllers.get('posts');
 
           // $FlowIgnore
@@ -183,7 +183,7 @@ describe('module "router/route/action"', () => {
         let subject;
 
         beforeAll(async () => {
-          const { router, controllers } = await getTestApp();
+          const { controllers } = await getTestApp();
           const controller = controllers.get('admin/posts');
 
           // $FlowIgnore
@@ -206,7 +206,7 @@ describe('module "router/route/action"', () => {
         let subject;
 
         beforeAll(async () => {
-          const { router, controllers } = await getTestApp();
+          const { controllers } = await getTestApp();
           const controller = controllers.get('posts');
 
           // $FlowIgnore

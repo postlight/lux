@@ -1,10 +1,6 @@
 // @flow
-import EventEmitter from 'events';
-
 import { FORMATS } from '../constants';
 import { createRequestLogger } from '../request-logger';
-import { getTestApp } from '../../../../test/utils/get-test-app';
-
 import Logger from '../index';
 
 const {

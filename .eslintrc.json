@@ -6,14 +6,21 @@
     "node": true
   },
   "globals": {
-    "jasmine": true,
-    "jest": true,
+    "$PropertyType": true,
     "Class": true,
     "Generator": true,
-    "$PropertyType": true,
-    "Knex$Transaction": true,
+    "Knex$SchemaBuilder": true,
     "Knex$QueryBuilder": true,
-    "Knex$SchemaBuilder": true
+    "Knex$Transaction": true,
+    "afterEach": true,
+    "afterAll": true,
+    "beforeEach": true,
+    "beforeAll": true,
+    "describe": true,
+    "expect": true,
+    "it": true,
+    "jest": true,
+    "jasmine": true
   },
   "settings": {
     "flowtype": {
@@ -53,6 +60,7 @@
       "newlines-between": "always"
     }],
     "import/extensions": 0,
+    "import/no-named-default": 0,
     "import/no-dynamic-require": 0,
     "import/prefer-default-export": 0,
     "flowtype/semi": 2,

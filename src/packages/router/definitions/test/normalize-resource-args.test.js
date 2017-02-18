@@ -1,6 +1,5 @@
 // @flow
 import { BUILT_IN_ACTIONS } from '../../../controller';
-
 import normalizeResourceArgs from '../context/utils/normalize-resource-args';
 
 describe('module "router/definitions/context"', () => {
@@ -44,7 +43,7 @@ describe('module "router/definitions/context"', () => {
     });
 
     it('normalizes arguments with a name and builder', () => {
-      const result = normalizeResourceArgs(['posts', function () {
+      const result = normalizeResourceArgs(['posts', function build() {
         return undefined;
       }]);
 
@@ -66,7 +65,7 @@ describe('module "router/definitions/context"', () => {
           'show',
           'index'
         ]
-      }, function () {
+      }, function build() {
         return undefined;
       }]);
 

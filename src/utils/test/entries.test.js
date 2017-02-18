@@ -1,6 +1,4 @@
 // @flow
-import entries from '../entries';
-
 describe('util entries()', () => {
   let entries;
 

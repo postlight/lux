@@ -2,7 +2,7 @@
 import { join } from 'path';
 import { writeFile } from 'fs';
 
-import range  from '../../../../utils/range';
+import range from '../../../../utils/range';
 
 export default function createTmpFiles(
   dir: string,

@@ -1,10 +1,6 @@
 # compiled output
 coverage/
 dist/
-.nyc_output/
-
-# tests
-test/
 
 # dependencies
 node_modules/
@@ -13,4 +9,5 @@ node_modules/
 decl/
 examples/
 flow-typed/
+test/test-app/
 *interfaces.js

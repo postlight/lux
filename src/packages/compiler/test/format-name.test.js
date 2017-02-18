@@ -1,8 +1,4 @@
 // @flow
-import path from 'path';
-
-
-
 import { getTestApp } from '../../../../test/utils/get-test-app';
 import formatName from '../utils/format-name';
 

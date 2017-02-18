@@ -4,12 +4,8 @@ import faker from 'faker';
 import { MIME_TYPE } from '../../jsonapi';
 import Controller from '../index';
 import Serializer from '../../serializer';
-import { Model } from '../../database';
 import * as Adapters from '../../adapter';
 import noop from '../../../utils/noop';
-import type { Request } from '../../request';
-import type { Response } from '../../response';
-
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 const HOST = 'localhost:4000';
@@ -42,15 +38,6 @@ describe('module "controller"', () => {
     let Post;
     let subject;
     let adapter;
-
-    const attributes = [
-      'id',
-      'body',
-      'title',
-      'isPublic',
-      'createdAt',
-      'updatedAt'
-    ];
 
     const getDefaultProps = () => ({
       id: expect.anything(),
@@ -91,7 +78,7 @@ describe('module "controller"', () => {
     describe('#index()', () => {
       const mockArgs = async (query = '') => {
         const [request, response] = await adapter({
-          url: '/posts' + query,
+          url: `/posts${query}`,
           method: 'GET',
           headers: {
             Host: HOST,
@@ -178,7 +165,7 @@ describe('module "controller"', () => {
     describe('#show()', () => {
       const mockArgs = async (id, query = '') => {
         const [request, response] = await adapter({
-          url: `/posts/${id}` + query,
+          url: `/posts/${id}${query}`,
           method: 'GET',
           headers: {
             Host: HOST,
@@ -214,12 +201,11 @@ describe('module "controller"', () => {
       });
 
       it('supports sparse field sets', async () => {
-        const [
-          request,
-          response,
-        ] = await mockArgs(1, '?fields[posts]=id,title');
-        const result = await subject.show(request, response);
         const { id, title } = getDefaultProps();
+        const [request, response] = await mockArgs(
+          1,
+          '?fields[posts]=id,title'
+        );
 
         assertRecord(await subject.show(request, response), {
           id,

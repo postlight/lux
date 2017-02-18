@@ -4,11 +4,11 @@
 import isObject from '../is-object';
 
 describe('util isObject()', () => {
-  it ('returns false when an `null` is passed in as an argument', () => {
+  it('returns false when an `null` is passed in as an argument', () => {
     expect(isObject(null)).toBe(false);
   });
 
-  it ('returns false when an `Array` is passed in as an argument', () => {
+  it('returns false when an `Array` is passed in as an argument', () => {
     expect(isObject([])).toBe(false);
   });
 

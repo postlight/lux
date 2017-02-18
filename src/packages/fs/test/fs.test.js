@@ -1,7 +1,5 @@
-// @flow
-import { tmpdir } from 'os';
-import { join } from 'path';
-
+/* @flow */
+/* eslint-disable import/first */
 jest.mock('fs');
 
 import * as nativeFs from 'fs';

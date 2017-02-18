@@ -43,6 +43,8 @@ describe('module "compiler"', () => {
     });
   });
 
+  /* eslint-disable no-console */
+
   describe('#onwarn()', () => {
     const { warn } = console;
     let onwarn;
@@ -76,4 +78,6 @@ describe('module "compiler"', () => {
       expect(console.warn).not.toBeCalled();
     });
   });
+
+  /* eslint-enable no-console */
 });

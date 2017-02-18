@@ -6,8 +6,6 @@ import { request } from '../../adapter/mock';
 import type Controller from '../../controller';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
-const CONTROLLER_MISSING_MESSAGE = /Could not resolve controller by name '.+'/;
-
 describe('module "router"', () => {
   describe('class Router', () => {
     let controller: Controller;
@@ -61,16 +59,15 @@ describe('module "router"', () => {
       });
 
       it('throws an error when a controller is missing', () => {
-        expect(() => {
+        expect(() => (
           new Router({
             controller,
             controllers,
-
             routes() {
               this.resource('articles');
-            }
-          });
-        }).toThrow();
+            },
+          })
+        )).toThrow();
       });
     });
 
@@ -79,12 +76,11 @@ describe('module "router"', () => {
         const subject = new Router({
           controller,
           controllers,
-
           routes() {
-            this.namespace('admin', function () {
+            this.namespace('admin', function admin() {
               this.resource('posts');
             });
-          }
+          },
         });
 
         expect(subject.has('GET:/admin/posts')).toBe(true);
@@ -99,18 +95,17 @@ describe('module "router"', () => {
       });
 
       it('throws an error when a controller is missing', () => {
-        expect(() => {
+        expect(() => (
           new Router({
             controller,
             controllers,
-
             routes() {
-              this.namespace('v1', function () {
+              this.namespace('v1', function v1() {
                 this.resource('posts');
               });
             }
-          });
-        }).toThrow();
+          })
+        )).toThrow();
       });
     });
 
@@ -131,10 +126,9 @@ describe('module "router"', () => {
         subject = new Router({
           controller,
           controllers,
-
           routes() {
             this.resource('posts');
-          }
+          },
         });
       });
 

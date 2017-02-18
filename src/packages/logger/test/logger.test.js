@@ -1,9 +1,41 @@
 // @flow
-
-
 import Logger, { line } from '../index';
 
 const TEST_MESSAGE = 'test';
+
+function isLoggerData(ln: string) {
+  try {
+    const data = JSON.parse(ln);
+
+    return (
+      data.timestamp
+      && data.message
+      && data.level
+    );
+  } catch (ex) {
+    return false;
+  }
+}
+
+function hookWrite(cb) {
+  const oldStdoutWrite = process.stdout.write;
+  const oldStderrorWrite = process.stderr.write;
+
+  const cbWrapper = (...args) => {
+    if (isLoggerData(...args)) {
+      Reflect.apply(cb, null, args);
+    }
+  };
+
+  // Class methods are read-only in flow, cast to Object to intercept
+  (process.stdout: Object).write = cbWrapper;
+  (process.stderr: Object).write = cbWrapper;
+
+  return function reset() {
+    (process.stdout: Object).write = oldStdoutWrite;
+    (process.stderr: Object).write = oldStderrorWrite;
+  };
+}
 
 describe('module "logger"', () => {
   describe('class Logger', () => {
@@ -31,8 +63,8 @@ describe('module "logger"', () => {
     });
 
     it('writes to stdout at the logger level', (done) => {
-      unhookWrite = hookWrite((line) => {
-        const { message, level } = JSON.parse(line);
+      unhookWrite = hookWrite(ln => {
+        const { message, level } = JSON.parse(ln);
         expect(message).toBe(TEST_MESSAGE);
         expect(level).toBe('INFO');
         done();
@@ -41,8 +73,8 @@ describe('module "logger"', () => {
     });
 
     it('does write messages above the logger level', (done) => {
-      unhookWrite = hookWrite((line) => {
-        const { message, level } = JSON.parse(line);
+      unhookWrite = hookWrite(ln => {
+        const { message, level } = JSON.parse(ln);
         expect(message).toBe(TEST_MESSAGE);
         expect(level).toBe('WARN');
         done();
@@ -60,8 +92,8 @@ describe('module "logger"', () => {
 
     it('writes with a recent timestamp', (done) => {
       const oldTimestamp = Date.now();
-      unhookWrite = hookWrite((line) => {
-        const { timestamp } = JSON.parse(line);
+      unhookWrite = hookWrite(ln => {
+        const { timestamp } = JSON.parse(ln);
         expect(Date.parse(timestamp)).toBe(oldTimestamp);
         done();
       });
@@ -69,9 +101,10 @@ describe('module "logger"', () => {
     });
 
     it('writes json', (done) => {
-      unhookWrite = hookWrite((line) => {
-        line = line.trim();
-        expect(JSON.stringify(JSON.parse(line))).toBe(line);
+      unhookWrite = hookWrite(ln => {
+        const trimmed = ln.trim();
+
+        expect(JSON.stringify(JSON.parse(trimmed))).toBe(trimmed);
         done();
       });
       jsonLogger.info(TEST_MESSAGE);
@@ -97,34 +130,3 @@ describe('module "logger"', () => {
     });
   });
 });
-
-function hookWrite (cb) {
-  const oldStdoutWrite = process.stdout.write;
-  const oldStderrorWrite = process.stderr.write;
-
-  const cbWrapper = (...args) => {
-    if (isLoggerData(...args)) {
-      Reflect.apply(cb, null, args);
-    }
-  };
-
-  // Class methods are read-only in flow, cast to Object to intercept
-  (process.stdout: Object).write = cbWrapper;
-  (process.stderr: Object).write = cbWrapper;
-
-  return function () {
-    (process.stdout: Object).write = oldStdoutWrite;
-    (process.stderr: Object).write = oldStderrorWrite;
-  };
-}
-
-function isLoggerData (line: string) {
-  try {
-    const data = JSON.parse(line);
-    return data.timestamp &&
-           data.message &&
-           data.level;
-  } catch (ex) {
-    return false;
-  }
-}

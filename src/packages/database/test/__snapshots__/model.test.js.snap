@@ -1,14 +1,3 @@
-exports[`module "database/model" class Model .columnFor() returns the column data for an attribute if it exists 1`] = `
-Object {
-  "columnName": "is_public",
-  "defaultValue": "0",
-  "docName": "is-public",
-  "maxLength": null,
-  "nullable": false,
-  "type": "tinyint",
-}
-`;
-
 exports[`module "database/model" class Model .initialize() adds a \`belongsTo\` property to the \`Model\` 1`] = `
 Object {
   "user": Object {
@@ -79,67 +68,6 @@ Array [
   "createdAt",
   "updatedAt",
 ]
-`;
-
-exports[`module "database/model" class Model .initialize() adds an \`attributes\` property to the \`Model\` 1`] = `
-Object {
-  "body": Object {
-    "columnName": "body",
-    "defaultValue": null,
-    "docName": "body",
-    "maxLength": 65535,
-    "nullable": true,
-    "type": "text",
-  },
-  "createdAt": Object {
-    "columnName": "created_at",
-    "defaultValue": null,
-    "docName": "created-at",
-    "maxLength": null,
-    "nullable": true,
-    "type": "datetime",
-  },
-  "id": Object {
-    "columnName": "id",
-    "defaultValue": null,
-    "docName": "id",
-    "maxLength": null,
-    "nullable": false,
-    "type": "int",
-  },
-  "isPublic": Object {
-    "columnName": "is_public",
-    "defaultValue": "0",
-    "docName": "is-public",
-    "maxLength": null,
-    "nullable": false,
-    "type": "tinyint",
-  },
-  "title": Object {
-    "columnName": "title",
-    "defaultValue": "New Post",
-    "docName": "title",
-    "maxLength": 255,
-    "nullable": false,
-    "type": "varchar",
-  },
-  "updatedAt": Object {
-    "columnName": "updated_at",
-    "defaultValue": null,
-    "docName": "updated-at",
-    "maxLength": null,
-    "nullable": true,
-    "type": "datetime",
-  },
-  "userId": Object {
-    "columnName": "user_id",
-    "defaultValue": null,
-    "docName": "user-id",
-    "maxLength": null,
-    "nullable": true,
-    "type": "int",
-  },
-}
 `;
 
 exports[`module "database/model" class Model .initialize() adds each scope to \`Model\` 1`] = `

@@ -2,11 +2,8 @@
 import { tmpdir } from 'os';
 import { join as joinPath } from 'path';
 
-
-
-import Watcher from '../watcher';
 import { APPVEYOR } from '../../../constants';
-
+import Watcher from '../watcher';
 import { rmrf, mkdirRec, writeFile } from '../index';
 
 describe('module "fs"', () => {

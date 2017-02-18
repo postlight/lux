@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable no-console */
 import { tap, compose, composeAsync } from '../compose';
 
 const log = console.log;

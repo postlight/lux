@@ -1,11 +1,7 @@
 // @flow
-import { spy } from 'sinon';
-
 import Model from '../model';
 import Query, { RecordNotFoundError } from '../query';
 import { ValidationError } from '../validation';
-
-import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 describe('module "database/model"', () => {
@@ -16,9 +12,8 @@ describe('module "database/model"', () => {
     let Comment: Class<Model>;
 
     beforeAll(async () => {
-      const app = await getTestApp();
+      ({ store } = await getTestApp());
 
-      store = app.store;
       User = store.modelFor('user');
       Image = store.modelFor('image');
       Comment = store.modelFor('comment');
@@ -50,12 +45,15 @@ describe('module "database/model"', () => {
           }
         };
 
-        static hooks = {
-          async afterCreate() {},
-          async beforeDestroy() {},
-          async duringDestroy() {}
-          //    ^^^^^^^^^^^^^ This hook should be removed.
-        };
+        static hooks = [
+          'afterCreate',
+          'beforeDestroy',
+          'duringDestroy',
+        ].reduce((hooks, key) => {
+          // eslint-disable-next-line no-param-reassign
+          hooks[key] = jest.fn().mockImplementation(() => Promise.resolve());
+          return hooks;
+        }, {});
 
         static scopes = {
           isPublic() {
@@ -74,16 +72,15 @@ describe('module "database/model"', () => {
         static validates = {
           title: str => Boolean(str),
           notAFunction: {},
-        //^^^^^^^^^^^^ This validation should be removed.
-          notAnAttribute: () => false
-        //^^^^^^^^^^^^^^ This validation should be removed.
+          notAnAttribute: () => false,
         };
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('can be called repeatedly without error', async () => {
@@ -113,7 +110,24 @@ describe('module "database/model"', () => {
       });
 
       it('adds an `attributes` property to the `Model`', () => {
-        expect(Subject.attributes).toMatchSnapshot();
+        const metaFor = (columnName, docName = columnName) => (
+          expect.objectContaining({
+            columnName,
+            docName,
+            type: expect.any(String),
+            nullable: expect.any(Boolean),
+          })
+        );
+
+        expect(Subject.attributes).toEqual({
+          id: metaFor('id'),
+          body: metaFor('body'),
+          isPublic: metaFor('is_public', 'is-public'),
+          title: metaFor('title'),
+          userId: metaFor('user_id', 'user-id'),
+          createdAt: metaFor('created_at', 'created-at'),
+          updatedAt: metaFor('updated_at', 'updated-at'),
+        });
       });
 
       it('adds an `attributeNames` property to the `Model`', () => {
@@ -203,9 +217,7 @@ describe('module "database/model"', () => {
         class Post extends Model {}
 
         beforeAll(async () => {
-          await Post.initialize(store, () => {
-            return store.connection(Post.tableName);
-          });
+          await Post.initialize(store, () => store.connection(Post.tableName));
         });
 
         it('adds a `tableName` property to the `prototype`', () => {
@@ -219,7 +231,7 @@ describe('module "database/model"', () => {
     });
 
     describe('.create()', () => {
-      let result: Subject;
+      let result;
 
       class Subject extends Model {
         id: number;
@@ -239,9 +251,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       afterAll(async () => {
@@ -284,9 +297,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns a static transaction proxy', async () => {
@@ -306,9 +320,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns an instance of `Query`', () => {
@@ -324,9 +339,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns an instance of `Query`', () => {
@@ -342,9 +358,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns an instance of `Query`', () => {
@@ -360,9 +377,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns an instance of `Query`', () => {
@@ -378,9 +396,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns an instance of `Query`', () => {
@@ -396,9 +415,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns an instance of `Query`', () => {
@@ -414,9 +434,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns an instance of `Query`', () => {
@@ -432,9 +453,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns an instance of `Query`', () => {
@@ -452,9 +474,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns an instance of `Query`', () => {
@@ -472,9 +495,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns an instance of `Query`', () => {
@@ -490,9 +514,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns an instance of `Query`', () => {
@@ -508,9 +533,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns an instance of `Query`', () => {
@@ -526,9 +552,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns an instance of `Query`', () => {
@@ -556,9 +583,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns an instance of `Query`', () => {
@@ -582,9 +610,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns an instance of `Query`', () => {
@@ -627,12 +656,14 @@ describe('module "database/model"', () => {
 
       beforeAll(async () => {
         await Promise.all([
-          SubjectA.initialize(store, () => {
-            return store.connection(SubjectA.tableName);
-          }),
-          SubjectB.initialize(store, () => {
-            return store.connection(SubjectB.tableName);
-          })
+          SubjectA.initialize(
+            store,
+            () => store.connection(SubjectA.tableName)
+          ),
+          SubjectB.initialize(
+            store,
+            () => store.connection(SubjectB.tableName)
+          ),
         ]);
       });
 
@@ -657,13 +688,21 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns the column data for an attribute if it exists', () => {
-        expect(Subject.columnFor('isPublic')).toMatchSnapshot();
+        expect(Subject.columnFor('isPublic')).toEqual(
+          expect.objectContaining({
+            columnName: 'is_public',
+            docName: 'is-public',
+            type: expect.any(String),
+            nullable: expect.any(Boolean),
+          })
+        );
       });
     });
 
@@ -673,9 +712,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns the column name for an attribute if it exists', () => {
@@ -697,9 +737,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns the data for a relationship if it exists', () => {
@@ -708,448 +749,83 @@ describe('module "database/model"', () => {
     });
 
     describe('.hooks', () => {
-      const assertCreateHook = (instance: Model, hookSpy) => {
-        expect(hookSpy.calledWith(instance)).toBe(true);
-      };
-
-      const assertSaveHook = async (instance: Model, hookSpy) => {
-        hookSpy.reset();
-
-        Reflect.set(instance, 'isPublic', true);
-        await instance.save();
-
-        expect(hookSpy.calledWith(instance)).toBe(true);
-      };
-
-      const assertUpdateHook = async (instance: Model, hookSpy) => {
-        hookSpy.reset();
-
-        await instance.update({
-          isPublic: true
-        });
-
-        expect(hookSpy.calledWith(instance)).toBe(true);
-      };
-
-      const assertDestroyHook = async (instance: Model, hookSpy) => {
-        await instance.destroy();
-        expect(hookSpy.calledWith(instance)).toBe(true);
-      };
-
-      describe('.afterCreate()', () => {
-        let hookSpy;
-        let instance;
-
-        class Subject extends Model {
-          isPublic: boolean;
-
-          static tableName = 'posts';
-
-          static hooks = {
-            async afterCreate() {}
-          };
-        }
-
-        beforeAll(async () => {
-          hookSpy = spy(Subject.hooks, 'afterCreate');
-
-          await Subject.initialize(store, () => {
-            return store.connection(Subject.tableName);
-          });
-
-          instance = await Subject.create({
-            title: 'Test Hook (afterCreate)',
-            isPublic: false
-          });
-        });
-
-        afterAll(async () => {
-          await instance.destroy();
-          hookSpy.reset();
-        });
-
-        it('runs when .create() is called', () => {
-          assertCreateHook(instance, hookSpy);
-        });
-      });
-
-      describe('.afterDestroy()', () => {
-        let hookSpy;
-        let instance;
-
-        class Subject extends Model {
-          static tableName = 'posts';
-
-          static hooks = {
-            async afterDestroy() {}
-          };
-        }
-
-        beforeAll(async () => {
-          hookSpy = spy(Subject.hooks, 'afterDestroy');
-
-          await Subject.initialize(store, () => {
-            return store.connection(Subject.tableName);
-          });
-
-          instance = await Subject.create({
-            title: 'Test Hook (afterDestroy)',
-            isPublic: false
-          });
-        });
-
-        it('runs when #destroy is called', async () => {
-          await assertDestroyHook(instance, hookSpy);
-        });
-      });
-
-      describe('.afterSave()', () => {
-        let hookSpy;
-        let instance;
-
-        class Subject extends Model {
-          isPublic: boolean;
-
-          static tableName = 'posts';
-
-          static hooks = {
-            async afterSave() {}
-          };
-        }
-
-        beforeAll(async () => {
-          hookSpy = spy(Subject.hooks, 'afterSave');
-
-          await Subject.initialize(store, () => {
-            return store.connection(Subject.tableName);
-          });
-        });
-
-        beforeEach(async () => {
-          instance = await Subject.create({
-            title: 'Test Hook (afterSave)',
-            isPublic: false
-          });
-        });
-
-        afterEach(async () => {
-          await instance.destroy();
-          hookSpy.reset();
-        });
-
-        it('runs when .create() is called', () => {
-          assertCreateHook(instance, hookSpy);
-        });
-
-        it('runs when #save() is called', async () => {
-          await assertSaveHook(instance, hookSpy);
-        });
-
-        it('runs when #update() is called', async () => {
-          await assertUpdateHook(instance, hookSpy);
-        });
-      });
-
-      describe('.afterUpdate()', () => {
-        let hookSpy;
-        let instance;
-
-        class Subject extends Model {
-          isPublic: boolean;
-
-          static tableName = 'posts';
-
-          static hooks = {
-            async afterUpdate() {}
-          };
-        }
-
-        beforeAll(async () => {
-          hookSpy = spy(Subject.hooks, 'afterUpdate');
-
-          await Subject.initialize(store, () => {
-            return store.connection(Subject.tableName);
-          });
-        });
-
-        beforeEach(async () => {
-          instance = await Subject.create({
-            title: 'Test Hook (afterUpdate)',
-            isPublic: false
-          });
-        });
-
-        afterEach(async () => {
-          await instance.destroy();
-          hookSpy.reset();
-        });
-
-        it('runs when #save() is called', async () => {
-          await assertSaveHook(instance, hookSpy);
-        });
-
-        it('runs when #update() is called', async () => {
-          await assertUpdateHook(instance, hookSpy);
-        });
-      });
-
-      describe('.afterValidation()', () => {
-        let hookSpy;
-        let instance;
-
-        class Subject extends Model {
-          isPublic: boolean;
-
-          static tableName = 'posts';
-
-          static hooks = {
-            async afterValidation() {}
-          };
-        }
-
-        beforeAll(async () => {
-          hookSpy = spy(Subject.hooks, 'afterValidation');
-
-          await Subject.initialize(store, () => {
-            return store.connection(Subject.tableName);
-          });
-        });
-
-        beforeEach(async () => {
-          instance = await Subject.create({
-            title: 'Test Hook (afterValidation)',
-            isPublic: false
-          });
-        });
-
-        afterEach(async () => {
-          await instance.destroy();
-          hookSpy.reset();
-        });
-
-        it('runs when .create() is called', () => {
-          assertCreateHook(instance, hookSpy);
-        });
-
-        it('runs when #save() is called', async () => {
-          await assertSaveHook(instance, hookSpy);
-        });
-
-        it('runs when #update() is called', async () => {
-          await assertUpdateHook(instance, hookSpy);
-        });
-      });
-
-      describe('.beforeCreate()', () => {
-        let hookSpy;
-        let instance;
-
-        class Subject extends Model {
-          isPublic: boolean;
-
-          static tableName = 'posts';
-
-          static hooks = {
-            async beforeCreate() {}
-          };
-        }
-
-        beforeAll(async () => {
-          hookSpy = spy(Subject.hooks, 'beforeCreate');
-
-          await Subject.initialize(store, () => {
-            return store.connection(Subject.tableName);
-          });
-
-          instance = await Subject.create({
-            title: 'Test Hook (beforeCreate)',
-            isPublic: false
-          });
-        });
-
-        afterAll(async () => {
-          await instance.destroy();
-        });
-
-        it('runs when .create() is called', () => {
-          assertCreateHook(instance, hookSpy);
-        });
-      });
-
-      describe('.beforeDestroy()', () => {
-        let hookSpy;
-        let instance;
-
-        class Subject extends Model {
-          isPublic: boolean;
-
-          static tableName = 'posts';
-
-          static hooks = {
-            async beforeDestroy(record) {
-
+      ['after', 'before'].forEach(prefix => {
+        ['Save', 'Create', 'Destroy', 'Validation'].forEach(suffix => {
+          const trx = expect.any(Function);
+          const name = prefix + suffix;
+          const tableName = 'posts';
+          let Subject;
+          let instance;
+          let hook;
+
+          describe(`.${name}()`, () => {
+            beforeAll(async () => {
+              hook = jest.fn().mockReturnValue(Promise.resolve());
+
+              Subject = class extends Model {
+                isPublic: boolean;
+                static hooks = { [name]: hook };
+                static tableName = tableName;
+              };
+
+              await Subject.initialize(
+                store,
+                () => store.connection(tableName)
+              );
+            });
+
+            beforeEach(async () => {
+              instance = await Subject
+                .create({
+                  title: 'Test Hook',
+                  isPublic: false,
+                })
+                .then(result => (
+                  result.unwrap()
+                ));
+            });
+
+            afterEach(async () => {
+              if (hook) {
+                hook.mockClear();
+              }
+
+              if (suffix !== 'Destroy') {
+                await instance.destroy();
+              }
+            });
+
+            if (/^(save|create|validation)$/i.test(suffix)) {
+              it('runs when .create() is called', () => {
+                expect(hook).toBeCalledWith(instance, trx);
+              });
             }
-          };
-        }
 
-        beforeAll(async () => {
-          hookSpy = spy(Subject.hooks, 'beforeDestroy');
+            if (/^(save|update|validation)$/i.test(suffix)) {
+              it('runs when #save() is called', async () => {
+                instance.isPublic = true;
+                await instance.save();
 
-          await Subject.initialize(store, () => {
-            return store.connection(Subject.tableName);
-          });
+                expect(hook).toBeCalledWith(instance, trx);
+              });
 
-          instance = await Subject.create({
-            title: 'Test Hook (beforeDestroy)',
-            isPublic: false
-          });
-        });
+              it('runs when #update() is called', async () => {
+                await instance.update({
+                  isPublic: true,
+                });
 
-        afterAll(async () => {
-          await instance.destroy();
-        });
-
-        it('runs when #destroy is called', async () => {
-          await assertDestroyHook(instance, hookSpy);
-        });
-      });
-
-      describe('.beforeSave()', () => {
-        let hookSpy;
-        let instance;
-
-        class Subject extends Model {
-          isPublic: boolean;
-
-          static tableName = 'posts';
-
-          static hooks = {
-            async beforeSave() {}
-          };
-        }
-
-        beforeAll(async () => {
-          hookSpy = spy(Subject.hooks, 'beforeSave');
-
-          await Subject.initialize(store, () => {
-            return store.connection(Subject.tableName);
-          });
-        });
-
-        beforeEach(async () => {
-          instance = await Subject.create({
-            title: 'Test Hook (beforeSave)',
-            isPublic: false
-          });
-        });
-
-        afterEach(async () => {
-          await instance.destroy();
-          hookSpy.reset();
-        });
-
-        it('runs when .create() is called', () => {
-          assertCreateHook(instance, hookSpy);
-        });
-
-        it('runs when #save() is called', async () => {
-          await assertSaveHook(instance, hookSpy);
-        });
-
-        it('runs when #update() is called', async () => {
-          await assertUpdateHook(instance, hookSpy);
-        });
-      });
-
-      describe('.beforeUpdate()', () => {
-        let hookSpy;
-        let instance;
-
-        class Subject extends Model {
-          isPublic: boolean;
-
-          static tableName = 'posts';
-
-          static hooks = {
-            beforeUpdate(record) {
-              return Promise.resolve(record);
+                expect(hook).toBeCalledWith(instance, trx);
+              });
             }
-          };
-        }
 
-        beforeAll(async () => {
-          hookSpy = spy(Subject.hooks, 'beforeUpdate');
+            if (suffix === 'Destroy') {
+              it('runs when #destroy() is called', async () => {
+                await instance.destroy();
 
-          await Subject.initialize(store, () => {
-            return store.connection(Subject.tableName);
+                expect(hook).toBeCalledWith(instance, trx);
+              });
+            }
           });
-        });
-
-        beforeEach(async () => {
-          instance = await Subject.create({
-            title: 'Test Hook (beforeUpdate)',
-            isPublic: false
-          });
-        });
-
-        afterEach(async () => {
-          await instance.destroy();
-          hookSpy.reset();
-        });
-
-        it('runs when #save() is called', async () => {
-          await assertSaveHook(instance, hookSpy);
-        });
-
-        it('runs when #update() is called', async () => {
-          await assertUpdateHook(instance, hookSpy);
-        });
-      });
-
-      describe('.beforeValidation()', () => {
-        let hookSpy;
-        let instance;
-
-        class Subject extends Model {
-          isPublic: boolean;
-
-          static tableName = 'posts';
-
-          static hooks = {
-            async beforeValidation() {}
-          };
-        }
-
-        beforeAll(async () => {
-          hookSpy = spy(Subject.hooks, 'beforeValidation');
-
-          await Subject.initialize(store, () => {
-            return store.connection(Subject.tableName);
-          });
-        });
-
-        beforeEach(async () => {
-          instance = await Subject.create({
-            title: 'Test Hook (beforeValidation)',
-            isPublic: false
-          });
-        });
-
-        afterEach(async () => {
-          await instance.destroy();
-          hookSpy.reset();
-        });
-
-        it('runs when .create() is called', () => {
-          assertCreateHook(instance, hookSpy);
-        });
-
-        it('runs when #save() is called', async () => {
-          await assertSaveHook(instance, hookSpy);
-        });
-
-        it('runs when #update() is called', async () => {
-          await assertUpdateHook(instance, hookSpy);
         });
       });
     });
@@ -1163,9 +839,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       describe('#set()', () => {
@@ -1211,252 +888,172 @@ describe('module "database/model"', () => {
       });
     });
 
-    describe('#save()', () => {
-      const instances = new Set();
-      let instance: Subject;
+    ['save', 'update'].forEach(method => {
+      describe(`#${method}()`, () => {
+        let user;
+        let image;
+        let comment;
+        let instance;
 
-      class Subject extends Model {
-        id: number;
-        user: Model;
-        title: string;
-        isPublic: boolean;
+        class Subject extends Model {
+          id: number;
+          body: string;
+          title: string;
+          isPublic: boolean;
 
-        static tableName = 'posts';
+          static tableName = 'posts';
 
-        static hasMany = {
-          comments: {
-            inverse: 'posts',
-            foreignKey: 'post_id'
+          static hasOne = {
+            image: {
+              inverse: 'post'
+            }
+          };
+
+          static hasMany = {
+            comments: {
+              inverse: 'post'
+            }
+          };
+
+          static belongsTo = {
+            user: {
+              inverse: 'posts'
+            }
+          };
+
+          static validates = {
+            title: str => str.split(' ').length > 1
+          };
+        }
+
+        beforeAll(async () => {
+          await Subject.initialize(
+            store,
+            () => store.connection(Subject.tableName)
+          );
+        });
+
+        beforeEach(async () => {
+          instance = await Subject.create({
+            title: 'Test Post',
+            isPublic: false
+          });
+        });
+
+        afterEach(async () => {
+          await instance.destroy();
+
+          if (user) {
+            await user.destroy();
           }
-        };
 
-        static belongsTo = {
-          user: {
-            inverse: 'posts'
+          if (image) {
+            await image.destroy();
           }
-        };
 
-        static validates = {
-          title: str => str.split(' ').length > 1
-        };
-      }
-
-      beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
-      });
-
-      beforeEach(async () => {
-        instance = await Subject.create({
-          title: 'Test Post',
-          isPublic: false
-        });
-      });
-
-      afterEach(() => {
-        return Subject.transaction(trx => (
-          Promise.all([
-            instance
-              .transacting(trx)
-              .destroy(),
-            ...Array
-              .from(instances)
-              .map(record => (
-                record
-                  .transacting(trx)
-                  .destroy()
-                  .then(() => instances.delete(record))
-              ))
-          ])
-        ));
-      });
-
-      it('can persist dirty attributes', async () => {
-        instance.isPublic = true;
-        await instance.save();
-
-        expect(instance.isPublic).toBe(true);
-
-        const result = await Subject.find(instance.id);
-
-        expect(result.isPublic).toBe(true);
-      });
-
-      it('can persist dirty relationships', async () => {
-        const userInstance = await User.create({
-          name: 'Test User',
-          email: 'test-user@postlight.com',
-          password: 'test12345678'
-        });
-
-        instances.add(userInstance);
-
-        instance.user = userInstance;
-        await instance.save();
-
-        const {
-          rawColumnData: {
-            user,
-            userId
+          if (comment) {
+            await comment.destroy();
           }
-        } = await Subject
-          .find(instance.id)
-          .include('user');
-
-        expect(user).toEqual(expect.any(Object));
-        expect(user.id).toBe(userId);
-        expect(user.name).toBe('Test User');
-        expect(user.email).toBe('test-user@postlight.com');
-      });
-
-      it('fails if a validation is not met', async () => {
-        instance.title = 'Test';
-        await instance.save().catch(err => {
-          expect(err instanceof ValidationError).toBe(true);
         });
 
-        expect(instance.title).toBe('Test');
+        it('can set and persist attributes and relationships', async () => {
+          const body = 'Lots of content...';
 
-        const result = await Subject.find(instance.id);
+          [user, image, comment] = await User.transaction(trx => (
+            Promise.all([
+              User.transacting(trx).create({
+                name: 'Test User',
+                email: '',
+                password: 'password',
+              }),
+              Image.transacting(trx).create({
+                url: 'https://postlight.com',
+              }),
+              Comment.transacting(trx).create({
+                message: 'Test',
+              }),
+            ])
+          ));
 
-        expect(result.title).toBe('Test Post');
-      });
-    });
+          if (method === 'update') {
+            await instance.update({
+              body,
+              user,
+              image,
+              comments: [
+                comment,
+              ],
+              isPublic: true
+            });
+          } else {
+            // $FlowIgnore
+            Object.assign(instance, {
+              body,
+              user,
+              image,
+              comments: [
+                comment,
+              ],
+              isPublic: true
+            });
 
-    describe('#update()', () => {
-      let instance: Subject;
-
-      class Subject extends Model {
-        id: number;
-        body: string;
-        title: string;
-        isPublic: boolean;
-
-        static tableName = 'posts';
-
-        static hasOne = {
-          image: {
-            inverse: 'post'
+            await instance.save();
           }
-        };
 
-        static hasMany = {
-          comments: {
-            inverse: 'post'
-          }
-        };
+          expect(instance.body).toBe(body);
+          expect(instance.isPublic).toBe(true);
 
-        static belongsTo = {
-          user: {
-            inverse: 'posts'
-          }
-        };
+          let result = await Subject
+            .find(instance.getPrimaryKey())
+            .include(
+              'user',
+              'image',
+              'comments'
+            );
 
-        static validates = {
-          title: str => str.split(' ').length > 1
-        };
-      }
+          result = result.toObject();
 
-      beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
-      });
+          expect(result.body).toBe(body);
+          expect(result.isPublic).toBe(true);
 
-      beforeEach(async () => {
-        instance = await Subject.create({
-          title: 'Test Post',
-          isPublic: false
-        });
-      });
-
-      afterEach(async () => {
-        await instance.destroy();
-      });
-
-      it('can set and persist attributes and relationships', async () => {
-        const body = 'Lots of content...';
-
-        const user = new User({
-          id: 1
-        });
-
-        const image = new Image({
-          id: 1
-        });
-
-        const comments = [
-          new Comment({
-            id: 1
-          }),
-          new Comment({
-            id: 2
-          }),
-          new Comment({
-            id: 3
-          })
-        ];
-
-        await instance.update({
-          body,
-          user,
-          image,
-          comments,
-          isPublic: true
-        });
-
-        expect(instance.body).toBe(body);
-        expect(instance.isPublic).toBe(true);
-
-        const result = await Subject
-          .find(instance.id)
-          .include(
-            'user',
-            'image',
-            'comments'
+          expect(result.user).toEqual(
+            expect.objectContaining({
+              id: user.getPrimaryKey(),
+            })
           );
 
-        expect(result.body).toBe(body);
-        expect(result.isPublic).toBe(true);
+          expect(result.image).toEqual(
+            expect.objectContaining({
+              id: image.getPrimaryKey(),
+            })
+          );
 
-        expect(await result.user).toEqual(
-          expect.objectContaining({
-            id: user.getPrimaryKey(),
-          })
-        );
+          expect(result.comments).toEqual(expect.any(Array));
+        });
 
-        expect(await result.image).toEqual(
-          expect.objectContaining({
-            id: image.getPrimaryKey(),
-          })
-        );
+        it('fails if a validation is not met', async () => {
+          await instance
+            .update({
+              title: 'Test',
+              isPublic: true,
+            })
+            .catch(err => {
+              expect(err).toBeInstanceOf(ValidationError);
+            });
 
-        expect(await result.comments).toEqual(expect.any(Array));
-      });
+          expect(instance.title).toEqual('Test');
+          expect(instance.isPublic).toEqual(true);
 
-      it('fails if a validation is not met', async () => {
-        await instance
-          .update({
-            title: 'Test',
-            isPublic: true,
-          })
-          .catch(err => {
-            expect(err).toBeInstanceOf(ValidationError);
-          });
+          const result = await Subject.find(instance.id);
 
-        expect(instance.title).toEqual('Test');
-        expect(instance.isPublic).toEqual(true);
-
-        const result = await Subject.find(instance.id);
-
-        expect(result.title).toEqual('Test Post');
-        expect(result.isPublic).toEqual(false);
+          expect(result.title).toEqual('Test Post');
+          expect(result.isPublic).toEqual(false);
+        });
       });
     });
 
     describe('#destroy()', () => {
-      let instance: Subject;
+      let instance;
 
       class Subject extends Model {
         id: number;
@@ -1465,9 +1062,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
 
         instance = await Subject.create({
           title: 'Test Post'
@@ -1487,7 +1085,7 @@ describe('module "database/model"', () => {
     });
 
     describe('#reload', () => {
-      let instance: Subject;
+      let instance;
 
       class Subject extends Model {
         title: string;
@@ -1496,9 +1094,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
 
         instance = await Subject.create({
           body: 'Lots of content...',
@@ -1538,7 +1137,7 @@ describe('module "database/model"', () => {
     });
 
     describe('#rollback', () => {
-      let instance: Subject;
+      let instance;
 
       class Subject extends Model {
         title: string;
@@ -1547,9 +1146,10 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
 
         instance = await Subject.create({
           body: 'Lots of content...',
@@ -1578,16 +1178,17 @@ describe('module "database/model"', () => {
     });
 
     describe('#getAttributes()', () => {
-      let instance: Subject;
+      let instance;
 
       class Subject extends Model {
         static tableName = 'posts';
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
 
         instance = await Subject.create({
           body: 'Lots of content...',
@@ -1611,16 +1212,17 @@ describe('module "database/model"', () => {
     });
 
     describe('#getPrimaryKey()', () => {
-      let instance: Subject;
+      let instance;
 
       class Subject extends Model {
         static tableName = 'posts';
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
 
         instance = await Subject.create({
           title: 'Test Post'
@@ -1639,16 +1241,15 @@ describe('module "database/model"', () => {
     });
 
     describe('get #persisted()', () => {
-      let instance;
-
       class Subject extends Model {
         static tableName = 'posts';
       }
 
       beforeAll(async () => {
-        await Subject.initialize(store, () => {
-          return store.connection(Subject.tableName);
-        });
+        await Subject.initialize(
+          store,
+          () => store.connection(Subject.tableName)
+        );
       });
 
       it('returns true for a record returned from querying', async () => {

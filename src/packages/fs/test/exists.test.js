@@ -1,16 +1,10 @@
 // @flow
 import { tmpdir } from 'os';
-
-
 import { basename, dirname, join } from 'path';
 
-import {
-  createTmpDir,
-  createTmpFiles,
-  removeTmpDir
-} from './utils';
-
 import { exists } from '../index';
+
+import { createTmpDir, createTmpFiles, removeTmpDir } from './utils';
 
 const TMP_PATH = join(tmpdir(), `lux-${Date.now()}`);
 

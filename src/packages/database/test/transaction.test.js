@@ -1,14 +1,12 @@
 // @flow
 import { spy } from 'sinon';
 
-
 import Model from '../model';
 import {
   createTransactionResultProxy,
   createStaticTransactionProxy,
   createInstanceTransactionProxy
 } from '../transaction';
-
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 describe('module "database/transaction"', () => {
@@ -19,9 +17,7 @@ describe('module "database/transaction"', () => {
   beforeAll(async () => {
     const { store } = await getTestApp();
 
-    await Subject.initialize(store, () => {
-      return store.connection(Subject.tableName);
-    });
+    await Subject.initialize(store, () => store.connection(Subject.tableName));
   });
 
   describe('.createTransactionResultProxy()', () => {
@@ -33,7 +29,7 @@ describe('module "database/transaction"', () => {
   });
 
   describe('.createStaticTransactionProxy()', () => {
-    describe(`#create()`, () => {
+    describe('#create()', () => {
       let instance: Subject;
       let createSpy;
 
@@ -50,7 +46,7 @@ describe('module "database/transaction"', () => {
       });
 
       it('calls create on the model with the trx object', async () => {
-        let args = [{}];
+        const args = [{}];
 
         await Subject.transaction(trx => {
           args.push(trx);
@@ -85,7 +81,7 @@ describe('module "database/transaction"', () => {
 
         it(`calls ${method} on the instance with the trx object`, async () => {
           const obj = {};
-          let args = [];
+          const args = [];
 
           await instance.transaction(trx => {
             const proxied = createInstanceTransactionProxy(instance, trx);
@@ -101,7 +97,7 @@ describe('module "database/transaction"', () => {
                 promise = proxied.update(obj);
                 break;
 
-              case 'destroy':
+              default:
                 promise = proxied.destroy();
                 break;
             }

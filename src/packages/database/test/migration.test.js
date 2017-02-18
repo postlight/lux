@@ -1,19 +1,17 @@
 // @flow
 import Migration from '../migration';
-import generateTimestamp, {
+import { getTestApp } from '../../../../test/utils/get-test-app';
+import {
+  default as generateTimestamp,
   padding
 } from '../migration/utils/generate-timestamp';
-
-import { getTestApp } from '../../../../test/utils/get-test-app';
 
 describe('module "database/migration"', () => {
   describe('class Migration', () => {
     let store;
 
     beforeAll(async () => {
-      const app = await getTestApp();
-
-      store = app.store;
+      ({ store } = await getTestApp());
     });
 
     describe('#run()', () => {
@@ -21,8 +19,8 @@ describe('module "database/migration"', () => {
       let subject;
 
       beforeEach(() => {
-        subject = new Migration(schema => {
-          return schema.createTable(tableName, table => {
+        subject = new Migration(schema => (
+          schema.createTable(tableName, table => {
             table.increments();
 
             table
@@ -33,21 +31,19 @@ describe('module "database/migration"', () => {
 
             table.timestamps();
             table.index(['created_at', 'updated_at']);
-          });
-        });
+          })
+        ));
       });
 
       afterEach(() => (
         store.schema().dropTable(tableName)
       ));
 
-      it('runs a migration function', () => {
-        return subject
+      it('runs a migration function', () => subject
           .run(store.schema())
           .then(result => {
             expect(result).toEqual(expect.anything());
-          });
-      });
+          }));
     });
   });
 });

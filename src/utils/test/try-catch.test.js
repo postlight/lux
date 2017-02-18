@@ -7,9 +7,7 @@ describe('util tryCatch()', () => {
 
     expect(value).toBe(false);
 
-    await tryCatch(() => {
-      return Promise.reject(new Error('Test'));
-    }, () => {
+    await tryCatch(() => Promise.reject(new Error('Test')), () => {
       value = true;
     });
 

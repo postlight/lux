@@ -7,7 +7,6 @@ import { getTestApp } from '../../../../test/utils/get-test-app';
 describe('module "database/query"', () => {
   describe('class Query', () => {
     let Test;
-    let Comment: Class<Model>;
 
     class TestModel extends Model {
       id: number;
@@ -61,11 +60,10 @@ describe('module "database/query"', () => {
       const { store } = await getTestApp();
 
       Test = store.modelFor('test');
-      Comment = store.modelFor('comment');
-
-      await TestModel.initialize(store, () => {
-        return store.connection(TestModel.tableName);
-      });
+      await TestModel.initialize(
+        store,
+        () => store.connection(TestModel.tableName)
+      );
     });
 
     beforeEach(async () => {
@@ -590,7 +588,7 @@ describe('module "database/query"', () => {
         if (Array.isArray(result)) {
           result.forEach(item => {
             assertItem(item);
-            expect(Object.keys(item.rawColumnData)).toEqual(attrs);;
+            expect(Object.keys(item.rawColumnData)).toEqual(attrs);
           });
         }
       });
@@ -622,7 +620,7 @@ describe('module "database/query"', () => {
         if (Array.isArray(result)) {
           result.forEach(item => {
             assertItem(item);
-            expect(Object.keys(item.rawColumnData)).toEqual(attrs);;
+            expect(Object.keys(item.rawColumnData)).toEqual(attrs);
           });
         }
       });
@@ -669,7 +667,7 @@ describe('module "database/query"', () => {
       });
 
       it('resolves with the correct array of `Model` instances', async () => {
-        let result = await subject.include({
+        const result = await subject.include({
           user: ['id'],
           comments: ['id'],
         });
