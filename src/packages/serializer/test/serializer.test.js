@@ -96,6 +96,25 @@ describe('module "serializer"', () => {
       const byType = createSorter('type');
       const { prototype: { toISOString } } = Date;
 
+      const sortRelationships = ({ relationships = {} }) => {
+        const {
+          tags: { data: tags = [] } = {},
+          posts: { data: posts = [] } = {},
+          comments: { data: comments = [] } = {},
+          reactions: { data: reactions = [] } = {},
+        } = relationships;
+
+        tags.sort(byId('asc'));
+        posts.sort(byId('asc'));
+        comments.sort(byId('asc'));
+        reactions.sort(byId('asc'));
+      };
+
+      const sortIncluded = ({ included = [] }) => {
+        included.sort(byType('asc', byId('asc')));
+        included.forEach(sortRelationships);
+      };
+
       beforeAll(() => {
         global.Date.prototype.toISOString = function trap() {
           const date = new Date(this);
@@ -124,6 +143,7 @@ describe('module "serializer"', () => {
           },
         });
 
+        sortRelationships(result.data);
         expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
       });
 
@@ -138,6 +158,7 @@ describe('module "serializer"', () => {
           }
         });
 
+        result.data.forEach(sortRelationships);
         expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
       });
 
@@ -155,8 +176,8 @@ describe('module "serializer"', () => {
           },
         });
 
-        result.included.sort(byType('asc', byId('asc')));
-
+        sortIncluded(result);
+        result.data.forEach(sortRelationships);
         expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
       });
 
@@ -174,6 +195,8 @@ describe('module "serializer"', () => {
           },
         });
 
+        sortIncluded(result);
+        sortRelationships(result.data);
         expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
       });
 
@@ -191,6 +214,8 @@ describe('module "serializer"', () => {
           },
         });
 
+        sortIncluded(result);
+        sortRelationships(result.data);
         expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
       });
 
@@ -208,6 +233,8 @@ describe('module "serializer"', () => {
           },
         });
 
+        sortIncluded(result);
+        sortRelationships(result.data);
         expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
       });
 
@@ -225,9 +252,8 @@ describe('module "serializer"', () => {
           },
         });
 
-        result.included.sort(byId('asc'));
-        result.data.relationships.tags.data.sort(byId('asc'));
-
+        sortIncluded(result);
+        sortRelationships(result.data);
         expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
       });
     });
