@@ -1,5 +1,6 @@
 // @flow
 import Serializer from '../index';
+import type { ObjectMap } from '../../../interfaces';
 import { getTestApp } from '../../../../test/utils/get-test-app';
 
 const DOMAIN = 'http://localhost:4000';
@@ -7,6 +8,34 @@ const DOMAIN = 'http://localhost:4000';
 const linkFor = (type, id) => (
   id ? `${DOMAIN}/${type}/${id}` : `${DOMAIN}/${type}`
 );
+
+const createSorter = field => {
+  const extractValue = (src: ObjectMap<string>) => {
+    const value = src[field];
+
+    if (typeof value === 'string') {
+      const asNum = Number.parseInt(value, 10);
+
+      return Number.isFinite(asNum) ? asNum : value.charCodeAt(0);
+    }
+
+    return 0;
+  };
+
+  return (direction = 'asc', tiebreaker = () => 0) => (
+    (a: ObjectMap<string>, b: ObjectMap<string>) => {
+      let result = 0;
+
+      if (direction === 'asc') {
+        result = extractValue(a) - extractValue(b);
+      } else {
+        result = extractValue(b) - extractValue(a);
+      }
+
+      return result || tiebreaker(a, b);
+    }
+  );
+};
 
 describe('module "serializer"', () => {
   describe('class Serializer', () => {
@@ -63,6 +92,8 @@ describe('module "serializer"', () => {
     });
 
     describe('#format()', () => {
+      const byId = createSorter('id');
+      const byType = createSorter('type');
       const { prototype: { toISOString } } = Date;
 
       beforeAll(() => {
@@ -111,9 +142,9 @@ describe('module "serializer"', () => {
       });
 
       it('can build namespaced links', async () => {
-        const post = await Post.page(1).include('user', 'comments');
+        const posts = await Post.page(1).order('createdAt');
         const result = await adminSubject.format({
-          data: post,
+          data: posts,
           domain: DOMAIN,
           include: [
             'user',
@@ -123,6 +154,8 @@ describe('module "serializer"', () => {
             self: linkFor('admin/posts'),
           },
         });
+
+        result.included.sort(byType('asc', byId('asc')));
 
         expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
       });
@@ -191,6 +224,9 @@ describe('module "serializer"', () => {
             self: linkFor('posts', id),
           },
         });
+
+        result.included.sort(byId('asc'));
+        result.data.relationships.tags.data.sort(byId('asc'));
 
         expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
       });

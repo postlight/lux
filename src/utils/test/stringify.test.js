@@ -1,39 +1,54 @@
 // @flow
-import stringify from '../stringify';
+import * as stringify from '../stringify';
 
-describe('util stringify()', () => {
-  it('converts arrays to a string', () => {
-    const subject = [1, 2, 3];
+const DEFAULT = 'default';
+const CIRCULAR = 'circular';
 
-    expect(JSON.parse(stringify(subject))).toEqual(subject);
-  });
+describe('util fn()', () => {
+  [DEFAULT, CIRCULAR].forEach(method => {
+    describe(`- ${method}`, () => {
+      const fn = stringify[method];
 
-  it('converts booleans to a string', () => {
-    expect(stringify(true)).toBe('true');
-    expect(stringify(false)).toBe('false');
-  });
+      it('converts arrays to a string', () => {
+        expect(fn([1, 2, 3])).toMatchSnapshot();
+      });
 
-  it('converts null to a string', () => {
-    expect(stringify(null)).toBe('null');
-  });
+      it('converts booleans to a string', () => {
+        expect(fn(true)).toBe('true');
+        expect(fn(false)).toBe('false');
+      });
 
-  it('converts numbers to a string', () => {
-    expect(stringify(1)).toBe('1');
-    expect(stringify(NaN)).toBe('NaN');
-    expect(stringify(Infinity)).toBe('Infinity');
-  });
+      it('converts null to a string', () => {
+        expect(fn(null)).toBe('null');
+      });
 
-  it('converts objects to a string', () => {
-    const subject = { a: 1, b: 2, c: 3 };
+      it('converts numbers to a string', () => {
+        expect(fn(1)).toBe('1');
+        expect(fn(NaN)).toBe('NaN');
+        expect(fn(Infinity)).toBe('Infinity');
+      });
 
-    expect(JSON.parse(stringify(subject))).toEqual(subject);
-  });
+      it('converts objects to a string', () => {
+        expect(fn({ a: 1, b: 2, c: 3 })).toMatchSnapshot();
+      });
 
-  it('converts strings to a string', () => {
-    expect(stringify('Test')).toBe('Test');
-  });
+      if (method === CIRCULAR) {
+        it('converts circular objects to a string', () => {
+          const subject = { a: 1, b: 2, c: {} };
 
-  it('converts undefined to a string', () => {
-    expect(stringify(undefined)).toBe('undefined');
+          subject.c = subject;
+
+          expect(fn(subject)).toMatchSnapshot();
+        });
+      }
+
+      it('converts strings to a string', () => {
+        expect(fn('Test')).toBe('Test');
+      });
+
+      it('converts undefined to a string', () => {
+        expect(fn(undefined)).toBe('undefined');
+      });
+    });
   });
 });

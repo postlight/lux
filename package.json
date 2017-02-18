@@ -75,6 +75,7 @@
   },
   "jest": {
     "testRegex": "\\.test\\.js$",
+    "setupFiles": ["./test/index.js"],
     "testEnvironment": "node",
     "collectCoverage": true,
     "coveragePathIgnorePatterns": [

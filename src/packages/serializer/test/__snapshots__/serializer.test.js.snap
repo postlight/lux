@@ -1352,134 +1352,42 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
   ],
   \"included\": [
     {
-      \"id\": \"22\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Eugene Goldner\",
-        \"email\": \"Anastacio.Kautzer@hotmail.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/22\"
-      }
-    },
-    {
-      \"id\": \"66\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Caroline Kassulke\",
-        \"email\": \"Willow.Kerluke74@gmail.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/66\"
-      }
-    },
-    {
-      \"id\": \"14\",
+      \"id\": \"3\",
       \"type\": \"comments\",
       \"attributes\": {
-        \"message\": \"Nemo veniam nostrum veritatis magni soluta ad quo deserunt dignissimos.\",
+        \"message\": \"Deserunt pariatur fugit veritatis animi.\",
         \"edited\": false,
         \"created-at\": \"2017-02-13T00:00:00.000Z\",
         \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
-        \"self\": \"http://localhost:4000/comments/14\"
+        \"self\": \"http://localhost:4000/comments/3\"
       }
     },
     {
-      \"id\": \"8\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Lucius Rosenbaum\",
-        \"email\": \"Demetrius.Ryan@yahoo.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/8\"
-      }
-    },
-    {
-      \"id\": \"25\",
+      \"id\": \"5\",
       \"type\": \"comments\",
       \"attributes\": {
-        \"message\": \"Cum et cumque sunt qui.\",
-        \"edited\": false,
-        \"created-at\": \"2017-02-13T00:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/comments/25\"
-      }
-    },
-    {
-      \"id\": \"30\",
-      \"type\": \"comments\",
-      \"attributes\": {
-        \"message\": \"Reiciendis temporibus magnam dolor quia est non.\",
-        \"edited\": false,
-        \"created-at\": \"2017-02-13T00:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/comments/30\"
-      }
-    },
-    {
-      \"id\": \"91\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Trace Schaden\",
-        \"email\": \"Tyra.Connelly@gmail.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/91\"
-      }
-    },
-    {
-      \"id\": \"56\",
-      \"type\": \"comments\",
-      \"attributes\": {
-        \"message\": \"Quasi quidem dolorum laudantium ducimus eligendi vitae possimus sit saepe.\",
-        \"edited\": false,
-        \"created-at\": \"2017-02-13T00:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/comments/56\"
-      }
-    },
-    {
-      \"id\": \"39\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Cooper Beatty\",
-        \"email\": \"Reanna11@hotmail.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/39\"
-      }
-    },
-    {
-      \"id\": \"16\",
-      \"type\": \"comments\",
-      \"attributes\": {
-        \"message\": \"Eligendi maxime est ea.\",
+        \"message\": \"Inventore consequatur iste.\",
         \"edited\": true,
         \"created-at\": \"2017-02-13T00:00:00.000Z\",
         \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
-        \"self\": \"http://localhost:4000/comments/16\"
+        \"self\": \"http://localhost:4000/comments/5\"
       }
     },
     {
-      \"id\": \"31\",
-      \"type\": \"users\",
+      \"id\": \"6\",
+      \"type\": \"comments\",
       \"attributes\": {
-        \"name\": \"Rahsaan VonRueden\",
-        \"email\": \"Liliana_Moen60@gmail.com\"
+        \"message\": \"Non voluptate autem iure aut dolorum.\",
+        \"edited\": true,
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
-        \"self\": \"http://localhost:4000/users/31\"
+        \"self\": \"http://localhost:4000/comments/6\"
       }
     },
     {
@@ -1509,169 +1417,16 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       }
     },
     {
-      \"id\": \"41\",
+      \"id\": \"14\",
       \"type\": \"comments\",
       \"attributes\": {
-        \"message\": \"Sit rem quia magni dolor.\",
+        \"message\": \"Nemo veniam nostrum veritatis magni soluta ad quo deserunt dignissimos.\",
         \"edited\": false,
         \"created-at\": \"2017-02-13T00:00:00.000Z\",
         \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
-        \"self\": \"http://localhost:4000/comments/41\"
-      }
-    },
-    {
-      \"id\": \"54\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Hassan Corkery\",
-        \"email\": \"Estel_Gerlach@gmail.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/54\"
-      }
-    },
-    {
-      \"id\": \"1\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Vivian Kling\",
-        \"email\": \"Jannie.Breitenberg@hotmail.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/1\"
-      }
-    },
-    {
-      \"id\": \"6\",
-      \"type\": \"comments\",
-      \"attributes\": {
-        \"message\": \"Non voluptate autem iure aut dolorum.\",
-        \"edited\": true,
-        \"created-at\": \"2017-02-13T00:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/comments/6\"
-      }
-    },
-    {
-      \"id\": \"21\",
-      \"type\": \"comments\",
-      \"attributes\": {
-        \"message\": \"Quasi consequatur ducimus voluptatem.\",
-        \"edited\": true,
-        \"created-at\": \"2017-02-13T00:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/comments/21\"
-      }
-    },
-    {
-      \"id\": \"74\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Gillian Beahan\",
-        \"email\": \"Marielle_McKenzie@yahoo.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/74\"
-      }
-    },
-    {
-      \"id\": \"80\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Berry Sanford\",
-        \"email\": \"Orin.Treutel12@yahoo.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/80\"
-      }
-    },
-    {
-      \"id\": \"53\",
-      \"type\": \"comments\",
-      \"attributes\": {
-        \"message\": \"Et excepturi ut.\",
-        \"edited\": false,
-        \"created-at\": \"2017-02-13T00:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/comments/53\"
-      }
-    },
-    {
-      \"id\": \"64\",
-      \"type\": \"comments\",
-      \"attributes\": {
-        \"message\": \"Sit perferendis et quia.\",
-        \"edited\": false,
-        \"created-at\": \"2017-02-13T00:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/comments/64\"
-      }
-    },
-    {
-      \"id\": \"4\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Karolann Cassin\",
-        \"email\": \"Earl_Mosciski23@hotmail.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/4\"
-      }
-    },
-    {
-      \"id\": \"92\",
-      \"type\": \"comments\",
-      \"attributes\": {
-        \"message\": \"Quo doloremque sed sapiente.\",
-        \"edited\": false,
-        \"created-at\": \"2017-02-13T00:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/comments/92\"
-      }
-    },
-    {
-      \"id\": \"18\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Elenora Pollich\",
-        \"email\": \"Telly_Haley6@gmail.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/18\"
-      }
-    },
-    {
-      \"id\": \"17\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Gail Schuster\",
-        \"email\": \"Lexus.Gulgowski@gmail.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/17\"
-      }
-    },
-    {
-      \"id\": \"87\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Payton Goldner\",
-        \"email\": \"Dayna_Cormier@hotmail.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/87\"
+        \"self\": \"http://localhost:4000/comments/14\"
       }
     },
     {
@@ -1688,53 +1443,29 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       }
     },
     {
-      \"id\": \"46\",
+      \"id\": \"16\",
       \"type\": \"comments\",
       \"attributes\": {
-        \"message\": \"Voluptas voluptate quia aut sed itaque ipsa vero dolores voluptate.\",
-        \"edited\": false,
-        \"created-at\": \"2017-02-13T00:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/comments/46\"
-      }
-    },
-    {
-      \"id\": \"62\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Sterling Lehner\",
-        \"email\": \"Verner.McGlynn@hotmail.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/62\"
-      }
-    },
-    {
-      \"id\": \"70\",
-      \"type\": \"comments\",
-      \"attributes\": {
-        \"message\": \"Perspiciatis minima distinctio commodi.\",
+        \"message\": \"Eligendi maxime est ea.\",
         \"edited\": true,
         \"created-at\": \"2017-02-13T00:00:00.000Z\",
         \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
-        \"self\": \"http://localhost:4000/comments/70\"
+        \"self\": \"http://localhost:4000/comments/16\"
       }
     },
     {
-      \"id\": \"42\",
+      \"id\": \"21\",
       \"type\": \"comments\",
       \"attributes\": {
-        \"message\": \"Beatae placeat molestiae ratione corrupti numquam mollitia qui.\",
-        \"edited\": false,
+        \"message\": \"Quasi consequatur ducimus voluptatem.\",
+        \"edited\": true,
         \"created-at\": \"2017-02-13T00:00:00.000Z\",
         \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
-        \"self\": \"http://localhost:4000/comments/42\"
+        \"self\": \"http://localhost:4000/comments/21\"
       }
     },
     {
@@ -1751,6 +1482,19 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       }
     },
     {
+      \"id\": \"25\",
+      \"type\": \"comments\",
+      \"attributes\": {
+        \"message\": \"Cum et cumque sunt qui.\",
+        \"edited\": false,
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/comments/25\"
+      }
+    },
+    {
       \"id\": \"27\",
       \"type\": \"comments\",
       \"attributes\": {
@@ -1764,53 +1508,68 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       }
     },
     {
-      \"id\": \"49\",
+      \"id\": \"30\",
       \"type\": \"comments\",
       \"attributes\": {
-        \"message\": \"Error amet magnam hic recusandae voluptates sequi modi iusto.\",
+        \"message\": \"Reiciendis temporibus magnam dolor quia est non.\",
+        \"edited\": false,
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/comments/30\"
+      }
+    },
+    {
+      \"id\": \"33\",
+      \"type\": \"comments\",
+      \"attributes\": {
+        \"message\": \"Iure et vel eum possimus debitis adipisci.\",
         \"edited\": true,
         \"created-at\": \"2017-02-13T00:00:00.000Z\",
         \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
-        \"self\": \"http://localhost:4000/comments/49\"
+        \"self\": \"http://localhost:4000/comments/33\"
       }
     },
     {
-      \"id\": \"65\",
+      \"id\": \"41\",
       \"type\": \"comments\",
       \"attributes\": {
-        \"message\": \"Debitis et itaque et soluta dolorem suscipit.\",
-        \"edited\": true,
+        \"message\": \"Sit rem quia magni dolor.\",
+        \"edited\": false,
         \"created-at\": \"2017-02-13T00:00:00.000Z\",
         \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
-        \"self\": \"http://localhost:4000/comments/65\"
+        \"self\": \"http://localhost:4000/comments/41\"
       }
     },
     {
-      \"id\": \"84\",
+      \"id\": \"42\",
       \"type\": \"comments\",
       \"attributes\": {
-        \"message\": \"Eveniet et illo sit.\",
-        \"edited\": true,
+        \"message\": \"Beatae placeat molestiae ratione corrupti numquam mollitia qui.\",
+        \"edited\": false,
         \"created-at\": \"2017-02-13T00:00:00.000Z\",
         \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
-        \"self\": \"http://localhost:4000/comments/84\"
+        \"self\": \"http://localhost:4000/comments/42\"
       }
     },
     {
-      \"id\": \"58\",
-      \"type\": \"users\",
+      \"id\": \"46\",
+      \"type\": \"comments\",
       \"attributes\": {
-        \"name\": \"Milan Nader\",
-        \"email\": \"Werner54@yahoo.com\"
+        \"message\": \"Voluptas voluptate quia aut sed itaque ipsa vero dolores voluptate.\",
+        \"edited\": false,
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
-        \"self\": \"http://localhost:4000/users/58\"
+        \"self\": \"http://localhost:4000/comments/46\"
       }
     },
     {
@@ -1827,6 +1586,84 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       }
     },
     {
+      \"id\": \"49\",
+      \"type\": \"comments\",
+      \"attributes\": {
+        \"message\": \"Error amet magnam hic recusandae voluptates sequi modi iusto.\",
+        \"edited\": true,
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/comments/49\"
+      }
+    },
+    {
+      \"id\": \"53\",
+      \"type\": \"comments\",
+      \"attributes\": {
+        \"message\": \"Et excepturi ut.\",
+        \"edited\": false,
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/comments/53\"
+      }
+    },
+    {
+      \"id\": \"56\",
+      \"type\": \"comments\",
+      \"attributes\": {
+        \"message\": \"Quasi quidem dolorum laudantium ducimus eligendi vitae possimus sit saepe.\",
+        \"edited\": false,
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/comments/56\"
+      }
+    },
+    {
+      \"id\": \"64\",
+      \"type\": \"comments\",
+      \"attributes\": {
+        \"message\": \"Sit perferendis et quia.\",
+        \"edited\": false,
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/comments/64\"
+      }
+    },
+    {
+      \"id\": \"65\",
+      \"type\": \"comments\",
+      \"attributes\": {
+        \"message\": \"Debitis et itaque et soluta dolorem suscipit.\",
+        \"edited\": true,
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/comments/65\"
+      }
+    },
+    {
+      \"id\": \"70\",
+      \"type\": \"comments\",
+      \"attributes\": {
+        \"message\": \"Perspiciatis minima distinctio commodi.\",
+        \"edited\": true,
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/comments/70\"
+      }
+    },
+    {
       \"id\": \"75\",
       \"type\": \"comments\",
       \"attributes\": {
@@ -1840,100 +1677,6 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       }
     },
     {
-      \"id\": \"99\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Bradford O\'Conner\",
-        \"email\": \"Deron_Jacobson78@yahoo.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/99\"
-      }
-    },
-    {
-      \"id\": \"28\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Benny Fay\",
-        \"email\": \"Lucie5@hotmail.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/28\"
-      }
-    },
-    {
-      \"id\": \"5\",
-      \"type\": \"comments\",
-      \"attributes\": {
-        \"message\": \"Inventore consequatur iste.\",
-        \"edited\": true,
-        \"created-at\": \"2017-02-13T00:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/comments/5\"
-      }
-    },
-    {
-      \"id\": \"99\",
-      \"type\": \"comments\",
-      \"attributes\": {
-        \"message\": \"Sint delectus illum aspernatur aliquid veniam.\",
-        \"edited\": false,
-        \"created-at\": \"2017-02-13T00:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/comments/99\"
-      }
-    },
-    {
-      \"id\": \"95\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Orin McKenzie\",
-        \"email\": \"Anahi.Schoen@hotmail.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/95\"
-      }
-    },
-    {
-      \"id\": \"3\",
-      \"type\": \"comments\",
-      \"attributes\": {
-        \"message\": \"Deserunt pariatur fugit veritatis animi.\",
-        \"edited\": false,
-        \"created-at\": \"2017-02-13T00:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/comments/3\"
-      }
-    },
-    {
-      \"id\": \"69\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Destin Metz\",
-        \"email\": \"Stewart.OKon81@yahoo.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/69\"
-      }
-    },
-    {
-      \"id\": \"94\",
-      \"type\": \"users\",
-      \"attributes\": {
-        \"name\": \"Hardy Price\",
-        \"email\": \"Alvina40@hotmail.com\"
-      },
-      \"links\": {
-        \"self\": \"http://localhost:4000/users/94\"
-      }
-    },
-    {
       \"id\": \"83\",
       \"type\": \"comments\",
       \"attributes\": {
@@ -1944,6 +1687,32 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/83\"
+      }
+    },
+    {
+      \"id\": \"84\",
+      \"type\": \"comments\",
+      \"attributes\": {
+        \"message\": \"Eveniet et illo sit.\",
+        \"edited\": true,
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/comments/84\"
+      }
+    },
+    {
+      \"id\": \"92\",
+      \"type\": \"comments\",
+      \"attributes\": {
+        \"message\": \"Quo doloremque sed sapiente.\",
+        \"edited\": false,
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/comments/92\"
       }
     },
     {
@@ -1973,6 +1742,96 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       }
     },
     {
+      \"id\": \"99\",
+      \"type\": \"comments\",
+      \"attributes\": {
+        \"message\": \"Sint delectus illum aspernatur aliquid veniam.\",
+        \"edited\": false,
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/comments/99\"
+      }
+    },
+    {
+      \"id\": \"1\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Vivian Kling\",
+        \"email\": \"Jannie.Breitenberg@hotmail.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/1\"
+      }
+    },
+    {
+      \"id\": \"4\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Karolann Cassin\",
+        \"email\": \"Earl_Mosciski23@hotmail.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/4\"
+      }
+    },
+    {
+      \"id\": \"8\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Lucius Rosenbaum\",
+        \"email\": \"Demetrius.Ryan@yahoo.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/8\"
+      }
+    },
+    {
+      \"id\": \"17\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Gail Schuster\",
+        \"email\": \"Lexus.Gulgowski@gmail.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/17\"
+      }
+    },
+    {
+      \"id\": \"18\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Elenora Pollich\",
+        \"email\": \"Telly_Haley6@gmail.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/18\"
+      }
+    },
+    {
+      \"id\": \"22\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Eugene Goldner\",
+        \"email\": \"Anastacio.Kautzer@hotmail.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/22\"
+      }
+    },
+    {
+      \"id\": \"28\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Benny Fay\",
+        \"email\": \"Lucie5@hotmail.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/28\"
+      }
+    },
+    {
       \"id\": \"29\",
       \"type\": \"users\",
       \"attributes\": {
@@ -1984,16 +1843,157 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       }
     },
     {
-      \"id\": \"33\",
-      \"type\": \"comments\",
+      \"id\": \"31\",
+      \"type\": \"users\",
       \"attributes\": {
-        \"message\": \"Iure et vel eum possimus debitis adipisci.\",
-        \"edited\": true,
-        \"created-at\": \"2017-02-13T00:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
+        \"name\": \"Rahsaan VonRueden\",
+        \"email\": \"Liliana_Moen60@gmail.com\"
       },
       \"links\": {
-        \"self\": \"http://localhost:4000/comments/33\"
+        \"self\": \"http://localhost:4000/users/31\"
+      }
+    },
+    {
+      \"id\": \"39\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Cooper Beatty\",
+        \"email\": \"Reanna11@hotmail.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/39\"
+      }
+    },
+    {
+      \"id\": \"54\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Hassan Corkery\",
+        \"email\": \"Estel_Gerlach@gmail.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/54\"
+      }
+    },
+    {
+      \"id\": \"58\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Milan Nader\",
+        \"email\": \"Werner54@yahoo.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/58\"
+      }
+    },
+    {
+      \"id\": \"62\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Sterling Lehner\",
+        \"email\": \"Verner.McGlynn@hotmail.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/62\"
+      }
+    },
+    {
+      \"id\": \"66\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Caroline Kassulke\",
+        \"email\": \"Willow.Kerluke74@gmail.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/66\"
+      }
+    },
+    {
+      \"id\": \"69\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Destin Metz\",
+        \"email\": \"Stewart.OKon81@yahoo.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/69\"
+      }
+    },
+    {
+      \"id\": \"74\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Gillian Beahan\",
+        \"email\": \"Marielle_McKenzie@yahoo.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/74\"
+      }
+    },
+    {
+      \"id\": \"80\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Berry Sanford\",
+        \"email\": \"Orin.Treutel12@yahoo.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/80\"
+      }
+    },
+    {
+      \"id\": \"87\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Payton Goldner\",
+        \"email\": \"Dayna_Cormier@hotmail.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/87\"
+      }
+    },
+    {
+      \"id\": \"91\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Trace Schaden\",
+        \"email\": \"Tyra.Connelly@gmail.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/91\"
+      }
+    },
+    {
+      \"id\": \"94\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Hardy Price\",
+        \"email\": \"Alvina40@hotmail.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/94\"
+      }
+    },
+    {
+      \"id\": \"95\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Orin McKenzie\",
+        \"email\": \"Anahi.Schoen@hotmail.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/95\"
+      }
+    },
+    {
+      \"id\": \"99\",
+      \"type\": \"users\",
+      \"attributes\": {
+        \"name\": \"Bradford O\'Conner\",
+        \"email\": \"Deron_Jacobson78@yahoo.com\"
+      },
+      \"links\": {
+        \"self\": \"http://localhost:4000/users/99\"
       }
     }
   ],
@@ -2132,7 +2132,7 @@ exports[`module "serializer" class Serializer #format() supports including a man
       \"tags\": {
         \"data\": [
           {
-            \"id\": \"95\",
+            \"id\": \"70\",
             \"type\": \"tags\"
           },
           {
@@ -2140,7 +2140,7 @@ exports[`module "serializer" class Serializer #format() supports including a man
             \"type\": \"tags\"
           },
           {
-            \"id\": \"70\",
+            \"id\": \"95\",
             \"type\": \"tags\"
           }
         ]
@@ -2169,13 +2169,13 @@ exports[`module "serializer" class Serializer #format() supports including a man
   },
   \"included\": [
     {
-      \"id\": \"95\",
+      \"id\": \"70\",
       \"type\": \"tags\",
       \"attributes\": {
-        \"name\": \"saepe\"
+        \"name\": \"placeat\"
       },
       \"links\": {
-        \"self\": \"http://localhost:4000/tags/95\"
+        \"self\": \"http://localhost:4000/tags/70\"
       }
     },
     {
@@ -2189,13 +2189,13 @@ exports[`module "serializer" class Serializer #format() supports including a man
       }
     },
     {
-      \"id\": \"70\",
+      \"id\": \"95\",
       \"type\": \"tags\",
       \"attributes\": {
-        \"name\": \"placeat\"
+        \"name\": \"saepe\"
       },
       \"links\": {
-        \"self\": \"http://localhost:4000/tags/70\"
+        \"self\": \"http://localhost:4000/tags/95\"
       }
     }
   ],
