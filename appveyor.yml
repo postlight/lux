@@ -45,11 +45,11 @@ before_test:
       Write-Host $null >> C:\projects\lux\test\test-app\db\lux_test_test.sqlite
   - npm run clean
   - ps: |
-      $env:NODE_ENV=production
+      $env:NODE_ENV="production"
       Set-Location C:\projects\lux
       npm run build
 
-      $env:NODE_ENV=test
+      $env:NODE_ENV="test"
       Set-Location C:\projects\lux\test\test-app
       lux build -e test
       lux db:migrate -e test --skip-build
