@@ -68,7 +68,6 @@
     "jest": "18.1.0",
     "jest-cli": "18.1.0",
     "jest-junit": "1.1.1",
-    "node-fetch": "1.6.3",
     "object.entries": "1.0.4",
     "remark-cli": "2.1.0",
     "remark-lint": "5.4.0",

@@ -257,37 +257,50 @@ describe('module "database/model"', () => {
         );
       });
 
-      afterAll(async () => {
+      afterEach(async () => {
         await result.destroy();
       });
 
-      it('constructs and persists a `Model` instance', async () => {
-        const user = new User({ id: 1 });
-        const body = 'Contents of "Test Post"...';
-        const title = 'Test Post';
+      describe('- without specifying `id`', () => {
+        it('constructs and persists a `Model` instance', async () => {
+          const user = new User({ id: 1 });
+          const body = 'Contents of "Test Post"...';
+          const title = 'Test Post';
 
-        result = await Subject.create({
-          user,
-          body,
-          title,
-          isPublic: true
+          result = await Subject.create({
+            user,
+            body,
+            title,
+            isPublic: true
+          });
+
+          // $FlowIgnore
+          result = result.unwrap();
+
+          expect(result).toBeInstanceOf(Subject);
+
+          expect(result.id).toEqual(expect.any(Number));
+          expect(result.body).toBe(body);
+          expect(result.title).toBe(title);
+          expect(result.isPublic).toBe(true);
+          expect(result.createdAt).toEqual(expect.any(Date));
+          expect(result.updatedAt).toEqual(expect.any(Date));
+
+          const userResult = await result.user;
+
+          expect(userResult.id).toEqual(user.getPrimaryKey());
         });
+      });
 
-        // $FlowIgnore
-        result = result.unwrap();
+      describe('- with specifying `id`', () => {
+        it('constructs and persists a `Model`', async () => {
+          const id = 999;
 
-        expect(result instanceof Subject).toBe(true);
+          result = await Subject.create({ id });
 
-        expect(result.id).toEqual(expect.any(Number));
-        expect(result.body).toBe(body);
-        expect(result.title).toBe(title);
-        expect(result.isPublic).toBe(true);
-        expect(result.createdAt).toEqual(expect.any(Date));
-        expect(result.updatedAt).toEqual(expect.any(Date));
-
-        const userResult = await result.user;
-
-        expect(userResult.id).toEqual(user.getPrimaryKey());
+          expect(result).toBeInstanceOf(Subject);
+          expect(result.id).toBe(id);
+        });
       });
     });
 

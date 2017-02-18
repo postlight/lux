@@ -23,12 +23,19 @@ export function create(record: Model, trx: Object): Array<Object> {
     updatedAt: timestamp
   });
 
+  const { constructor: { primaryKey } } = record;
+  const columns = omit(getColumns(record), primaryKey);
+
+  if (record.dirtyAttributes.has(primaryKey)) {
+    columns[primaryKey] = record.getPrimaryKey();
+  }
+
   return [
     record.constructor
       .table()
       .transacting(trx)
       .returning(record.constructor.primaryKey)
-      .insert(omit(getColumns(record), record.constructor.primaryKey))
+      .insert(columns)
   ];
 }
 

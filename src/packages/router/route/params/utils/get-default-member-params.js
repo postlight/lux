@@ -18,7 +18,7 @@ export default function getDefaultMemberParams({
       ...[...hasOne, ...hasMany].reduce((include, key) => {
         const opts = model.relationshipFor(key);
 
-        if (!opts) {
+        if (!opts || model === opts.model) {
           return include;
         }
 
