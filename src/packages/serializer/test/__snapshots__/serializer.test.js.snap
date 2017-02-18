@@ -7,8 +7,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Omnis ad vitae et itaque ipsam cumque. Fuga impedit placeat fugit saepe. Aliquam minima est sint itaque in blanditiis mollitia eum. Omnis perferendis neque.\\n \\rUnde in placeat rerum. Quisquam et ut voluptatibus in sapiente quis ut. Et necessitatibus et magnam ab harum illo tenetur ea sit. Unde quisquam odio cum rerum ut omnis voluptatem reiciendis.\\n \\rDoloremque deleniti modi dolorem. Reprehenderit ratione recusandae eum. Cum doloribus voluptatibus ullam harum reprehenderit sint incidunt possimus labore. Repellat eum temporibus rerum et aut excepturi cum. In et dolorem aliquid nemo.\",
         \"title\": \"Dolorem et sapiente nostrum tenetur.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -58,8 +58,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Et blanditiis reiciendis qui placeat placeat et quo. Modi nemo est fuga voluptatem quasi sunt magnam velit. Iusto eaque eveniet et quo in est voluptates. Eaque voluptas nemo harum est ratione qui enim.\\n \\rAssumenda omnis omnis sunt aut rerum sed ut sit ut. Voluptatem laboriosam nobis. Ut aliquam cum molestias. Dolore et autem est quia corrupti voluptatum et. Nostrum eum voluptas sed incidunt quis sit voluptatem fugiat.\\n \\rSunt earum eius temporibus molestiae. Similique fugiat nulla rerum veniam fugit ex. Omnis sequi consequatur recusandae.\",
         \"title\": \"Id repudiandae maiores et eaque et.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -105,8 +105,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Quidem deleniti libero aliquam omnis. Nostrum dolor debitis quisquam esse veritatis dolorem. Voluptatum excepturi magni sequi.\\n \\rAt accusamus similique. Ex sit ut adipisci reiciendis enim placeat magni est tempora. Ut dignissimos non et iure perferendis dignissimos consequatur. Atque maxime quasi illum aliquid est.\\n \\rIste et repudiandae. Quibusdam rerum ea ipsa rem non vero ipsam voluptate similique. Magnam pariatur soluta. Sed vel et exercitationem. Temporibus saepe et aut. Officia ut voluptatibus at rem qui modi dicta.\",
         \"title\": \"Rerum itaque reprehenderit dolor officia voluptatem qui qui rerum.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -155,8 +155,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Placeat rerum quibusdam vero earum inventore quos officia quam. Quo ut est esse corrupti suscipit optio et. Voluptas ut quis velit ducimus sed.\\n \\rDicta ut odio maxime totam. Nulla accusantium in. Maxime et molestiae corrupti et. Autem voluptatem aliquam voluptate repudiandae autem quo quia. Et sunt ratione. Voluptatem consectetur eligendi voluptatem praesentium qui rerum.\\n \\rQuos laboriosam voluptatibus consequuntur asperiores quos voluptatem tempora quia doloremque. Nobis porro at. Sunt alias ex et deleniti voluptatem qui et veniam. Aliquid qui ea ab qui repudiandae consequatur voluptatem. Consequatur magni qui et nihil velit. Est deserunt debitis labore voluptatibus id enim.\",
         \"title\": \"Molestias nobis velit labore sit cupiditate nostrum quasi officia commodi.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -211,8 +211,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Et dolorem ad velit suscipit animi. Nostrum aut doloribus sit praesentium accusamus repudiandae optio maiores. Inventore reprehenderit dicta eos. Atque provident dolorem dicta non. Dicta quam et qui dolores labore.\\n \\rVoluptatibus minima distinctio. Vero non eum rem et numquam ea velit repudiandae. Et nisi qui ut dignissimos ut minus ea fugiat et. Doloremque ad ea provident quidem ex error. Alias culpa voluptatum sequi. Deserunt repellendus nulla sint ex sint sit nesciunt vel corrupti.\\n \\rLabore ut accusantium molestiae ut. Molestiae esse reprehenderit consectetur voluptas ea quam quasi dolor illo. Earum consequatur unde officia perspiciatis qui nobis esse maxime. Nemo reprehenderit eligendi quaerat. Pariatur quae placeat. Sit perferendis itaque quam non quisquam vitae et adipisci.\",
         \"title\": \"Consequatur explicabo sint et.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -271,8 +271,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Veniam consequatur eveniet ipsam rerum nisi. Tenetur ipsa velit modi nobis aut eum quo sed qui. Et ipsam magni est voluptas non doloribus non consequatur asperiores. Et fugiat illum voluptas aut porro rerum voluptas.\\n \\rQuaerat et nisi soluta nam explicabo quis dolorum est quod. Velit voluptatem impedit dolorem. Voluptatem facere magni et exercitationem. Labore consequatur et maiores occaecati. Eaque nesciunt qui. Et doloribus aut repellat vel provident asperiores.\\n \\rRerum consequuntur earum aut pariatur est et odit atque. Voluptatem voluptatem nostrum ad aliquid architecto aut. Aperiam asperiores et deserunt eum laborum velit voluptatum.\",
         \"title\": \"Perspiciatis laudantium consequatur sunt perspiciatis eum ut.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -335,8 +335,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Qui omnis provident est dolor. Ut optio maiores voluptatum voluptas exercitationem deserunt. Facere doloremque ex consequatur aut aut dolores. Laborum a facilis incidunt architecto nisi et minus vel.\\n \\rOdio earum repellat sit. Aliquam rem voluptatibus laboriosam ipsum nostrum error ut. Laborum temporibus cupiditate quia culpa perferendis. Sequi voluptas quo.\\n \\rDoloremque animi dolore qui. Quaerat fugiat optio autem necessitatibus. Et incidunt recusandae nemo veritatis deserunt nam accusamus voluptatibus est.\",
         \"title\": \"Possimus nam et aut sed quis delectus omnis laudantium ut.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -381,8 +381,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Perspiciatis sint ipsum in optio debitis et. Asperiores quis qui molestiae voluptatum ut dignissimos. Id quis atque reprehenderit.\\n \\rAperiam natus perferendis error reprehenderit. Ea voluptatem incidunt veniam aliquam assumenda cumque. Sapiente ipsam et occaecati. Qui iure repudiandae eligendi. Tempore quos repellendus illo qui enim minima qui.\\n \\rNeque odit optio quia aperiam repellat et libero. Quo quidem omnis unde aut voluptatem iste in voluptatem veniam. Cum doloribus necessitatibus hic quisquam architecto. Laboriosam et voluptas dignissimos. Facilis officiis et asperiores necessitatibus. Voluptas optio consequatur laudantium enim incidunt sit et dolor omnis.\",
         \"title\": \"Rem aut repellat illum.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -450,8 +450,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Omnis est repudiandae nobis et sit dolor eos natus. Blanditiis et ex et id reprehenderit rem quas accusantium. Soluta adipisci nam aliquid nobis autem ullam nostrum. Ut excepturi impedit nihil ducimus quia fugit.\\n \\rAd porro id sit. Ea dolor ea ad animi. Vitae ut deleniti quae. Pariatur nobis aliquid rem. Quo quibusdam vel at porro saepe omnis qui nesciunt aliquid. Dolore consectetur corrupti ipsa impedit perspiciatis qui numquam occaecati.\\n \\rEst aperiam soluta quod inventore cum qui et odit. Qui doloremque quas velit exercitationem repellendus ullam quisquam rem. Illum nisi dolor. Ut repellendus sunt vel error sed placeat est. Rerum ut architecto voluptatum molestias natus et eum. Illo omnis officiis reprehenderit ipsa expedita veniam repudiandae.\",
         \"title\": \"Animi accusamus qui velit expedita non consequatur quos non nesciunt.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -492,8 +492,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Blanditiis a odio unde. Nam distinctio aut vitae. Autem atque sint culpa rerum quo veniam tenetur. Hic odio quos. Temporibus esse voluptatem quas tempora minima totam est. Ut est consequatur.\\n \\rAdipisci voluptas sit sapiente commodi sed praesentium et perspiciatis ea. Et nam occaecati aut amet qui illum sunt aliquam officiis. Ut quos error molestias qui itaque numquam. Illum fugiat dignissimos quos. Nihil autem ut ut nesciunt et occaecati quaerat.\\n \\rQuo perferendis deleniti nulla quis et est ad. Eos aut est voluptate delectus est molestiae sit maiores omnis. Blanditiis excepturi saepe. Consequatur possimus laborum. Doloribus quas ut eos nam dolorem quia iste. Dolorem ut asperiores quis quia magni.\",
         \"title\": \"Maiores perspiciatis est aperiam ipsam sit cupiditate.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -557,8 +557,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Necessitatibus quam velit eum atque ducimus enim. Ut aut quia porro deleniti ipsa in ex ab repellat. Vel repudiandae exercitationem soluta reprehenderit. Consequatur recusandae laudantium. Fugit laudantium laudantium tenetur occaecati quia mollitia ipsam eveniet. Nobis voluptas voluptatibus.\\n \\rEt qui amet quia. Nam autem sed. Ut laborum iste dolorum. Autem repellendus est. Dolorem et quibusdam aspernatur accusantium.\\n \\rEst sit aut consequuntur. Provident ut qui. Enim ut similique voluptates aut maxime doloremque. Aut et nemo deserunt itaque explicabo. Impedit est aut maiores illum soluta corporis neque maxime.\",
         \"title\": \"Nobis consectetur aut sint mollitia.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -613,8 +613,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Omnis nemo consequatur totam laboriosam soluta repellendus error quas. Voluptatibus ut illo natus debitis autem nemo. Aspernatur est illo quibusdam provident eum eum doloremque deserunt. Voluptatem laboriosam ea laboriosam reiciendis.\\n \\rQuibusdam blanditiis quas. Et explicabo expedita sit nostrum qui et enim. Amet aut illo nesciunt minima ratione in qui quia enim. In maiores iure. Qui minima eveniet nihil omnis tempore tempora ut enim impedit. Unde eos voluptatem.\\n \\rEt quia amet nihil velit culpa. Quas dolorem provident. Ullam eos architecto quam.\",
         \"title\": \"Culpa suscipit deserunt perspiciatis aut sed.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -665,8 +665,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Eius delectus illo eius. Quis praesentium alias. Culpa alias in odio ut cum id et.\\n \\rAccusantium iste aspernatur aut aut ratione aliquid aliquid aut ut. Ut sed aut odit. Facere ut assumenda a et dolorum exercitationem aliquam ea qui.\\n \\rUt sint fugiat non aut esse adipisci itaque eos. Possimus quis aut provident vel. Qui laborum doloremque dolorem praesentium cum repudiandae. Natus maiores hic deserunt tempore voluptas labore id aliquam. Tenetur sed dolorem impedit quidem. Harum voluptatibus nemo labore eligendi.\",
         \"title\": \"Molestiae ea eligendi dolor ratione illo facilis.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -710,8 +710,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Rem amet odit repellat blanditiis incidunt. Maiores nisi nemo et est perferendis ut aperiam. Voluptas asperiores non quia et. Necessitatibus in sed dolorum et facilis ipsam nobis voluptatem. Magnam odit nostrum. Eligendi nihil illum assumenda voluptates.\\n \\rEveniet et cupiditate quia cum ipsa. In qui quia. Minus accusamus deleniti et modi. Ipsa aut quas. Esse nisi sed iusto. Itaque ab modi facilis tenetur autem laudantium esse voluptate.\\n \\rSint rerum accusamus quidem iste numquam et eligendi quia. Sint perspiciatis qui. Ullam et labore distinctio veniam.\",
         \"title\": \"Enim saepe vel accusantium quia repellendus iusto.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -757,8 +757,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Ex dignissimos at sunt et sed sunt eligendi cumque. Quo reiciendis quia quaerat labore. Numquam voluptatibus debitis quae quo dolor ut quaerat.\\n \\rNemo et maiores sint voluptatibus qui beatae at voluptate. Ex laboriosam rerum distinctio ut. Sint quos qui sequi voluptas nulla autem commodi in nihil. Nulla dolorem omnis illum modi cumque quam placeat qui itaque. A et autem recusandae odit adipisci dolorem repellendus aliquam molestiae. Dolorem sint non.\\n \\rIllo sit molestiae molestiae quia mollitia laudantium exercitationem perferendis quis. Molestiae a qui velit tempore quia et iure asperiores. Ad qui aliquid libero est sed quidem deleniti et. Aut aperiam laboriosam qui. Quibusdam quia corporis temporibus suscipit id tempora. Beatae temporibus ratione consequuntur rerum fugiat.\",
         \"title\": \"Adipisci occaecati nihil at ipsa illo repellendus est.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -812,8 +812,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Sit tempore ab. Corrupti deleniti quisquam. Maiores magnam magni molestiae rem aut totam. Deserunt iste modi rerum expedita laborum officiis quidem. Blanditiis aliquid sapiente omnis eum corporis consequatur. Dolor qui ut dolores qui et.\\n \\rConsequatur aut non magni ut aut omnis tempora assumenda magni. Et sit laborum aut. Molestias ut omnis molestiae nulla eaque. Natus vel dolorum omnis dicta. Esse laborum vitae accusantium mollitia qui et commodi et. Ut aut quia quia minima et nemo deserunt dolores.\\n \\rSoluta ea reprehenderit vel. Ut ea ipsam tempora. Et tempora rerum. Enim tenetur totam provident tenetur et omnis. Et repellendus nemo earum et et aperiam excepturi. Quia facere minus omnis sint et reprehenderit corrupti dignissimos aut.\",
         \"title\": \"Sint voluptatem amet quidem.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -858,8 +858,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Dolorum sunt beatae blanditiis unde vitae laudantium eius. Dolorum est aut qui fugiat nihil laboriosam quam iure. Occaecati nihil aut inventore aut eius. Neque ut beatae aut similique eius et voluptatum quam consequatur.\\n \\rIpsam sunt error voluptas ut quia aliquid qui. Error dolor fugit quasi laboriosam facilis iure sunt consequatur accusamus. Labore iusto enim nisi incidunt. Quis vel nihil.\\n \\rAut non accusantium voluptatem nihil. Odio sit pariatur officiis consequuntur provident. Suscipit blanditiis id officiis. Praesentium vitae possimus tempore aut. Labore expedita quia in laboriosam consequuntur corporis ratione aut veritatis. Quidem excepturi quisquam accusamus quia expedita dignissimos consequuntur eum sed.\",
         \"title\": \"Qui rerum modi ex.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -910,8 +910,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Quaerat laboriosam quidem qui dolorem. Fugit quaerat est doloremque eaque ut et et aliquid. Cum pariatur sunt libero. Rerum placeat omnis natus quibusdam ut fugiat dolorem. Perferendis odit ratione laboriosam sunt.\\n \\rAut exercitationem ad natus suscipit aliquam asperiores. Ut soluta aspernatur provident doloribus. Deserunt sit voluptatem rerum voluptatum accusantium et. Sequi dolore recusandae eius amet architecto voluptatibus ea vel. Non unde iusto quia repellat quae provident omnis est. Libero repellendus id sint provident ab sit.\\n \\rNumquam expedita praesentium et. Laboriosam fuga inventore a exercitationem non praesentium occaecati qui. Eum rerum nemo quas et. Blanditiis asperiores facilis magni vel eligendi explicabo cupiditate. Sint hic ut odit.\",
         \"title\": \"Odio est vel tempora.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -983,8 +983,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Voluptas earum doloribus quam odit quam quia possimus dolores rerum. Assumenda ea labore error. Nam id qui qui itaque et vero alias consequatur doloremque.\\n \\rAdipisci quod non repudiandae. Fugit officia sunt veritatis odit. Distinctio ipsam ut fuga molestiae ipsum. Reiciendis explicabo possimus maxime non aut praesentium et ut dolorem. Nobis cupiditate est amet.\\n \\rEx optio qui eum sint alias unde nesciunt cum. Sequi non possimus est quo atque repellendus architecto minus. Iure repellat consectetur. Eum vel deleniti autem dolorem qui nobis.\",
         \"title\": \"Earum id consequatur ut.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -1034,8 +1034,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Voluptate nihil vitae. Ut est quidem corporis qui dolore sit repellendus asperiores dolor. Cupiditate dolorem qui et quia qui qui ea aut. Ex officia temporibus distinctio.\\n \\rRem id sequi fugit ducimus. Magni numquam facere et sunt possimus. Enim rerum harum fuga. Odit velit error debitis ea labore reiciendis aliquam magnam.\\n \\rRem modi laudantium possimus culpa vero iure. Animi vero fugit. Nam sunt perferendis vel doloremque sit magnam voluptatibus quibusdam. Et repellat omnis sapiente quia ea sunt. Occaecati eos sit. Accusamus dolores veritatis aut ipsa tenetur labore quia assumenda quas.\",
         \"title\": \"Laborum quaerat et velit numquam saepe esse est quis eius.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -1080,8 +1080,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Velit molestiae tenetur voluptatem perferendis aperiam quo nemo et. Dignissimos quia dicta sapiente laborum. Aliquid quos dolorum temporibus delectus quia reiciendis. Odio consectetur quia. Est reiciendis ipsam animi iure vel ut autem voluptatum omnis. Sequi occaecati qui quidem dolor ab ut id asperiores dolores.\\n \\rQuo velit sit aperiam hic quisquam commodi molestias et. Non sed pariatur quia quasi. Molestias voluptate nam nihil. Distinctio minima facilis et accusamus nisi. Dolorem tempore officia. Rerum voluptatibus quo.\\n \\rQuis et commodi quis magnam quia voluptatem laborum. Accusantium repellat velit occaecati quam libero illum recusandae vel. Illo ut magnam quod occaecati. Et et ea asperiores consequatur molestias optio corporis.\",
         \"title\": \"Rerum nam incidunt reiciendis.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -1141,8 +1141,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Iure reiciendis maiores possimus magni. Rerum vitae distinctio rerum incidunt nulla esse ullam sed commodi. Voluptatum ea ea maiores aliquam reiciendis dolorum minus ullam. Cumque quas ut libero doloribus sint quis. Odio a quos eveniet.\\n \\rOmnis nemo vel molestiae molestiae. Illo consequatur omnis minus. Culpa dolores error culpa mollitia voluptatem temporibus est natus.\\n \\rFugiat architecto occaecati libero beatae ipsum odio recusandae perspiciatis. Laudantium omnis autem voluptatum incidunt velit mollitia repudiandae. Fugiat sit et aliquid ut temporibus sed. Consequuntur quod perferendis accusamus amet enim inventore ut voluptatem.\",
         \"title\": \"Sint in quia aspernatur.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -1192,8 +1192,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Quae et facilis est distinctio autem alias. Mollitia aliquid libero illum qui. Dolores dolorem optio qui corrupti. Quae inventore ea.\\n \\rPerspiciatis doloremque aut itaque. Nostrum sit est. Vel vero vel voluptatem voluptatem autem molestias. Voluptates incidunt voluptatem animi temporibus nam veniam ad.\\n \\rNon voluptas sunt quas voluptate officia dignissimos. Consequuntur corrupti fuga perferendis consequatur dolorem eos esse ducimus. Vero et et voluptates commodi magnam quidem.\",
         \"title\": \"Suscipit beatae eum quasi et dignissimos aliquam non.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -1243,8 +1243,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Eligendi eligendi ut aut atque necessitatibus fuga. Vitae nisi sit non quis ipsa quo quam. Laudantium veniam delectus debitis laudantium.\\n \\rEt perferendis est debitis minus at. Consequatur nostrum error quis aperiam ea. Nemo non deserunt reiciendis est. Minus temporibus rerum velit tempora ut praesentium.\\n \\rUt et deserunt. Mollitia sed voluptas molestiae excepturi illum id omnis maxime laborum. Corporis maiores dolorem laudantium exercitationem quam sed sed. Quis dolore aspernatur. Et nihil eum voluptatem repudiandae magni assumenda eos commodi.\",
         \"title\": \"Repellat quidem molestiae eum reiciendis cupiditate minus deserunt error.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -1303,8 +1303,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"body\": \"Voluptas aliquid fugit qui eius quae aliquam. Impedit cupiditate et dolor. Nihil optio dolor voluptatem sunt commodi sed. Numquam ut reprehenderit est.\\n \\rAspernatur omnis sint sed. Quia libero quibusdam eos laudantium quo. Voluptas aut nesciunt vel. Incidunt eaque velit.\\n \\rEaque voluptate libero. Maiores explicabo doloremque. Architecto est impedit iusto veniam voluptatum aliquid soluta. Omnis fuga sint quia molestiae provident blanditiis et.\",
         \"title\": \"Et aut voluptas voluptate velit laudantium deserunt.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -1379,8 +1379,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Nemo veniam nostrum veritatis magni soluta ad quo deserunt dignissimos.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/14\"
@@ -1403,8 +1403,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Cum et cumque sunt qui.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/25\"
@@ -1416,8 +1416,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Reiciendis temporibus magnam dolor quia est non.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/30\"
@@ -1440,8 +1440,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Quasi quidem dolorum laudantium ducimus eligendi vitae possimus sit saepe.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/56\"
@@ -1464,8 +1464,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Eligendi maxime est ea.\",
         \"edited\": true,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/16\"
@@ -1488,8 +1488,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Voluptatum voluptatem harum quis mollitia voluptas omnis recusandae dolores.\",
         \"edited\": true,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/8\"
@@ -1501,8 +1501,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Aut est iste.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/12\"
@@ -1514,8 +1514,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Sit rem quia magni dolor.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/41\"
@@ -1549,8 +1549,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Non voluptate autem iure aut dolorum.\",
         \"edited\": true,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/6\"
@@ -1562,8 +1562,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Quasi consequatur ducimus voluptatem.\",
         \"edited\": true,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/21\"
@@ -1597,8 +1597,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Et excepturi ut.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/53\"
@@ -1610,8 +1610,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Sit perferendis et quia.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/64\"
@@ -1634,8 +1634,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Quo doloremque sed sapiente.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/92\"
@@ -1680,8 +1680,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Aut excepturi nam perferendis a ab modi consectetur.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/15\"
@@ -1693,8 +1693,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Voluptas voluptate quia aut sed itaque ipsa vero dolores voluptate.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/46\"
@@ -1717,8 +1717,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Perspiciatis minima distinctio commodi.\",
         \"edited\": true,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/70\"
@@ -1730,8 +1730,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Beatae placeat molestiae ratione corrupti numquam mollitia qui.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/42\"
@@ -1743,8 +1743,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Error nihil eos est beatae in at eum minima sed.\",
         \"edited\": true,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/22\"
@@ -1756,8 +1756,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Odio et est molestiae pariatur.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/27\"
@@ -1769,8 +1769,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Error amet magnam hic recusandae voluptates sequi modi iusto.\",
         \"edited\": true,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/49\"
@@ -1782,8 +1782,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Debitis et itaque et soluta dolorem suscipit.\",
         \"edited\": true,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/65\"
@@ -1795,8 +1795,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Eveniet et illo sit.\",
         \"edited\": true,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/84\"
@@ -1819,8 +1819,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Est alias earum rerum dolorem eveniet rerum qui in.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/48\"
@@ -1832,8 +1832,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Est debitis at ullam eos eligendi esse itaque excepturi.\",
         \"edited\": true,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/75\"
@@ -1867,8 +1867,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Inventore consequatur iste.\",
         \"edited\": true,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/5\"
@@ -1880,8 +1880,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Sint delectus illum aspernatur aliquid veniam.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/99\"
@@ -1904,8 +1904,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Deserunt pariatur fugit veritatis animi.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/3\"
@@ -1939,8 +1939,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Aliquid ratione error vel sed debitis fugiat mollitia.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/83\"
@@ -1952,8 +1952,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Quia magni laboriosam non distinctio.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/93\"
@@ -1965,8 +1965,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Modi corrupti non aut.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/94\"
@@ -1989,8 +1989,8 @@ exports[`module "serializer" class Serializer #format() can build namespaced lin
       \"attributes\": {
         \"message\": \"Iure et vel eum possimus debitis adipisci.\",
         \"edited\": true,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/33\"
@@ -2014,8 +2014,8 @@ exports[`module "serializer" class Serializer #format() supports including a has
     \"attributes\": {
       \"body\": \"Quaerat laboriosam quidem qui dolorem. Fugit quaerat est doloremque eaque ut et et aliquid. Cum pariatur sunt libero. Rerum placeat omnis natus quibusdam ut fugiat dolorem. Perferendis odit ratione laboriosam sunt.\\n \\rAut exercitationem ad natus suscipit aliquam asperiores. Ut soluta aspernatur provident doloribus. Deserunt sit voluptatem rerum voluptatum accusantium et. Sequi dolore recusandae eius amet architecto voluptatibus ea vel. Non unde iusto quia repellat quae provident omnis est. Libero repellendus id sint provident ab sit.\\n \\rNumquam expedita praesentium et. Laboriosam fuga inventore a exercitationem non praesentium occaecati qui. Eum rerum nemo quas et. Blanditiis asperiores facilis magni vel eligendi explicabo cupiditate. Sint hic ut odit.\",
       \"title\": \"Odio est vel tempora.\",
-      \"created-at\": \"2017-02-13T05:00:00.000Z\",
-      \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+      \"created-at\": \"2017-02-13T00:00:00.000Z\",
+      \"updated-at\": \"2017-02-13T00:00:00.000Z\"
     },
     \"relationships\": {
       \"user\": {
@@ -2107,8 +2107,8 @@ exports[`module "serializer" class Serializer #format() supports including a man
     \"attributes\": {
       \"body\": \"Perspiciatis sint ipsum in optio debitis et. Asperiores quis qui molestiae voluptatum ut dignissimos. Id quis atque reprehenderit.\\n \\rAperiam natus perferendis error reprehenderit. Ea voluptatem incidunt veniam aliquam assumenda cumque. Sapiente ipsam et occaecati. Qui iure repudiandae eligendi. Tempore quos repellendus illo qui enim minima qui.\\n \\rNeque odit optio quia aperiam repellat et libero. Quo quidem omnis unde aut voluptatem iste in voluptatem veniam. Cum doloribus necessitatibus hic quisquam architecto. Laboriosam et voluptas dignissimos. Facilis officiis et asperiores necessitatibus. Voluptas optio consequatur laudantium enim incidunt sit et dolor omnis.\",
       \"title\": \"Rem aut repellat illum.\",
-      \"created-at\": \"2017-02-13T05:00:00.000Z\",
-      \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+      \"created-at\": \"2017-02-13T00:00:00.000Z\",
+      \"updated-at\": \"2017-02-13T00:00:00.000Z\"
     },
     \"relationships\": {
       \"user\": {
@@ -2216,8 +2216,8 @@ exports[`module "serializer" class Serializer #format() supports including a one
     \"attributes\": {
       \"body\": \"Et blanditiis reiciendis qui placeat placeat et quo. Modi nemo est fuga voluptatem quasi sunt magnam velit. Iusto eaque eveniet et quo in est voluptates. Eaque voluptas nemo harum est ratione qui enim.\\n \\rAssumenda omnis omnis sunt aut rerum sed ut sit ut. Voluptatem laboriosam nobis. Ut aliquam cum molestias. Dolore et autem est quia corrupti voluptatum et. Nostrum eum voluptas sed incidunt quis sit voluptatem fugiat.\\n \\rSunt earum eius temporibus molestiae. Similique fugiat nulla rerum veniam fugit ex. Omnis sequi consequatur recusandae.\",
       \"title\": \"Id repudiandae maiores et eaque et.\",
-      \"created-at\": \"2017-02-13T05:00:00.000Z\",
-      \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+      \"created-at\": \"2017-02-13T00:00:00.000Z\",
+      \"updated-at\": \"2017-02-13T00:00:00.000Z\"
     },
     \"relationships\": {
       \"user\": {
@@ -2261,8 +2261,8 @@ exports[`module "serializer" class Serializer #format() supports including a one
       \"attributes\": {
         \"message\": \"Nemo veniam nostrum veritatis magni soluta ad quo deserunt dignissimos.\",
         \"edited\": false,
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"links\": {
         \"self\": \"http://localhost:4000/comments/14\"
@@ -2286,8 +2286,8 @@ exports[`module "serializer" class Serializer #format() supports including belon
     \"attributes\": {
       \"body\": \"Omnis ad vitae et itaque ipsam cumque. Fuga impedit placeat fugit saepe. Aliquam minima est sint itaque in blanditiis mollitia eum. Omnis perferendis neque.\\n \\rUnde in placeat rerum. Quisquam et ut voluptatibus in sapiente quis ut. Et necessitatibus et magnam ab harum illo tenetur ea sit. Unde quisquam odio cum rerum ut omnis voluptatem reiciendis.\\n \\rDoloremque deleniti modi dolorem. Reprehenderit ratione recusandae eum. Cum doloribus voluptatibus ullam harum reprehenderit sint incidunt possimus labore. Repellat eum temporibus rerum et aut excepturi cum. In et dolorem aliquid nemo.\",
       \"title\": \"Dolorem et sapiente nostrum tenetur.\",
-      \"created-at\": \"2017-02-13T05:00:00.000Z\",
-      \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+      \"created-at\": \"2017-02-13T00:00:00.000Z\",
+      \"updated-at\": \"2017-02-13T00:00:00.000Z\"
     },
     \"relationships\": {
       \"user\": {
@@ -2358,8 +2358,8 @@ exports[`module "serializer" class Serializer #format() works with a single inst
     \"attributes\": {
       \"body\": \"Omnis ad vitae et itaque ipsam cumque. Fuga impedit placeat fugit saepe. Aliquam minima est sint itaque in blanditiis mollitia eum. Omnis perferendis neque.\\n \\rUnde in placeat rerum. Quisquam et ut voluptatibus in sapiente quis ut. Et necessitatibus et magnam ab harum illo tenetur ea sit. Unde quisquam odio cum rerum ut omnis voluptatem reiciendis.\\n \\rDoloremque deleniti modi dolorem. Reprehenderit ratione recusandae eum. Cum doloribus voluptatibus ullam harum reprehenderit sint incidunt possimus labore. Repellat eum temporibus rerum et aut excepturi cum. In et dolorem aliquid nemo.\",
       \"title\": \"Dolorem et sapiente nostrum tenetur.\",
-      \"created-at\": \"2017-02-13T05:00:00.000Z\",
-      \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+      \"created-at\": \"2017-02-13T00:00:00.000Z\",
+      \"updated-at\": \"2017-02-13T00:00:00.000Z\"
     },
     \"relationships\": {
       \"user\": {
@@ -2418,8 +2418,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Omnis ad vitae et itaque ipsam cumque. Fuga impedit placeat fugit saepe. Aliquam minima est sint itaque in blanditiis mollitia eum. Omnis perferendis neque.\\n \\rUnde in placeat rerum. Quisquam et ut voluptatibus in sapiente quis ut. Et necessitatibus et magnam ab harum illo tenetur ea sit. Unde quisquam odio cum rerum ut omnis voluptatem reiciendis.\\n \\rDoloremque deleniti modi dolorem. Reprehenderit ratione recusandae eum. Cum doloribus voluptatibus ullam harum reprehenderit sint incidunt possimus labore. Repellat eum temporibus rerum et aut excepturi cum. In et dolorem aliquid nemo.\",
         \"title\": \"Dolorem et sapiente nostrum tenetur.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -2469,8 +2469,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Et blanditiis reiciendis qui placeat placeat et quo. Modi nemo est fuga voluptatem quasi sunt magnam velit. Iusto eaque eveniet et quo in est voluptates. Eaque voluptas nemo harum est ratione qui enim.\\n \\rAssumenda omnis omnis sunt aut rerum sed ut sit ut. Voluptatem laboriosam nobis. Ut aliquam cum molestias. Dolore et autem est quia corrupti voluptatum et. Nostrum eum voluptas sed incidunt quis sit voluptatem fugiat.\\n \\rSunt earum eius temporibus molestiae. Similique fugiat nulla rerum veniam fugit ex. Omnis sequi consequatur recusandae.\",
         \"title\": \"Id repudiandae maiores et eaque et.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -2516,8 +2516,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Quidem deleniti libero aliquam omnis. Nostrum dolor debitis quisquam esse veritatis dolorem. Voluptatum excepturi magni sequi.\\n \\rAt accusamus similique. Ex sit ut adipisci reiciendis enim placeat magni est tempora. Ut dignissimos non et iure perferendis dignissimos consequatur. Atque maxime quasi illum aliquid est.\\n \\rIste et repudiandae. Quibusdam rerum ea ipsa rem non vero ipsam voluptate similique. Magnam pariatur soluta. Sed vel et exercitationem. Temporibus saepe et aut. Officia ut voluptatibus at rem qui modi dicta.\",
         \"title\": \"Rerum itaque reprehenderit dolor officia voluptatem qui qui rerum.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -2566,8 +2566,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Placeat rerum quibusdam vero earum inventore quos officia quam. Quo ut est esse corrupti suscipit optio et. Voluptas ut quis velit ducimus sed.\\n \\rDicta ut odio maxime totam. Nulla accusantium in. Maxime et molestiae corrupti et. Autem voluptatem aliquam voluptate repudiandae autem quo quia. Et sunt ratione. Voluptatem consectetur eligendi voluptatem praesentium qui rerum.\\n \\rQuos laboriosam voluptatibus consequuntur asperiores quos voluptatem tempora quia doloremque. Nobis porro at. Sunt alias ex et deleniti voluptatem qui et veniam. Aliquid qui ea ab qui repudiandae consequatur voluptatem. Consequatur magni qui et nihil velit. Est deserunt debitis labore voluptatibus id enim.\",
         \"title\": \"Molestias nobis velit labore sit cupiditate nostrum quasi officia commodi.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -2622,8 +2622,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Et dolorem ad velit suscipit animi. Nostrum aut doloribus sit praesentium accusamus repudiandae optio maiores. Inventore reprehenderit dicta eos. Atque provident dolorem dicta non. Dicta quam et qui dolores labore.\\n \\rVoluptatibus minima distinctio. Vero non eum rem et numquam ea velit repudiandae. Et nisi qui ut dignissimos ut minus ea fugiat et. Doloremque ad ea provident quidem ex error. Alias culpa voluptatum sequi. Deserunt repellendus nulla sint ex sint sit nesciunt vel corrupti.\\n \\rLabore ut accusantium molestiae ut. Molestiae esse reprehenderit consectetur voluptas ea quam quasi dolor illo. Earum consequatur unde officia perspiciatis qui nobis esse maxime. Nemo reprehenderit eligendi quaerat. Pariatur quae placeat. Sit perferendis itaque quam non quisquam vitae et adipisci.\",
         \"title\": \"Consequatur explicabo sint et.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -2682,8 +2682,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Veniam consequatur eveniet ipsam rerum nisi. Tenetur ipsa velit modi nobis aut eum quo sed qui. Et ipsam magni est voluptas non doloribus non consequatur asperiores. Et fugiat illum voluptas aut porro rerum voluptas.\\n \\rQuaerat et nisi soluta nam explicabo quis dolorum est quod. Velit voluptatem impedit dolorem. Voluptatem facere magni et exercitationem. Labore consequatur et maiores occaecati. Eaque nesciunt qui. Et doloribus aut repellat vel provident asperiores.\\n \\rRerum consequuntur earum aut pariatur est et odit atque. Voluptatem voluptatem nostrum ad aliquid architecto aut. Aperiam asperiores et deserunt eum laborum velit voluptatum.\",
         \"title\": \"Perspiciatis laudantium consequatur sunt perspiciatis eum ut.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -2746,8 +2746,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Qui omnis provident est dolor. Ut optio maiores voluptatum voluptas exercitationem deserunt. Facere doloremque ex consequatur aut aut dolores. Laborum a facilis incidunt architecto nisi et minus vel.\\n \\rOdio earum repellat sit. Aliquam rem voluptatibus laboriosam ipsum nostrum error ut. Laborum temporibus cupiditate quia culpa perferendis. Sequi voluptas quo.\\n \\rDoloremque animi dolore qui. Quaerat fugiat optio autem necessitatibus. Et incidunt recusandae nemo veritatis deserunt nam accusamus voluptatibus est.\",
         \"title\": \"Possimus nam et aut sed quis delectus omnis laudantium ut.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -2792,8 +2792,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Perspiciatis sint ipsum in optio debitis et. Asperiores quis qui molestiae voluptatum ut dignissimos. Id quis atque reprehenderit.\\n \\rAperiam natus perferendis error reprehenderit. Ea voluptatem incidunt veniam aliquam assumenda cumque. Sapiente ipsam et occaecati. Qui iure repudiandae eligendi. Tempore quos repellendus illo qui enim minima qui.\\n \\rNeque odit optio quia aperiam repellat et libero. Quo quidem omnis unde aut voluptatem iste in voluptatem veniam. Cum doloribus necessitatibus hic quisquam architecto. Laboriosam et voluptas dignissimos. Facilis officiis et asperiores necessitatibus. Voluptas optio consequatur laudantium enim incidunt sit et dolor omnis.\",
         \"title\": \"Rem aut repellat illum.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -2861,8 +2861,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Omnis est repudiandae nobis et sit dolor eos natus. Blanditiis et ex et id reprehenderit rem quas accusantium. Soluta adipisci nam aliquid nobis autem ullam nostrum. Ut excepturi impedit nihil ducimus quia fugit.\\n \\rAd porro id sit. Ea dolor ea ad animi. Vitae ut deleniti quae. Pariatur nobis aliquid rem. Quo quibusdam vel at porro saepe omnis qui nesciunt aliquid. Dolore consectetur corrupti ipsa impedit perspiciatis qui numquam occaecati.\\n \\rEst aperiam soluta quod inventore cum qui et odit. Qui doloremque quas velit exercitationem repellendus ullam quisquam rem. Illum nisi dolor. Ut repellendus sunt vel error sed placeat est. Rerum ut architecto voluptatum molestias natus et eum. Illo omnis officiis reprehenderit ipsa expedita veniam repudiandae.\",
         \"title\": \"Animi accusamus qui velit expedita non consequatur quos non nesciunt.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -2903,8 +2903,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Blanditiis a odio unde. Nam distinctio aut vitae. Autem atque sint culpa rerum quo veniam tenetur. Hic odio quos. Temporibus esse voluptatem quas tempora minima totam est. Ut est consequatur.\\n \\rAdipisci voluptas sit sapiente commodi sed praesentium et perspiciatis ea. Et nam occaecati aut amet qui illum sunt aliquam officiis. Ut quos error molestias qui itaque numquam. Illum fugiat dignissimos quos. Nihil autem ut ut nesciunt et occaecati quaerat.\\n \\rQuo perferendis deleniti nulla quis et est ad. Eos aut est voluptate delectus est molestiae sit maiores omnis. Blanditiis excepturi saepe. Consequatur possimus laborum. Doloribus quas ut eos nam dolorem quia iste. Dolorem ut asperiores quis quia magni.\",
         \"title\": \"Maiores perspiciatis est aperiam ipsam sit cupiditate.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -2968,8 +2968,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Necessitatibus quam velit eum atque ducimus enim. Ut aut quia porro deleniti ipsa in ex ab repellat. Vel repudiandae exercitationem soluta reprehenderit. Consequatur recusandae laudantium. Fugit laudantium laudantium tenetur occaecati quia mollitia ipsam eveniet. Nobis voluptas voluptatibus.\\n \\rEt qui amet quia. Nam autem sed. Ut laborum iste dolorum. Autem repellendus est. Dolorem et quibusdam aspernatur accusantium.\\n \\rEst sit aut consequuntur. Provident ut qui. Enim ut similique voluptates aut maxime doloremque. Aut et nemo deserunt itaque explicabo. Impedit est aut maiores illum soluta corporis neque maxime.\",
         \"title\": \"Nobis consectetur aut sint mollitia.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -3024,8 +3024,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Omnis nemo consequatur totam laboriosam soluta repellendus error quas. Voluptatibus ut illo natus debitis autem nemo. Aspernatur est illo quibusdam provident eum eum doloremque deserunt. Voluptatem laboriosam ea laboriosam reiciendis.\\n \\rQuibusdam blanditiis quas. Et explicabo expedita sit nostrum qui et enim. Amet aut illo nesciunt minima ratione in qui quia enim. In maiores iure. Qui minima eveniet nihil omnis tempore tempora ut enim impedit. Unde eos voluptatem.\\n \\rEt quia amet nihil velit culpa. Quas dolorem provident. Ullam eos architecto quam.\",
         \"title\": \"Culpa suscipit deserunt perspiciatis aut sed.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -3076,8 +3076,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Eius delectus illo eius. Quis praesentium alias. Culpa alias in odio ut cum id et.\\n \\rAccusantium iste aspernatur aut aut ratione aliquid aliquid aut ut. Ut sed aut odit. Facere ut assumenda a et dolorum exercitationem aliquam ea qui.\\n \\rUt sint fugiat non aut esse adipisci itaque eos. Possimus quis aut provident vel. Qui laborum doloremque dolorem praesentium cum repudiandae. Natus maiores hic deserunt tempore voluptas labore id aliquam. Tenetur sed dolorem impedit quidem. Harum voluptatibus nemo labore eligendi.\",
         \"title\": \"Molestiae ea eligendi dolor ratione illo facilis.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -3121,8 +3121,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Rem amet odit repellat blanditiis incidunt. Maiores nisi nemo et est perferendis ut aperiam. Voluptas asperiores non quia et. Necessitatibus in sed dolorum et facilis ipsam nobis voluptatem. Magnam odit nostrum. Eligendi nihil illum assumenda voluptates.\\n \\rEveniet et cupiditate quia cum ipsa. In qui quia. Minus accusamus deleniti et modi. Ipsa aut quas. Esse nisi sed iusto. Itaque ab modi facilis tenetur autem laudantium esse voluptate.\\n \\rSint rerum accusamus quidem iste numquam et eligendi quia. Sint perspiciatis qui. Ullam et labore distinctio veniam.\",
         \"title\": \"Enim saepe vel accusantium quia repellendus iusto.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -3168,8 +3168,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Ex dignissimos at sunt et sed sunt eligendi cumque. Quo reiciendis quia quaerat labore. Numquam voluptatibus debitis quae quo dolor ut quaerat.\\n \\rNemo et maiores sint voluptatibus qui beatae at voluptate. Ex laboriosam rerum distinctio ut. Sint quos qui sequi voluptas nulla autem commodi in nihil. Nulla dolorem omnis illum modi cumque quam placeat qui itaque. A et autem recusandae odit adipisci dolorem repellendus aliquam molestiae. Dolorem sint non.\\n \\rIllo sit molestiae molestiae quia mollitia laudantium exercitationem perferendis quis. Molestiae a qui velit tempore quia et iure asperiores. Ad qui aliquid libero est sed quidem deleniti et. Aut aperiam laboriosam qui. Quibusdam quia corporis temporibus suscipit id tempora. Beatae temporibus ratione consequuntur rerum fugiat.\",
         \"title\": \"Adipisci occaecati nihil at ipsa illo repellendus est.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -3223,8 +3223,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Sit tempore ab. Corrupti deleniti quisquam. Maiores magnam magni molestiae rem aut totam. Deserunt iste modi rerum expedita laborum officiis quidem. Blanditiis aliquid sapiente omnis eum corporis consequatur. Dolor qui ut dolores qui et.\\n \\rConsequatur aut non magni ut aut omnis tempora assumenda magni. Et sit laborum aut. Molestias ut omnis molestiae nulla eaque. Natus vel dolorum omnis dicta. Esse laborum vitae accusantium mollitia qui et commodi et. Ut aut quia quia minima et nemo deserunt dolores.\\n \\rSoluta ea reprehenderit vel. Ut ea ipsam tempora. Et tempora rerum. Enim tenetur totam provident tenetur et omnis. Et repellendus nemo earum et et aperiam excepturi. Quia facere minus omnis sint et reprehenderit corrupti dignissimos aut.\",
         \"title\": \"Sint voluptatem amet quidem.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -3269,8 +3269,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Dolorum sunt beatae blanditiis unde vitae laudantium eius. Dolorum est aut qui fugiat nihil laboriosam quam iure. Occaecati nihil aut inventore aut eius. Neque ut beatae aut similique eius et voluptatum quam consequatur.\\n \\rIpsam sunt error voluptas ut quia aliquid qui. Error dolor fugit quasi laboriosam facilis iure sunt consequatur accusamus. Labore iusto enim nisi incidunt. Quis vel nihil.\\n \\rAut non accusantium voluptatem nihil. Odio sit pariatur officiis consequuntur provident. Suscipit blanditiis id officiis. Praesentium vitae possimus tempore aut. Labore expedita quia in laboriosam consequuntur corporis ratione aut veritatis. Quidem excepturi quisquam accusamus quia expedita dignissimos consequuntur eum sed.\",
         \"title\": \"Qui rerum modi ex.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -3321,8 +3321,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Quaerat laboriosam quidem qui dolorem. Fugit quaerat est doloremque eaque ut et et aliquid. Cum pariatur sunt libero. Rerum placeat omnis natus quibusdam ut fugiat dolorem. Perferendis odit ratione laboriosam sunt.\\n \\rAut exercitationem ad natus suscipit aliquam asperiores. Ut soluta aspernatur provident doloribus. Deserunt sit voluptatem rerum voluptatum accusantium et. Sequi dolore recusandae eius amet architecto voluptatibus ea vel. Non unde iusto quia repellat quae provident omnis est. Libero repellendus id sint provident ab sit.\\n \\rNumquam expedita praesentium et. Laboriosam fuga inventore a exercitationem non praesentium occaecati qui. Eum rerum nemo quas et. Blanditiis asperiores facilis magni vel eligendi explicabo cupiditate. Sint hic ut odit.\",
         \"title\": \"Odio est vel tempora.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -3394,8 +3394,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Voluptas earum doloribus quam odit quam quia possimus dolores rerum. Assumenda ea labore error. Nam id qui qui itaque et vero alias consequatur doloremque.\\n \\rAdipisci quod non repudiandae. Fugit officia sunt veritatis odit. Distinctio ipsam ut fuga molestiae ipsum. Reiciendis explicabo possimus maxime non aut praesentium et ut dolorem. Nobis cupiditate est amet.\\n \\rEx optio qui eum sint alias unde nesciunt cum. Sequi non possimus est quo atque repellendus architecto minus. Iure repellat consectetur. Eum vel deleniti autem dolorem qui nobis.\",
         \"title\": \"Earum id consequatur ut.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -3445,8 +3445,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Voluptate nihil vitae. Ut est quidem corporis qui dolore sit repellendus asperiores dolor. Cupiditate dolorem qui et quia qui qui ea aut. Ex officia temporibus distinctio.\\n \\rRem id sequi fugit ducimus. Magni numquam facere et sunt possimus. Enim rerum harum fuga. Odit velit error debitis ea labore reiciendis aliquam magnam.\\n \\rRem modi laudantium possimus culpa vero iure. Animi vero fugit. Nam sunt perferendis vel doloremque sit magnam voluptatibus quibusdam. Et repellat omnis sapiente quia ea sunt. Occaecati eos sit. Accusamus dolores veritatis aut ipsa tenetur labore quia assumenda quas.\",
         \"title\": \"Laborum quaerat et velit numquam saepe esse est quis eius.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -3491,8 +3491,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Velit molestiae tenetur voluptatem perferendis aperiam quo nemo et. Dignissimos quia dicta sapiente laborum. Aliquid quos dolorum temporibus delectus quia reiciendis. Odio consectetur quia. Est reiciendis ipsam animi iure vel ut autem voluptatum omnis. Sequi occaecati qui quidem dolor ab ut id asperiores dolores.\\n \\rQuo velit sit aperiam hic quisquam commodi molestias et. Non sed pariatur quia quasi. Molestias voluptate nam nihil. Distinctio minima facilis et accusamus nisi. Dolorem tempore officia. Rerum voluptatibus quo.\\n \\rQuis et commodi quis magnam quia voluptatem laborum. Accusantium repellat velit occaecati quam libero illum recusandae vel. Illo ut magnam quod occaecati. Et et ea asperiores consequatur molestias optio corporis.\",
         \"title\": \"Rerum nam incidunt reiciendis.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -3552,8 +3552,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Iure reiciendis maiores possimus magni. Rerum vitae distinctio rerum incidunt nulla esse ullam sed commodi. Voluptatum ea ea maiores aliquam reiciendis dolorum minus ullam. Cumque quas ut libero doloribus sint quis. Odio a quos eveniet.\\n \\rOmnis nemo vel molestiae molestiae. Illo consequatur omnis minus. Culpa dolores error culpa mollitia voluptatem temporibus est natus.\\n \\rFugiat architecto occaecati libero beatae ipsum odio recusandae perspiciatis. Laudantium omnis autem voluptatum incidunt velit mollitia repudiandae. Fugiat sit et aliquid ut temporibus sed. Consequuntur quod perferendis accusamus amet enim inventore ut voluptatem.\",
         \"title\": \"Sint in quia aspernatur.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -3603,8 +3603,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Quae et facilis est distinctio autem alias. Mollitia aliquid libero illum qui. Dolores dolorem optio qui corrupti. Quae inventore ea.\\n \\rPerspiciatis doloremque aut itaque. Nostrum sit est. Vel vero vel voluptatem voluptatem autem molestias. Voluptates incidunt voluptatem animi temporibus nam veniam ad.\\n \\rNon voluptas sunt quas voluptate officia dignissimos. Consequuntur corrupti fuga perferendis consequatur dolorem eos esse ducimus. Vero et et voluptates commodi magnam quidem.\",
         \"title\": \"Suscipit beatae eum quasi et dignissimos aliquam non.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -3654,8 +3654,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Eligendi eligendi ut aut atque necessitatibus fuga. Vitae nisi sit non quis ipsa quo quam. Laudantium veniam delectus debitis laudantium.\\n \\rEt perferendis est debitis minus at. Consequatur nostrum error quis aperiam ea. Nemo non deserunt reiciendis est. Minus temporibus rerum velit tempora ut praesentium.\\n \\rUt et deserunt. Mollitia sed voluptas molestiae excepturi illum id omnis maxime laborum. Corporis maiores dolorem laudantium exercitationem quam sed sed. Quis dolore aspernatur. Et nihil eum voluptatem repudiandae magni assumenda eos commodi.\",
         \"title\": \"Repellat quidem molestiae eum reiciendis cupiditate minus deserunt error.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {
@@ -3714,8 +3714,8 @@ exports[`module "serializer" class Serializer #format() works with an array of \
       \"attributes\": {
         \"body\": \"Voluptas aliquid fugit qui eius quae aliquam. Impedit cupiditate et dolor. Nihil optio dolor voluptatem sunt commodi sed. Numquam ut reprehenderit est.\\n \\rAspernatur omnis sint sed. Quia libero quibusdam eos laudantium quo. Voluptas aut nesciunt vel. Incidunt eaque velit.\\n \\rEaque voluptate libero. Maiores explicabo doloremque. Architecto est impedit iusto veniam voluptatum aliquid soluta. Omnis fuga sint quia molestiae provident blanditiis et.\",
         \"title\": \"Et aut voluptas voluptate velit laudantium deserunt.\",
-        \"created-at\": \"2017-02-13T05:00:00.000Z\",
-        \"updated-at\": \"2017-02-13T05:00:00.000Z\"
+        \"created-at\": \"2017-02-13T00:00:00.000Z\",
+        \"updated-at\": \"2017-02-13T00:00:00.000Z\"
       },
       \"relationships\": {
         \"user\": {

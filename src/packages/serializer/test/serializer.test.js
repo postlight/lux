@@ -69,7 +69,7 @@ describe('module "serializer"', () => {
         global.Date.prototype.toISOString = function trap() {
           const date = new Date(this);
 
-          date.setHours(0, 0, 0, 0);
+          date.setUTCHours(0, 0, 0, 0);
 
           const result = toISOString.call(date);
 
