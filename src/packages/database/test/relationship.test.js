@@ -125,24 +125,32 @@ describe('module "database/relationship"', () => {
 
     describe('one-to-many relationships', () => {
       it('resolves with the correct value when present', async () => {
-        const result = await get(subject, 'comments');
+        let result = await get(subject, 'comments');
 
         expect(Array.isArray(result)).toBe(true);
 
         if (Array.isArray(result)) {
-          expect(result.map(comment => comment.toObject())).toMatchSnapshot();
+          result = result
+            .map(comment => comment.toObject())
+            .sort((a, b) => a.id - b.id);
+
+          expect(result).toMatchSnapshot();
         }
       });
     });
 
     describe('many-to-many relationships', () => {
       it('resolves with the correct value when present', async () => {
-        const result = await get(subject, 'tags');
+        let result = await get(subject, 'tags');
 
         expect(Array.isArray(result)).toBe(true);
 
         if (Array.isArray(result)) {
-          expect(result.map(tag => tag.toObject())).toMatchSnapshot();
+          result = result
+            .map(tag => tag.toObject())
+            .sort((a, b) => a.id - b.id);
+
+          expect(result).toMatchSnapshot();
         }
       });
     });
