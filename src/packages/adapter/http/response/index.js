@@ -1,37 +1,47 @@
 // @flow
 import type { ServerResponse } from 'http';
 
+import Response from '../../../response';
 import { ResponseHeaders } from '../../utils/headers';
 import type Logger from '../../../logger';
-import type { Response } from '../../../response';
 
 export function create(res: ServerResponse, logger: Logger): Response {
-  const send = (data: string) => res.end(data);
-  const headers = new ResponseHeaders((type, [key, value]) => {
-    if (type === 'SET' && value) {
-      res.setHeader(key, value);
-    } else if (type === 'DELETE') {
-      res.removeHeader(key);
-    }
-  });
-
-  const response = {
-    send,
+  return new Response({
     logger,
-    headers,
-    end: send,
     stats: [],
-    status: (code: number) => {
-      // eslint-disable-next-line no-param-reassign
-      res.statusCode = code;
-      return response;
-    },
-    getHeader: key => res.getHeader(key),
-    setHeader: (key, value) => res.setHeader(key, value),
-    removeHeader: key => res.removeHeader(key),
+    headers: new ResponseHeaders((type, [key, value]) => {
+      if (type === 'SET' && value) {
+        res.setHeader(key, value);
+      } else if (type === 'DELETE') {
+        res.removeHeader(key);
+      }
+    }),
     statusCode: 200,
     statusMessage: 'OK',
-  };
 
-  return response;
+    end(body: string): void {
+      this.send(body);
+    },
+
+    send(body: string): void {
+      res.end(body);
+    },
+
+    status(code: number): Response {
+      this.statusCode = code;
+      return this;
+    },
+
+    getHeader(key: string): void | string {
+      return this.headers.get(key);
+    },
+
+    setHeader(key: string, value: string): void {
+      this.headers.set(key, value);
+    },
+
+    removeHeader(key: string): void {
+      this.headers.delete(key);
+    },
+  });
 }

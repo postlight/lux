@@ -1,34 +1,29 @@
 // @flow
-import { createServer } from 'http';
 import type { IncomingMessage, ServerResponse } from 'http';
 
-import { PORT, LUX_CONSOLE } from '../../../constants';
-import type { AdapterFactory } from '../index';
+import type { Adapter } from '../index';
+import type Application from '../../application';
 
-import { create as createRequest } from './request';
-import { create as createResponse } from './response';
+import * as request from './request';
+import * as response from './response';
 
-const http: AdapterFactory = app => {
-  if (!LUX_CONSOLE) {
-    const server = createServer(app.exec);
-
-    server.listen(PORT);
+function createAdapter({ logger }: Application): Adapter {
+  function adapter(req: IncomingMessage, res: ServerResponse) {
+    return Promise.all([
+      request.create(req, logger),
+      response.create(res, logger),
+    ]);
   }
 
-  return (req: IncomingMessage, res: ServerResponse) => (
-    createRequest(req, app.logger)
-      .then(request => [
-        request,
-        createResponse(res, app.logger),
-      ])
-      .catch(err => {
-        app.logger.error(err);
+  Object.defineProperty(adapter, 'type', {
+    value: 'http',
+    writable: false,
+    enumerable: true,
+    configurable: false,
+  });
 
-        // eslint-disable-next-line no-param-reassign
-        res.statusCode = 500;
-        res.end(err.stack || err.message);
-      })
-  );
-};
+  return adapter;
+}
 
-export default http;
+export default createAdapter;
+export { request, response };

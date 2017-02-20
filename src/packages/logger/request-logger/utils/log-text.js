@@ -4,8 +4,8 @@ import chalk from 'chalk';
 import { DEBUG } from '../../constants';
 import { infoTemplate, debugTemplate } from '../templates';
 import type Logger from '../../index';
-import type { Request } from '../../../request';
-import type { Response } from '../../../response';
+import type Request from '../../../request';
+import type Response from '../../../response';
 
 import filterParams from './filter-params';
 

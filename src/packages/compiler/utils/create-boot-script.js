@@ -13,13 +13,18 @@ export default async function createBootScript(dir: string, {
   useStrict: boolean;
 }): Promise<void> {
   let data = template`
+    const http = require('http');
+
     const bundle = require('./bundle');
 
+    const { env: { PORT } } = process;
     const hasIPC = typeof process.send === 'function';
     const config = Object.assign({}, bundle.config, {
       path: process.cwd(),
       database: bundle.database,
     });
+
+    let server;
 
     module.exports = new bundle.Application(config)
       .then(app => {
@@ -27,6 +32,11 @@ export default async function createBootScript(dir: string, {
           process.send('ready');
         } else {
           process.emit('ready');
+        }
+
+        if (app.adapter.type === 'http') {
+          server = http.createServer(app.exec);
+          server.listen(PORT);
         }
 
         return app

@@ -1,5 +1,5 @@
 // @flow
-import type { Request, Method } from '../../request';
+import type Request, { Method } from '../../request';
 
 type Headers = $PropertyType<Request, 'headers'>;
 

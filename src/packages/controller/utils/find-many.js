@@ -1,7 +1,7 @@
 // @flow
 import merge from '../../../utils/merge';
 import type { Model, Query } from '../../database';
-import type { Request } from '../../request';
+import type Request from '../../request';
 
 import paramsToQuery from './params-to-query';
 

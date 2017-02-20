@@ -1,6 +1,6 @@
 // @flow
-import type { Request } from '../request';
-import type { Response } from '../response';
+import type Request from '../request';
+import type Response from '../response';
 
 import normalize from './utils/normalize';
 

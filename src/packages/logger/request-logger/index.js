@@ -1,6 +1,6 @@
 // @flow
-import type { Request } from '../../request';
-import type { Response } from '../../response';
+import type Request from '../../request';
+import type Response from '../../response';
 import type Logger from '../index';
 
 import logText from './utils/log-text';

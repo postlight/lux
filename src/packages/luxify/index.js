@@ -1,7 +1,7 @@
 // @flow
 import type { Action } from '../router';
-import type { Request } from '../request';
-import type { Response } from '../response';
+import type Request from '../request';
+import type Response from '../response';
 
 import createResponseProxy from './utils/create-response-proxy';
 

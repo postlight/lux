@@ -1,8 +1,8 @@
 // @flow
 import { FreezeableSet, freezeProps, deepFreezeProps } from '../../freezeable';
 import type Controller from '../../controller';
-import type { Request, Method } from '../../request';
-import type { Response } from '../../response';
+import type Request, { Method } from '../../request';
+import type Response from '../../response';
 
 import { createAction } from './action';
 import { paramsFor, defaultParamsFor, validateResourceId } from './params';

@@ -1,6 +1,6 @@
 // @flow
 import { FreezeableMap } from '../freezeable';
-import type { Request } from '../request';
+import type Request from '../request';
 
 import Namespace from './namespace';
 import { build, define } from './definitions';

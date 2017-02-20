@@ -1,10 +1,10 @@
 // @flow
-import { parse as parseURL } from 'url';
+import * as url from 'url';
 
 import qs from 'qs';
 
+import Request from '../../../request';
 import type Logger from '../../../logger';
-import type { Request } from '../../../request';
 import * as query from '../../utils/query';
 import * as method from '../../utils/method';
 import { RequestHeaders } from '../../utils/headers';
@@ -19,21 +19,21 @@ type Options = {
 };
 
 export function create(options: Options): Request {
-  const url = parseURL(options.url);
-  const params = query.fromObject(qs.parse(url.query));
+  const urlData = url.parse(options.url);
+  const params = query.fromObject(qs.parse(urlData.query));
   const headers = new RequestHeaders(options.headers);
 
   if (options.body) {
     Object.assign(params, options.body);
   }
 
-  return {
+  return new Request({
     params,
     headers,
-    url: { ...url, params: [] },
+    url: { ...urlData, params: [] },
     logger: options.logger,
     method: method.resolve(options.method, headers),
-    encrypted: url.protocol === 'https:',
+    encrypted: urlData.protocol === 'https:',
     defaultParams: {},
-  };
+  });
 }

@@ -1,5 +1,6 @@
 // @flow
-import type { AdapterFactory } from '../index';
+import type { Adapter } from '../index';
+import type Application from '../../application';
 import type { ObjectMap } from '../../../interfaces';
 
 import * as request from './request';
@@ -13,9 +14,9 @@ type Options = {
   resolve?: (data: any) => void;
 };
 
-const mock: AdapterFactory = ({ logger }) => (
-  ({ url, body, method, headers, resolve }: Options) => (
-    Promise.resolve([
+function createAdapter({ logger }: Application): Adapter {
+  function adapter({ url, body, method, headers, resolve }: Options) {
+    return Promise.resolve([
       request.create({
         url,
         body,
@@ -27,9 +28,18 @@ const mock: AdapterFactory = ({ logger }) => (
         logger,
         resolve,
       }),
-    ])
-  )
-);
+    ]);
+  }
 
-export default mock;
+  Object.defineProperty(adapter, 'type', {
+    value: 'mock',
+    writable: false,
+    enumerable: true,
+    configurable: false,
+  });
+
+  return adapter;
+}
+
+export default createAdapter;
 export { request, response };

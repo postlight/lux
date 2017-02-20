@@ -1,7 +1,8 @@
 // @flow
+import Response from '../../../response';
 import { ResponseHeaders } from '../../utils/headers';
+import noop from '../../../../utils/noop';
 import type Logger from '../../../logger';
-import type { Response } from '../../../response';
 
 type Options = {
   logger: Logger;
@@ -9,36 +10,49 @@ type Options = {
 };
 
 export function create(options: Options): Response {
-  const headers = new ResponseHeaders(() => undefined);
-  const response = {
-    headers,
-    end: (body: string) => response.send(body),
-    send: (body: string) => {
+  return new Response({
+    stats: [],
+    headers: new ResponseHeaders(noop),
+    logger: options.logger,
+    statusCode: 200,
+    statusMessage: 'OK',
+
+    end(body: string): void {
+      this.send(body);
+    },
+
+    send(body: string): void {
       if (options.resolve) {
+        const {
+          headers,
+          statusCode,
+          statusMessage,
+        } = this;
+
         options.resolve({
           body,
           headers,
-          status: response.statusCode,
-          statusText: response.statusMessage,
+          statusCode,
+          statusText: statusMessage,
         });
       }
     },
-    stats: [],
-    logger: options.logger,
-    status: (code: number) => {
-      response.statusCode = code;
-      return response;
-    },
-    getHeader: key => headers.get(key),
-    setHeader: (key, value) => {
-      headers.set(key, value);
-    },
-    removeHeader: key => {
-      headers.delete(key);
-    },
-    statusCode: 200,
-    statusMessage: 'OK',
-  };
 
-  return response;
+    status(code: number): Response {
+      this.statusCode = code;
+      return this;
+    },
+
+    getHeader(key: string): void | string {
+      return this.headers.get(key);
+    },
+
+    setHeader(key: string, value: string): void {
+      this.headers.set(key, value);
+    },
+
+    removeHeader(key: string): void {
+      this.headers.delete(key);
+    },
+  });
 }

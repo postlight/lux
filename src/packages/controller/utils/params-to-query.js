@@ -2,7 +2,7 @@
 import omit from '../../../utils/omit';
 import entries from '../../../utils/entries';
 import type { Model } from '../../database';
-import type { Request } from '../../request';
+import type Request from '../../request';
 
 /**
  * @private

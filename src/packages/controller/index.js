@@ -5,8 +5,8 @@ import getDomain from '../../utils/get-domain';
 import type Serializer from '../serializer';
 // eslint-disable-next-line no-duplicate-imports
 import type { Query } from '../database';
-import type { Request } from '../request';
-import type { Response } from '../response';
+import type Request from '../request';
+import type Response from '../response';
 
 import findOne from './utils/find-one';
 import findMany from './utils/find-many';

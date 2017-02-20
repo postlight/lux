@@ -28,7 +28,7 @@ export type Method =
   | 'DELETE'
   | 'OPTIONS';
 
-export type Request = {
+export type Options = {
   url: URL;
   params: ObjectMap<any>;
   logger: Logger;
@@ -38,4 +38,23 @@ export type Request = {
   defaultParams: ObjectMap<any>;
 };
 
+/**
+ * @class Request
+ * @public
+ */
+class Request {
+  url: URL;
+  params: ObjectMap<any>;
+  logger: Logger;
+  method: Method;
+  headers: Map<string, string>;
+  encrypted: boolean;
+  defaultParams: ObjectMap<any>;
+
+  constructor(options: Options) {
+    Object.assign(this, options);
+  }
+}
+
+export default Request;
 export * from './constants';

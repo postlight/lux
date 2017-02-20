@@ -1,5 +1,5 @@
 // @flow
-import type { Request } from '../packages/request';
+import type Request from '../packages/request';
 
 /**
  * @private

@@ -2,8 +2,8 @@
 import type Database, { Model, Query } from '../database';
 import type Serializer from '../serializer';
 import type Controller from './index';
-import type { Request } from '../request';
-import type { Response } from '../response';
+import type Request from '../request';
+import type Response from '../response';
 
 export type Controller$opts = {
   model?: Class<Model>;

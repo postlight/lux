@@ -5,8 +5,8 @@ import type { IncomingMessage } from 'http';
 import qs from 'qs';
 
 import { HAS_BODY } from '../../../../constants';
+import Request from '../../../request';
 import type Logger from '../../../logger';
-import type { Request } from '../../../request';
 import * as query from '../../utils/query';
 import * as method from '../../utils/method';
 import { RequestHeaders } from '../../utils/headers';
@@ -15,7 +15,7 @@ export function create(req: IncomingMessage, logger: Logger): Promise<Request> {
   return new Promise((resolve, reject) => {
     const url = parseURL(req.url);
     const headers = new RequestHeaders(req.headers);
-    const request = {
+    const request = new Request({
       logger,
       headers,
       url: { ...url, params: [] },
@@ -24,7 +24,7 @@ export function create(req: IncomingMessage, logger: Logger): Promise<Request> {
       // $FlowIgnore
       encrypted: Boolean(req.connection.encrypted),
       defaultParams: {},
-    };
+    });
 
     if (HAS_BODY.test(request.method)) {
       let offset = 0;
@@ -35,6 +35,7 @@ export function create(req: IncomingMessage, logger: Logger): Promise<Request> {
       req
         .setEncoding('utf8')
         .on('data', (data: Buffer) => {
+          console.log(data);
           data.copy(body, offset);
           offset += data.length;
         })

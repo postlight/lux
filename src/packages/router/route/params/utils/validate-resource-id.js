@@ -1,6 +1,6 @@
 // @flow
 import { ResourceMismatchError } from '../errors';
-import type { Request } from '../../../../request';
+import type Request from '../../../../request';
 
 /**
  * @private
