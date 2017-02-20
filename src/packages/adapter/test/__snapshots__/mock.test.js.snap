@@ -58,7 +58,7 @@ Array [
 ]
 `;
 
-exports[`module "adapter/mock" #request #create() - with \`body\` builds a request object from an options object 1`] = `
+exports[`module "adapter/mock" #request #create() - with \`body\` builds a request from an options object 1`] = `
 Request {
   "defaultParams": Object {},
   "encrypted": false,
@@ -109,7 +109,7 @@ Request {
 }
 `;
 
-exports[`module "adapter/mock" #request #create() - without \`body\` builds a request object from an options object 1`] = `
+exports[`module "adapter/mock" #request #create() - without \`body\` builds a request from an options object 1`] = `
 Request {
   "defaultParams": Object {},
   "encrypted": false,
@@ -173,7 +173,7 @@ Array [
 ]
 `;
 
-exports[`module "adapter/mock" #response #create() - with a resolver function builds a response object from an options object 1`] = `
+exports[`module "adapter/mock" #response #create() - with a resolver function builds a response from an options object 1`] = `
 Response {
   "end": [Function],
   "getHeader": [Function],
@@ -228,7 +228,7 @@ Response {
 }
 `;
 
-exports[`module "adapter/mock" #response #create() - without a resolver function builds a response object from an options object 1`] = `
+exports[`module "adapter/mock" #response #create() - without a resolver function builds a response from an options object 1`] = `
 Response {
   "end": [Function],
   "getHeader": [Function],

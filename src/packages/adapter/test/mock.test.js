@@ -67,7 +67,7 @@ describe('module "adapter/mock"', () => {
           });
         });
 
-        it('builds a request object from an options object', () => {
+        it('builds a request from an options object', () => {
           expect(subject).toMatchSnapshot();
         });
       });
@@ -84,7 +84,7 @@ describe('module "adapter/mock"', () => {
           });
         });
 
-        it('builds a request object from an options object', () => {
+        it('builds a request from an options object', () => {
           expect(subject).toMatchSnapshot();
         });
       });
@@ -109,7 +109,7 @@ describe('module "adapter/mock"', () => {
           resolve.mockClear();
         });
 
-        it('builds a response object from an options object', () => {
+        it('builds a response from an options object', () => {
           expect(subject).toMatchSnapshot();
         });
 
@@ -139,7 +139,7 @@ describe('module "adapter/mock"', () => {
           });
         });
 
-        it('builds a response object from an options object', () => {
+        it('builds a response from an options object', () => {
           expect(subject).toMatchSnapshot();
         });
 

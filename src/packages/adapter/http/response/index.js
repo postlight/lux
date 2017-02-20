@@ -20,14 +20,15 @@ export function create(res: ServerResponse, logger: Logger): Response {
     statusMessage: 'OK',
 
     end(body: string): void {
-      this.send(body);
-    },
-
-    send(body: string): void {
       res.end(body);
     },
 
+    send(body: string): void {
+      this.end(body);
+    },
+
     status(code: number): Response {
+      res.statusCode = code; // eslint-disable-line no-param-reassign
       this.statusCode = code;
       return this;
     },

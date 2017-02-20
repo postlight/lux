@@ -8,4 +8,3 @@ export type AdapterFactory = (application: Application) => Adapter;
 
 export { default as http } from './http';
 export { default as mock } from './mock';
-export { default as lambda } from './lambda';

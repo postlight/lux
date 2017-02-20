@@ -7,7 +7,7 @@ import Request from '../../../request';
 import type Logger from '../../../logger';
 import * as query from '../../utils/query';
 import * as method from '../../utils/method';
-import { RequestHeaders } from '../../utils/headers';
+import { Headers } from '../../utils/headers';
 import type { ObjectMap } from '../../../../interfaces';
 
 type Options = {
@@ -21,11 +21,13 @@ type Options = {
 export function create(options: Options): Request {
   const urlData = url.parse(options.url);
   const params = query.fromObject(qs.parse(urlData.query));
-  const headers = new RequestHeaders(options.headers);
+  const headers = new Headers(options.headers);
 
   if (options.body) {
     Object.assign(params, options.body);
   }
+
+  headers.freeze();
 
   return new Request({
     params,

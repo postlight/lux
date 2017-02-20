@@ -4,15 +4,15 @@ import isObject from '../../../utils/is-object';
 import type { ObjectMap } from '../../../interfaces';
 
 const INT = /^\d+$/;
-const CSV = /^(?:[\w\d-]+)(?:,[\w\d-]+)*$/;
+const CSV = /^(?:[\w\d-]+)(?:,[\w\d-]+){1,}$/;
 const NULL = /^null$/;
 const BOOL = /^(?:true|false)$/;
 const DATE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}(Z|\+\d{4})$/;
 const TRUE = /^true$/;
 const DELIMITER = /[_-\s]+/;
 
-const camelize = (source: string) => (
-  source
+export function camelize(source: string): string {
+  return source
     .split(DELIMITER)
     .reduce((result, part, idx) => {
       if (part[0]) {
@@ -26,10 +26,10 @@ const camelize = (source: string) => (
       }
 
       return result;
-    }, '')
-);
+    }, '');
+}
 
-const fromString = (source: string): any => {
+export function fromString(source: string): any {
   if (INT.test(source)) {
     return Number.parseInt(source, 10);
   } else if (BOOL.test(source)) {
@@ -37,15 +37,15 @@ const fromString = (source: string): any => {
   } else if (NULL.test(source)) {
     return null;
   } else if (CSV.test(source)) {
-    return source.split(',');
+    return source.split(',').map(fromString);
   } else if (DATE.test(source)) {
     return new Date(source);
   }
   return source;
-};
+}
 
-export const fromObject = (source: ObjectMap<any>): ObjectMap<any> => (
-  entries(source).reduce((target, [k, v]) => {
+export function fromObject(source: ObjectMap<any>): ObjectMap<any> {
+  return entries(source).reduce((target, [k, v]) => {
     const key = camelize(k);
     let value = v;
 
@@ -56,17 +56,27 @@ export const fromObject = (source: ObjectMap<any>): ObjectMap<any> => (
     }
 
     if (key === 'include') {
-      if (Array.isArray(value)) {
-        value = value.map(camelize);
-      } else if (typeof value === 'string') {
-        value = [camelize(value)];
+      if (value && !Array.isArray(value)) {
+        value = [value];
       }
+
+      value = value.map(item => {
+        if (typeof item === 'string') {
+          return camelize(item);
+        }
+        return item;
+      });
     } else if (key === 'fields' && isObject(value)) {
       value = entries(value).reduce((fields, [resource, names]) => {
         // eslint-disable-next-line no-param-reassign
         fields[resource] = (
-          Array.isArray(names) ? names.map(camelize) : [camelize(names)]
-        );
+          Array.isArray(names) ? names : [names]
+        ).map(item => {
+          if (typeof item === 'string') {
+            return camelize(item);
+          }
+          return item;
+        });
         return fields;
       }, {});
     }
@@ -75,5 +85,5 @@ export const fromObject = (source: ObjectMap<any>): ObjectMap<any> => (
     target[key] = value;
 
     return target;
-  }, {})
-);
+  }, {});
+}

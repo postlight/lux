@@ -1,0 +1,21 @@
+exports[`module "adapters/headers" util Headers #constructor() creates an instance of Headers 1`] = `
+Array [
+  Array [
+    "accept",
+    "application/vnd.api+json",
+  ],
+  Array [
+    "content-type",
+    "application/vnd.api+json",
+  ],
+]
+`;
+
+exports[`module "adapters/headers" util Headers #set() sets the correct value for the given key 1`] = `
+Array [
+  Array [
+    "accept",
+    "application/vnd.api+json",
+  ],
+]
+`;

@@ -1,0 +1,48 @@
+exports[`module "adapters/query" #fromObject() always coerces \`fields\` to an object containing arrays 1`] = `
+Object {
+  "fields": Object {
+    "comments": Array [
+      "id",
+      "message",
+    ],
+    "posts": Array [
+      "id",
+      "title",
+      "body",
+      2,
+    ],
+    "users": Array [
+      "id",
+      "name",
+      "email",
+    ],
+  },
+}
+`;
+
+exports[`module "adapters/query" #fromObject() always coerces \`include\` to an array 1`] = `
+Object {
+  "include": Array [
+    1,
+  ],
+}
+`;
+
+exports[`module "adapters/query" #fromObject() always coerces \`include\` to an array 2`] = `
+Object {
+  "include": Array [
+    1,
+    2,
+    3,
+  ],
+}
+`;
+
+exports[`module "adapters/query" #fromObject() always coerces \`include\` to an array 3`] = `
+Object {
+  "include": Array [
+    "testInclude",
+    "includeTest",
+  ],
+}
+`;

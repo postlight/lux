@@ -1,11 +1,12 @@
 // @flow
 import entries from '../../../utils/entries';
+import { FreezeableMap } from '../../freezeable';
 import type { ObjectMap } from '../../../interfaces';
 
 type HandleChange = (type: 'SET' | 'DELETE', data: [string, ?string]) => void;
 
-class Headers extends Map<string, string> {
-  constructor(value: ObjectMap<string>) {
+export class Headers extends FreezeableMap<string, string> {
+  constructor(value: ObjectMap<string> = {}) {
     super(entries(value));
   }
 
@@ -27,41 +28,11 @@ class Headers extends Map<string, string> {
   }
 }
 
-export class RequestHeaders extends Headers {
-  writable: boolean;
-
-  constructor(value: ObjectMap<string>) {
-    super(value);
-    this.writable = false;
-  }
-
-  set(key: string, value: string): this {
-    if (this.writable) {
-      super.set(key, value);
-    }
-    return this;
-  }
-
-  delete(key: string): boolean {
-    if (this.writable) {
-      return super.delete(key);
-    }
-    return false;
-  }
-}
-
-Object.defineProperty(RequestHeaders.prototype, 'writable', {
-  value: true,
-  writable: true,
-  enumerable: false,
-  configurable: false,
-});
-
 export class ResponseHeaders extends Headers {
   handleChange: HandleChange;
 
   constructor(handleChange: HandleChange) {
-    super({});
+    super();
     this.handleChange = handleChange;
   }
 
@@ -75,10 +46,3 @@ export class ResponseHeaders extends Headers {
     return super.delete(key);
   }
 }
-
-Object.defineProperty(ResponseHeaders.prototype, 'handleChange', {
-  value: () => undefined,
-  writable: true,
-  enumerable: false,
-  configurable: false,
-});
