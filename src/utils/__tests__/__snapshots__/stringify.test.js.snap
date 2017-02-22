@@ -1,9 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`util fn() - circular converts arrays to a string 1`] = `"[1,2,3]"`;
 
-exports[`util fn() - circular converts circular objects to a string 1`] = `"{\"a\":1,\"b\":2}"`;
+exports[`util fn() - circular converts circular objects to a string 1`] = `"{\\"a\\":1,\\"b\\":2}"`;
 
-exports[`util fn() - circular converts objects to a string 1`] = `"{\"a\":1,\"b\":2,\"c\":3}"`;
+exports[`util fn() - circular converts objects to a string 1`] = `"{\\"a\\":1,\\"b\\":2,\\"c\\":3}"`;
 
 exports[`util fn() - default converts arrays to a string 1`] = `"[1,2,3]"`;
 
-exports[`util fn() - default converts objects to a string 1`] = `"{\"a\":1,\"b\":2,\"c\":3}"`;
+exports[`util fn() - default converts objects to a string 1`] = `"{\\"a\\":1,\\"b\\":2,\\"c\\":3}"`;

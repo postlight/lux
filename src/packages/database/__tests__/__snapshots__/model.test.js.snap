@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`module "database/model" class Model .initialize() adds a \`belongsTo\` property to the \`Model\` 1`] = `
 Object {
   "user": Object {

@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`module "compiler" #compile() - with strict mode creates an instance of rollup with the correct config 1`] = `undefined`;
 
 exports[`module "compiler" #compile() - without strict mode creates an instance of rollup with the correct config 1`] = `undefined`;

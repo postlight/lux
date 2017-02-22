@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`module "adapters/query" #fromObject() always coerces \`fields\` to an object containing arrays 1`] = `
 Object {
   "fields": Object {

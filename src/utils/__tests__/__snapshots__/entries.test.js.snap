@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`util entries() - with Object.entries() creates an \`Array\` of key-value pairs from an object 1`] = `
 Array [
   Array [

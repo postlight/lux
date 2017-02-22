@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`module "database/query" class Query #all() does not modify #snapshots 1`] = `Array []`;
 
 exports[`module "database/query" class Query #all() resolves with the correct array of \`Model\` instances 1`] = `

@@ -1,6 +1,9 @@
 {
   "parser": "babel-eslint",
-  "plugins": ["flowtype"],
+  "plugins": [
+    "jest",
+    "flowtype"
+  ],
   "extends": "airbnb-base",
   "env": {
     "node": true
@@ -63,6 +66,9 @@
     "import/no-named-default": 0,
     "import/no-dynamic-require": 0,
     "import/prefer-default-export": 0,
+    "jest/no-focused-tests": "error",
+    "jest/no-disabled-tests": "warn",
+    "jest/no-identical-title": "error",
     "flowtype/semi": 2,
     "flowtype/no-dupe-keys": 2,
     "flowtype/boolean-style": [2, "boolean"],

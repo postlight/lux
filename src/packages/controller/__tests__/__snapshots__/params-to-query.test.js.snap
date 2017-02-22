@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`module "controller" util paramsToQuery() - fields can properly build included fields 1`] = `
 Object {
   "filter": Object {},

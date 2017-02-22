@@ -220,7 +220,7 @@ describe('module "database/model"', () => {
           await Post.initialize(store, () => store.connection(Post.tableName));
         });
 
-        it('adds a `tableName` property to the `prototype`', () => {
+        it('adds a `tableName` property to the `constructor`', () => {
           expect(Post.tableName).toBe('posts');
         });
 

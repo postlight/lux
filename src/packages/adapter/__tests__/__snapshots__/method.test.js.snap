@@ -1,1 +1,3 @@
-exports[`module "adapters/method" #resolve() throws an error when a method is not supported 1`] = `"Method \"PUT\" is not supported."`;
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`module "adapters/method" #resolve() throws an error when a method is not supported 1`] = `"Method \\"PUT\\" is not supported."`;

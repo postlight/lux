@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`module "adapter/mock" #default() resolves with a request/response tuple 1`] = `
 Array [
   Request {

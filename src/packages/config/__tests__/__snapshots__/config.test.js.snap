@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`module "config" #createDefaultConfig() creates a default config object in the context of NODE_ENV 1`] = `
 Object {
   "adapter": [Function],

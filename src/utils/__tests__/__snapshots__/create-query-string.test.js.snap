@@ -1,1 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`util createQueryString() can build a query string from a nested object 1`] = `"a=1&b%5Ba%5D=1"`;

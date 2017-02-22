@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`module "router/route" class Route #execHandlers() - with \`afterAction\` resolves with the correct data 1`] = `
 Object {
   "meta": Object {
