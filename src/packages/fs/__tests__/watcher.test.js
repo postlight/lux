@@ -33,7 +33,7 @@ describe('module "fs"', () => {
               expect(files).toEqual(expect.any(Array));
             });
 
-            await writeFile(joinPath(tmpAppPath, 'index.js'), '');
+            await writeFile(joinPath(tmpAppPath, 'index.js'), Buffer.from(''));
           });
         });
 
@@ -58,7 +58,7 @@ describe('module "fs"', () => {
             expect(files).toEqual(expect.any(Array));
           });
 
-          await writeFile(joinPath(tmpAppPath, 'index.js'), '');
+          await writeFile(joinPath(tmpAppPath, 'index.js'), Buffer.from(''));
         });
       });
 

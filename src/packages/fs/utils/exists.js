@@ -4,10 +4,7 @@ import { stat, readdir } from '../index';
 /**
  * @private
  */
-export default async function exists(
-  path: string | RegExp,
-  dir?: string
-): Promise<boolean> {
+async function exists(path: string | RegExp, dir?: string): Promise<boolean> {
   if (path instanceof RegExp) {
     const pattern = path;
     let files = [];
@@ -24,3 +21,5 @@ export default async function exists(
     () => false
   );
 }
+
+export default exists;

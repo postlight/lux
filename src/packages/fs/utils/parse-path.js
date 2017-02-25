@@ -1,26 +1,34 @@
 // @flow
-import path from 'path';
+import * as path from 'path';
 
 import { CWD } from '../../../constants';
-import chain from '../../../utils/chain';
-import type { fs$ParsedPath } from '../index';
+
+type ParsedPath = {
+  absolute: string;
+  ext: string;
+  dir: string;
+  base: string;
+  name: string;
+  relative: string;
+  root: string;
+};
 
 /**
  * @private
  */
-export default function resolvePath(
+export default function parsePath(
   cwd?: string = CWD,
   dir?: string = '',
   name?: string = ''
-): fs$ParsedPath {
-  return chain(name.split('/'))
-    .pipe(parts => path.join(cwd, dir, ...parts))
-    .pipe(path.parse)
-    .pipe(({ base, ...etc }) => ({
-      base,
-      ...etc,
-      relative: path.join(etc.dir.substr(etc.dir.indexOf(dir)), base),
-      absolute: path.join(etc.dir, base)
-    }))
-    .value();
+): ParsedPath {
+  const parsed = path.parse(path.join(cwd, dir, ...name.split(path.sep)));
+
+  return {
+    ...parsed,
+    absolute: path.join(parsed.dir, parsed.base),
+    relative: path.join(
+      parsed.dir.substr(parsed.dir.indexOf(dir)),
+      parsed.base
+    ),
+  };
 }

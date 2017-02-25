@@ -20,7 +20,10 @@ export function dbcreate() {
   }
 
   if (config.driver === 'sqlite3') {
-    return writeFile(`${CWD}/db/${config.database}_${NODE_ENV}.sqlite`, '');
+    return writeFile(
+      `${CWD}/db/${config.database}_${NODE_ENV}.sqlite`,
+      Buffer.from('')
+    );
   }
 
   if (DATABASE_URL || config.url) {

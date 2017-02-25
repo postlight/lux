@@ -18,14 +18,17 @@ function createExportStatement(
   name: string,
   path: string,
   isDefault: boolean = true
-): string {
+): Buffer {
   const normalized = posix.join(...path.split(sep));
+  let data;
 
   if (isDefault) {
-    return `export {\n  default as ${name}\n} from '../${normalized}';\n\n`;
+    data = `export {\n  default as ${name}\n} from '../${normalized}';\n\n`;
+  } else {
+    data = `export {\n  ${name}\n} from '../${normalized}';\n\n`;
   }
 
-  return `export {\n  ${name}\n} from '../${normalized}';\n\n`;
+  return Buffer.from(data);
 }
 
 /**
@@ -100,7 +103,7 @@ export default async function createManifest(
   const writer = createWriter(file);
 
   await tryCatch(() => mkdir(dist));
-  await writeFile(file, useStrict ? '\'use strict\';\n\n' : '');
+  await writeFile(file, Buffer.from(useStrict ? '\'use strict\';\n\n' : ''));
 
   await Promise.all(
     Array

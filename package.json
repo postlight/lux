@@ -83,6 +83,7 @@
     "collectCoverage": true,
     "coveragePathIgnorePatterns": [
       "/test/",
+      "/__tests__/",
       "/node_modules/"
     ]
   }

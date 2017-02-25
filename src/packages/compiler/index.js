@@ -1,6 +1,6 @@
 // @flow
-import os from 'os';
-import path, { posix } from 'path';
+import * as os from 'os';
+import * as path from 'path';
 
 import lux from 'rollup-plugin-lux';
 import json from 'rollup-plugin-json';
@@ -82,8 +82,8 @@ export async function compile(
   ]);
 
   const aliases = {
-    app: posix.join('/', ...dir.split(path.sep), 'app'),
-    LUX_LOCAL: posix.join('/', ...local.split(path.sep))
+    app: path.posix.join('/', ...dir.split(path.sep), 'app'),
+    LUX_LOCAL: path.posix.join('/', ...local.split(path.sep))
   };
 
   if (os.platform() === 'win32') {
