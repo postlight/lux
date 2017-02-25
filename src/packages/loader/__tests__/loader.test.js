@@ -1,7 +1,7 @@
 // @flow
 import { FreezeableMap } from '../../freezeable';
 import { createLoader } from '../index';
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 import type Application from '../../application';
 import type { Loader } from '../index';
 
@@ -10,6 +10,10 @@ describe('module "loader"', () => {
 
   beforeAll(async () => {
     app = await getTestApp();
+  });
+
+  afterAll(async () => {
+    await app.destroy();
   });
 
   describe('#createLoader()', () => {

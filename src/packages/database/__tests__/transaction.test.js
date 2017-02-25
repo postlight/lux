@@ -5,10 +5,11 @@ import {
   createStaticTransactionProxy,
   createInstanceTransactionProxy
 } from '../transaction';
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 
 describe('module "database/transaction"', () => {
   const tableName = 'posts';
+  let app;
 
   // $FlowIgnore
   class Subject extends Model {
@@ -16,12 +17,18 @@ describe('module "database/transaction"', () => {
   }
 
   beforeAll(async () => {
-    const { store } = await getTestApp();
+    app = await getTestApp();
+
+    const { store } = app;
 
     await Subject.initialize(
       store,
       () => store.connection(tableName)
     );
+  });
+
+  afterAll(async () => {
+    await app.destroy();
   });
 
   describe('.createTransactionResultProxy()', () => {

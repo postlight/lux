@@ -1,6 +1,6 @@
 // @flow
 import Database from '../index';
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 
 const DATABASE_DRIVER: string = Reflect.get(process.env, 'DATABASE_DRIVER');
 const DATABASE_USERNAME: string = Reflect.get(process.env, 'DATABASE_USERNAME');
@@ -28,14 +28,13 @@ const DEFAULT_CONFIG = {
 
 describe('module "database"', () => {
   describe('class Database', () => {
+    let app;
     let createDatabase;
 
     beforeAll(async () => {
-      const {
-        path,
-        models,
-        logger,
-      } = await getTestApp();
+      app = await getTestApp();
+
+      const { path, models, logger } = app;
 
       createDatabase = (config = DEFAULT_CONFIG) => (
         Promise.resolve(
@@ -50,13 +49,20 @@ describe('module "database"', () => {
       );
     });
 
+    afterAll(async () => {
+      await app.destroy();
+    });
+
     describe('#constructor()', () => {
       it('creates an instance of `Database`', async () => {
-        expect(await createDatabase()).toBeInstanceOf(Database);
+        const store = await createDatabase();
+
+        expect(store).toBeInstanceOf(Database);
+        await store.connection.destroy();
       });
 
       it('fails when an invalid database driver is used', async () => {
-        await createDatabase({
+        const store = await createDatabase({
           development: {
             ...DEFAULT_CONFIG.development,
             driver: 'invalid-driver'
@@ -72,6 +78,10 @@ describe('module "database"', () => {
         }).catch(err => {
           expect(err.constructor.name).toBe('InvalidDriverError');
         });
+
+        if (store) {
+          await store.connection.destroy();
+        }
       });
     });
 
@@ -80,6 +90,10 @@ describe('module "database"', () => {
 
       beforeEach(async () => {
         subject = await createDatabase();
+      });
+
+      afterEach(async () => {
+        await subject.connection.destroy();
       });
 
       it('works with a singular key', () => {

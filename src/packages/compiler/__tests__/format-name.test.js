@@ -1,15 +1,19 @@
 // @flow
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 import formatName from '../utils/format-name';
 
 describe('module "compiler"', () => {
   describe('util formatName()', () => {
     let keys: Array<string>;
+    let app;
 
-    beforeEach(async () => {
-      const { controllers } = await getTestApp();
+    beforeAll(async () => {
+      app = await getTestApp();
+      keys = [...app.controllers.keys()];
+    });
 
-      keys = [...controllers.keys()];
+    afterAll(async () => {
+      await app.destroy();
     });
 
     it('transforms an array of keys into identifiers', () => {

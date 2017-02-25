@@ -2,27 +2,29 @@
 import Controller from '../../../controller';
 import * as Adapters from '../../../adapter';
 import K from '../../../../utils/k';
-import { getTestApp } from '../../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../../test/utils/test-app';
 import Route from '../index';
 
 describe('module "router/route"', () => {
   describe('class Route', () => {
+    let app;
     let adapter;
 
     beforeAll(async () => {
-      const app = await getTestApp();
-
+      app = await getTestApp();
       adapter = Adapters.mock(app);
+    });
+
+    afterAll(async () => {
+      await app.destroy();
     });
 
     describe('#constructor()', () => {
       let controller: Controller;
 
-      beforeAll(async () => {
-        const { controllers } = await getTestApp();
-
+      beforeAll(() => {
         // $FlowIgnore
-        controller = controllers.get('posts');
+        controller = app.controllers.get('posts');
       });
 
       it('creates an instance of route', () => {
@@ -78,10 +80,9 @@ describe('module "router/route"', () => {
       let staticRoute: Route;
       let dynamicRoute: Route;
 
-      beforeAll(async () => {
-        const { controllers } = await getTestApp();
+      beforeAll(() => {
         // $FlowIgnore
-        const controller: Controller = controllers.get('posts');
+        const controller: Controller = app.controllers.get('posts');
 
         staticRoute = new Route({
           controller,
@@ -277,11 +278,9 @@ describe('module "router/route"', () => {
     describe('#visit', () => {
       let controller: Controller;
 
-      beforeAll(async () => {
-        const { controllers } = await getTestApp();
-
+      beforeAll(() => {
         // $FlowIgnore
-        controller = await controllers.get('posts');
+        controller = app.controllers.get('posts');
       });
 
       ['GET', 'OPTIONS'].forEach(method => {

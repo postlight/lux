@@ -6,7 +6,7 @@ import Controller from '../index';
 import Serializer from '../../serializer';
 import * as Adapters from '../../adapter';
 import noop from '../../../utils/noop';
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 
 const HOST = 'localhost:4000';
 const DEFAULT_FIELDS = {
@@ -38,6 +38,7 @@ describe('module "controller"', () => {
     let Post;
     let subject;
     let adapter;
+    let app;
 
     const getDefaultProps = () => ({
       id: expect.anything(),
@@ -58,8 +59,7 @@ describe('module "controller"', () => {
     };
 
     beforeAll(async () => {
-      const app = await getTestApp();
-
+      app = await getTestApp();
       Post = app.store.modelFor('post');
       adapter = Adapters.mock(app);
       subject = new Controller({
@@ -73,6 +73,10 @@ describe('module "controller"', () => {
       });
 
       subject.controllers = app.controllers;
+    });
+
+    afterAll(async () => {
+      await app.destroy();
     });
 
     describe('#index()', () => {
@@ -349,10 +353,8 @@ describe('module "controller"', () => {
       };
 
       beforeEach(async () => {
-        const { store } = await getTestApp();
-
-        User = store.modelFor('user');
-        Comment = store.modelFor('comment');
+        User = app.store.modelFor('user');
+        Comment = app.store.modelFor('comment');
         record = await Post
           .create({ title: '#update() Test' })
           .then(post => post.unwrap());

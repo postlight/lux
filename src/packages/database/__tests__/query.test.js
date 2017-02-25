@@ -2,11 +2,12 @@
 import Query from '../query';
 import Model from '../model';
 import range from '../../../utils/range';
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 
 describe('module "database/query"', () => {
   describe('class Query', () => {
     let Test;
+    let app;
 
     class TestModel extends Model {
       id: number;
@@ -57,13 +58,19 @@ describe('module "database/query"', () => {
     };
 
     beforeAll(async () => {
-      const { store } = await getTestApp();
+      app = await getTestApp();
+
+      const { store } = app;
 
       Test = store.modelFor('test');
       await TestModel.initialize(
         store,
         () => store.connection(TestModel.tableName)
       );
+    });
+
+    afterAll(async () => {
+      await app.destroy();
     });
 
     beforeEach(async () => {

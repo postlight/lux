@@ -1,6 +1,6 @@
 // @flow
 import Migration from '../migration';
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 import {
   default as generateTimestamp,
   padding
@@ -8,10 +8,16 @@ import {
 
 describe('module "database/migration"', () => {
   describe('class Migration', () => {
+    let app;
     let store;
 
     beforeAll(async () => {
-      ({ store } = await getTestApp());
+      app = await getTestApp();
+      ({ store } = app);
+    });
+
+    afterAll(async () => {
+      await app.destroy();
     });
 
     describe('#run()', () => {

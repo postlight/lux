@@ -5,7 +5,6 @@ import * as path from 'path';
 import { __reset__ } from 'fs';
 
 import * as fs from '../index';
-import Watcher from '../watcher';
 
 jest.mock('fs');
 
@@ -59,12 +58,6 @@ describe('module "fs"', () => {
 
       await fs.rmrf(target);
       expect(await fs.exists(target)).toBe(false);
-    });
-  });
-
-  describe('#watch()', () => {
-    it('resolves with an instance of Watcher', async () => {
-      expect(await fs.watch('test-watch')).toBeInstanceOf(Watcher);
     });
   });
 

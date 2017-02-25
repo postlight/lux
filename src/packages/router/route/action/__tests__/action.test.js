@@ -3,7 +3,7 @@ import noop from '../../../../../utils/noop';
 import Logger from '../../../../logger';
 import { request, response } from '../../../../adapter/mock';
 import { createAction, createPageLinks } from '../index';
-import { getTestApp } from '../../../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../../../test/utils/test-app';
 import type Controller from '../../../../controller';
 import type { Action } from '../index';
 
@@ -21,16 +21,21 @@ const logger = new Logger({
 
 describe('module "router/route/action"', () => {
   describe('#createAction()', () => {
+    let app;
     let result;
 
     beforeAll(async () => {
-      const { controllers } = await getTestApp();
+      app = await getTestApp();
 
       // $FlowIgnore
-      const controller: Controller = controllers.get('health');
+      const controller: Controller = app.controllers.get('health');
       const action: Action<any> = controller.index;
 
       result = createAction('custom', action, controller);
+    });
+
+    afterAll(async () => {
+      await app.destroy();
     });
 
     it('returns an array of functions', () => {

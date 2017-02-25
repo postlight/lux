@@ -4,19 +4,23 @@ import Router from '../index';
 import Logger from '../../logger';
 import { request } from '../../adapter/mock';
 import type Controller from '../../controller';
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 
 describe('module "router"', () => {
   describe('class Router', () => {
+    let app;
     let controller: Controller;
     let controllers;
 
     beforeAll(async () => {
-      const app = await getTestApp();
-
-      controllers = app.controllers;
+      app = await getTestApp();
+      ({ controllers } = app);
       // $FlowIgnore
       controller = controllers.get('application');
+    });
+
+    afterAll(async () => {
+      await app.destroy();
     });
 
     describe('- defining a single route', () => {

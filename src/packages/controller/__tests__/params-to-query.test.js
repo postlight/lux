@@ -2,12 +2,12 @@
 import type { Model } from '../../database';
 import type Request from '../../request';
 import merge from '../../../utils/merge';
-import setType from '../../../utils/set-type';
 import paramsToQuery from '../utils/params-to-query';
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 
 describe('module "controller"', () => {
   describe('util paramsToQuery()', () => {
+    let app;
     let Post: Class<Model>;
     const createParams = (obj: Object): $PropertyType<Request, 'params'> => (
       merge({
@@ -25,9 +25,12 @@ describe('module "controller"', () => {
     );
 
     beforeAll(async () => {
-      const { models } = await getTestApp();
+      app = await getTestApp();
+      Post = app.store.modelFor('post');
+    });
 
-      Post = setType(() => models.get('post'));
+    afterAll(async () => {
+      await app.destroy();
     });
 
     it('returns the correct params object', () => {

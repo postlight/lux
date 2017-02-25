@@ -2,9 +2,10 @@
 import * as faker from 'faker';
 
 import { get, set } from '../relationship';
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 
 describe('module "database/relationship"', () => {
+  let app;
   let del;
   let store;
   let insert;
@@ -22,7 +23,8 @@ describe('module "database/relationship"', () => {
   });
 
   beforeAll(async () => {
-    ({ store } = await getTestApp());
+    app = await getTestApp();
+    ({ store } = app);
 
     del = table => store.connection(table).del();
     insert = (table, data) => (
@@ -109,16 +111,17 @@ describe('module "database/relationship"', () => {
     categorizationIds = [].concat(...categorizationsResult);
   });
 
-  afterAll(() => (
-    Promise.all([
+  afterAll(async () => {
+    await Promise.all([
       del('posts').where('id', postId),
       del('users').where('id', userId),
       del('images').where('id', imageId),
       del('tags').whereIn('id', tagIds),
       del('comments').whereIn('id', commentIds),
       del('categorizations').whereIn('id', categorizationIds),
-    ])
-  ));
+    ]);
+    await app.destroy();
+  });
 
   beforeEach(async () => {
     record = await store

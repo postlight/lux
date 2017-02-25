@@ -4,7 +4,7 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { MIME_TYPE } from '../../jsonapi';
 import Logger from '../../logger';
 import createAdapter, { request, response } from '../http';
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 
 const logger = new Logger({
   level: 'ERROR',
@@ -23,10 +23,11 @@ describe('module "adapter/http"', () => {
 
   beforeAll(async () => {
     app = await getTestApp();
+    adapter = createAdapter(app);
   });
 
-  beforeAll(() => {
-    adapter = createAdapter(app);
+  afterAll(async () => {
+    await app.destroy();
   });
 
   describe('#default()', () => {

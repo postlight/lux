@@ -23,7 +23,7 @@
     "flow": "flow check",
     "types": "shx rm -rf flow-typed && flow-typed install",
     "lint": "remark . && eslint .",
-    "test": "jest -i --forceExit"
+    "test": "jest -i"
   },
   "author": "Zachary Golba",
   "license": "MIT",

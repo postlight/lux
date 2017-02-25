@@ -2,7 +2,7 @@
 import { MIME_TYPE } from '../../jsonapi';
 import Logger from '../../logger';
 import createAdapter, { request, response } from '../mock';
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 
 const logger = new Logger({
   level: 'ERROR',
@@ -19,10 +19,11 @@ describe('module "adapter/mock"', () => {
 
   beforeAll(async () => {
     app = await getTestApp();
+    adapter = createAdapter(app);
   });
 
-  beforeAll(() => {
-    adapter = createAdapter(app);
+  afterAll(async () => {
+    await app.destroy();
   });
 
   describe('#default()', () => {

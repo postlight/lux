@@ -1,7 +1,7 @@
 // @flow
 import Serializer from '../index';
 import type { ObjectMap } from '../../../interfaces';
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 
 const DOMAIN = 'http://localhost:4000';
 
@@ -38,13 +38,23 @@ const createSorter = field => {
 };
 
 describe('module "serializer"', () => {
+  let app;
+
+  beforeAll(async () => {
+    app = await getTestApp();
+  });
+
+  afterAll(async () => {
+    await app.destroy();
+  });
+
   describe('class Serializer', () => {
     let Post;
     let subject;
     let adminSubject;
 
-    beforeAll(async () => {
-      const { store, serializers } = await getTestApp();
+    beforeAll(() => {
+      const { store, serializers } = app;
 
       const hasOne = [
         'user',

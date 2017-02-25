@@ -1,23 +1,26 @@
 // @flow
 import * as path from 'path';
 
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 
 describe('module "compiler"', () => {
   describe('#compile()', () => {
     const local = path.join(__dirname, '..', '..', '..', 'index.js');
     let dir;
+    let app;
     let rollup;
     let compile;
 
     beforeAll(async () => {
+      app = await getTestApp();
       rollup = jest.mock('rollup');
       ({ compile } = require('../index'));
-      ({ path: dir } = await getTestApp());
+      ({ path: dir } = app);
     });
 
-    afterAll(() => {
+    afterAll(async () => {
       jest.unmock('rollup');
+      await app.destroy();
     });
 
     describe('- with strict mode', () => {

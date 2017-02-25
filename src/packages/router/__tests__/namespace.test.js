@@ -1,12 +1,13 @@
 // @flow
 import Namespace from '../namespace';
 import setType from '../../../utils/set-type';
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 import type Controller from '../../controller';
 
 describe('module "router/namespace"', () => {
   describe('class Namespace', () => {
     describe('#constructor()', () => {
+      let app;
       let root;
       let controller: Controller;
       let controllers;
@@ -21,18 +22,20 @@ describe('module "router/namespace"', () => {
       };
 
       beforeAll(async () => {
-        const app = await getTestApp();
-
-        controllers = app.controllers;
-
-        controller = setType(() => controllers.get('admin/application'));
-
+        app = await getTestApp();
+        ({ controllers } = app);
+        // $FlowIgnore
+        controller = controllers.get('admin/application');
         createRootNamespace = (): Namespace => new Namespace({
           controllers,
           path: '/',
           name: 'root',
           controller: setType(() => app.controllers.get('application'))
         });
+      });
+
+      afterAll(async () => {
+        await app.destroy();
       });
 
       beforeEach(() => {

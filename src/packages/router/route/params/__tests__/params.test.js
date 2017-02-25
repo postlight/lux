@@ -1,17 +1,25 @@
 // @flow
 import { paramsFor, defaultParamsFor } from '../index';
-import { getTestApp } from '../../../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../../../test/utils/test-app';
 import type Controller from '../../../../controller';
 
 describe('module "router/route/params"', () => {
+  let app;
+
+  beforeAll(async () => {
+    app = await getTestApp();
+  });
+
+  afterAll(async () => {
+    await app.destroy();
+  });
+
   describe('#paramsFor()', () => {
     let getController;
 
-    beforeAll(async () => {
-      const { controllers } = await getTestApp();
-
+    beforeAll(() => {
       // $FlowIgnore
-      getController = (name: string): Controller => controllers.get(name);
+      getController = (name: string): Controller => app.controllers.get(name);
     });
 
     describe('with model-less controller', () => {
@@ -35,11 +43,9 @@ describe('module "router/route/params"', () => {
   describe('#defaultParamsFor()', () => {
     let getController;
 
-    beforeAll(async () => {
-      const { controllers } = await getTestApp();
-
+    beforeAll(() => {
       // $FlowIgnore
-      getController = (name: string): Controller => controllers.get(name);
+      getController = (name: string): Controller => app.controllers.get(name);
     });
 
     describe('with collection route', () => {

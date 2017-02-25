@@ -141,6 +141,15 @@ class Application extends EventEmitter {
         this.emit('error', err);
       });
   };
+
+  /**
+   * @method destroy
+   * @private
+   */
+  destroy: () => Promise<void> = async () => {
+    await this.store.connection.destroy();
+    return undefined;
+  };
 }
 
 export default Application;

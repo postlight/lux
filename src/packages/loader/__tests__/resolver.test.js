@@ -1,12 +1,18 @@
 // @flow
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 import { closestChild, closestAncestor } from '../resolver';
 
 describe('module "loader/resolver"', () => {
+  let app;
   let serializers;
 
   beforeAll(async () => {
-    serializers = await getTestApp().then(app => app.serializers);
+    app = await getTestApp();
+    ({ serializers } = app);
+  });
+
+  afterAll(async () => {
+    await app.destroy();
   });
 
   describe('#closestChild()', () => {

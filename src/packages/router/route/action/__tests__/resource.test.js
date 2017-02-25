@@ -3,7 +3,7 @@ import { VERSION } from '../../../../jsonapi';
 import Logger from '../../../../logger';
 import { request, response } from '../../../../adapter/mock';
 import noop from '../../../../../utils/noop';
-import { getTestApp } from '../../../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../../../test/utils/test-app';
 import resource from '../enhancers/resource';
 
 const DOMAIN = 'localhost:4000';
@@ -41,9 +41,20 @@ const logger = new Logger({
 });
 
 describe('module "router/route/action"', () => {
+  let app;
+
+  beforeAll(async () => {
+    app = await getTestApp();
+  });
+
+  afterAll(async () => {
+    await app.destroy();
+  });
+
   describe('enhancer resource()', () => {
     describe('- type "collection"', () => {
       let subject;
+
       const mockArgs = () => {
         const req = request.create({
           logger,
@@ -75,10 +86,8 @@ describe('module "router/route/action"', () => {
         return [req, res];
       };
 
-      beforeAll(async () => {
-        const { controllers } = await getTestApp();
-        const controller = controllers.get('posts');
-
+      beforeAll(() => {
+        const controller = app.controllers.get('posts');
         // $FlowIgnore
         subject = resource(controller.index.bind(controller), controller);
       });
@@ -159,9 +168,8 @@ describe('module "router/route/action"', () => {
       describe('- with "root" namespace', () => {
         let subject;
 
-        beforeAll(async () => {
-          const { controllers } = await getTestApp();
-          const controller = controllers.get('posts');
+        beforeAll(() => {
+          const controller = app.controllers.get('posts');
 
           // $FlowIgnore
           subject = resource(controller.show.bind(controller), controller);
@@ -183,8 +191,7 @@ describe('module "router/route/action"', () => {
         let subject;
 
         beforeAll(async () => {
-          const { controllers } = await getTestApp();
-          const controller = controllers.get('admin/posts');
+          const controller = app.controllers.get('admin/posts');
 
           // $FlowIgnore
           subject = resource(controller.show.bind(controller), controller);
@@ -205,9 +212,8 @@ describe('module "router/route/action"', () => {
       describe('- with non-model data', () => {
         let subject;
 
-        beforeAll(async () => {
-          const { controllers } = await getTestApp();
-          const controller = controllers.get('posts');
+        beforeAll(() => {
+          const controller = app.controllers.get('posts');
 
           // $FlowIgnore
           subject = resource(() => Promise.resolve(null), controller);

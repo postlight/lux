@@ -1,13 +1,15 @@
 // @flow
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 import createReplacer from '../utils/create-replacer';
 
 describe('module "router"', () => {
   describe('util createReplacer()', () => {
+    let app;
     let subject;
 
     beforeAll(async () => {
-      const app = await getTestApp();
+      app = await getTestApp();
+
       const healthController = app.controllers.get('health');
       // $FlowIgnore
       const { constructor: HealthController } = healthController;
@@ -25,6 +27,10 @@ describe('module "router"', () => {
           namespace: 'admin'
         })]
       ]));
+    });
+
+    afterAll(async () => {
+      await app.destroy();
     });
 
     it('returns an instance of RegExp', () => {

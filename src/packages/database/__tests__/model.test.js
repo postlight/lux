@@ -2,21 +2,26 @@
 import Model from '../model';
 import Query, { RecordNotFoundError } from '../query';
 import { ValidationError } from '../validation';
-import { getTestApp } from '../../../../test/utils/get-test-app';
+import { getTestApp } from '../../../../test/utils/test-app';
 
 describe('module "database/model"', () => {
   describe('class Model', () => {
+    let app;
     let store;
     let User: Class<Model>;
     let Image: Class<Model>;
     let Comment: Class<Model>;
 
     beforeAll(async () => {
-      ({ store } = await getTestApp());
-
+      app = await getTestApp();
+      ({ store } = app);
       User = store.modelFor('user');
       Image = store.modelFor('image');
       Comment = store.modelFor('comment');
+    });
+
+    afterAll(async () => {
+      await app.destroy();
     });
 
     describe('.initialize()', () => {
