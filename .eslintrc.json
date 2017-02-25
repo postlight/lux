@@ -11,6 +11,7 @@
   "globals": {
     "$PropertyType": true,
     "Class": true,
+    "Process": true,
     "Generator": true,
     "Knex$SchemaBuilder": true,
     "Knex$QueryBuilder": true,

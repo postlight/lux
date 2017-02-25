@@ -64,7 +64,7 @@
     "eslint-plugin-import": "2.2.0",
     "eslint-plugin-jest": "19.0.1",
     "faker": "4.1.0",
-    "flow-bin": "0.39.0",
+    "flow-bin": "0.40.0",
     "flow-typed": "2.0.0",
     "jest": "19.0.1",
     "jest-cli": "19.0.1",

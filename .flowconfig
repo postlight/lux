@@ -10,6 +10,7 @@
 .*/__snapshots__/*
 
 [libs]
+flow-typed/
 decl/
 
 [options]
@@ -26,4 +27,4 @@ esproposal.class_static_fields=enable
 esproposal.class_instance_fields=enable
 
 [version]
-^0.39.0
+^0.40.0

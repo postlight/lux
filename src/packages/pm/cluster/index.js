@@ -1,9 +1,8 @@
 // @flow
+import * as os from 'os';
+import * as path from 'path';
+import * as cluster from 'cluster';
 import EventEmitter from 'events';
-import os from 'os';
-import cluster from 'cluster';
-import { join as joinPath } from 'path';
-import type { Worker } from 'cluster'; // eslint-disable-line max-len, no-duplicate-imports
 
 import { red, green } from 'chalk';
 
@@ -12,9 +11,24 @@ import { line } from '../../logger';
 import omit from '../../../utils/omit';
 import range from '../../../utils/range';
 import { composeAsync } from '../../../utils/compose';
-import type Logger from '../../logger'; // eslint-disable-line max-len, no-duplicate-imports
+// eslint-disable-next-line no-duplicate-imports
+import type Logger from '../../logger';
 
-import type { Cluster$opts } from './interfaces';
+export type Worker = EventEmitter & {
+  id: string;
+  process: Process;
+  suicide: boolean;
+  kill(signal?: string): void;
+  send(message: any): void;
+  disconnect(): void;
+};
+
+export type Options = {
+  path: string;
+  port: number;
+  logger: Logger;
+  maxWorkers?: number;
+};
 
 /**
  * @private
@@ -30,40 +44,36 @@ class Cluster extends EventEmitter {
 
   maxWorkers: number;
 
-  constructor({ path, port, logger, maxWorkers }: Cluster$opts) {
+  constructor(options: Options) {
     super();
 
     Object.defineProperties(this, {
       path: {
-        value: path,
+        value: options.path,
         writable: false,
         enumerable: true,
         configurable: false
       },
-
       port: {
-        value: port,
+        value: options.port,
         writable: false,
         enumerable: true,
         configurable: false
       },
-
       logger: {
-        value: logger,
+        value: options.logger,
         writable: false,
         enumerable: true,
         configurable: false
       },
-
       workers: {
         value: new Set(),
         writable: false,
         enumerable: true,
         configurable: false
       },
-
       maxWorkers: {
-        value: maxWorkers || os.cpus().length,
+        value: options.maxWorkers || os.cpus().length,
         writable: false,
         enumerable: true,
         configurable: false
@@ -71,12 +81,12 @@ class Cluster extends EventEmitter {
     });
 
     cluster.setupMaster({
-      exec: joinPath(path, 'dist', 'boot.js')
+      exec: path.join(options.path, 'dist', 'boot.js'),
     });
 
     process.on('update', (changed) => {
       changed.forEach(({ name: filename }) => {
-        logger.info(`${green('update')} ${filename}`);
+        options.logger.info(`${green('update')} ${filename}`);
       });
 
       this.reload();
@@ -88,7 +98,8 @@ class Cluster extends EventEmitter {
   fork(retry: boolean = true) {
     return new Promise(resolve => {
       if (this.workers.size < this.maxWorkers) {
-        const worker = cluster.fork({
+        // $FlowIgnore
+        const worker: Worker = cluster.fork({
           NODE_ENV,
           PORT: this.port
         });
@@ -231,5 +242,3 @@ class Cluster extends EventEmitter {
 }
 
 export default Cluster;
-
-export type { Cluster$opts } from './interfaces';
