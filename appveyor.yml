@@ -60,6 +60,7 @@ test_script:
   - npm run flow
   - npm run lint
   - npm test -- --no-watchman
+  - npm run codecov
 notifications:
 - provider: Webhook
   url: https://webhooks.gitter.im/e/070ebbf83dc0f595c4fb
