@@ -314,6 +314,7 @@ describe('module "controller"', () => {
 
     describe('#update()', () => {
       let User;
+      let Comment;
       let record;
 
       const getDefaultParams = () => ({
@@ -351,6 +352,7 @@ describe('module "controller"', () => {
         const { store } = await getTestApp();
 
         User = store.modelFor('user');
+        Comment = store.modelFor('comment');
         record = await Post
           .create({ title: '#update() Test' })
           .then(post => post.unwrap());
@@ -394,6 +396,14 @@ describe('module "controller"', () => {
           return result.unwrap();
         })();
 
+        const newComment = await (async () => {
+          const result = await Comment.create({
+            message: faker.lorem.sentence(),
+          });
+
+          return result.unwrap();
+        })();
+
         const [request, response] = await mockArgs(id, {
           type: 'posts',
           data: {
@@ -403,6 +413,14 @@ describe('module "controller"', () => {
                   id: newUser.getPrimaryKey(),
                   type: 'users',
                 },
+              },
+              comments: {
+                data: [
+                  {
+                    id: newComment.getPrimaryKey(),
+                    type: 'comments',
+                  },
+                ],
               },
             },
           },
@@ -422,7 +440,7 @@ describe('module "controller"', () => {
 
         record = await Post
           .find(id)
-          .include('user');
+          .include('user', 'comments');
 
         assertRecord(record, {
           ...getDefaultProps(),
@@ -430,9 +448,17 @@ describe('module "controller"', () => {
           user: expect.objectContaining(
             newUser.getAttributes('id', 'name', 'email')
           ),
+          comments: expect.arrayContaining([
+            expect.objectContaining(
+              newComment.getAttributes('id', 'message')
+            ),
+          ]),
         });
 
-        await newUser.destroy();
+        await Promise.all([
+          newUser.destroy(),
+          newComment.destroy(),
+        ]);
       });
 
       it('returns the number `204` if no changes occur', async () => {
