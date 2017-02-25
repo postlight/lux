@@ -83,6 +83,15 @@ describe('module "fs"', () => {
         })
       );
     });
+
+    it('can be called with no arguments', () => {
+      expect(fs.parsePath()).toEqual(
+        expect.objectContaining({
+          absolute: process.cwd(),
+          relative: process.cwd(),
+        })
+      );
+    });
   });
 
   describe('#isJSFile()', () => {
