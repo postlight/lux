@@ -21,10 +21,10 @@ environment:
     - DATABASE_DRIVER: sqlite3
 install:
   - ps: Install-Product node $env:nodejs_version $env:platform
-  - ps: yarn install
-  - ps: yarn link
+  - yarn install
+  - npm link
   - ps: Set-Location C:\projects\lux\test\test-app
-  - ps: yarn install
+  - yarn install
   - ps: Set-Location C:\projects\lux
 before_test:
   - |
@@ -43,7 +43,7 @@ before_test:
 
       Remove-Item C:\projects\lux\test\test-app\db\* -Force -Include *.sqlite
       Write-Host $null >> C:\projects\lux\test\test-app\db\lux_test_test.sqlite
-  - ps: yarn run clean
+  - yarn run clean
   - ps: |
       $env:NODE_ENV="production"
       Set-Location C:\projects\lux
@@ -57,10 +57,10 @@ before_test:
 
       Set-Location C:\projects\lux
 test_script:
-  - ps: yarn flow
-  - ps: yarn lint
-  - ps: yarn test -- --no-watchman
-  - ps: yarn codecov
+  - yarn flow
+  - yarn lint
+  - yarn test -- --no-watchman
+  - yarn codecov
 notifications:
 - provider: Webhook
   url: https://webhooks.gitter.im/e/070ebbf83dc0f595c4fb
