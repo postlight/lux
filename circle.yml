@@ -63,7 +63,7 @@ test:
         parallel: true
     - yarn lint:
         parallel: true
-    - yarn test -- --no-watchman:
+    - yarn test:
         parallel: true
         environment:
           JEST_JUNIT_OUTPUT: $CIRCLE_TEST_REPORTS/junit/test-results.xml
