@@ -10,15 +10,15 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "babel-core": "6.22.1",
+    "babel-core": "6.23.1",
     "babel-preset-lux": "2.0.1",
-    "bcryptjs": "2.4.0",
-    "faker": "3.1.0",
-    "knex": "0.12.6",
+    "bcryptjs": "2.4.3",
+    "faker": "4.1.0",
+    "knex": "0.12.7",
     "mssql": "3.3.0",
-    "mysql2": "1.1.2",
+    "mysql2": "1.2.0",
     "pg": "6.1.2",
-    "source-map-support": "0.4.10",
+    "source-map-support": "0.4.11",
     "sqlite3": "3.1.8"
   }
 }

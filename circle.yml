@@ -33,20 +33,21 @@ dependencies:
 
       cd ../lux
   override:
-    - npm install
-    - npm link
+    - curl -o- -L https://yarnpkg.com/install.sh | bash
+    - yarn install
+    - yarn link
   post:
     - |
       cd test/test-app
-      npm install
+      yarn install
       cd ../../
   cache_directories:
     - /home/ubuntu/watchman
 compile:
   pre:
-    - npm run clean
+    - yarn run clean
   override:
-    - NODE_ENV=production npm run build
+    - NODE_ENV=production yarn build
     - |
       cd test/test-app
       lux build -e test
@@ -58,16 +59,16 @@ test:
     - cd test/test-app && lux db:seed -e test --skip-build && cd ../../:
         parallel: true
   override:
-    - npm run flow:
+    - yarn flow:
         parallel: true
-    - npm run lint:
+    - yarn lint:
         parallel: true
-    - npm test -- --no-watchman:
+    - yarn test -- --no-watchman:
         parallel: true
         environment:
           JEST_JUNIT_OUTPUT: $CIRCLE_TEST_REPORTS/junit/test-results.xml
   post:
-    - npm run codecov:
+    - yarn codecov:
         parallel: true
 notify:
   webhooks:
@@ -76,8 +77,8 @@ deployment:
   release:
     tag: /^(?:v\d.\d.\d)$/
     commands:
-      - npm run clean
-      - npm run build
+      - yarn run clean
+      - yarn build
       - rm -rf ~/.npmrc && touch ~/.npmrc
       - echo //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN >> ~/.npmrc
-      - npm publish
+      - yarn publish

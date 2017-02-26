@@ -6,6 +6,8 @@ import type Application from '../../src/packages/application';
 export function getTestApp(): Promise<Application> {
   const path = joinPath(__dirname, '..', 'test-app');
 
+  /* eslint-disable import/no-unresolved */
+
   const {
     config,
     database,
@@ -16,6 +18,8 @@ export function getTestApp(): Promise<Application> {
     Application: Class<Application>;
     // $FlowIgnore
   } = require('../test-app/dist/bundle');
+
+  /* eslint-enable import/no-unresolved */
 
   return new TestApp({
     ...config,
