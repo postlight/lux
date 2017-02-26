@@ -20,6 +20,7 @@ export type Database$environment = {
   debug?: boolean;
   driver: string;
   socket?: string;
+  memory?: boolean;
   database?: string;
   username?: string;
   password?: string;

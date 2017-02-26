@@ -16,6 +16,7 @@ export default function connect(path: string, config: Object = {}): Knex {
     host,
     socket,
     driver,
+    memory,
     database,
     username,
     password,
@@ -37,25 +38,35 @@ export default function connect(path: string, config: Object = {}): Knex {
 
   const knex: Class<Knex> = require(joinPath(path, 'node_modules', 'knex'));
   const usingSQLite = driver === 'sqlite3';
+  let filename;
 
-  const connection = DATABASE_URL || url || {
-    host,
-    database,
-    password,
-    port,
-    ssl,
-    user: username,
-    socketPath: socket,
-    filename: usingSQLite ?
-    joinPath(path, 'db', `${database || 'default'}_${NODE_ENV}.sqlite`)
-    : undefined
-  };
+  if (usingSQLite) {
+    if (memory) {
+      pool = undefined;
+      filename = ':memory:';
+    } else {
+      filename = joinPath(
+        path,
+        'db',
+        `${database || 'default'}_${NODE_ENV}.sqlite`
+      );
+    }
+  }
 
   return knex({
     pool,
-    connection,
+    connection: DATABASE_URL || url || {
+      ssl,
+      host,
+      port,
+      filename,
+      database,
+      password,
+      user: username,
+      socketPath: socket,
+    },
     debug: false,
     client: driver,
-    useNullAsDefault: usingSQLite
+    useNullAsDefault: usingSQLite,
   });
 }

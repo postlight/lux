@@ -7,6 +7,8 @@ const {
   }
 } = process;
 
+const SQLITE3 = 'sqlite3';
+
 let pool;
 let driver;
 
@@ -22,11 +24,11 @@ switch (CIRCLE_NODE_INDEX) {
     break;
 
   case '2':
-    driver = 'sqlite3';
+    driver = SQLITE3;
     break;
 
   default:
-    driver = DATABASE_DRIVER || 'sqlite3';
+    driver = DATABASE_DRIVER || SQLITE3;
     break;
 }
 
@@ -36,6 +38,7 @@ export default (
       [env]: {
         pool,
         driver,
+        memory: driver === SQLITE3,
         database: 'lux_test',
         username: DATABASE_USERNAME,
         password: DATABASE_PASSWORD,

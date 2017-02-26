@@ -91,11 +91,11 @@ describe('module "database/model"', () => {
       it('can be called repeatedly without error', async () => {
         const table = () => store.connection(Subject.tableName);
 
-        const refs = await Promise.all([
-          Subject.initialize(store, table),
-          Subject.initialize(store, table),
-          Subject.initialize(store, table)
-        ]);
+        const refs = [
+          await Subject.initialize(store, table),
+          await Subject.initialize(store, table),
+          await Subject.initialize(store, table),
+        ];
 
         refs.forEach(ref => {
           expect(ref).toBe(Subject);
@@ -673,16 +673,14 @@ describe('module "database/model"', () => {
       }
 
       beforeAll(async () => {
-        await Promise.all([
-          SubjectA.initialize(
-            store,
-            () => store.connection(SubjectA.tableName)
-          ),
-          SubjectB.initialize(
-            store,
-            () => store.connection(SubjectB.tableName)
-          ),
-        ]);
+        await SubjectA.initialize(
+          store,
+          () => store.connection(SubjectA.tableName)
+        );
+        await SubjectB.initialize(
+          store,
+          () => store.connection(SubjectB.tableName)
+        );
       });
 
       it('returns true if an object is an instance of the `Model`', () => {
@@ -981,21 +979,19 @@ describe('module "database/model"', () => {
         it('can set and persist attributes and relationships', async () => {
           const body = 'Lots of content...';
 
-          [user, image, comment] = await User.transaction(trx => (
-            Promise.all([
-              User.transacting(trx).create({
-                name: 'Test User',
-                email: '',
-                password: 'password',
-              }),
-              Image.transacting(trx).create({
-                url: 'https://postlight.com',
-              }),
-              Comment.transacting(trx).create({
-                message: 'Test',
-              }),
-            ])
-          ));
+          user = await User.create({
+            name: 'Test User',
+            email: '',
+            password: 'password',
+          });
+
+          image = await Image.create({
+            url: 'https://postlight.com',
+          });
+
+          comment = await Comment.create({
+            message: 'Test',
+          });
 
           if (method === 'update') {
             await instance.update({
