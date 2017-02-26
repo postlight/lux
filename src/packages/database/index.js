@@ -43,6 +43,18 @@ class Database {
     });
   }
 
+  /**
+   * A boolean value representing whether or not connection pool configuration
+   * has been supplied. This is used for determining wheter or not transactions
+   * will be used when writing to the database.
+   *
+   * @property hasPool
+   * @type {Boolean}
+   */
+  get hasPool(): boolean {
+    return Boolean(this.config.pool);
+  }
+
   modelFor(type: string): Class<Model> {
     const model = this.models.get(normalizeModelName(type));
 
@@ -55,8 +67,8 @@ class Database {
 }
 
 export default Database;
-export { default as Model } from './model';
 export { default as Query } from './query';
+export { default as Model, tableFor } from './model';
 export { default as Migration, generateTimestamp } from './migration';
 export { default as connect } from './utils/connect';
 export { default as typeForColumn } from './utils/type-for-column';

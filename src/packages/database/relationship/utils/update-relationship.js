@@ -1,4 +1,7 @@
 // @flow
+
+// eslint-disable-next-line no-duplicate-imports
+import { tableFor } from '../../index';
 import type { Model } from '../../index';
 import type { Relationship$opts } from '../interfaces';
 
@@ -20,9 +23,7 @@ function updateHasOne({
   if (value) {
     if (value instanceof opts.model) {
       return [
-        opts.model
-          .table()
-          .transacting(trx)
+        tableFor(opts.model, trx)
           .update(opts.foreignKey, null)
           .where(
             `${opts.model.tableName}.${opts.foreignKey}`,
@@ -32,9 +33,7 @@ function updateHasOne({
             `${opts.model.tableName}.${opts.model.primaryKey}`,
             value.getPrimaryKey()
           ),
-        opts.model
-          .table()
-          .transacting(trx)
+        tableFor(opts.model, trx)
           .update(opts.foreignKey, recordPrimaryKey)
           .where(
             `${opts.model.tableName}.${opts.model.primaryKey}`,
@@ -44,9 +43,7 @@ function updateHasOne({
     }
   } else {
     return [
-      opts.model
-        .table()
-        .transacting(trx)
+      tableFor(opts.model, trx)
         .update(opts.foreignKey, null)
         .where(
           `${opts.model.tableName}.${opts.foreignKey}`,
@@ -68,9 +65,7 @@ function updateHasMany({
 
   if (Array.isArray(value) && value.length) {
     return [
-      opts.model
-        .table()
-        .transacting(trx)
+      tableFor(opts.model, trx)
         .update(opts.foreignKey, null)
         .where(
           `${opts.model.tableName}.${opts.foreignKey}`,
@@ -80,9 +75,7 @@ function updateHasMany({
           `${opts.model.tableName}.${opts.model.primaryKey}`,
           value.map(item => item.getPrimaryKey())
         ),
-      opts.model
-        .table()
-        .transacting(trx)
+      tableFor(opts.model, trx)
         .update(opts.foreignKey, recordPrimaryKey)
         .whereIn(
           `${opts.model.tableName}.${opts.model.primaryKey}`,
@@ -92,9 +85,7 @@ function updateHasMany({
   }
 
   return [
-    opts.model
-      .table()
-      .transacting(trx)
+    tableFor(opts.model, trx)
       .update(opts.foreignKey, null)
       .where(
         `${opts.model.tableName}.${opts.foreignKey}`,
@@ -117,9 +108,7 @@ function updateBelongsTo({
 
     if (inverseOpts && inverseOpts.type === 'hasOne') {
       return [
-        record.constructor
-          .table()
-          .transacting(trx)
+        tableFor(record, trx)
           .update(opts.foreignKey, null)
           .where(opts.foreignKey, foreignKeyValue)
           .whereNot(

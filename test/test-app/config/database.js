@@ -22,7 +22,6 @@ switch (CIRCLE_NODE_INDEX) {
     break;
 
   case '2':
-    pool = 1;
     driver = 'sqlite3';
     break;
 

@@ -769,12 +769,12 @@ describe('module "database/model"', () => {
     describe('.hooks', () => {
       ['after', 'before'].forEach(prefix => {
         ['Save', 'Create', 'Destroy', 'Validation'].forEach(suffix => {
-          const trx = expect.any(Function);
           const name = prefix + suffix;
           const tableName = 'posts';
           let Subject;
           let instance;
           let hook;
+          let trx;
 
           describe(`.${name}()`, () => {
             beforeAll(async () => {
@@ -790,6 +790,10 @@ describe('module "database/model"', () => {
                 store,
                 () => store.connection(tableName)
               );
+
+              if (store.hasPool) {
+                trx = expect.any(Function);
+              }
             });
 
             beforeEach(async () => {

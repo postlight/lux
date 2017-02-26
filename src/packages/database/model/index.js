@@ -1336,26 +1336,30 @@ class Model {
    * @public
    */
   static transaction<T>(fn: (...args: Array<any>) => Promise<T>): Promise<T> {
-    return new Promise((resolve, reject) => {
-      const { store: { connection } } = this;
-      let result: T;
+    if (this.store.hasPool) {
+      return new Promise((resolve, reject) => {
+        const { store: { connection } } = this;
+        let result: T;
 
-      connection
-        .transaction(trx => {
-          fn(trx)
-            .then(data => {
-              result = data;
-              return trx.commit();
-            })
-            .catch(trx.rollback);
-        })
-        .then(() => {
-          resolve(result);
-        })
-        .catch(err => {
-          reject(err);
-        });
-    });
+        connection
+          .transaction(trx => {
+            fn(trx)
+              .then(data => {
+                result = data;
+                return trx.commit();
+              })
+              .catch(trx.rollback);
+          })
+          .then(() => {
+            resolve(result);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    }
+
+    return fn();
   }
 
   static all(): Query<Array<this>> {
@@ -1528,4 +1532,5 @@ class Model {
 }
 
 export default Model;
+export { default as tableFor } from './utils/table-for';
 export type { Model$Hook, Model$Hooks } from './interfaces';
