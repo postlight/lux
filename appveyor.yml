@@ -59,7 +59,7 @@ before_test:
 test_script:
   - yarn flow
   - yarn lint
-  - yarn test -- --no-watchman
+  - yarn test -- --no-cache --no-watchman
   - yarn codecov
 notifications:
 - provider: Webhook
