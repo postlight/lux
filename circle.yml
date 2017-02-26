@@ -43,6 +43,7 @@ dependencies:
       cd ../../
   cache_directories:
     - /home/ubuntu/watchman
+    - /home/ubuntu/lux/test/test-app/node_modules
 compile:
   pre:
     - yarn run clean
