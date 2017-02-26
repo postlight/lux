@@ -21,7 +21,7 @@ environment:
     - DATABASE_DRIVER: sqlite3
 install:
   - ps: Install-Product node $env:nodejs_version $env:platform
-  - choco install yarn
+  - ps: choco install yarn
   - yarn install
   - yarn link
   - ps: Set-Location C:\projects\lux\test\test-app
