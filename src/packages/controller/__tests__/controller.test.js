@@ -457,10 +457,16 @@ describe('module "controller"', () => {
           ]),
         });
 
-        await Promise.all([
-          newUser.destroy(),
-          newComment.destroy(),
-        ]);
+        await Post.transaction(trx => (
+          Promise.all([
+            newUser
+              .transacting(trx)
+              .destroy(),
+            newComment
+              .transacting(trx)
+              .destroy(),
+          ])
+        ));
       });
 
       it('returns the number `204` if no changes occur', async () => {
