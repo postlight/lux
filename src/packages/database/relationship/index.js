@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { camelize } from 'inflection';
 
 import type { Model } from '../index';

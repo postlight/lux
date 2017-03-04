@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import normalizePort from '../normalize-port';
 
 describe('util normalizePort()', () => {

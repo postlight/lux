@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import indent from '../utils/indent';
 import underscore from '../../../utils/underscore';
 

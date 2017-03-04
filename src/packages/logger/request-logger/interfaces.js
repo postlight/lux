@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type { Route } from '../../router';
 
 export type RequestLogger$templateData = {

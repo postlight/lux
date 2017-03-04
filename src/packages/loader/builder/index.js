@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { FreezeableMap } from '../../freezeable';
 import { resolve } from '../resolver';
 import chain from '../../../utils/chain';

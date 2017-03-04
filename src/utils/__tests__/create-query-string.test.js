@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import createQueryString from '../create-query-string';
 
 describe('util createQueryString()', () => {

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type { Builder$Construct, Builder$ChildrenBuilder } from '../interfaces';
 
 export default function createChildrenBuilder<T>(

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type Query from '../index';
 
 export default function scopesFor<T>(target: Query<T>): {

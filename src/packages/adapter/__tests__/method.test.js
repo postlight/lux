@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { METHODS } from '../../request';
 import { Headers } from '../utils/headers';
 import { resolve } from '../utils/method';

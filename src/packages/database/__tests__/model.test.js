@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import Model from '../model';
 import Query, { RecordNotFoundError } from '../query';
 import { ValidationError } from '../validation';

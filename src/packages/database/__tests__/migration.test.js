@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import Migration from '../migration';
 import { getTestApp } from '../../../../test/utils/test-app';
 import {

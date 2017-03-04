@@ -1,2 +1,3 @@
-// @flow
+/* @flow */
+
 export * from './fetch';

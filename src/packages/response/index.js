@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type Logger from '../logger';
 
 /* eslint-disable no-use-before-define */

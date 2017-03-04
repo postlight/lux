@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import tryCatch, { tryCatchSync } from '../try-catch';
 
 describe('util tryCatch()', () => {

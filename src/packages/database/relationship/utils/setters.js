@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type { Model } from '../../index';
 import type { Relationship$opts } from '../index';
 

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 declare class Knex$SchemaBuilder extends Knex$QueryBuilder {
   hasTable(name: string): this;
   dropTable(name: string): this;

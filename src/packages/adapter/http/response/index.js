@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type { ServerResponse } from 'http';
 
 import Response from '../../../response';

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { ResourceMismatchError } from '../errors';
 import type Request from '../../../../request';
 

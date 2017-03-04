@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import ParameterTypeError from '../errors/parameter-type-error';
 import ParameterNotNullableError from '../errors/parameter-not-nullable-error';
 import isNull from '../../../../../utils/is-null';

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { dasherize } from 'inflection';
 
 import { VERSION } from '../jsonapi';

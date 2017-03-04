@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { createInterface } from 'readline';
 
 const YES = /^y(es)?$/i;

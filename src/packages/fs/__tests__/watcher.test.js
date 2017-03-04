@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { tmpdir } from 'os';
 import { join as joinPath } from 'path';
 

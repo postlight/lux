@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { green, yellow } from 'chalk';
 
 import { VALID_DRIVERS } from '../constants';

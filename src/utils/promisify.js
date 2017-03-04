@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 
 type Target = (...args: Array<any>) => Promise<any>;
 

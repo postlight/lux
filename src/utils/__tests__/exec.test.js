@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import exec from '../exec';
 
 describe('util exec()', () => {

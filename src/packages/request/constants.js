@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type { Method } from './index';
 
 export const HAS_BODY: RegExp = /^(?:POST|PATCH)$/i;

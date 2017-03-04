@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import underscore from '../underscore';
 
 describe('util underscore()', () => {

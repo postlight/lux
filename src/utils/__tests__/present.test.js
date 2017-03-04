@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import present from '../present';
 
 describe('util present()', () => {

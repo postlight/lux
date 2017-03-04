@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { sep, posix, basename, join as joinPath } from 'path';
 
 import { camelize, capitalize, pluralize } from 'inflection';

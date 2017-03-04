@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { WARN, ERROR, LEVELS, FORMATS } from '../constants';
 import { createWriter } from '../writer';
 

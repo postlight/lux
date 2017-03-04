@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { FORMATS } from '../constants';
 import { createRequestLogger } from '../request-logger';
 import Logger from '../index';

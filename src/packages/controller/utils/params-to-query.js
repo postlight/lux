@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import omit from '../../../utils/omit';
 import entries from '../../../utils/entries';
 import type { Model } from '../../database';

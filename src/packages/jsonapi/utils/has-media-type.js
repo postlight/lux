@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 const PATTERN = /^application\/vnd.api\+json;charset=.+$/;
 
 /**

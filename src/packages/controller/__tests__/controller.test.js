@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import faker from 'faker';
 
 import { MIME_TYPE } from '../../jsonapi';

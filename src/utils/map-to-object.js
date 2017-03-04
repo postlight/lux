@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 export default function mapToObject<T>(
   source: Map<string, T>
 ): { [key: string]: T } {

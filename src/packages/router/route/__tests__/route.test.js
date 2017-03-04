@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import Controller from '../../../controller';
 import * as Adapters from '../../../adapter';
 import K from '../../../../utils/k';

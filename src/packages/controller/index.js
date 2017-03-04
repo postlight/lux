@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { Model } from '../database';
 import { freezeProps } from '../freezeable';
 import getDomain from '../../utils/get-domain';

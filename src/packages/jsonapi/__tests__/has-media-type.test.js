@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 
 
 import { hasMediaType } from '../index';

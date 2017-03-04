@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 
 
 import { isJSONAPI } from '../index';

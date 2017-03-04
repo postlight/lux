@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import isNull from '../../../../utils/is-null';
 import type { Model } from '../../index';
 

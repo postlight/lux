@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type Model from './index';
 
 export type Model$Hook = (instance: Model, trx: Object) => Promise<any>;

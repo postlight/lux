@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 
 
 import mapToObject from '../map-to-object';

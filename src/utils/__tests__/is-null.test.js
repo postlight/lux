@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import isNull from '../is-null';
 
 describe('util isNull()', () => {

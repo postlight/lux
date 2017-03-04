@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { FREEZER } from '../constants';
 import insert from '../../../utils/insert';
 import isObject from '../../../utils/is-object';

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { paramsFor, defaultParamsFor } from '../index';
 import { getTestApp } from '../../../../../../test/utils/test-app';
 import type Controller from '../../../../controller';

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { EOL } from 'os';
 
 /**

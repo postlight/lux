@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { NODE_ENV } from '../../constants';
 import { mock, http } from '../adapter';
 // eslint-disable-next-line no-duplicate-imports

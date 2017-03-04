@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import Query from '../query';
 import Model from '../model';
 import range from '../../../utils/range';

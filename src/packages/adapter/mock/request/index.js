@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import * as url from 'url';
 
 import qs from 'qs';

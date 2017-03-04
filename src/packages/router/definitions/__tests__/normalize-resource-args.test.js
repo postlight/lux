@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { BUILT_IN_ACTIONS } from '../../../controller';
 import normalizeResourceArgs from '../context/utils/normalize-resource-args';
 

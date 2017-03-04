@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import template from '../template';
 import { fileLink } from '../../utils/github';
 

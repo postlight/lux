@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type Knex from 'knex';
 
 import type Logger from '../logger';

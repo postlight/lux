@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import Resource from '../../resource';
 import Namespace from '../../namespace';
 import K from '../../../../utils/k';

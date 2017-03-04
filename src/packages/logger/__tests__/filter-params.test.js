@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import filterParams from '../request-logger/utils/filter-params';
 
 describe('module "logger"', () => {

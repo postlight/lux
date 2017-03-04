@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import entries from '../../../utils/entries';
 // eslint-disable-next-line no-unused-vars
 import type { Model } from '../../database';

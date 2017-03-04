@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { ParameterRequiredError } from '../../errors';
 import type ParameterGroup from '../index';
 

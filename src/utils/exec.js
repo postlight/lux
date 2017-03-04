@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import * as cp from 'child_process';
 
 import promisify from './promisify';

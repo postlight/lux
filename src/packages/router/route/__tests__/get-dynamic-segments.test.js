@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import getDynamicSegments from '../utils/get-dynamic-segments';
 
 describe('module "router/route"', () => {

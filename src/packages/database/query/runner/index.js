@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { RecordNotFoundError } from '../errors';
 import { sql } from '../../../logger';
 import type Query from '../index';

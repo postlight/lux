@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import Namespace from '../namespace';
 import { FreezeableSet } from '../../freezeable';
 import type { Controller$builtIn } from '../../controller';

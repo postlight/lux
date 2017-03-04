@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 export const STATUS_CODES: Map<number, string> = (
   new Map([
     [100, 'Continue'],

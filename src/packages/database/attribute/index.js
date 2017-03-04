@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import createGetter from './utils/create-getter';
 import createSetter from './utils/create-setter';
 import createNormalizer from './utils/create-normalizer';

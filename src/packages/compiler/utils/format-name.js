@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { posix, dirname, basename } from 'path';
 
 import { camelize } from 'inflection';

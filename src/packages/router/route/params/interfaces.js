@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type Controller from '../../../controller';
 import type { Route$type } from '../index';
 import type { Method } from '../../../request';

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { join as joinPath } from 'path';
 
 import type Application from '../../src/packages/application';

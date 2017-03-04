@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import entries from '../../../utils/entries';
 import { FreezeableMap } from '../../freezeable';
 import type { ObjectMap } from '../../../interfaces';

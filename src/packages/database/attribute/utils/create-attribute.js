@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type { Attribute$meta } from '../index';
 
 import createGetter from './create-getter';

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type Request from '../request';
 import type Response from '../response';
 

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 
 // eslint-disable-next-line no-duplicate-imports
 import { tableFor } from '../../index';

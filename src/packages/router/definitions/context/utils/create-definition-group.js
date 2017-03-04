@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { METHODS } from '../../../../request';
 import type { Method } from '../../../../request';
 // eslint-disable-next-line no-unused-vars

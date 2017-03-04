@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import omit from '../../../../../utils/omit';
 import merge from '../../../../../utils/merge';
 import createQueryString from '../../../../../utils/create-query-string';

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type Controller, { Controller$builtIn } from '../../controller';
 import type { Namespace$opts } from '../namespace';
 

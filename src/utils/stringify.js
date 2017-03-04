@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import isObject from './is-object';
 
 /**

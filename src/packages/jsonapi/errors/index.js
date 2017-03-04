@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 export {
   default as NotAcceptableError
 } from './not-acceptable-error';

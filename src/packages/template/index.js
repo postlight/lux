@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import insertValues from './utils/insert-values';
 
 const bodyPattern = /^\n([\s\S]+)\s{2}$/gm;

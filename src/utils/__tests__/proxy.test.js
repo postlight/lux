@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import * as proxy from '../proxy';
 
 describe('util proxy', () => {

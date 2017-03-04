@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { worker, isMaster } from 'cluster';
 
 import { NODE_ENV } from '../../constants';

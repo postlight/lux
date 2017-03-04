@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { posix } from 'path';
 
 import { Model } from '../../../database';

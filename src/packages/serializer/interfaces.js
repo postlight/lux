@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type Serializer from './index';
 import type { Model } from '../database';
 

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { posix, join as joinPath } from 'path';
 
 import { green } from 'chalk';

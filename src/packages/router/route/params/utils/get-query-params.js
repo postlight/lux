@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import Parameter from '../parameter';
 import ParameterGroup from '../parameter-group';
 import type Controller from '../../../../controller';

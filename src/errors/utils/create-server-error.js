@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 type ServerError<T: Error> = T & {
   statusCode: number;
 };

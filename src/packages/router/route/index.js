@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { FreezeableSet, freezeProps, deepFreezeProps } from '../../freezeable';
 import type Controller from '../../controller';
 import type Request, { Method } from '../../request';

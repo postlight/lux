@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import Serializer from '../index';
 import type { ObjectMap } from '../../../interfaces';
 import { getTestApp } from '../../../../test/utils/test-app';

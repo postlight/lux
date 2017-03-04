@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 
 
 import * as github from '../github';

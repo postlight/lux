@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type Request, { Method } from '../../request';
 
 type Headers = $PropertyType<Request, 'headers'>;

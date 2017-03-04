@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { pluralize } from 'inflection';
 
 import Query from '../query';

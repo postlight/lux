@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import Database from '../index';
 import { getTestApp } from '../../../../test/utils/test-app';
 

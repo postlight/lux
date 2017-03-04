@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 describe('util entries()', () => {
   let entries;
 

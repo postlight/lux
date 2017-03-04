@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { camelize, singularize } from 'inflection';
 
 import Model from '../../../model';

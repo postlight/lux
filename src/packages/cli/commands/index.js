@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 export { build } from './build.js';
 export { create } from './create.js';
 export { dbcreate } from './dbcreate.js';

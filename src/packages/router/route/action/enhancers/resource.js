@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { Query } from '../../../../database';
 import getDomain from '../../../../../utils/get-domain';
 import createPageLinks from '../utils/create-page-links';

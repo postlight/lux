@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import pick from '../pick';
 
 describe('util pick()', () => {

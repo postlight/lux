@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { EOL } from 'os';
 
 import { CWD, NODE_ENV, DATABASE_URL } from '../../../constants';

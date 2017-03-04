@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type { Config } from '../config';
 import type Database, { Config as DatabaseConfig } from '../database';
 import type Controller from '../controller';

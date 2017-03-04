@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { exists, readdir, parsePath } from '../../../fs';
 import type { Generator$opts } from '../index';
 

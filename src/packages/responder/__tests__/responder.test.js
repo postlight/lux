@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import Logger from '../../logger';
 import { request, response } from '../../adapter/mock';
 import noop from '../../../utils/noop';

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { IncomingMessage, ServerResponse } from 'http';
 
 import { MIME_TYPE } from '../../jsonapi';

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { join as joinPath } from 'path';
 import { watch as nativeWatch } from 'fs';
 import type { FSWatcher } from 'fs'; // eslint-disable-line no-duplicate-imports

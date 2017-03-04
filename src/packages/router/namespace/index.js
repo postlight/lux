@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { FreezeableSet, freezeProps } from '../../freezeable';
 import type Controller from '../../controller';
 import type { Route, Router$Namespace } from '../index';

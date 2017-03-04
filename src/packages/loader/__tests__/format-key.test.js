@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import formatKey from '../utils/format-key';
 
 describe('module "loader"', () => {

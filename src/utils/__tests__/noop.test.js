@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import noop from '../noop';
 
 describe('util noop()', () => {

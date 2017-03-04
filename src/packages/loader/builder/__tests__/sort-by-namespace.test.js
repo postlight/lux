@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { FreezeableMap } from '../../../freezeable';
 import sortByNamespace from '../utils/sort-by-namespace';
 

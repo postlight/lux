@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import * as stringify from '../stringify';
 
 const DEFAULT = 'default';

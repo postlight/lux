@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { join as joinPath } from 'path';
 
 import { Migration } from '../../database';

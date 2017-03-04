@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { Route } from '../../../index';
 import { normalizeName, normalizePath } from '../../../namespace';
 import type { Method } from '../../../../request';

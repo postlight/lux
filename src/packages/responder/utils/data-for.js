@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { VERSION } from '../../jsonapi';
 import { STATUS_CODES } from '../../../constants';
 // eslint-disable-next-line no-duplicate-imports

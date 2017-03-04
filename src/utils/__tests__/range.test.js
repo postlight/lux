@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import range from '../range';
 
 describe('util range()', () => {

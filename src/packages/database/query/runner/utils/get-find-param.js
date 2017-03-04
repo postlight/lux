@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import isObject from '../../../../../utils/is-object';
 import type Query from '../../index';
 

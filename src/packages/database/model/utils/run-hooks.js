@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type Model, { Model$Hook } from '../index';
 
 /**

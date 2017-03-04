@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { MIME_TYPE } from '../constants';
 import { line } from '../../logger';
 import createServerError from '../../../errors/utils/create-server-error';

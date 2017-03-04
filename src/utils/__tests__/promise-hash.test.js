@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import promiseHash from '../promise-hash';
 
 describe('util promiseHash()', () => {

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import freeze from '../utils/freeze';
 import isFrozen from '../utils/is-frozen';
 

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type { Bundle$Namespace, Bundle$NamespaceGroup } from '../index';
 
 export type Builder$NamespaceMeta<T> = {

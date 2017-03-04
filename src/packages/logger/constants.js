@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { FreezeableMap, FreezeableSet } from '../freezeable';
 
 import type { Level, Format } from './index';

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import * as path from 'path';
 
 import { getTestApp } from '../../../../test/utils/test-app';

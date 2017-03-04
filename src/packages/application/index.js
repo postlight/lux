@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import EventEmitter from 'events';
 
 import { createDefaultConfig } from '../config';

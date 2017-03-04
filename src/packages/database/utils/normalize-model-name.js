@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { dasherize, singularize } from 'inflection';
 
 import { compose } from '../../../utils/compose';

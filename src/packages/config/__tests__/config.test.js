@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { createDefaultConfig } from '../index';
 
 describe('module "config"', () => {

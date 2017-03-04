@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import Logger, { line } from '../index';
 
 const TEST_MESSAGE = 'test';

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { FreezeableMap } from '../freezeable';
 import type Request from '../request';
 

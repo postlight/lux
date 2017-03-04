@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import Validation, { ValidationError } from '../../validation';
 import type { Model } from '../../index';
 

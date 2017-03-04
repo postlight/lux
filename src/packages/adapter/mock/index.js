@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type { Adapter } from '../index';
 import type Application from '../../application';
 import type { ObjectMap } from '../../../interfaces';

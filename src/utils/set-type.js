@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 
 /**
  * Use this util as a brute force way of tricking flow into understanding intent

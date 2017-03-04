@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 
 
 import isBuffer from '../is-buffer.js';

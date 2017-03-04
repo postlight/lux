@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import * as diff from '../diff';
 
 describe('util diff', () => {

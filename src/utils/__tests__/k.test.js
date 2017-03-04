@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 
 
 import K from '../k';

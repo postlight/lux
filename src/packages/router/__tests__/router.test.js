@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import Route from '../route';
 import Router from '../index';
 import Logger from '../../logger';

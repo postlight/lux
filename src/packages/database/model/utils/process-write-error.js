@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { UNIQUE_CONSTRAINT } from '../../constants';
 import { UniqueConstraintError } from '../../errors';
 

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import entries from '../../../../utils/entries';
 
 /**

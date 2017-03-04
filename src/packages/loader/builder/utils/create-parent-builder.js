@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { posix } from 'path';
 
 import type { Builder$Construct, Builder$ParentBuilder } from '../interfaces';

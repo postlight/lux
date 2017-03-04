@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { FreezeableMap } from '../../freezeable';
 import { createLoader } from '../index';
 import { getTestApp } from '../../../../test/utils/test-app';

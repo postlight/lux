@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import chalk from 'chalk';
 
 import { DEBUG } from '../../constants';

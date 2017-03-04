@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type { ObjectMap } from '../../interfaces';
 
 /* eslint-disable no-use-before-define */

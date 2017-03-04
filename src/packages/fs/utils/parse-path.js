@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import * as path from 'path';
 
 import { CWD } from '../../../constants';

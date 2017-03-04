@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 
 import Model from '../index';
 

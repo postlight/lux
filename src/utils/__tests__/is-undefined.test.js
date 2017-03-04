@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import isUndefined from '../is-undefined';
 
 describe('util isUndefined()', () => {

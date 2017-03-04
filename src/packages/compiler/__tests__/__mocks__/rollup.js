@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 export const rollup = jest.fn();
 
 rollup.mockReturnValue({

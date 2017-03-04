@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import Route from '../route';
 import Resource from '../resource';
 import type Router, { Router$Namespace } from '../index'; // eslint-disable-line max-len, no-unused-vars

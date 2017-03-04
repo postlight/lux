@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 declare module 'repl' {
   declare type REPL_MODE_MAGIC = Symbol;
   declare type REPL_MODE_SLOPPY = Symbol;

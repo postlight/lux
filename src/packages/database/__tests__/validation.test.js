@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import Validation from '../validation';
 
 describe('module "database/validation"', () => {

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type Logger from '../logger';
 import type { ObjectMap } from '../../interfaces';
 

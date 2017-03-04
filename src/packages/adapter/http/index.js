@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type { IncomingMessage, ServerResponse } from 'http';
 
 import type { Adapter } from '../index';

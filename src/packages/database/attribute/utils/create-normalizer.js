@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 const BOOLEAN_TYPE = /^(?:boolean|tinyint)$/;
 
 export default function createNormalizer(type: string): (value: any) => any {

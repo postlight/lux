@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import * as query from '../utils/query';
 
 describe('module "adapters/query"', () => {

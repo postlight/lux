@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { LUX_CONSOLE } from '../../constants';
 import K from '../../utils/k';
 

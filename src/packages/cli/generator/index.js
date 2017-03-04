@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { red, green } from 'chalk';
 
 import createPrompt from '../utils/create-prompt';

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import * as faker from 'faker';
 
 import { get, set } from '../relationship';

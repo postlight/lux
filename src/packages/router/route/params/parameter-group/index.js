@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { FreezeableMap } from '../../../../freezeable';
 import { InvalidParameterError } from '../errors';
 import isNull from '../../../../../utils/is-null';

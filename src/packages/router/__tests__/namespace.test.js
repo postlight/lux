@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import Namespace from '../namespace';
 import setType from '../../../utils/set-type';
 import { getTestApp } from '../../../../test/utils/test-app';

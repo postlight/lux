@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { trapGet } from '../../../utils/proxy';
 import type { Model } from '../index'; // eslint-disable-line no-unused-vars
 

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import sleep from '../sleep';
 
 const AMOUNT = 500;

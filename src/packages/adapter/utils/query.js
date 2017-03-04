@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import entries from '../../../utils/entries';
 import isObject from '../../../utils/is-object';
 import type { ObjectMap } from '../../../interfaces';

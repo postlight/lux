@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import isNull from './is-null';
 import entries from './entries';
 import setType from './set-type';

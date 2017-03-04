@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type Route from './route';
 import type Controller from '../controller';
 import type { FreezeableSet } from '../freezeable';

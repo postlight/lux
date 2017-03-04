@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { version, devDependencies } from '../../../../package.json';
 import template from '../../template';
 

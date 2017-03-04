@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import setType from './set-type';
 
 /**

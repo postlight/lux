@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { WriteStream } from 'tty';
 
 import { dim, red, yellow } from 'chalk';

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type Database from '../index';
 
 /**

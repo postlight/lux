@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { MIME_TYPE } from '../constants';
 
 /**

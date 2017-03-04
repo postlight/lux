@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type { Validation$opts } from './interfaces';
 
 /**

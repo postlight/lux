@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 
 
 import getStaticPath from '../utils/get-static-path';

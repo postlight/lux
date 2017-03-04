@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { sql } from '../../../logger';
 import omit from '../../../../utils/omit';
 // eslint-disable-next-line no-duplicate-imports

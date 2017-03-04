@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { getTestApp } from '../../../../test/utils/test-app';
 import createReplacer from '../utils/create-replacer';
 

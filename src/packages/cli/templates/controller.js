@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { classify, camelize, pluralize } from 'inflection';
 
 import template from '../../template';

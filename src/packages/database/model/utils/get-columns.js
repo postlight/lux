@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import pick from '../../../../utils/pick';
 import entries from '../../../../utils/entries';
 import type Model from '../index';

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import merge from '../../../utils/merge';
 import type { Model, Query } from '../../database';
 import type Request from '../../request';

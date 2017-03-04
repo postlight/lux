@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { blue, cyan, magenta, yellow } from 'chalk';
 
 import line from '../utils/line';

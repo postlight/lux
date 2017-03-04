@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { MIME_TYPE } from '../jsonapi';
 import type Application from '../application';
 import type { Method } from '../request';

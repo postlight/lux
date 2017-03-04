@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import Response from '../../../response';
 import { ResponseHeaders } from '../../utils/headers';
 import noop from '../../../../utils/noop';

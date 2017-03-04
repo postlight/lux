@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { VERSION } from '../../../../jsonapi';
 import Logger from '../../../../logger';
 import { request, response } from '../../../../adapter/mock';

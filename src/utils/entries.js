@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 const METHOD_MISSING = typeof Object.entries !== 'function';
 
 /**

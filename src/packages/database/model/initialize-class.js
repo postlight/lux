@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { camelize, dasherize, pluralize, singularize } from 'inflection';
 
 import { line } from '../../logger';

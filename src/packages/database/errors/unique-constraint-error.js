@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import createServerError from '../../../errors/utils/create-server-error';
 
 export default createServerError(

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type { Generator } from '../index';
 
 import * as generators from './generate-type';

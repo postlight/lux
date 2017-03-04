@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { MIME_TYPE } from '../../jsonapi';
 import { STATUS_CODES } from '../../response';
 import stringify from '../../../utils/stringify';

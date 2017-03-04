@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import * as os from 'os';
 import { worker, isWorker } from 'cluster';
 

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import hasOwnProperty from './has-own-property';
 
 type Proxy$get<T> = (target: T, key: string, receiver: Proxy<T>) => any;

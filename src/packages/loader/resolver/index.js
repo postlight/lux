@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { FreezeableMap } from '../../freezeable';
 import type { Bundle$Namespace, Bundle$NamespaceGroup } from '../index';
 

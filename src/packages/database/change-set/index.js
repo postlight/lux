@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type { Model } from '../index';
 import entries from '../../../utils/entries';
 import mapToObject from '../../../utils/map-to-object';

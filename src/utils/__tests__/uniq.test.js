@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import uniq from '../uniq';
 
 describe('util uniq()', () => {

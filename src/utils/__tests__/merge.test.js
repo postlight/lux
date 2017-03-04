@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 
 
 import merge from '../merge';

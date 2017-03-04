@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { stat, readdir } from '../index';
 
 /**

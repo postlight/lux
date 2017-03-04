@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { parse as parseURL } from 'url';
 import type { IncomingMessage } from 'http';
 

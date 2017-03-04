@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import bundleFor from './utils/bundle-for';
 import type { Loader } from './interfaces';
 

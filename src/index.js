@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import * as Adapters from './packages/adapter';
 import * as Testing from './packages/testing';
 

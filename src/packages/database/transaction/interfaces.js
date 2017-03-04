@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type { Model } from '../index'; // eslint-disable-line no-unused-vars
 
 // $FlowIgnore

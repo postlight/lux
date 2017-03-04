@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type Logger from '../../index';
 import type Request from '../../../request';
 import type Response from '../../../response';

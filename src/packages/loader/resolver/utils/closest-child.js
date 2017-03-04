@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { posix } from 'path';
 
 import type { Bundle$Namespace } from '../../index';

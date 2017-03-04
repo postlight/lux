@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 
 
 import Parameter from '../parameter';

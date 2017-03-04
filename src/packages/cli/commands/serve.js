@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { cyan } from 'chalk';
 
 import { CWD, PORT, NODE_ENV } from '../../../constants';

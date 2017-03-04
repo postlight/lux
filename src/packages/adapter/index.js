@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import type Application from '../application';
 import type Request from '../request';
 import type Response from '../response';

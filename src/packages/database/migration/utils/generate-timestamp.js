@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 function formatInt(int: number): string {
   return (int / 10).toString().replace('.', '').substr(0, 2);
 }

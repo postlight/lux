@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { FreezeableSet } from '../../../../freezeable';
 import validateType from '../utils/validate-type';
 

@@ -1,4 +1,5 @@
-// @flow
+/* @flow */
+
 import { ANSI } from '../constants';
 import stringify from '../../../../utils/stringify';
 import type { Format } from '../../index';
