@@ -1,6 +1,5 @@
 /* @flow */
 
-
 /**
  * Use this util as a brute force way of tricking flow into understanding intent
  * to extend or combine a type in a polymorphic function.

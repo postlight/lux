@@ -1,6 +1,5 @@
 /* @flow */
 
-
 /**
  * Determine wether or not a value is an Object.
  *

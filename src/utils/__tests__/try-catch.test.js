@@ -16,7 +16,6 @@ describe('util tryCatch()', () => {
   });
 });
 
-
 describe('util tryCatchSync()', () => {
   it('is a functional equivalent of try...catch', () => {
     let value = tryCatchSync(() => false);

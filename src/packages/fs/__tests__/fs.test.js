@@ -1,6 +1,5 @@
 /* @flow */
 
-
 import * as path from 'path';
 // $FlowIgnore
 import { __reset__ } from 'fs';

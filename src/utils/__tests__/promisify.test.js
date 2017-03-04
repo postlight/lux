@@ -1,6 +1,5 @@
 /* @flow */
 
-
 import promisify from '../promisify';
 
 describe('module "utils/promisify"', () => {

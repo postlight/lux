@@ -1,6 +1,5 @@
 /* @flow */
 
-
 /**
  * A utility function that always returns `this` based on it's current
  * context.

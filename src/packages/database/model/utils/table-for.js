@@ -1,6 +1,5 @@
 /* @flow */
 
-
 import Model from '../index';
 
 type Table = $PropertyType<Class<Model>, 'table'>;

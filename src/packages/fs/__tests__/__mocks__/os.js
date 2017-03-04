@@ -1,6 +1,5 @@
 /* @flow */
 
-
 let PLATFORM = 'linux';
 
 export const __setPlatform__ = (value: string) => {
