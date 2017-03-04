@@ -4,6 +4,7 @@ import EventEmitter from 'events';
 import { createDefaultConfig } from '../config';
 import * as responder from '../responder';
 import merge from '../../utils/merge';
+import tryCatch from '../../utils/try-catch';
 import type Logger from '../logger';
 import type Router from '../router';
 import type Controller from '../controller';
@@ -110,46 +111,42 @@ class Application extends EventEmitter {
    * @method exec
    * @private
    */
-  exec: (...args: Array<any>) => void = (...args) => {
-    this
-      .adapter(...args)
-      .then(([request, response]) => {
-        this.emit('request:start', request, response);
+  exec(...args: Array<any>): Promise<void> {
+    return tryCatch(async () => {
+      const [request, response] = await this.adapter(...args);
 
-        const respond = responder.create(request, response);
-        const route = this.router.match(request);
+      this.emit('request:start', request, response);
 
-        if (route) {
-          this.emit('request:match', request, response, route);
+      const respond = responder.create(request, response);
+      const route = this.router.match(request);
 
-          route
-            .visit(request, response)
-            .then(data => {
-              respond(data);
-              this.emit('request:complete', request, response);
-            })
-            .catch(err => {
-              respond(err);
-              this.emit('request:error', request, response, err);
-            });
-        } else {
-          respond(404);
-          this.emit('request:complete', request, response);
-        }
-      })
-      .catch(err => {
-        this.emit('error', err);
-      });
-  };
+      if (route) {
+        this.emit('request:match', request, response, route);
+
+        const data = await route
+          .visit(request, response)
+          .catch(err => {
+            this.emit('request:error', request, response, err);
+          });
+
+        respond(data);
+        this.emit('request:complete', request, response);
+      } else {
+        respond(404);
+        this.emit('request:complete', request, response);
+      }
+    }, err => {
+      this.emit('error', err);
+    });
+  }
 
   /**
    * @method destroy
    * @private
    */
-  destroy: () => Promise<void> = async () => {
+  async destroy(): Promise<void> {
     await this.store.connection.destroy();
-    return undefined;
-  };
+  }
 }
 
 export default Application;

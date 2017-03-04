@@ -35,7 +35,9 @@ export default async function createBootScript(dir: string, {
         }
 
         if (app.adapter.type === 'http') {
-          server = http.createServer(app.exec);
+          server = http.createServer((request, response) => {
+            app.exec(request, response);
+          });
           server.listen(PORT);
         }
 
