@@ -1,7 +1,5 @@
 /* @flow */
 
-
-
 import { hasMediaType } from '../index';
 
 describe('module "jsonapi"', () => {

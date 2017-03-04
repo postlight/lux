@@ -1,7 +1,5 @@
 /* @flow */
 
-
-
 import isBuffer from '../is-buffer.js';
 
 describe('util isBuffer()', () => {

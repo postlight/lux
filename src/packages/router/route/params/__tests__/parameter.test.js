@@ -1,7 +1,5 @@
 /* @flow */
 
-
-
 import Parameter from '../parameter';
 
 describe('module "router/route/params"', () => {

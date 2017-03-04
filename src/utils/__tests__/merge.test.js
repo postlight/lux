@@ -1,7 +1,5 @@
 /* @flow */
 
-
-
 import merge from '../merge';
 
 describe('util merge()', () => {

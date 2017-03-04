@@ -1,7 +1,5 @@
 /* @flow */
 
-
-
 import { FreezeableMap, FreezeableSet } from '../index';
 
 describe('module "freezeable"', () => {

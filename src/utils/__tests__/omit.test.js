@@ -1,7 +1,5 @@
 /* @flow */
 
-
-
 import omit from '../omit';
 
 describe('util omit()', () => {

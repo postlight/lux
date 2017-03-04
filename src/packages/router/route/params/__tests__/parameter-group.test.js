@@ -1,7 +1,5 @@
 /* @flow */
 
-
-
 import Parameter from '../parameter';
 import ParameterGroup from '../parameter-group';
 

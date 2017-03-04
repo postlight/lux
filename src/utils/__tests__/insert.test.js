@@ -1,7 +1,5 @@
 /* @flow */
 
-
-
 import insert from '../insert';
 
 describe('util insert()', () => {

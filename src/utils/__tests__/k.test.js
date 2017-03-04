@@ -1,7 +1,5 @@
 /* @flow */
 
-
-
 import K from '../k';
 
 describe('util K()', () => {

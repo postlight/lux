@@ -1,7 +1,5 @@
 /* @flow */
 
-
-
 import { isJSONAPI } from '../index';
 
 describe('module "jsonapi"', () => {

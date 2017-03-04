@@ -1,7 +1,5 @@
 /* @flow */
 
-
-
 import * as github from '../github';
 
 describe('util github', () => {

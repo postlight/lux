@@ -1,7 +1,5 @@
 /* @flow */
 
-
-
 import hasOwnProperty from '../has-own-property';
 
 describe('util hasOwnProperty()', () => {

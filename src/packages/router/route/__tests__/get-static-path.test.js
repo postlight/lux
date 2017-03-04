@@ -1,7 +1,5 @@
 /* @flow */
 
-
-
 import getStaticPath from '../utils/get-static-path';
 import getDynamicSegments from '../utils/get-dynamic-segments';
 

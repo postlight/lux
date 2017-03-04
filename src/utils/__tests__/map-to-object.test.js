@@ -1,7 +1,5 @@
 /* @flow */
 
-
-
 import mapToObject from '../map-to-object';
 
 describe('util mapToObject()', () => {

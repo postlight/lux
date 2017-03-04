@@ -1,7 +1,5 @@
 /* @flow */
 
-
-
 import compact from '../compact';
 
 describe('util compact()', () => {

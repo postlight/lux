@@ -1,7 +1,5 @@
 /* @flow */
 
-
-
 import isObject from '../is-object';
 
 describe('util isObject()', () => {
