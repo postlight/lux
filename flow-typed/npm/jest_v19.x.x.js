@@ -1,4 +1,5 @@
-// @flow
+// flow-typed signature: adc2f239806ddd8eb09272d1b4e23cb9
+// flow-typed version: 7dc2a8971e/jest_v19.x.x/flow_>=v0.33.x
 
 type JestMockFn = {
   (...args: Array<any>): any,
@@ -341,6 +342,11 @@ type JestObjectType = {
    * Instructs Jest to use the real versions of the standard timer functions.
    */
   useRealTimers(): JestObjectType,
+  /**
+   * Creates a mock function similar to jest.fn but also tracks calls to
+   * object[methodName].
+   */
+  spyOn(object: Object, methodName: string): JestMockFn,
 }
 
 type JestSpyType = {
@@ -407,12 +413,16 @@ declare var expect: {
   (value: any): JestExpectType,
   /** Add additional Jasmine matchers to Jest's roster */
   extend(matchers: {[name:string]: JestMatcher}): void,
+  /** Add a module that formats application-specific data structures. */
+  addSnapshotSerializer(serializer: (input: Object) => string): void,
   assertions(expectedAssertions: number): void,
   any(value: mixed): JestAsymmetricEqualityType,
   anything(): void,
   arrayContaining(value: Array<mixed>): void,
   objectContaining(value: Object): void,
-  stringMatching(value: string): void,
+  /** Matches any received string that contains the exact expected string. */
+  stringContaining(value: string): void,
+  stringMatching(value: string | RegExp): void,
 };
 
 // TODO handle return type
