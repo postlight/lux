@@ -8,12 +8,26 @@ in community.*
 
 ## Contents
 
+*   [Ways to Contribute](#ways-to-contribute)
 *   [Reporting a Bug](#reporting-a-bug)
 *   [Requesting a Feature](#requesting-a-feature)
 *   [Development Workflow](#development-workflow)
 *   [Writing Documentation](#writing-documentation)
 *   [Submitting a Pull Request](#submitting-a-pull-request)
 *   [Helpful Links and Information](#helpful-links-and-information)
+
+## Ways to Contribute
+
+There are many ways you can contribute to the Lux community. We value each type
+of contribution and appreciate your help.
+
+Here are a few examples of what we consider a contribution:
+
+*   Updates to source code
+*   Answering questions and chatting with the community in the [Gitter](https://gitter.im/postlight/lux) room
+*   Filing, organizing, and commenting on issues in the [issue tracker](https://github.com/postlight/lux/issues)
+*   Teaching others how to use Lux
+*   Community building and outreach
 
 ## Reporting a Bug
 
