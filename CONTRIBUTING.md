@@ -158,8 +158,8 @@ You can find more information about Flow and how to use it in the [Flow document
 #### JavaScript
 
 We use a slightly modified version of the Airbnb JavaScript [Style Guide](https://github.com/airbnb/javascript).
-To enforce this, all pull requests that must pass [ESLint](http://eslint.org/)
-before they can merge.
+To enforce this, all pull requests must pass [ESLint](http://eslint.org/) before
+they can merge.
 
 #### Markdown
 
