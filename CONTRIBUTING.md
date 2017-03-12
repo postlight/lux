@@ -203,7 +203,7 @@ load-nvmrc
 ## Writing Documentation
 
 Improvements to documentation are a great way to start contributing to Lux. The
-sources for the official documentation is generated from source code comments
+sources for the official documentation are generated from source code comments
 and markdown files that live in this repository.
 
 The [Guide](https://lux.postlight.com/docs/latest/guide) section of the official
