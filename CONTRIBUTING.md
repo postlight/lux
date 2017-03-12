@@ -146,11 +146,12 @@ Gitter room. We recommend installing an editor plugin with autocompletion and
 realtime error checking. Below you will find a few example plugins for many
 common editors.
 
-*   [Nuclide (Atom)](https://nuclide.io/)
-*   [FlowIDE (Sublime Text)](https://github.com/tptee/FlowIDE)
-*   [flow-for-vscode (Visual Studio Code)](https://github.com/flowtype/flow-for-vscode)
 *   [flow-for-emacs (Emacs)](https://github.com/flowtype/flow-for-emacs)
+*   [flow-for-vscode (Visual Studio Code)](https://github.com/flowtype/flow-for-vscode)
+*   [FlowIDE (Sublime Text)](https://github.com/tptee/FlowIDE)
+*   [Nuclide (Atom)](https://nuclide.io/)
 *   [vim-flow (Vim)](https://github.com/flowtype/vim-flow)
+*   [Webstorm](https://www.jetbrains.com/help/webstorm/using-the-flow-type-checker.html)
 
 You can find more information about Flow and how to use it in the [Flow documentation](https://flowtype.org/docs/getting-started.html).
 
