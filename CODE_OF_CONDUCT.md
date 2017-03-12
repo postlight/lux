@@ -9,9 +9,9 @@ all, regardless of level of experience, gender, gender identity and expression,
 sexual orientation, disability, personal appearance, body size, race, ethnicity,
 age, religion, nationality, or other similar characteristic.
 
-*   On Gitter, please avoid avoid using racist, sexually explicit or otherwise
-hostile nicknames that might detract from a friendly, safe and welcoming environment
-for all.
+*   Please avoid avoid using racist, sexually explicit or otherwise hostile
+nicknames that might detract from a friendly, safe and welcoming environment for
+all.
 
 *   Please be kind and courteous. There's no need to be mean or rude.
 
