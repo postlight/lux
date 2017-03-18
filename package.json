@@ -18,8 +18,10 @@
   },
   "scripts": {
     "build": "rollup -c",
+    "build:debugger": "rollup -c test/utils/debugger/rollup.config.js",
     "clean": "shx rm -rf coverage dist test/test-app/dist",
     "codecov": "codecov",
+    "debugger": "node test/utils/debugger/dist/debug.js",
     "flow": "flow check",
     "types": "shx rm -rf flow-typed && flow-typed install",
     "lint": "remark . && eslint .",
