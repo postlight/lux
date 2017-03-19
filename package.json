@@ -23,7 +23,9 @@
     "flow": "flow check",
     "types": "shx rm -rf flow-typed && flow-typed install",
     "lint": "remark . && eslint .",
-    "test": "nyc -i ./lib/babel-hook.js --instrument false --source-map false mocha --opts mocha.opts"
+    "test": "nyc -i ./lib/babel-hook.js --instrument false --source-map false mocha --opts mocha.opts",
+    "debugger": "node test/utils/debugger/dist/debug.js",
+    "build:debugger": "rollup -c test/utils/debugger/rollup.config.js"
   },
   "author": "Zachary Golba",
   "license": "MIT",
