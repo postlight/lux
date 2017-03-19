@@ -20,13 +20,11 @@ jobs:
           POSTGRES_DB: lux_test
           POSTGRES_PASSWORD: ""
     steps:
-      - run:
-          name: Remove Global Lux Install
-          command: yarn global remove lux-framework
       - checkout
       - run:
           name: Install Dependencies
           command: |
+            yarn global remove lux-framework
             yarn install
             cd test/test-app
             yarn install
@@ -48,7 +46,7 @@ jobs:
           command: yarn flow
       - run:
           name: Test
-          command: yarn test -- --forceExit
+          command: yarn test -- -i --forceExit
       - run:
           name: Report Coverage
           command: yarn codecov
