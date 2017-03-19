@@ -4,6 +4,11 @@ version: '{build}'
 branches:
   only:
     - master
+cache:
+  - .eslintcache
+  - .jest-cache
+  - node_modules
+  - test\test-app\node_modules
 platform: x64
 services:
   - mysql
@@ -20,6 +25,8 @@ environment:
     - DATABASE_DRIVER: mysql2
       DATABASE_USERNAME: root
     - DATABASE_DRIVER: sqlite3
+matrix:
+  fast_finish: true
 install:
   - ps: Install-Product node $env:nodejs_version $env:platform
   - yarn install
@@ -60,7 +67,7 @@ before_test:
 test_script:
   - yarn lint
   - yarn flow
-  - yarn test -- -i --no-cache --forceExit --logHeapUsage
+  - yarn test -- -w=8 --colors
   - yarn codecov
 notifications:
 - provider: Webhook
