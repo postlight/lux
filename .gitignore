@@ -11,6 +11,7 @@ node_modules/
 *.sqlite
 *.DS_Store
 .eslintcache
+.jest-cache/
 
 # logs
 log/

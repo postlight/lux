@@ -25,8 +25,6 @@ jobs:
             # If cache for the exact version of `yarn.lock` is not present, then
             # load the most recent one.
             - dependency-cache-
-            # Always load the most recent eslint-cache.
-            - eslint-cache-
       - run:
           name: Install Dependencies
           command: |
@@ -51,6 +49,8 @@ jobs:
             cd test/test-app
             lux build -e test
             cd ../../
+      - restore_cache:
+          key: eslint-cache-
       - run:
           name: Lint
           command: yarn lint
@@ -70,9 +70,15 @@ jobs:
               lux db:seed -e test --skip-build
               cd ../../
             fi
+      - restore_cache:
+          key: eslint-cache-
       - run:
           name: Test
           command: yarn test -- -w=4 --colors
+      - save_cache:
+          key: jest-cache-{{ epoch }}
+          paths:
+            - ~/.jest-cache
       - run:
           name: Report Coverage
           command: yarn codecov

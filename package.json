@@ -83,6 +83,7 @@
       "./test/index.js"
     ],
     "testEnvironment": "node",
+    "cacheDirectory": "./.jest-cache",
     "collectCoverage": true,
     "coveragePathIgnorePatterns": [
       "/test/",
