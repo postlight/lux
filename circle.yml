@@ -78,7 +78,7 @@ jobs:
       - save_cache:
           key: jest-cache-{{ epoch }}
           paths:
-            - ~/.jest-cache
+            - ~/lux/.jest-cache
       - run:
           name: Report Coverage
           command: yarn codecov
