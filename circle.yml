@@ -45,6 +45,13 @@ jobs:
           name: Check Types
           command: yarn flow
       - run:
+          name: Seed Database
+          command: |
+            cd test/test-app
+            lux db:migrate -e test --skip-build
+            lux db:seed -e test --skip-build
+            cd ../../
+      - run:
           name: Test
           command: yarn test -- -i --forceExit
       - run:
