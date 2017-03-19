@@ -1,8 +1,8 @@
 version: 2
 jobs:
   build:
+    working_directory: ~/lux
     docker:
-      working_directory: ~/lux
       - image: zacharygolba/lux-framework:latest
         environment:
           NODE_ENV: test
