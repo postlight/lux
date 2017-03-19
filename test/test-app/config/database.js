@@ -11,17 +11,14 @@ const {
 
 const SQLITE3 = 'sqlite3';
 
-let pool;
 let driver;
 
 switch (CIRCLE_NODE_INDEX) {
   case '0':
-    pool = 8;
     driver = 'pg';
     break;
 
   case '1':
-    pool = 8;
     driver = 'mysql2';
     break;
 
@@ -38,8 +35,8 @@ export default (
   ['development', 'test', 'production'].reduce((config, env) => (
     Object.assign(config, {
       [env]: {
-        pool,
         driver,
+        pool: driver === SQLITE3 ? undefined : 8,
         memory: driver === SQLITE3,
         database: 'lux_test',
         username: DATABASE_USERNAME,
