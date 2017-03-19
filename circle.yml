@@ -21,8 +21,12 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dependency-cache
-            - eslint-cache
+            - dependency-cache-{{ checksum "yarn.lock" }}
+            # If cache for the exact version of `yarn.lock` is not present, then
+            # load the most recent one.
+            - dependency-cache-
+            # Always load the most recent eslint-cache.
+            - eslint-cache-
       - run:
           name: Install Dependencies
           command: |
@@ -32,7 +36,7 @@ jobs:
             yarn install
             cd ../../
       - save_cache:
-          key: dependency-cache
+          key: dependency-cache-{{ checksum "yarn.lock" }}
           paths:
             - ~/.yarn
             - ~/.yarn-cache
@@ -51,7 +55,7 @@ jobs:
           name: Lint
           command: yarn lint
       - save_cache:
-          key: eslint-cache
+          key: eslint-cache-{{ epoch }}
           paths:
             - ~/lux/.eslintcache
       - run:
