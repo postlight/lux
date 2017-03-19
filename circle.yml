@@ -32,6 +32,8 @@ jobs:
       - save_cache:
           key: dependency-cache
           paths:
+            - ~/.yarn
+            - ~/.yarn-cache
             - ~/lux/node_modules
             - ~/lux/test/test-app/node_modules
       - run:
