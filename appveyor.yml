@@ -41,7 +41,7 @@ before_test:
     psql -c "%DROP_DATABASE%"
     psql -c "%CREATE_DATABASE%"
   - ps: |
-      if ($DATABASE_DRIVER -eq "mysql2") {
+      if ($env:DATABASE_DRIVER -eq "mysql2") {
         $env:MYSQL_PWD="$env:DATABASE_PASSWORD"
         $mysql="C:\Program Files\MySql\MySQL Server 5.7\bin\mysql"
 
@@ -49,7 +49,7 @@ before_test:
         Invoke-Expression "& '$mysql' -e '$env:CREATE_DATABASE' -u root"
       }
 
-      if ($DATABASE_DRIVER -eq "sqlite3") {
+      if ($env:DATABASE_DRIVER -eq "sqlite3") {
         Remove-Item C:\projects\lux\test\test-app\db\* -Force -Include *.sqlite
         Write-Host $null >> C:\projects\lux\test\test-app\db\lux_test_test.sqlite
       }
@@ -63,7 +63,7 @@ before_test:
       Set-Location C:\projects\lux\test\test-app
       lux build -e test
 
-      if ($DATABASE_DRIVER -ne "sqlite3") {
+      if ($env:DATABASE_DRIVER -ne "sqlite3") {
         lux db:migrate -e test --skip-build
         lux db:seed -e test --skip-build
       }
@@ -72,7 +72,7 @@ before_test:
 test_script:
   - yarn lint
   - yarn flow
-  - yarn test -- -w=4 --colors
+  - yarn test -- -w=2 --colors
   - yarn codecov
 notifications:
 - provider: Webhook
