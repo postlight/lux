@@ -4,7 +4,7 @@ const {
     DATABASE_USERNAME,
     DATABASE_PASSWORD,
     CIRCLE_NODE_INDEX,
-  }
+  },
 } = process;
 
 const SQLITE3 = 'sqlite3';
