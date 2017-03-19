@@ -52,7 +52,7 @@ jobs:
             fi
       - run:
           name: Test
-          command: yarn test -- -i --forceExit
+          command: yarn test -- -i --forceExit --color
       - run:
           name: Report Coverage
           command: yarn codecov
