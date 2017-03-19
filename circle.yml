@@ -1,7 +1,6 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/lux
     docker:
       - image: zacharygolba/lux-framework:latest
         environment:
@@ -16,6 +15,8 @@ jobs:
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: lux_test
+    parallelism: 3
+    working_directory: ~/lux
     steps:
       - checkout
       - run:
