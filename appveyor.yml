@@ -72,7 +72,7 @@ before_test:
 test_script:
   - yarn lint
   - yarn flow
-  - node --max_old_space_size=4096 node_modules\.bin\jest -w=2 --colors --no-watchman
+  - node --max_old_space_size=4096 node_modules\\.bin\\jest -w=2 --colors --no-watchman
   - yarn codecov
 notifications:
 - provider: Webhook
