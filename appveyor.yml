@@ -60,7 +60,7 @@ before_test:
 test_script:
   - yarn lint
   - yarn flow
-  - yarn test -- -i --forceExit --logHeapUsage
+  - yarn test -- --forceExit --logHeapUsage
   - yarn codecov
 notifications:
 - provider: Webhook
