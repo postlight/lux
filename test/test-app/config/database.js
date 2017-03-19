@@ -37,7 +37,7 @@ switch (CIRCLE_NODE_INDEX) {
 
 if (driver === PG || driver === MYSQL2) {
   if (APPVEYOR) {
-    pool = 3;
+    pool = 2;
   } else {
     pool = 8;
   }
