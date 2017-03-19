@@ -6,16 +6,15 @@ jobs:
       - image: zacharygolba/lux-framework:latest
         environment:
           NODE_ENV: test
-          DATABASE_USERNAME: ubuntu
+          DATABASE_USERNAME: root
           JEST_JUNIT_OUTPUT: $CIRCLE_TEST_REPORTS/junit/test-results.xml
       - image: mysql:5.7
         environment:
-          MYSQL_USER: ubuntu
           MYSQL_DATABASE: lux_test
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
       - image: postgres:9.6
         environment:
-          POSTGRES_USER: ubuntu
+          POSTGRES_USER: root
           POSTGRES_DB: lux_test
     steps:
       - checkout
