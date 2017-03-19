@@ -11,14 +11,12 @@ jobs:
       - image: mysql:5.7
         environment:
           MYSQL_USER: ubuntu
-          MYSQL_PASSWORD: ""
           MYSQL_DATABASE: lux_test
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
       - image: postgres:9.6
         environment:
           POSTGRES_USER: ubuntu
           POSTGRES_DB: lux_test
-          POSTGRES_PASSWORD: ""
     steps:
       - checkout
       - run:
@@ -47,10 +45,12 @@ jobs:
       - run:
           name: Seed Database
           command: |
-            cd test/test-app
-            lux db:migrate -e test --skip-build
-            lux db:seed -e test --skip-build
-            cd ../../
+            if [ \( "${CIRCLE_NODE_INDEX}" == "0" \) -o \( "${CIRCLE_BRANCH}" == "1" \) ];
+              cd test/test-app
+              lux db:migrate -e test --skip-build
+              lux db:seed -e test --skip-build
+              cd ../../
+            fi
       - run:
           name: Test
           command: yarn test -- -i --forceExit
