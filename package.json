@@ -24,7 +24,7 @@
     "debugger": "node test/utils/debugger/dist/debug.js",
     "flow": "flow check",
     "types": "shx rm -rf flow-typed && flow-typed install",
-    "lint": "remark . && eslint .",
+    "lint": "remark . && eslint --cache .",
     "test": "jest"
   },
   "author": "Zachary Golba",

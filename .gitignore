@@ -10,6 +10,7 @@ node_modules/
 # misc
 *.sqlite
 *.DS_Store
+.eslintcache
 
 # logs
 log/

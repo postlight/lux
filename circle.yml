@@ -20,7 +20,9 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache
+          keys:
+            - dependency-cache
+            - eslint-cache
       - run:
           name: Install Dependencies
           command: |
@@ -48,6 +50,10 @@ jobs:
       - run:
           name: Lint
           command: yarn lint
+      - save_cache:
+          key: eslint-cache
+          paths:
+            - ~/lux/.eslintcache
       - run:
           name: Check Types
           command: yarn flow
