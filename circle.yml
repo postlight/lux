@@ -6,7 +6,6 @@ jobs:
         environment:
           NODE_ENV: test
           DATABASE_USERNAME: root
-          JEST_JUNIT_OUTPUT: $CIRCLE_TEST_REPORTS/junit/test-results.xml
       - image: mysql:5.7
         environment:
           MYSQL_DATABASE: lux_test
