@@ -79,9 +79,6 @@
   },
   "jest": {
     "testRegex": "\\.test\\.js$",
-    "setupFiles": [
-      "./test/index.js"
-    ],
     "testEnvironment": "node",
     "cacheDirectory": "./.jest-cache",
     "collectCoverage": true,
