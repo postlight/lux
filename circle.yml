@@ -52,7 +52,16 @@ jobs:
             fi
       - run:
           name: Test
-          command: yarn test -- -i --color
+          command: |
+            ARGS="-i --color"
+
+            if [ "${CIRCLE_NODE_INDEX}" == "0" ]; then
+              # Postgres builds do not clean up properly.
+              # Add --forceExit to ensure tests do not timeout.
+              ARGS="$ARGS --forceExit"
+            fi
+
+            yarn test -- $ARGS
       - run:
           name: Report Coverage
           command: yarn codecov
