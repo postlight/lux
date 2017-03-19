@@ -53,7 +53,7 @@ jobs:
       - run:
           name: Test
           command: |
-            ARGS="-w=3 --colors"
+            ARGS="-w=4 --colors"
 
             if [ "${CIRCLE_NODE_INDEX}" == "0" ]; then
               # Postgres builds do not clean up properly.
