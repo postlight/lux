@@ -45,7 +45,7 @@ jobs:
       - run:
           name: Seed Database
           command: |
-            if [ "${CIRCLE_NODE_INDEX}" != "2" ];
+            if [ "${CIRCLE_NODE_INDEX}" != "2" ]; then
               cd test/test-app
               lux db:migrate -e test --skip-build
               lux db:seed -e test --skip-build
