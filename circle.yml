@@ -40,15 +40,6 @@ jobs:
             - ~/.yarn-cache
             - ~/lux/node_modules
             - ~/lux/test/test-app/node_modules
-      - run:
-          name: Compile
-          command: |
-            yarn run clean
-            NODE_ENV=production yarn build
-            yarn link
-            cd test/test-app
-            lux build -e test
-            cd ../../
       - restore_cache:
           key: eslint-cache-
       - run:
@@ -72,6 +63,15 @@ jobs:
             fi
       - restore_cache:
           key: jest-cache-
+      - run:
+          name: Compile
+          command: |
+            yarn run clean
+            NODE_ENV=production yarn build
+            yarn link
+            cd test/test-app
+            lux build -e test
+            cd ../../
       - run:
           name: Test
           command: yarn test -- -w=4 --colors
