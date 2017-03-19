@@ -2,6 +2,7 @@ import * as os from 'os';
 
 const {
   env: {
+    APPVEYOR,
     DATABASE_DRIVER,
     DATABASE_USERNAME,
     DATABASE_PASSWORD,
@@ -9,17 +10,20 @@ const {
   },
 } = process;
 
+const PG = 'pg';
+const MYSQL2 = 'mysql2';
 const SQLITE3 = 'sqlite3';
 
+let pool;
 let driver;
 
 switch (CIRCLE_NODE_INDEX) {
   case '0':
-    driver = 'pg';
+    driver = PG;
     break;
 
   case '1':
-    driver = 'mysql2';
+    driver = MYSQL2;
     break;
 
   case '2':
@@ -31,12 +35,20 @@ switch (CIRCLE_NODE_INDEX) {
     break;
 }
 
+if (driver === PG || driver === MYSQL2) {
+  if (APPVEYOR) {
+    pool = 2;
+  } else {
+    pool = 8;
+  }
+}
+
 export default (
   ['development', 'test', 'production'].reduce((config, env) => (
     Object.assign(config, {
       [env]: {
+        pool,
         driver,
-        pool: driver === SQLITE3 ? undefined : 8,
         memory: driver === SQLITE3,
         database: 'lux_test',
         username: DATABASE_USERNAME,
