@@ -16,12 +16,12 @@ let driver;
 
 switch (CIRCLE_NODE_INDEX) {
   case '0':
-    pool = 6;
+    pool = 8;
     driver = 'pg';
     break;
 
   case '1':
-    pool = 6;
+    pool = 8;
     driver = 'mysql2';
     break;
 
