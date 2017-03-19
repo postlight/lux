@@ -1,85 +1,54 @@
-machine:
-  node:
-    version: 6
-  environment:
-    NODE_ENV: test
-    DROP_DATABASE: DROP DATABASE IF EXISTS lux_test;
-    CREATE_DATABASE: CREATE DATABASE lux_test;
-    DATABASE_USERNAME: ubuntu
-database:
-  override:
-    - psql -c "$DROP_DATABASE" -U postgres
-    - psql -c "$CREATE_DATABASE" -U postgres
-    - mysql -e "$DROP_DATABASE"
-    - mysql -e "$CREATE_DATABASE"
-dependencies:
-  pre:
-    - |
-      cd ../
-
-      if [ -d watchman ]; then
-        cd watchman
-        sudo make install
-      else
-        git clone https://github.com/facebook/watchman.git
-        cd watchman
-        git checkout v4.7.0
-
-        ./autogen.sh
-        ./configure
-        make
-        sudo make install
-      fi
-
-      cd ../lux
-  override:
-    - curl -o- -L https://yarnpkg.com/install.sh | bash
-    - yarn install
-    - yarn link
-  post:
-    - |
-      cd test/test-app
-      yarn install
-      cd ../../
-  cache_directories:
-    - /home/ubuntu/watchman
-    - /home/ubuntu/lux/test/test-app/node_modules
-compile:
-  pre:
-    - yarn run clean
-  override:
-    - NODE_ENV=production yarn build
-    - |
-      cd test/test-app
-      lux build -e test
-      cd ../../
-test:
-  pre:
-    - cd test/test-app && lux db:migrate -e test --skip-build && cd ../../:
-        parallel: true
-    - cd test/test-app && lux db:seed -e test --skip-build && cd ../../:
-        parallel: true
-  override:
-    - yarn flow:
-        parallel: true
-    - yarn lint:
-        parallel: true
-    - yarn test -- --forceExit:
-        parallel: true
+version: 2
+jobs:
+  build:
+    docker:
+      working_directory: ~/usr/src/lux
+      - image: zacharygolba/lux-framework:latest
         environment:
+          NODE_ENV: test
+          DATABASE_USERNAME: ubuntu
           JEST_JUNIT_OUTPUT: $CIRCLE_TEST_REPORTS/junit/test-results.xml
-  post:
-    - yarn codecov:
-        parallel: true
-notify:
-  webhooks:
-    - url: https://webhooks.gitter.im/e/6d49c9b19c888dba70b8
-deployment:
-  release:
-    tag: /^(?:v\d.\d.\d)$/
-    commands:
-      - yarn run clean
-      - yarn build
-      - rm -rf ~/.npmrc && touch ~/.npmrc
-      - echo //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN >> ~/.npmrc
-      - yarn publish
+      - image: mysql:5.7
+        environment:
+          MYSQL_USER: ubuntu
+          MYSQL_PASSWORD: ""
+          MYSQL_DATABASE: lux_test
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      - image: postgres:9.6
+        environment:
+          POSTGRES_USER: ubuntu
+          POSTGRES_DB: lux_test
+          POSTGRES_PASSWORD: ""
+    steps:
+      - run:
+          name: Remove Global Lux Install
+          command: yarn global remove lux-framework
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: |
+            yarn install
+            cd test/test-app
+            yarn install
+            cd ../../
+      - run:
+          name: Compile
+          command: |
+            yarn run clean
+            NODE_ENV=production yarn build
+            yarn link
+            cd test/test-app
+            lux build -e test
+            cd ../../
+      - run:
+          name: Lint
+          command: yarn lint
+      - run:
+          name: Check Types
+          command: yarn flow
+      - run:
+          name: Test
+          command: yarn test -- --forceExit:
+      - run:
+          name: Report Coverage
+          command: yarn codecov
