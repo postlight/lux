@@ -71,7 +71,7 @@ jobs:
               cd ../../
             fi
       - restore_cache:
-          key: eslint-cache-
+          key: jest-cache-
       - run:
           name: Test
           command: yarn test -- -w=4 --colors

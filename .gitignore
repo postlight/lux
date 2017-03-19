@@ -1,5 +1,9 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+# cache
+.eslintcache
+.jest-cache/
+
 # compiled output
 coverage/
 dist/
@@ -10,8 +14,6 @@ node_modules/
 # misc
 *.sqlite
 *.DS_Store
-.eslintcache
-.jest-cache/
 
 # logs
 log/
