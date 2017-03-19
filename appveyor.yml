@@ -41,14 +41,18 @@ before_test:
     psql -c "%DROP_DATABASE%"
     psql -c "%CREATE_DATABASE%"
   - ps: |
-      $env:MYSQL_PWD="$env:DATABASE_PASSWORD"
-      $mysql="C:\Program Files\MySql\MySQL Server 5.7\bin\mysql"
+      if ($DATABASE_DRIVER -eq "mysql2") {
+        $env:MYSQL_PWD="$env:DATABASE_PASSWORD"
+        $mysql="C:\Program Files\MySql\MySQL Server 5.7\bin\mysql"
 
-      Invoke-Expression "& '$mysql' -e '$env:DROP_DATABASE' -u root"
-      Invoke-Expression "& '$mysql' -e '$env:CREATE_DATABASE' -u root"
+        Invoke-Expression "& '$mysql' -e '$env:DROP_DATABASE' -u root"
+        Invoke-Expression "& '$mysql' -e '$env:CREATE_DATABASE' -u root"
+      }
 
-      Remove-Item C:\projects\lux\test\test-app\db\* -Force -Include *.sqlite
-      Write-Host $null >> C:\projects\lux\test\test-app\db\lux_test_test.sqlite
+      if ($DATABASE_DRIVER -eq "sqlite3") {
+        Remove-Item C:\projects\lux\test\test-app\db\* -Force -Include *.sqlite
+        Write-Host $null >> C:\projects\lux\test\test-app\db\lux_test_test.sqlite
+      }
   - yarn run clean
   - ps: |
       $env:NODE_ENV="production"
@@ -58,8 +62,11 @@ before_test:
       $env:NODE_ENV="test"
       Set-Location C:\projects\lux\test\test-app
       lux build -e test
-      lux db:migrate -e test --skip-build
-      lux db:seed -e test --skip-build
+
+      if ($DATABASE_DRIVER -ne "sqlite3") {
+        lux db:migrate -e test --skip-build
+        lux db:seed -e test --skip-build
+      }
 
       Set-Location C:\projects\lux
 test_script:
