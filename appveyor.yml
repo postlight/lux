@@ -67,7 +67,7 @@ before_test:
 test_script:
   - yarn lint
   - yarn flow
-  - yarn test -- -w=8 --colors
+  - yarn test -- -w=4 --colors
   - yarn codecov
 notifications:
 - provider: Webhook
