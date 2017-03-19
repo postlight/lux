@@ -11,15 +11,17 @@ const {
 
 const SQLITE3 = 'sqlite3';
 
+let pool;
 let driver;
-let pool = os.cpus().length;
 
 switch (CIRCLE_NODE_INDEX) {
   case '0':
+    pool = 6;
     driver = 'pg';
     break;
 
   case '1':
+    pool = 6;
     driver = 'mysql2';
     break;
 
@@ -29,7 +31,6 @@ switch (CIRCLE_NODE_INDEX) {
 
   default:
     driver = DATABASE_DRIVER || SQLITE3;
-    pool = undefined;
     break;
 }
 
