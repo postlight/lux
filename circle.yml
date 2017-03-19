@@ -19,6 +19,8 @@ jobs:
     working_directory: ~/lux
     steps:
       - checkout
+      - restore_cache:
+          key: dependency-cache
       - run:
           name: Install Dependencies
           command: |
@@ -27,6 +29,11 @@ jobs:
             cd test/test-app
             yarn install
             cd ../../
+      - save_cache:
+          key: dependency-cache
+          paths:
+            - ~/lux/node_modules
+            - ~/lux/test/test-app/node_modules
       - run:
           name: Compile
           command: |
