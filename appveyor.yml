@@ -1,4 +1,5 @@
 build: off
+image: Visual Studio 2017
 version: '{build}'
 branches:
   only:
