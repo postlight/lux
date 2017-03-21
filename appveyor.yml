@@ -73,7 +73,6 @@ test_script:
   - yarn lint
   - yarn flow
   - yarn test -- -w=2 --colors --no-watchman
-  - yarn codecov
 notifications:
 - provider: Webhook
   url: https://webhooks.gitter.im/e/070ebbf83dc0f595c4fb

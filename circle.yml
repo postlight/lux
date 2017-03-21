@@ -73,7 +73,7 @@ jobs:
           key: jest-cache-
       - run:
           name: Test
-          command: yarn test -- -w=8 --colors
+          command: yarn test -- -w=8 --colors --coverage
       - save_cache:
           key: jest-cache-{{ epoch }}
           paths:
