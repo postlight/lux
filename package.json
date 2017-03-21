@@ -81,6 +81,7 @@
     "testRegex": "\\.test\\.js$",
     "testEnvironment": "node",
     "cacheDirectory": "./.jest-cache",
+    "collectCoverage": true,
     "coveragePathIgnorePatterns": [
       "/test/",
       "/__tests__/",
