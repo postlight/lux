@@ -29,11 +29,11 @@ describe('module "loader"', () => {
     });
 
     it('can load an Application', () => {
-      expect(subject('application')).toMatchSnapshot();
+      expect(subject('application')).toEqual(expect.any(Function));
     });
 
     it('can load a config object', () => {
-      expect(subject('config')).toMatchSnapshot();
+      expect(subject('config')).toEqual(expect.any(Object));
     });
 
     it('can load Controllers', () => {
