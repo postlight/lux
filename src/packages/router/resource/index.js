@@ -2,7 +2,7 @@
 
 import Namespace from '../namespace';
 import { FreezeableSet } from '../../freezeable';
-import type { Controller$builtIn } from '../../controller';
+import type { BuiltInAction } from '../../controller';
 
 import normalizeOnly from './utils/normalize-only';
 import type { Resource$opts } from './interfaces';
@@ -11,7 +11,7 @@ import type { Resource$opts } from './interfaces';
  * @private
  */
 class Resource extends Namespace {
-  only: FreezeableSet<Controller$builtIn>;
+  only: FreezeableSet<BuiltInAction>;
 
   constructor({ only, ...opts }: Resource$opts) {
     super(opts);

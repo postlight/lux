@@ -1,7 +1,8 @@
 /* @flow */
 
 import { BUILT_IN_ACTIONS } from '../../../../controller';
-import type { Controller$builtIn } from '../../../../controller'; // eslint-disable-line max-len, no-duplicate-imports
+// eslint-disable-next-line no-duplicate-imports
+import type { BuiltInAction } from '../../../../controller';
 
 /**
  * @private
@@ -9,7 +10,7 @@ import type { Controller$builtIn } from '../../../../controller'; // eslint-disa
 export default function normalizeResourceArgs(args: Array<any>): [{
   name: string,
   path: string,
-  only: Array<Controller$builtIn>
+  only: Array<BuiltInAction>
 }, Function] {
   const [name] = args;
   let [, opts, builder] = args;

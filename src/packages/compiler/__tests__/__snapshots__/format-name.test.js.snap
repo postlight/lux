@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`module "compiler" util formatName() transforms an array of keys into identifiers 1`] = `
+Array [
+  "Actions",
+  "Application",
+  "Categorizations",
+  "Comments",
+  "Custom",
+  "Friendships",
+  "Health",
+  "Images",
+  "Notifications",
+  "Posts",
+  "Reactions",
+  "Tags",
+  "Users",
+  "Admin$Actions",
+  "Admin$Application",
+  "Admin$Categorizations",
+  "Admin$Comments",
+  "Admin$Friendships",
+  "Admin$Images",
+  "Admin$Notifications",
+  "Admin$Posts",
+  "Admin$Reactions",
+  "Admin$Tags",
+  "Admin$Users",
+]
+`;

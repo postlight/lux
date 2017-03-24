@@ -1,27 +1,59 @@
 /* @flow */
 
+import Logger from '../../logger';
 import Route from '../route';
 import Router from '../index';
-import Logger from '../../logger';
+import Controller from '../../controller';
+import Serializer from '../../serializer';
+import { Model } from '../../database';
+import { FreezeableMap } from '../../freezeable';
 import { request } from '../../adapter/mock';
-import type Controller from '../../controller';
-import { getTestApp } from '../../../../test/utils/test-app';
 
 describe('module "router"', () => {
   describe('class Router', () => {
-    let app;
-    let controller: Controller;
+    let controller;
     let controllers;
 
-    beforeAll(async () => {
-      app = await getTestApp();
-      ({ controllers } = app);
-      // $FlowIgnore
-      controller = controllers.get('application');
-    });
+    beforeAll(() => {
+      const columnFor = () => ({
+        type: 'number',
+      });
 
-    afterAll(async () => {
-      await app.destroy();
+      class Post extends Model {
+        static resourceName = 'posts';
+        static columnFor = columnFor;
+      }
+
+      class User extends Model {
+        static resourceName = 'users';
+        static columnFor = columnFor;
+      }
+
+      const appController = new Controller();
+      const adminController = new Controller({
+        parent: controller,
+      });
+
+      controller = appController;
+      controllers = new FreezeableMap([
+        ['application', controller],
+        ['posts', new Controller({
+          model: Post,
+          parent: controller,
+          serializer: new Serializer(),
+        })],
+        ['users', new Controller({
+          model: User,
+          parent: controller,
+          serializer: new Serializer(),
+        })],
+        ['admin/application', adminController],
+        ['admin/posts', new Controller({
+          model: Post,
+          parent: adminController,
+          serializer: new Serializer(),
+        })]
+      ]);
     });
 
     describe('- defining a single route', () => {

@@ -15,9 +15,9 @@ import type { Document, Resource, Relationship } from '../jsonapi';
 import type { ObjectMap } from '../../interfaces';
 
 type Options<T> = {
-  model: Class<T>;
-  parent: ?Serializer<*>;
-  namespace: string;
+  model?: Class<T>,
+  parent?: ?Serializer<*>,
+  namespace?: string,
 };
 
 /**
@@ -426,7 +426,14 @@ class Serializer<T: Model> {
    */
   namespace: string;
 
-  constructor({ model, parent, namespace }: Options<T>) {
+  constructor(options: Options<T> = {}) {
+    const { model, parent } = options;
+    let { namespace } = options;
+
+    if (typeof namespace !== 'string') {
+      namespace = '';
+    }
+
     Object.assign(this, {
       model,
       parent,

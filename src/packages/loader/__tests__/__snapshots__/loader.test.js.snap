@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`module "loader" #createLoader() can load a config object 1`] = `
+Object {
+  "adapter": [Function],
+  "database": Object {
+    "development": Object {
+      "database": "lux_test",
+      "driver": "sqlite3",
+      "memory": true,
+      "password": undefined,
+      "pool": undefined,
+      "username": undefined,
+    },
+    "production": Object {
+      "database": "lux_test",
+      "driver": "sqlite3",
+      "memory": true,
+      "password": undefined,
+      "pool": undefined,
+      "username": undefined,
+    },
+    "test": Object {
+      "database": "lux_test",
+      "driver": "sqlite3",
+      "memory": true,
+      "password": undefined,
+      "pool": undefined,
+      "username": undefined,
+    },
+  },
+  "logging": Object {
+    "enabled": false,
+    "filter": Object {
+      "params": Array [],
+    },
+    "format": "text",
+    "level": "WARN",
+  },
+  "server": Object {
+    "cors": Object {
+      "enabled": false,
+    },
+  },
+}
+`;
+
+exports[`module "loader" #createLoader() can load an Application 1`] = `[Function]`;

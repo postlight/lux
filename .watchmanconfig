@@ -1,0 +1,10 @@
+{
+  "ignore_dirs": [
+    ".github",
+    ".jest-cache",
+    "coverage",
+    "examples",
+    "guide",
+    "node_modules"
+  ]
+}

@@ -1,37 +1,28 @@
 /* @flow */
 
-import { getTestApp } from '../../../../test/utils/test-app';
+import Controller from '../../controller';
 import createReplacer from '../utils/create-replacer';
 
 describe('module "router"', () => {
   describe('util createReplacer()', () => {
-    let app;
     let subject;
 
     beforeAll(async () => {
-      app = await getTestApp();
-
-      const healthController = app.controllers.get('health');
-      // $FlowIgnore
-      const { constructor: HealthController } = healthController;
-
+      class PostsController extends Controller {}
+      class HealthController extends Controller {}
+      class AdminPostsController extends PostsController {}
       class AdminHealthController extends HealthController {}
 
       subject = createReplacer(new Map([
-        // $FlowIgnore
-        ['posts', app.controllers.get('posts')],
-        // $FlowIgnore
-        ['health', healthController],
-        // $FlowIgnore
-        ['admin/posts', app.controllers.get('admin/posts')],
+        ['posts', new PostsController()],
+        ['health', new HealthController()],
+        ['admin/posts', new AdminPostsController({
+          namespace: 'admin',
+        })],
         ['admin/health', new AdminHealthController({
-          namespace: 'admin'
+          namespace: 'admin',
         })]
       ]));
-    });
-
-    afterAll(async () => {
-      await app.destroy();
     });
 
     it('returns an instance of RegExp', () => {

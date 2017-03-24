@@ -1,27 +1,26 @@
 /* @flow */
 
+import * as path from 'path';
+
 import { FreezeableMap } from '../../freezeable';
 import { createLoader } from '../index';
-import { getTestApp } from '../../../../test/utils/test-app';
-import type Application from '../../application';
-import type { Loader } from '../index';
+
+const APP_PATH = path.join(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  '..',
+  'test',
+  'test-app',
+);
 
 describe('module "loader"', () => {
-  let app: Application;
-
-  beforeAll(async () => {
-    app = await getTestApp();
-  });
-
-  afterAll(async () => {
-    await app.destroy();
-  });
-
   describe('#createLoader()', () => {
-    let subject: Loader;
+    let subject;
 
     beforeAll(() => {
-      subject = createLoader(app.path);
+      subject = createLoader(APP_PATH);
     });
 
     it('can create a loader function', () => {
@@ -30,11 +29,11 @@ describe('module "loader"', () => {
     });
 
     it('can load an Application', () => {
-      expect(subject('application')).toBe(app.constructor);
+      expect(subject('application')).toMatchSnapshot();
     });
 
     it('can load a config object', () => {
-      expect(typeof subject('config')).toBe('object');
+      expect(subject('config')).toMatchSnapshot();
     });
 
     it('can load Controllers', () => {

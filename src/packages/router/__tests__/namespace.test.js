@@ -31,7 +31,7 @@ describe('module "router/namespace"', () => {
           controllers,
           path: '/',
           name: 'root',
-          controller: setType(() => app.controllers.get('application'))
+          controller: setType(() => app.controllers.get('application')),
         });
       });
 
@@ -49,7 +49,7 @@ describe('module "router/namespace"', () => {
           controllers,
           name: 'admin',
           path: '/admin',
-          namespace: root
+          namespace: root,
         });
 
         expectNamspaceToBeValid(subject, 'admin', '/admin');
@@ -61,7 +61,7 @@ describe('module "router/namespace"', () => {
           controllers,
           name: '/admin',
           path: '/admin',
-          namespace: root
+          namespace: root,
         });
 
         expectNamspaceToBeValid(subject, 'admin', '/admin');
@@ -73,7 +73,7 @@ describe('module "router/namespace"', () => {
           controllers,
           name: 'admin/',
           path: '/admin',
-          namespace: root
+          namespace: root,
         });
 
         expectNamspaceToBeValid(subject, 'admin', '/admin');
@@ -85,7 +85,7 @@ describe('module "router/namespace"', () => {
           controllers,
           name: 'admin',
           path: 'admin',
-          namespace: root
+          namespace: root,
         });
 
         expectNamspaceToBeValid(subject, 'admin', '/admin');
@@ -97,7 +97,7 @@ describe('module "router/namespace"', () => {
           controllers,
           path: '/admin/',
           name: 'admin',
-          namespace: root
+          namespace: root,
         });
 
         expectNamspaceToBeValid(subject, 'admin', '/admin');

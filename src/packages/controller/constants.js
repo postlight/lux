@@ -1,8 +1,8 @@
 /* @flow */
 
-import type { Controller$builtIn } from './index';
+import type { BuiltInAction } from './index';
 
-export const BUILT_IN_ACTIONS: Array<Controller$builtIn> = (
+export const BUILT_IN_ACTIONS: Array<BuiltInAction> = (
   Object.freeze([
     'show',
     'index',

@@ -12,11 +12,30 @@ import type Response from '../response';
 import findOne from './utils/find-one';
 import findMany from './utils/find-many';
 import resolveRelationships from './utils/resolve-relationships';
-import type {
-  Controller$opts,
-  Controller$beforeAction,
-  Controller$afterAction
-} from './interfaces';
+
+export type BuiltInAction =
+  | 'show'
+  | 'index'
+  | 'create'
+  | 'update'
+  | 'destroy';
+
+export type BeforeAction = (
+  request: Request,
+  response: Response,
+) => Promise<any>;
+
+export type AfterAction<T> = (
+  request: Request,
+  response: Response,
+  data: T,
+) => Promise<T>;
+
+export type Options<T: Model> = {
+  model?: Class<T>,
+  namespace?: string,
+  serializer?: Serializer<T>,
+};
 
 /**
  * ## Overview
@@ -400,7 +419,7 @@ class Controller {
    * @default []
    * @public
    */
-  beforeAction: Array<Controller$beforeAction> = [];
+  beforeAction: Array<BeforeAction> = [];
 
   /**
    * Functions to execute on each request handled by a `Controller` after the
@@ -451,7 +470,7 @@ class Controller {
    * @default []
    * @public
    */
-  afterAction: Array<Controller$afterAction> = [];
+  afterAction: Array<AfterAction<*>> = [];
 
   /**
    * The default amount of items to include per each response of the index
@@ -541,7 +560,14 @@ class Controller {
    */
   hasSerializer: boolean;
 
-  constructor({ model, namespace, serializer }: Controller$opts) {
+  constructor(options: Options<*> = {}) {
+    const { model, serializer } = options;
+    let { namespace } = options;
+
+    if (typeof namespace !== 'string') {
+      namespace = '';
+    }
+
     Object.assign(this, {
       model,
       namespace,
@@ -709,10 +735,3 @@ class Controller {
 
 export default Controller;
 export { BUILT_IN_ACTIONS } from './constants';
-
-export type {
-  Controller$opts,
-  Controller$builtIn,
-  Controller$beforeAction,
-  Controller$afterAction,
-} from './interfaces';

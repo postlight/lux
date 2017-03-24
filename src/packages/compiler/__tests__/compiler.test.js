@@ -2,32 +2,42 @@
 
 import * as path from 'path';
 
-import { getTestApp } from '../../../../test/utils/test-app';
+const LOCAL = path.join(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  'index.js',
+);
+
+const APP_PATH = path.join(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  '..',
+  'test',
+  'test-app',
+);
 
 describe('module "compiler"', () => {
   describe('#compile()', () => {
-    const local = path.join(__dirname, '..', '..', '..', 'index.js');
-    let dir;
-    let app;
     let rollup;
     let compile;
 
     beforeAll(async () => {
-      app = await getTestApp();
       rollup = jest.mock('rollup');
       ({ compile } = require('../index'));
-      ({ path: dir } = app);
     });
 
     afterAll(async () => {
       jest.unmock('rollup');
-      await app.destroy();
     });
 
     describe('- with strict mode', () => {
       it('creates an instance of rollup with the correct config', async () => {
-        await compile(dir, 'test', {
-          local,
+        await compile(APP_PATH, 'test', {
+          local: LOCAL,
           useStrict: true,
         });
 
@@ -37,8 +47,8 @@ describe('module "compiler"', () => {
 
     describe('- without strict mode', () => {
       it('creates an instance of rollup with the correct config', async () => {
-        await compile(dir, 'test', {
-          local,
+        await compile(APP_PATH, 'test', {
+          local: LOCAL,
           useStrict: false,
         });
 
