@@ -64,30 +64,21 @@ describe('module "database/query"', () => {
       const { store } = app;
 
       Test = store.modelFor('test');
+
       await TestModel.initialize(
         store,
-        () => store.connection(TestModel.tableName)
+        () => store.connection(TestModel.tableName),
+      );
+
+      await Test.store.connection.batchInsert(
+        'tests',
+        [...range(1, 100)].map(id => ({ id })),
       );
     });
 
     afterAll(async () => {
+      await Test.store.schema().raw('DELETE FROM tests;');
       await app.destroy();
-    });
-
-    beforeEach(async () => {
-      const records = Array
-        .from(range(1, 100))
-        .map(id => ({ id }));
-
-      // $FlowIgnore
-      await Test.store.connection.batchInsert('tests', records);
-    });
-
-    afterEach(async () => {
-      await Test
-        .table()
-        .del()
-        .whereNot('id', null);
     });
 
     describe('.from()', () => {

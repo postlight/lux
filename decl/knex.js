@@ -1,6 +1,7 @@
 /* @flow */
 
 declare class Knex$SchemaBuilder extends Knex$QueryBuilder {
+  raw(query: string): this;
   hasTable(name: string): this;
   dropTable(name: string): this;
   createTable(name: string, fn: (table: Object) => void): this;
@@ -9,6 +10,7 @@ declare class Knex$SchemaBuilder extends Knex$QueryBuilder {
 declare class Lux$Knex extends Knex$Knex {
   schema: Knex$SchemaBuilder;
   transaction((trx: Knex$Transaction) => any): Knex$QueryBuilder;
+  batchInsert(table: string, rows: Array<Object>): this;
 }
 
 declare module 'knex' {
