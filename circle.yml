@@ -37,8 +37,6 @@ jobs:
           paths:
             - ~/.yarn
             - ~/.yarn-cache
-            - ~/lux/node_modules
-            - ~/lux/test/test-app/node_modules
       - restore_cache:
           key: eslint-cache-
       - run:
