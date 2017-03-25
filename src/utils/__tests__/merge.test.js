@@ -3,7 +3,7 @@
 import merge from '../merge';
 
 describe('util merge()', () => {
-  it('recursively merges two objects together', () => {
+  test('recursively merges two objects together', () => {
     const x = {
       a: 1,
       b: 2,
@@ -37,7 +37,7 @@ describe('util merge()', () => {
     });
   });
 
-  it('does not mutate the source objects', () => {
+  test('does not mutate the source objects', () => {
     const x = {
       a: 1,
       b: 2,

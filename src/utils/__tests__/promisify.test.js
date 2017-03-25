@@ -18,13 +18,13 @@ describe('module "utils/promisify"', () => {
       target = promisify(source);
     });
 
-    it('converts a callback interface into a promise interface', async () => {
+    test('converts a callback interface into a promise interface', async () => {
       const data = {};
 
       expect(await target(data)).toBe(data);
     });
 
-    it('supports optionally supplying `this` context', async () => {
+    test('supports optionally supplying `this` context', async () => {
       const data = {};
       const context = {};
 
@@ -33,7 +33,7 @@ describe('module "utils/promisify"', () => {
       expect(await target(data)).toBe(context);
     });
 
-    it('properly rejects when an error occurs', async () => {
+    test('properly rejects when an error occurs', async () => {
       await target(new Error()).catch(err => {
         expect(err).toBeInstanceOf(Error);
       });

@@ -15,7 +15,7 @@ describe('module "freezeable"', () => {
         ]);
       });
 
-      it('returns a mutable `Map` interface', () => {
+      test('returns a mutable `Map` interface', () => {
         expect(subject.size).toBe(3);
 
         subject.clear();
@@ -50,11 +50,11 @@ describe('module "freezeable"', () => {
         ]);
       });
 
-      it('returns `this`', () => {
+      test('returns `this`', () => {
         expect(subject.freeze()).toBe(subject);
       });
 
-      it('is immutable after #freeze is called', () => {
+      test('is immutable after #freeze is called', () => {
         subject.freeze();
 
         subject.clear();
@@ -72,7 +72,7 @@ describe('module "freezeable"', () => {
         expect(Object.isFrozen(subject.get('d'))).toBe(false);
       });
 
-      it('can recursively freeze members when `deep = true`', () => {
+      test('can recursively freeze members when `deep = true`', () => {
         subject.freeze(true);
         expect(Object.isFrozen(subject.get('d'))).toBe(true);
       });
@@ -87,7 +87,7 @@ describe('module "freezeable"', () => {
         subject = new FreezeableSet([1, 2, 3]);
       });
 
-      it('returns a mutable `Set` interface', () => {
+      test('returns a mutable `Set` interface', () => {
         expect(subject.size).toBe(3);
 
         subject.clear();
@@ -117,11 +117,11 @@ describe('module "freezeable"', () => {
         subject = new FreezeableSet([1, 2, 3, obj]);
       });
 
-      it('returns `this`', () => {
+      test('returns `this`', () => {
         expect(subject.freeze()).toBe(subject);
       });
 
-      it('is immutable after #freeze is called', () => {
+      test('is immutable after #freeze is called', () => {
         subject.freeze();
 
         expect(subject.size).toBe(4);
@@ -145,7 +145,7 @@ describe('module "freezeable"', () => {
         });
       });
 
-      it('can recursively freeze members when `deep = true`', () => {
+      test('can recursively freeze members when `deep = true`', () => {
         subject.freeze(true);
         subject.forEach(member => {
           if (typeof member === 'object') {

@@ -46,7 +46,7 @@ describe('module "database/migration"', () => {
         store.schema().dropTable(tableName)
       ));
 
-      it('runs a migration function', () => subject
+      test('runs a migration function', () => subject
           .run(store.schema())
           .then(result => {
             expect(result).toEqual(expect.anything());
@@ -57,13 +57,13 @@ describe('module "database/migration"', () => {
 
 describe('module "database/migration/utils/generate-timestamp"', () => {
   describe('.generateTimestamp()', () => {
-    it('generates a timestamp string', () => {
+    test('generates a timestamp string', () => {
       expect(generateTimestamp()).toMatch(/^\d{16}$/g);
     });
   });
 
   describe('.padding()', () => {
-    it('yields the specified char for the specified amount', () => {
+    test('yields the specified char for the specified amount', () => {
       const iter = padding('w', 3);
       let next = iter.next();
 

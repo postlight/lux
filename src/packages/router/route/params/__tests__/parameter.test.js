@@ -40,24 +40,24 @@ describe('module "router/route/params"', () => {
             });
 
             if (required) {
-              it('fails when the value is null', () => {
+              test('fails when the value is null', () => {
                 expect(() => subject.validate(null)).toThrow();
               });
             } else {
-              it('passes when the value is null', () => {
+              test('passes when the value is null', () => {
                 expect(subject.validate(null)).toBeNull();
               });
             }
 
-            it('fails when there is a type mismatch', () => {
+            test('fails when there is a type mismatch', () => {
               expect(() => subject.validate('test')).toThrow();
             });
 
-            it('fails when there is a value mismatch', () => {
+            test('fails when there is a value mismatch', () => {
               expect(() => subject.validate([new Date()])).toThrow();
             });
 
-            it('returns the value when the type and value match', () => {
+            test('returns the value when the type and value match', () => {
               expect(subject.validate(['test', false])).toEqual([
                 'test',
                 false
@@ -82,20 +82,20 @@ describe('module "router/route/params"', () => {
             });
 
             if (required) {
-              it('fails when the value is null', () => {
+              test('fails when the value is null', () => {
                 expect(() => subject.validate(null)).toThrow();
               });
             } else {
-              it('passes when the value is null', () => {
+              test('passes when the value is null', () => {
                 expect(subject.validate(null)).toBeNull();
               });
             }
 
-            it('fails when there is a type mismatch', () => {
+            test('fails when there is a type mismatch', () => {
               expect(() => subject.validate('test')).toThrow();
             });
 
-            it('returns the value when the type and value match', () => {
+            test('returns the value when the type and value match', () => {
               expect(subject.validate(value)).toBe(value);
             });
           });
@@ -117,20 +117,20 @@ describe('module "router/route/params"', () => {
             });
 
             if (required) {
-              it('fails when the value is null', () => {
+              test('fails when the value is null', () => {
                 expect(() => subject.validate(null)).toThrow();
               });
             } else {
-              it('passes when the value is null', () => {
+              test('passes when the value is null', () => {
                 expect(subject.validate(null)).toBeNull();
               });
             }
 
-            it('fails when there is a type mismatch', () => {
+            test('fails when there is a type mismatch', () => {
               expect(() => subject.validate('test')).toThrow();
             });
 
-            it('returns the value when the type and value match', () => {
+            test('returns the value when the type and value match', () => {
               expect(subject.validate(value)).toBe(value);
             });
           });
@@ -152,20 +152,20 @@ describe('module "router/route/params"', () => {
             });
 
             if (required) {
-              it('fails when the value is null', () => {
+              test('fails when the value is null', () => {
                 expect(() => subject.validate(null)).toThrow();
               });
             } else {
-              it('passes when the value is null', () => {
+              test('passes when the value is null', () => {
                 expect(subject.validate(null)).toBeNull();
               });
             }
 
-            it('fails when there is a type mismatch', () => {
+            test('fails when there is a type mismatch', () => {
               expect(() => subject.validate('test')).toThrow();
             });
 
-            it('returns the value when the type and value match', () => {
+            test('returns the value when the type and value match', () => {
               expect(subject.validate(value)).toBe(value);
             });
           });
@@ -185,20 +185,20 @@ describe('module "router/route/params"', () => {
               });
 
               if (required) {
-                it('fails when the value is null', () => {
+                test('fails when the value is null', () => {
                   expect(() => subject.validate(null)).toThrow();
                 });
               } else {
-                it('passes when the value is null', () => {
+                test('passes when the value is null', () => {
                   expect(subject.validate(null)).toBeNull();
                 });
               }
 
-              it('fails when there is a type mismatch', () => {
+              test('fails when there is a type mismatch', () => {
                 expect(() => subject.validate(invalid)).toThrow();
               });
 
-              it('returns the value when the type and value match', () => {
+              test('returns the value when the type and value match', () => {
                 expect(subject.validate(valid)).toBe(valid);
                 expect(subject.validate(falsy)).toBe(falsy);
               });

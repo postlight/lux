@@ -99,7 +99,7 @@ describe('module "database/query"', () => {
           });
       });
 
-      it('creates a new `Query` from a source instance of `Query`', () => {
+      test('creates a new `Query` from a source instance of `Query`', () => {
         const result = Query.from(source);
 
         expect(result).not.toBe(source);
@@ -119,15 +119,15 @@ describe('module "database/query"', () => {
         subject = new Query(Test);
       });
 
-      it('returns `this`', () => {
+      test('returns `this`', () => {
         expect(subject.all()).toBe(subject);
       });
 
-      it('does not modify #snapshots', () => {
+      test('does not modify #snapshots', () => {
         expect(subject.all().snapshots).toMatchSnapshot();
       });
 
-      it('resolves with the correct array of `Model` instances', async () => {
+      test('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.all();
 
         expect(result.map(item => item.toObject())).toMatchSnapshot();
@@ -141,7 +141,7 @@ describe('module "database/query"', () => {
         subject = new Query(TestModel);
       });
 
-      it('returns `this`', () => {
+      test('returns `this`', () => {
         const result = subject.not({
           isPublic: true
         });
@@ -149,7 +149,7 @@ describe('module "database/query"', () => {
         expect(result).toBe(subject);
       });
 
-      it('properly modifies #snapshots', () => {
+      test('properly modifies #snapshots', () => {
         const result = subject.not({
           isPublic: true
         });
@@ -159,7 +159,7 @@ describe('module "database/query"', () => {
         ]);
       });
 
-      it('properly handles array conditions', () => {
+      test('properly handles array conditions', () => {
         const result = subject.not({
           id: [1, 2, 3],
           isPublic: true
@@ -171,7 +171,7 @@ describe('module "database/query"', () => {
         ]);
       });
 
-      it('resolves with the correct array of `Model` instances', async () => {
+      test('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.not({
           isPublic: true
         });
@@ -194,13 +194,13 @@ describe('module "database/query"', () => {
         subject = new Query(TestModel);
       });
 
-      it('returns `this`', () => {
+      test('returns `this`', () => {
         const result = subject.find(1);
 
         expect(result).toBe(subject);
       });
 
-      it('properly modifies #snapshots', () => {
+      test('properly modifies #snapshots', () => {
         const result = subject.find(1);
 
         expect(result.snapshots).toEqual([
@@ -209,19 +209,19 @@ describe('module "database/query"', () => {
         ]);
       });
 
-      it('sets #isFind to `true`', () => {
+      test('sets #isFind to `true`', () => {
         const result = subject.find(1);
 
         expect(result.isFind).toBe(true);
       });
 
-      it('sets #collection to `false`', () => {
+      test('sets #collection to `false`', () => {
         const result = subject.find(1);
 
         expect(result.collection).toBe(false);
       });
 
-      it('does not add a limit to #snapshots if #shouldCount', () => {
+      test('does not add a limit to #snapshots if #shouldCount', () => {
         subject.shouldCount = true;
 
         const result = subject.find(1);
@@ -231,7 +231,7 @@ describe('module "database/query"', () => {
         ]);
       });
 
-      it('resolves with the correct `Model` instance', async () => {
+      test('resolves with the correct `Model` instance', async () => {
         const result = await subject.find(1);
 
         expect(result).toEqual(expect.any(TestModel));
@@ -250,13 +250,13 @@ describe('module "database/query"', () => {
         subject = new Query(TestModel);
       });
 
-      it('returns `this`', () => {
+      test('returns `this`', () => {
         const result = subject.page(2);
 
         expect(result).toBe(subject);
       });
 
-      it('properly modifies #snapshots', () => {
+      test('properly modifies #snapshots', () => {
         const result = subject.page(2);
 
         expect(result.snapshots).toEqual([
@@ -265,7 +265,7 @@ describe('module "database/query"', () => {
         ]);
       });
 
-      it('does not modify #snapshots if #shouldCount', () => {
+      test('does not modify #snapshots if #shouldCount', () => {
         subject.shouldCount = true;
 
         const result = subject.page(2);
@@ -273,7 +273,7 @@ describe('module "database/query"', () => {
         expect(result.snapshots).toHaveLength(0);
       });
 
-      it('resolves with the correct array of `Model` instances', async () => {
+      test('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.page(2);
 
         expect(result).toEqual(expect.any(Array));
@@ -289,13 +289,13 @@ describe('module "database/query"', () => {
         subject = new Query(TestModel);
       });
 
-      it('returns `this`', () => {
+      test('returns `this`', () => {
         const result = subject.limit(5);
 
         expect(result).toBe(subject);
       });
 
-      it('properly modifies #snapshots', () => {
+      test('properly modifies #snapshots', () => {
         const result = subject.limit(5);
 
         expect(result.snapshots).toEqual([
@@ -303,7 +303,7 @@ describe('module "database/query"', () => {
         ]);
       });
 
-      it('does not modify #snapshots if #shouldCount', () => {
+      test('does not modify #snapshots if #shouldCount', () => {
         subject.shouldCount = true;
 
         const result = subject.limit(5);
@@ -311,7 +311,7 @@ describe('module "database/query"', () => {
         expect(result.snapshots).toHaveLength(0);
       });
 
-      it('resolves with the correct array of `Model` instances', async () => {
+      test('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.limit(5);
 
         expect(result).toEqual(expect.any(Array));
@@ -327,24 +327,24 @@ describe('module "database/query"', () => {
         subject = new Query(Test);
       });
 
-      it('returns `this`', () => {
+      test('returns `this`', () => {
         expect(subject.order('id', 'DESC')).toBe(subject);
       });
 
-      it('properly modifies #snapshots', () => {
+      test('properly modifies #snapshots', () => {
         expect(subject.order('id', 'DESC').snapshots).toMatchSnapshot();
       });
 
-      it('defaults sort direction to `ASC`', () => {
+      test('defaults sort direction to `ASC`', () => {
         expect(subject.order('id').snapshots).toMatchSnapshot();
       });
 
-      it('does not modify #snapshots if #shouldCount', () => {
+      test('does not modify #snapshots if #shouldCount', () => {
         subject.shouldCount = true;
         expect(subject.order('id', 'DESC').snapshots).toHaveLength(0);
       });
 
-      it('resolves with the correct array of `Model` instances', async () => {
+      test('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.order('id', 'DESC');
 
         expect(result.map(({ id }) => id)).toMatchSnapshot();
@@ -358,7 +358,7 @@ describe('module "database/query"', () => {
         subject = new Query(TestModel);
       });
 
-      it('returns `this`', () => {
+      test('returns `this`', () => {
         const result = subject.where({
           isPublic: true
         });
@@ -366,7 +366,7 @@ describe('module "database/query"', () => {
         expect(result).toBe(subject);
       });
 
-      it('properly modifies #snapshots', () => {
+      test('properly modifies #snapshots', () => {
         const result = subject.where({
           isPublic: true
         });
@@ -376,7 +376,7 @@ describe('module "database/query"', () => {
         ]);
       });
 
-      it('properly handles array conditions', () => {
+      test('properly handles array conditions', () => {
         const result = subject.where({
           id: [1, 2, 3],
           isPublic: true
@@ -388,7 +388,7 @@ describe('module "database/query"', () => {
         ]);
       });
 
-      it('resolves with the correct array of `Model` instances', async () => {
+      test('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.where({
           isPublic: true
         });
@@ -411,13 +411,13 @@ describe('module "database/query"', () => {
         subject = new Query(TestModel);
       });
 
-      it('returns `this`', () => {
+      test('returns `this`', () => {
         const result = subject.first();
 
         expect(result).toBe(subject);
       });
 
-      it('properly modifies #snapshots', () => {
+      test('properly modifies #snapshots', () => {
         const result = subject.first();
 
         expect(result.snapshots).toEqual([
@@ -426,13 +426,13 @@ describe('module "database/query"', () => {
         ]);
       });
 
-      it('sets #collection to `false`', () => {
+      test('sets #collection to `false`', () => {
         const result = subject.first();
 
         expect(result.collection).toBe(false);
       });
 
-      it('respects order if one already exists', () => {
+      test('respects order if one already exists', () => {
         const result = subject.order('createdAt', 'DESC').first();
 
         expect(result.snapshots).toEqual([
@@ -441,7 +441,7 @@ describe('module "database/query"', () => {
         ]);
       });
 
-      it('does not modify #snapshots if #shouldCount', () => {
+      test('does not modify #snapshots if #shouldCount', () => {
         subject.shouldCount = true;
 
         const result = subject.first();
@@ -449,7 +449,7 @@ describe('module "database/query"', () => {
         expect(result.snapshots).toHaveLength(0);
       });
 
-      it('resolves with the correct `Model` instance', async () => {
+      test('resolves with the correct `Model` instance', async () => {
         const result = await subject.first();
 
         expect(result).toEqual(expect.any(TestModel));
@@ -468,19 +468,19 @@ describe('module "database/query"', () => {
         subject = new Query(Test);
       });
 
-      it('returns `this`', () => {
+      test('returns `this`', () => {
         expect(subject.last()).toBe(subject);
       });
 
-      it('properly modifies #snapshots', () => {
+      test('properly modifies #snapshots', () => {
         expect(subject.last().snapshots).toMatchSnapshot();
       });
 
-      it('sets #collection to `false`', () => {
+      test('sets #collection to `false`', () => {
         expect(subject.last().collection).toBe(false);
       });
 
-      it('respects order if one already exists', () => {
+      test('respects order if one already exists', () => {
         const result = subject
           .order('createdAt', 'DESC')
           .last();
@@ -488,12 +488,12 @@ describe('module "database/query"', () => {
         expect(result.snapshots).toMatchSnapshot();
       });
 
-      it('does not modify #snapshots if #shouldCount', () => {
+      test('does not modify #snapshots if #shouldCount', () => {
         subject.shouldCount = true;
         expect(subject.last().snapshots).toHaveLength(0);
       });
 
-      it('resolves with the correct `Model` instance', async () => {
+      test('resolves with the correct `Model` instance', async () => {
         const result = await subject.last();
 
         expect(result).toBeTruthy();
@@ -508,19 +508,19 @@ describe('module "database/query"', () => {
         subject = new Query(Test);
       });
 
-      it('returns `this`', () => {
+      test('returns `this`', () => {
         expect(subject.count()).toBe(subject);
       });
 
-      it('properly modifies #snapshots', () => {
+      test('properly modifies #snapshots', () => {
         expect(subject.count().snapshots).toMatchSnapshot();
       });
 
-      it('sets #shouldCount to `true`', () => {
+      test('sets #shouldCount to `true`', () => {
         expect(subject.count().shouldCount).toBe(true);
       });
 
-      it('removes all snapshots except for filter conditions', () => {
+      test('removes all snapshots except for filter conditions', () => {
         const result = subject
           .limit(1)
           .offset(50)
@@ -531,7 +531,7 @@ describe('module "database/query"', () => {
         expect(result.snapshots).toMatchSnapshot();
       });
 
-      it('resolves with the number of matching records', async () => {
+      test('resolves with the number of matching records', async () => {
         expect(await subject.count()).toBe(100);
       });
     });
@@ -543,20 +543,20 @@ describe('module "database/query"', () => {
         subject = new Query(Test);
       });
 
-      it('returns `this`', () => {
+      test('returns `this`', () => {
         expect(subject.offset(10)).toBe(subject);
       });
 
-      it('properly modifies #snapshots', () => {
+      test('properly modifies #snapshots', () => {
         expect(subject.offset(10).snapshots).toMatchSnapshot();
       });
 
-      it('does not modify #snapshots if #shouldCount', () => {
+      test('does not modify #snapshots if #shouldCount', () => {
         subject.shouldCount = true;
         expect(subject.offset(10).snapshots).toMatchSnapshot();
       });
 
-      it('resolves with the correct array of `Model` instances', async () => {
+      test('resolves with the correct array of `Model` instances', async () => {
         expect(await subject.offset(10)).toHaveLength(90);
       });
     });
@@ -569,17 +569,17 @@ describe('module "database/query"', () => {
         subject = new Query(TestModel);
       });
 
-      it('returns `this`', () => {
+      test('returns `this`', () => {
         expect(subject.select(...attrs)).toBe(subject);
       });
 
-      it('properly modifies #snapshots', () => {
+      test('properly modifies #snapshots', () => {
         const result = subject.select(...attrs);
 
         expect(result.snapshots).toMatchSnapshot();
       });
 
-      it('resolves with the correct array of `Model` instances', async () => {
+      test('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.select(...attrs);
 
         expect(result).toEqual(expect.any(Array));
@@ -601,17 +601,17 @@ describe('module "database/query"', () => {
         subject = new Query(TestModel);
       });
 
-      it('returns `this`', () => {
+      test('returns `this`', () => {
         expect(subject.distinct(...attrs)).toBe(subject);
       });
 
-      it('properly modifies #snapshots', () => {
+      test('properly modifies #snapshots', () => {
         const result = subject.distinct(...attrs);
 
         expect(result.snapshots).toMatchSnapshot();
       });
 
-      it('resolves with the correct array of `Model` instances', async () => {
+      test('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.distinct(...attrs);
 
         expect(result).toEqual(expect.any(Array));
@@ -632,11 +632,11 @@ describe('module "database/query"', () => {
         subject = new Query(TestModel);
       });
 
-      it('returns `this`', () => {
+      test('it returns `this`', () => {
         expect(subject.include('user', 'comments')).toBe(subject);
       });
 
-      it('properly modifies #snapshots when using an array of strings', () => {
+      test('it works when using an array of strings', () => {
         const result = subject.include('user', 'comments');
 
         expect([
@@ -645,7 +645,7 @@ describe('module "database/query"', () => {
         ]).toMatchSnapshot();
       });
 
-      it('properly modifies #snapshots when using an object', () => {
+      test('properly modifies #snapshots when using an object', () => {
         const result = subject.include({
           user: [
             'id',
@@ -665,7 +665,7 @@ describe('module "database/query"', () => {
         ]).toMatchSnapshot();
       });
 
-      it('resolves with the correct array of `Model` instances', async () => {
+      test('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.include({
           user: ['id'],
           comments: ['id'],
@@ -690,7 +690,7 @@ describe('module "database/query"', () => {
         subject = new Query(TestModel);
       });
 
-      it('can be chained to other query methods', () => {
+      test('can be chained to other query methods', () => {
         const result = subject
           .isPublic()
           .select('id', 'title')
@@ -699,7 +699,7 @@ describe('module "database/query"', () => {
         expect(result.snapshots).toMatchSnapshot();
       });
 
-      it('can be chained from other query methods', () => {
+      test('can be chained from other query methods', () => {
         const result = subject
           .all()
           .select('id', 'title')
@@ -717,11 +717,11 @@ describe('module "database/query"', () => {
         subject = new Query(TestModel);
       });
 
-      it('returns `this`', () => {
+      test('returns `this`', () => {
         expect(subject.isPublic().unscope('isPublic')).toBe(subject);
       });
 
-      it('removes a named scope from #snapshots', () => {
+      test('removes a named scope from #snapshots', () => {
         const result = subject
           .select('id', 'title')
           .isPublic()

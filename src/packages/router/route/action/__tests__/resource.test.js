@@ -93,12 +93,12 @@ describe('module "router/route/action"', () => {
         subject = resource(controller.index.bind(controller), controller);
       });
 
-      it('returns an enhanced action', () => {
+      test('returns an enhanced action', () => {
         expect(subject).toBeInstanceOf(Function);
         expect(subject).toHaveLength(2);
       });
 
-      it('resolves with a serialized payload', async () => {
+      test('resolves with a serialized payload', async () => {
         const [req, res] = mockArgs();
 
         expect(await subject(req, res)).toEqual(
@@ -176,12 +176,12 @@ describe('module "router/route/action"', () => {
           subject = resource(controller.show.bind(controller), controller);
         });
 
-        it('returns an enhanced action', () => {
+        test('returns an enhanced action', () => {
           expect(subject).toBeInstanceOf(Function);
           expect(subject).toHaveLength(2);
         });
 
-        it('resolves with a serialized payload', async () => {
+        test('resolves with a serialized payload', async () => {
           const [req, res] = mockArgs('/posts/1');
 
           expect(await subject(req, res)).toEqual(getExpectedResult());
@@ -198,12 +198,12 @@ describe('module "router/route/action"', () => {
           subject = resource(controller.show.bind(controller), controller);
         });
 
-        it('returns an enhanced action', () => {
+        test('returns an enhanced action', () => {
           expect(subject).toBeInstanceOf(Function);
           expect(subject).toHaveLength(2);
         });
 
-        it('resolves with a serialized payload', async () => {
+        test('resolves with a serialized payload', async () => {
           const [req, res] = mockArgs('/admin/posts/1');
 
           expect(await subject(req, res)).toEqual(getExpectedResult());
@@ -220,12 +220,12 @@ describe('module "router/route/action"', () => {
           subject = resource(() => Promise.resolve(null), controller);
         });
 
-        it('returns an enhanced action', () => {
+        test('returns an enhanced action', () => {
           expect(subject).toBeInstanceOf(Function);
           expect(subject).toHaveLength(2);
         });
 
-        it('resolves with the result of the action', async () => {
+        test('resolves with the result of the action', async () => {
           const result = await subject(
             request.create({
               logger,

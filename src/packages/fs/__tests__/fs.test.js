@@ -18,15 +18,15 @@ describe('module "fs"', () => {
   describe('#exists()', () => {
     const tmp = path.join(path.sep, 'tmp', 'fs-test');
 
-    it('is true if "PATH" exists', async () => {
+    test('is true if "PATH" exists', async () => {
       expect(await fs.exists(tmp)).toBe(true);
     });
 
-    it('is false if "PATH" does not exist', async () => {
+    test('is false if "PATH" does not exist', async () => {
       expect(await fs.exists('does-not-exist.tmp')).toBe(false);
     });
 
-    it('is true if regexp "PATH" exists within "DIR"', async () => {
+    test('is true if regexp "PATH" exists within "DIR"', async () => {
       const result = await fs.exists(
         new RegExp(path.basename(tmp)),
         path.dirname(tmp)
@@ -35,7 +35,7 @@ describe('module "fs"', () => {
       expect(result).toBe(true);
     });
 
-    it('is false if regexp "PATH" does not exist within "DIR"', async () => {
+    test('is false if regexp "PATH" does not exist within "DIR"', async () => {
       const result = await fs.exists(
         new RegExp('does-not-exist.tmp'),
         path.dirname(tmp)
@@ -48,12 +48,12 @@ describe('module "fs"', () => {
   describe('#rmrf()', () => {
     const tmp = path.join(path.sep, 'tmp', 'rmrf-test', 'data.txt');
 
-    it('removes a file', async () => {
+    test('removes a file', async () => {
       await fs.rmrf(tmp);
       expect(await fs.exists(tmp)).toBe(false);
     });
 
-    it('removes a directory and its contents', async () => {
+    test('removes a directory and its contents', async () => {
       const target = path.dirname(tmp);
 
       await fs.rmrf(target);
@@ -68,7 +68,7 @@ describe('module "fs"', () => {
       'index.js',
     ];
 
-    it('correctly parses a file path', () => {
+    test('correctly parses a file path', () => {
       expect(fs.parsePath(...parts)).toEqual(
         expect.objectContaining({
           absolute: path.join(...parts),
@@ -77,7 +77,7 @@ describe('module "fs"', () => {
       );
     });
 
-    it('can be called with no arguments', () => {
+    test('can be called with no arguments', () => {
       expect(fs.parsePath()).toEqual(
         expect.objectContaining({
           absolute: process.cwd(),
@@ -94,15 +94,15 @@ describe('module "fs"', () => {
       '.gitkeep'
     ];
 
-    it('is true if a file has a `.js` extension', () => {
+    test('is true if a file has a `.js` extension', () => {
       expect(fs.isJSFile(a)).toBe(true);
     });
 
-    it('is false if a file does not have a `.js` extension', () => {
+    test('is false if a file does not have a `.js` extension', () => {
       expect(fs.isJSFile(b)).toBe(false);
     });
 
-    it('is false if the file is prefixed with `.`', () => {
+    test('is false if the file is prefixed with `.`', () => {
       expect(fs.isJSFile(c)).toBe(false);
     });
   });
@@ -110,18 +110,18 @@ describe('module "fs"', () => {
   describe('#mkdirRec()', () => {
     const tmp = path.join(path.sep, 'tmp', 'mkdir-rec-test', 'directory');
 
-    it('creates a directory recursively', async () => {
+    test('creates a directory recursively', async () => {
       await fs.mkdirRec(tmp);
       expect(await fs.exists(tmp)).toBe(true);
     });
 
-    it('does not throw when the directory already exists', async () => {
+    test('does not throw when the directory already exists', async () => {
       await fs.mkdirRec(tmp);
       await fs.mkdirRec(tmp);
       expect(await fs.exists(tmp)).toBe(true);
     });
 
-    it('properly rejects when a valid error occurs', async () => {
+    test('properly rejects when a valid error occurs', async () => {
       await fs.mkdirRec(path.join(path.sep, 'tmp', 'throw')).catch(err => {
         expect(err).toBeInstanceOf(Error);
       });
@@ -131,7 +131,7 @@ describe('module "fs"', () => {
   describe('#readdirRec()', () => {
     const tmp = path.join(path.sep, 'tmp', 'readdir-rec-test');
 
-    it('recursively reads a directory', async () => {
+    test('recursively reads a directory', async () => {
       expect(await fs.readdirRec(tmp)).toMatchSnapshot();
     });
   });

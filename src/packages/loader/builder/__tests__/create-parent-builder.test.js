@@ -34,7 +34,7 @@ describe('module "loader/builder"', () => {
       });
     });
 
-    it('correctly builds parent objects', () => {
+    test('correctly builds parent objects', () => {
       subject(new FreezeableMap([
         ['root', new FreezeableMap([
           ['application', ApplicationController]

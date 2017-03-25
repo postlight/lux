@@ -3,7 +3,7 @@
 import noop from '../noop';
 
 describe('util noop()', () => {
-  it('returns undefined', () => {
+  test('returns undefined', () => {
     expect(noop()).toBeUndefined();
   });
 });

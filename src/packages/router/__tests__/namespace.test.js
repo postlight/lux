@@ -43,7 +43,7 @@ describe('module "router/namespace"', () => {
         root = createRootNamespace();
       });
 
-      it('constructs a valid instance of `Namespace`', () => {
+      test('constructs a valid instance of `Namespace`', () => {
         const subject = new Namespace({
           controller,
           controllers,
@@ -55,7 +55,7 @@ describe('module "router/namespace"', () => {
         expectNamspaceToBeValid(subject, 'admin', '/admin');
       });
 
-      it('normalizes a name with a leading /', () => {
+      test('normalizes a name with a leading /', () => {
         const subject = new Namespace({
           controller,
           controllers,
@@ -67,7 +67,7 @@ describe('module "router/namespace"', () => {
         expectNamspaceToBeValid(subject, 'admin', '/admin');
       });
 
-      it('normalizes a name with a trailing /', () => {
+      test('normalizes a name with a trailing /', () => {
         const subject = new Namespace({
           controller,
           controllers,
@@ -79,7 +79,7 @@ describe('module "router/namespace"', () => {
         expectNamspaceToBeValid(subject, 'admin', '/admin');
       });
 
-      it('normalizes a path missing a leading /', () => {
+      test('normalizes a path missing a leading /', () => {
         const subject = new Namespace({
           controller,
           controllers,
@@ -91,7 +91,7 @@ describe('module "router/namespace"', () => {
         expectNamspaceToBeValid(subject, 'admin', '/admin');
       });
 
-      it('normalizes a path with a trailing /', () => {
+      test('normalizes a path with a trailing /', () => {
         const subject = new Namespace({
           controller,
           controllers,

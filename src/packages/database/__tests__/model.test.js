@@ -89,7 +89,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('can be called repeatedly without error', async () => {
+      test('can be called repeatedly without error', async () => {
         const table = () => store.connection(Subject.tableName);
 
         const refs = [
@@ -103,19 +103,19 @@ describe('module "database/model"', () => {
         });
       });
 
-      it('adds a `store` property to the `Model`', () => {
+      test('adds a `store` property to the `Model`', () => {
         expect(Subject.store).toBe(store);
       });
 
-      it('adds a `table` property to the `Model`', () => {
+      test('adds a `table` property to the `Model`', () => {
         expect(typeof Subject.table).toBe('function');
       });
 
-      it('adds a `logger` property to the `Model`', () => {
+      test('adds a `logger` property to the `Model`', () => {
         expect(Subject.logger).toBe(store.logger);
       });
 
-      it('adds an `attributes` property to the `Model`', () => {
+      test('adds an `attributes` property to the `Model`', () => {
         const metaFor = (columnName, docName = columnName) => (
           expect.objectContaining({
             columnName,
@@ -136,11 +136,11 @@ describe('module "database/model"', () => {
         });
       });
 
-      it('adds an `attributeNames` property to the `Model`', () => {
+      test('adds an `attributeNames` property to the `Model`', () => {
         expect(Subject.attributeNames).toMatchSnapshot();
       });
 
-      it('adds attribute accessors on the `prototype`', () => {
+      test('adds attribute accessors on the `prototype`', () => {
         Object
           .keys(Subject.attributes)
           .forEach(key => {
@@ -154,27 +154,27 @@ describe('module "database/model"', () => {
           });
       });
 
-      it('adds a `hasOne` property to the `Model`', () => {
+      test('adds a `hasOne` property to the `Model`', () => {
         expect(Subject.hasOne).toMatchSnapshot();
       });
 
-      it('adds a `hasMany` property to the `Model`', () => {
+      test('adds a `hasMany` property to the `Model`', () => {
         expect(Subject.hasMany).toMatchSnapshot();
       });
 
-      it('adds a `belongsTo` property to the `Model`', () => {
+      test('adds a `belongsTo` property to the `Model`', () => {
         expect(Subject.belongsTo).toMatchSnapshot();
       });
 
-      it('adds a `relationships` property to the `Model`', () => {
+      test('adds a `relationships` property to the `Model`', () => {
         expect(Subject.relationships).toMatchSnapshot();
       });
 
-      it('adds a `relationshipNames` property to the `Model`', () => {
+      test('adds a `relationshipNames` property to the `Model`', () => {
         expect(Subject.relationshipNames).toMatchSnapshot();
       });
 
-      it('adds relationship accessors to the `prototype`', () => {
+      test('adds relationship accessors to the `prototype`', () => {
         Subject.relationshipNames.forEach(key => {
           const desc = Reflect.getOwnPropertyDescriptor(Subject.prototype, key);
 
@@ -187,35 +187,35 @@ describe('module "database/model"', () => {
         });
       });
 
-      it('removes invalid hooks from the `hooks` property', () => {
+      test('removes invalid hooks from the `hooks` property', () => {
         expect(Subject.hooks).toMatchSnapshot();
       });
 
-      it('adds each scope to `Model`', () => {
+      test('adds each scope to `Model`', () => {
         expect(Subject.scopes).toMatchSnapshot();
       });
 
-      it('removes invalid validations from the `validates` property', () => {
+      test('removes invalid validations from the `validates` property', () => {
         expect(Subject.validates).toMatchSnapshot();
       });
 
-      it('adds a `modelName` property to the `Model`', () => {
+      test('adds a `modelName` property to the `Model`', () => {
         expect(Subject.modelName).toBe('subject');
       });
 
-      it('adds a `modelName` property to the `prototype`', () => {
+      test('adds a `modelName` property to the `prototype`', () => {
         expect(Subject.prototype.modelName).toBe('subject');
       });
 
-      it('adds a `resourceName` property to the `Model`', () => {
+      test('adds a `resourceName` property to the `Model`', () => {
         expect(Subject.resourceName).toBe('subjects');
       });
 
-      it('adds a `resourceName` property to the `prototype`', () => {
+      test('adds a `resourceName` property to the `prototype`', () => {
         expect(Subject.prototype.resourceName).toBe('subjects');
       });
 
-      it('adds an `initialized` property to the `Model`', () => {
+      test('adds an `initialized` property to the `Model`', () => {
         expect(Subject.initialized).toBe(true);
       });
 
@@ -226,11 +226,11 @@ describe('module "database/model"', () => {
           await Post.initialize(store, () => store.connection(Post.tableName));
         });
 
-        it('adds a `tableName` property to the `constructor`', () => {
+        test('adds a `tableName` property to the `constructor`', () => {
           expect(Post.tableName).toBe('posts');
         });
 
-        it('adds a `tableName` property to the `prototype`', () => {
+        test('adds a `tableName` property to the `prototype`', () => {
           expect(Post.prototype.tableName).toBe('posts');
         });
       });
@@ -268,7 +268,7 @@ describe('module "database/model"', () => {
       });
 
       describe('- without specifying `id`', () => {
-        it('constructs and persists a `Model` instance', async () => {
+        test('constructs and persists a `Model` instance', async () => {
           const user = new User({ id: 1 });
           const body = 'Contents of "Test Post"...';
           const title = 'Test Post';
@@ -299,7 +299,7 @@ describe('module "database/model"', () => {
       });
 
       describe('- with specifying `id`', () => {
-        it('constructs and persists a `Model`', async () => {
+        test('constructs and persists a `Model`', async () => {
           const id = 999;
 
           result = await Subject.create({ id });
@@ -322,7 +322,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns a static transaction proxy', async () => {
+      test('returns a static transaction proxy', async () => {
         await Subject.transaction(trx => {
           const proxy = Subject.transacting(trx);
 
@@ -345,7 +345,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns an instance of `Query`', () => {
+      test('returns an instance of `Query`', () => {
         const result = Subject.all();
 
         expect(result instanceof Query).toBe(true);
@@ -364,7 +364,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns an instance of `Query`', () => {
+      test('returns an instance of `Query`', () => {
         const result = Subject.find();
 
         expect(result instanceof Query).toBe(true);
@@ -383,7 +383,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns an instance of `Query`', () => {
+      test('returns an instance of `Query`', () => {
         const result = Subject.page(1);
 
         expect(result instanceof Query).toBe(true);
@@ -402,7 +402,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns an instance of `Query`', () => {
+      test('returns an instance of `Query`', () => {
         const result = Subject.limit(25);
 
         expect(result instanceof Query).toBe(true);
@@ -421,7 +421,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns an instance of `Query`', () => {
+      test('returns an instance of `Query`', () => {
         const result = Subject.offset(0);
 
         expect(result instanceof Query).toBe(true);
@@ -440,7 +440,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns an instance of `Query`', () => {
+      test('returns an instance of `Query`', () => {
         const result = Subject.count();
 
         expect(result instanceof Query).toBe(true);
@@ -459,7 +459,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns an instance of `Query`', () => {
+      test('returns an instance of `Query`', () => {
         const result = Subject.order('createdAt', 'ASC');
 
         expect(result instanceof Query).toBe(true);
@@ -478,7 +478,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns an instance of `Query`', () => {
+      test('returns an instance of `Query`', () => {
         const result = Subject.where({
           isPublic: true
         });
@@ -499,7 +499,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns an instance of `Query`', () => {
+      test('returns an instance of `Query`', () => {
         const result = Subject.not({
           isPublic: true
         });
@@ -520,7 +520,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns an instance of `Query`', () => {
+      test('returns an instance of `Query`', () => {
         const result = Subject.first();
 
         expect(result instanceof Query).toBe(true);
@@ -539,7 +539,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns an instance of `Query`', () => {
+      test('returns an instance of `Query`', () => {
         const result = Subject.last();
 
         expect(result instanceof Query).toBe(true);
@@ -558,7 +558,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns an instance of `Query`', () => {
+      test('returns an instance of `Query`', () => {
         const result = Subject.select('title', 'createdAt');
 
         expect(result instanceof Query).toBe(true);
@@ -577,7 +577,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns an instance of `Query`', () => {
+      test('returns an instance of `Query`', () => {
         const result = Subject.distinct('title');
 
         expect(result instanceof Query).toBe(true);
@@ -608,7 +608,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns an instance of `Query`', () => {
+      test('returns an instance of `Query`', () => {
         const result = Subject.include('user', 'comments');
 
         expect(result instanceof Query).toBe(true);
@@ -635,7 +635,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns an instance of `Query`', () => {
+      test('returns an instance of `Query`', () => {
         const result = Subject.unscope('isPublic');
 
         expect(result instanceof Query).toBe(true);
@@ -651,13 +651,13 @@ describe('module "database/model"', () => {
         };
       }
 
-      it('returns true if a `Model` has a scope', () => {
+      test('returns true if a `Model` has a scope', () => {
         const result = Subject.hasScope('mostRecent');
 
         expect(result).toBe(true);
       });
 
-      it('returns false if a `Model` does not have a scope', () => {
+      test('returns false if a `Model` does not have a scope', () => {
         const result = Subject.hasScope('mostPopular');
 
         expect(result).toBe(false);
@@ -684,14 +684,14 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns true if an object is an instance of the `Model`', () => {
+      test('returns true if an object is an instance of the `Model`', () => {
         const instance = new SubjectA();
         const result = SubjectA.isInstance(instance);
 
         expect(result).toBe(true);
       });
 
-      it('returns false if an object is an instance of the `Model`', () => {
+      test('returns false if an object is an instance of the `Model`', () => {
         const instance = new SubjectA();
         const result = SubjectB.isInstance(instance);
 
@@ -711,7 +711,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns the column data for an attribute if it exists', () => {
+      test('returns the column data for an attribute if it exists', () => {
         expect(Subject.columnFor('isPublic')).toEqual(
           expect.objectContaining({
             columnName: 'is_public',
@@ -735,7 +735,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns the column name for an attribute if it exists', () => {
+      test('returns the column name for an attribute if it exists', () => {
         const result = Subject.columnNameFor('isPublic');
 
         expect(result).toBe('is_public');
@@ -760,7 +760,7 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns the data for a relationship if it exists', () => {
+      test('returns the data for a relationship if it exists', () => {
         expect(Subject.relationshipFor('user')).toMatchSnapshot();
       });
     });
@@ -817,20 +817,20 @@ describe('module "database/model"', () => {
             });
 
             if (/^(save|create|validation)$/i.test(suffix)) {
-              it('runs when .create() is called', () => {
+              test('runs when .create() is called', () => {
                 expect(hook).toBeCalledWith(instance, trx);
               });
             }
 
             if (/^(save|update|validation)$/i.test(suffix)) {
-              it('runs when #save() is called', async () => {
+              test('runs when #save() is called', async () => {
                 instance.isPublic = true;
                 await instance.save();
 
                 expect(hook).toBeCalledWith(instance, trx);
               });
 
-              it('runs when #update() is called', async () => {
+              test('runs when #update() is called', async () => {
                 await instance.update({
                   isPublic: true,
                 });
@@ -840,7 +840,7 @@ describe('module "database/model"', () => {
             }
 
             if (suffix === 'Destroy') {
-              it('runs when #destroy() is called', async () => {
+              test('runs when #destroy() is called', async () => {
                 await instance.destroy();
 
                 expect(hook).toBeCalledWith(instance, trx);
@@ -876,7 +876,7 @@ describe('module "database/model"', () => {
           });
         });
 
-        it('updates the current value', () => {
+        test('updates the current value', () => {
           const newVaue = 'It worked!';
 
           instance.body = newVaue;
@@ -884,24 +884,24 @@ describe('module "database/model"', () => {
         });
 
         describe('- nullable', () => {
-          it('sets the current value to null when passed null', () => {
+          test('sets the current value to null when passed null', () => {
             instance.body = null;
             expect(instance.body).toBe(null);
           });
 
-          it('sets the current value to null when passed undefined', () => {
+          test('sets the current value to null when passed undefined', () => {
             instance.body = undefined;
             expect(instance.body).toBe(null);
           });
         });
 
         describe('- not nullable', () => {
-          it('does not update the current value when passed null', () => {
+          test('does not change when passed null', () => {
             instance.title = null;
             expect(instance.title).toBe(ogTitle);
           });
 
-          it('does not update the current value when passed undefined', () => {
+          test('does not change when passed undefined', () => {
             instance.title = undefined;
             expect(instance.title).toBe(ogTitle);
           });
@@ -977,7 +977,7 @@ describe('module "database/model"', () => {
           }
         });
 
-        it('can set and persist attributes and relationships', async () => {
+        test('can set and persist attributes and relationships', async () => {
           const body = 'Lots of content...';
 
           user = await User.create({
@@ -1050,7 +1050,7 @@ describe('module "database/model"', () => {
           expect(result.comments).toEqual(expect.any(Array));
         });
 
-        it('fails if a validation is not met', async () => {
+        test('fails if a validation is not met', async () => {
           await instance
             .update({
               title: 'Test',
@@ -1095,7 +1095,7 @@ describe('module "database/model"', () => {
         await instance.destroy();
       });
 
-      it('removes the record from the database', async () => {
+      test('removes the record from the database', async () => {
         await instance.destroy();
         await Subject.find(instance.id).catch(err => {
           expect(err instanceof RecordNotFoundError).toBe(true);
@@ -1129,7 +1129,7 @@ describe('module "database/model"', () => {
         await instance.destroy();
       });
 
-      it('reverts attributes to the last known persisted changes', async () => {
+      test('reverts attributes to the lastest persistent value', async () => {
         const { title: prevTitle } = instance;
         const nextTitle = 'Testing #reload()';
 
@@ -1142,7 +1142,7 @@ describe('module "database/model"', () => {
         expect(instance.title).toBe(nextTitle);
       });
 
-      it('resolves with itself if the instance is new', async () => {
+      test('resolves with itself if the instance is new', async () => {
         const newInstance = new Subject();
         const nextTitle = 'Testing #reload()';
 
@@ -1181,7 +1181,7 @@ describe('module "database/model"', () => {
         await instance.destroy();
       });
 
-      it('reverts attributes to the last known persisted changes', () => {
+      test('reverts attributes to the last known persisted changes', () => {
         const { title: prevTitle } = instance;
         const nextTitle = 'Testing #rollback()';
 
@@ -1220,7 +1220,7 @@ describe('module "database/model"', () => {
         await instance.destroy();
       });
 
-      it('returns a pojo containing the requested attributes', () => {
+      test('returns a pojo containing the requested attributes', () => {
         const result = instance.getAttributes('body', 'title');
 
         expect(result).toEqual({
@@ -1252,7 +1252,7 @@ describe('module "database/model"', () => {
         await instance.destroy();
       });
 
-      it('returns the value of `instance[Model.primaryKey]`', () => {
+      test('returns the value of `instance[Model.primaryKey]`', () => {
         const result = instance.getPrimaryKey();
 
         expect(result).toEqual(expect.any(Number));
@@ -1271,13 +1271,13 @@ describe('module "database/model"', () => {
         );
       });
 
-      it('returns true for a record returned from querying', async () => {
+      test('returns true for a record returned from querying', async () => {
         const record = await Subject.first();
 
         expect(record.persisted).toBe(true);
       });
 
-      it('returns false if a record has been modified', async () => {
+      test('returns false if a record has been modified', async () => {
         const record = await Subject.first();
 
         record.title = 'Modified Title';
@@ -1285,7 +1285,7 @@ describe('module "database/model"', () => {
         expect(record.persisted).toBe(false);
       });
 
-      it('returns false if the record is new', () => {
+      test('returns false if the record is new', () => {
         const record = new Subject();
 
         expect(record.persisted).toBe(false);

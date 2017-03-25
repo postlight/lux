@@ -18,7 +18,7 @@ describe('util compose', () => {
       jest.resetAllMocks();
     });
 
-    it('logs an input and then returns it', () => {
+    test('logs an input and then returns it', () => {
       const val = {};
 
       expect(tap(val)).toBe(val);
@@ -27,7 +27,7 @@ describe('util compose', () => {
   });
 
   describe('.compose()', () => {
-    it('returns a composed function', () => {
+    test('returns a composed function', () => {
       const shout = compose(
         str => `${str}!`,
         str => str.toUpperCase()
@@ -40,7 +40,7 @@ describe('util compose', () => {
   });
 
   describe('.composeAsync()', () => {
-    it('returns a composed asyncfunction', () => {
+    test('returns a composed asyncfunction', () => {
       const shout = composeAsync(
         str => Promise.resolve(`${str}!`),
         str => Promise.resolve(str.toUpperCase())

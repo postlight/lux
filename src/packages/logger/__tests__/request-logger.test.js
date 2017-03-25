@@ -42,13 +42,13 @@ describe('module "logger/request-logger"', () => {
           subject = createRequestLogger(logger);
         });
 
-        it('returns a request logger function', () => {
+        test('returns a request logger function', () => {
           expect(typeof subject).toBe('function');
           expect(subject).toHaveLength(3);
         });
 
         describe('- logger function', () => {
-          it('does not throw an error', async () => {
+          test('does not throw an error', async () => {
             expect(() => {
               // subject(req, res, {
               //   startTime: Date.now()

@@ -3,11 +3,11 @@
 import uniq from '../uniq';
 
 describe('util uniq()', () => {
-  it('removes duplicate items from an `Array`', () => {
+  test('it works with an array', () => {
     expect(uniq([1, 1, 2, 2, 3, 3])).toEqual([1, 2, 3]);
   });
 
-  it('removes objects with a non-unique key-value pair from an `Array`', () => {
+  test('it works with an array of objects', () => {
     const subject = [
       {
         id: 1,
@@ -35,7 +35,7 @@ describe('util uniq()', () => {
     ]);
   });
 
-  it('does not mutate the source `Array`', () => {
+  test('it does not mutate the source array', () => {
     const subject = [1, 1, 2, 2, 3, 3];
 
     uniq(subject);

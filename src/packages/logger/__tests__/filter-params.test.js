@@ -15,15 +15,15 @@ describe('module "logger"', () => {
       'password'
     ];
 
-    it('replaces the value of filtered params', () => {
+    test('replaces the value of filtered params', () => {
       expect(filterParams(params, ...filter)).toMatchSnapshot();
     });
 
-    it('leaves non-filtered params unchanged', () => {
+    test('leaves non-filtered params unchanged', () => {
       expect(filterParams(params, ...filter)).toMatchSnapshot();
     });
 
-    it('handles nested parameters', () => {
+    test('handles nested parameters', () => {
       expect(filterParams({ params }, ...filter)).toMatchSnapshot();
     });
   });

@@ -25,11 +25,11 @@ describe('module "router"', () => {
       ]));
     });
 
-    it('returns an instance of RegExp', () => {
+    test('returns an instance of RegExp', () => {
       expect(subject instanceof RegExp).toBe(true);
     });
 
-    it('correctly replaces dynamic parts', () => {
+    test('correctly replaces dynamic parts', () => {
       expect(
         'posts/1'.replace(subject, '$1/:dynamic')
       ).toBe('posts/:dynamic');

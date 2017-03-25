@@ -57,7 +57,7 @@ describe('module "router"', () => {
     });
 
     describe('- defining a single route', () => {
-      it('works as expected', () => {
+      test('works as expected', () => {
         const subject = new Router({
           controller,
           controllers,
@@ -74,7 +74,7 @@ describe('module "router"', () => {
     });
 
     describe('- defining a complete resource', () => {
-      it('works as expected', () => {
+      test('works as expected', () => {
         const subject = new Router({
           controller,
           controllers,
@@ -95,7 +95,7 @@ describe('module "router"', () => {
         expect(subject.has('OPTIONS:/posts/:dynamic')).toBe(true);
       });
 
-      it('throws an error when a controller is missing', () => {
+      test('throws an error when a controller is missing', () => {
         expect(() => (
           new Router({
             controller,
@@ -109,7 +109,7 @@ describe('module "router"', () => {
     });
 
     describe('- defining a complete namespace', () => {
-      it('works as expected', () => {
+      test('works as expected', () => {
         const subject = new Router({
           controller,
           controllers,
@@ -131,7 +131,7 @@ describe('module "router"', () => {
         expect(subject.has('OPTIONS:/admin/posts/:dynamic')).toBe(true);
       });
 
-      it('throws an error when a controller is missing', () => {
+      test('throws an error when a controller is missing', () => {
         expect(() => (
           new Router({
             controller,
@@ -169,7 +169,7 @@ describe('module "router"', () => {
         });
       });
 
-      it('can match a route for a request with a dynamic url', () => {
+      test('can match a route for a request with a dynamic url', () => {
         expect(
           subject.match(
             request.create({
@@ -187,7 +187,7 @@ describe('module "router"', () => {
         ).toBeInstanceOf(Route);
       });
 
-      it('can match a route for a request with a non-dynamic url', () => {
+      test('can match a route for a request with a non-dynamic url', () => {
         expect(
           subject.match(
             request.create({

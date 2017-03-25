@@ -34,7 +34,7 @@ describe('module "logger/writer"', () => {
 
         LEVELS.forEach((num, level) => {
           describe(`- level "${level}"`, () => {
-            it('can write message objects', () => {
+            test('can write message objects', () => {
               const message = 'Hello world!';
               let mockForLevel;
 
@@ -58,7 +58,7 @@ describe('module "logger/writer"', () => {
               expect(mockForLevel).toBeCalled();
             });
 
-            it('can write nested message objects', () => {
+            test('can write nested message objects', () => {
               const message = { message: 'Hello world!' };
               let mockForLevel;
 
@@ -83,7 +83,7 @@ describe('module "logger/writer"', () => {
             });
 
             if (level === ERROR) {
-              it('can write error stack traces', () => {
+              test('can write error stack traces', () => {
                 const message = new Error('Test');
 
                 subject({

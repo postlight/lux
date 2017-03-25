@@ -28,7 +28,7 @@ describe('module "router/route"', () => {
         controller = app.controllers.get('posts');
       });
 
-      it('creates an instance of route', () => {
+      test('creates an instance of route', () => {
         const result = new Route({
           controller,
           type: 'collection',
@@ -40,7 +40,7 @@ describe('module "router/route"', () => {
         expect(result).toBeInstanceOf(Route);
       });
 
-      it('throws when a handler is not found', () => {
+      test('throws when a handler is not found', () => {
         expect(() => (
           new Route({
             controller,
@@ -52,7 +52,7 @@ describe('module "router/route"', () => {
         )).toThrow();
       });
 
-      it('throws when an an action is not provided', () => {
+      test('throws when an an action is not provided', () => {
         expect(() => (
           // $FlowIgnore
           new Route({
@@ -64,7 +64,7 @@ describe('module "router/route"', () => {
         )).toThrow();
       });
 
-      it('throws when an an controller is not provided', () => {
+      test('throws when an an controller is not provided', () => {
         expect(() => (
           // $FlowIgnore
           new Route({
@@ -101,15 +101,15 @@ describe('module "router/route"', () => {
         });
       });
 
-      it('is empty for static paths', () => {
+      test('is empty for static paths', () => {
         expect(staticRoute.parseParams(['1'])).toEqual({});
       });
 
-      it('contains params matching dynamic segments', () => {
+      test('contains params matching dynamic segments', () => {
         expect(dynamicRoute.parseParams(['1'])).toEqual({ id: 1 });
       });
 
-      it('does not contain params for unmatched dynamic segments', () => {
+      test('does not contain params for unmatched dynamic segments', () => {
         expect(dynamicRoute.parseParams(['1', '2'])).toEqual({ id: 1 });
       });
     });
@@ -148,7 +148,7 @@ describe('module "router/route"', () => {
           });
         });
 
-        it('resolves with the correct data', async () => {
+        test('resolves with the correct data', async () => {
           const [request, response] = await mockArgs();
           const result = await subject.execHandlers(request, response);
 
@@ -186,7 +186,7 @@ describe('module "router/route"', () => {
           });
         });
 
-        it('resolves with the correct data', async () => {
+        test('resolves with the correct data', async () => {
           const [request, response] = await mockArgs();
           const result = await subject.execHandlers(request, response);
 
@@ -217,7 +217,7 @@ describe('module "router/route"', () => {
           });
         });
 
-        it('resolves with the correct data', async () => {
+        test('resolves with the correct data', async () => {
           const [request, response] = await mockArgs();
           const result = await subject.execHandlers(request, response);
 
@@ -266,7 +266,7 @@ describe('module "router/route"', () => {
           beforeAction.mockReset();
         });
 
-        it('resolves with the correct data', async () => {
+        test('resolves with the correct data', async () => {
           const [request, response] = await mockArgs();
           const result = await subject.execHandlers(request, response);
 
@@ -312,7 +312,7 @@ describe('module "router/route"', () => {
           });
 
           describe('- with params', () => {
-            it('works', async () => {
+            test('works', async () => {
               const [request, response] = await mockArgs({
                 filter: {
                   title: 'New Post',
@@ -326,7 +326,7 @@ describe('module "router/route"', () => {
           });
 
           describe('- without params', () => {
-            it('works', async () => {
+            test('works', async () => {
               const [request, response] = await mockArgs();
               const result = await subject.visit(request, response);
 

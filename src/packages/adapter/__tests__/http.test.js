@@ -45,7 +45,7 @@ describe('module "adapter/http"', () => {
       res = new ServerResponse(req);
     });
 
-    it('resolves with a request/response tuple', async () => {
+    test('resolves with a request/response tuple', async () => {
       expect(await adapter(req, res)).toMatchSnapshot();
     });
   });
@@ -75,7 +75,7 @@ describe('module "adapter/http"', () => {
             req.emit('error', new Error('Test'));
           });
 
-          it('builds a request from an http.IncomingMessage', async () => {
+          test('builds a request from an http.IncomingMessage', async () => {
             await promise.catch(err => {
               expect(err).toBeInstanceOf(Error);
             });
@@ -114,7 +114,7 @@ describe('module "adapter/http"', () => {
             req.push(null);
           });
 
-          it('builds a request from an http.IncomingMessage', async () => {
+          test('builds a request from an http.IncomingMessage', async () => {
             expect(await promise).toMatchSnapshot();
           });
         });
@@ -136,7 +136,7 @@ describe('module "adapter/http"', () => {
           subject = request.create(req, logger);
         });
 
-        it('builds a request from an http.IncomingMessage', () => {
+        test('builds a request from an http.IncomingMessage', () => {
           expect(subject).toMatchSnapshot();
         });
       });
@@ -151,7 +151,7 @@ describe('module "adapter/http"', () => {
         subject = response.create(res, logger);
       });
 
-      it('builds a response from an http.ServerResponse', () => {
+      test('builds a response from an http.ServerResponse', () => {
         expect(subject).toMatchSnapshot();
       });
 
@@ -170,7 +170,7 @@ describe('module "adapter/http"', () => {
           });
 
           describe(`#${method}()`, () => {
-            it('calls the http.ServerResponse#end', () => {
+            test('calls the http.ServerResponse#end', () => {
               const body = 'Test';
 
               if (method === 'end') {
@@ -187,11 +187,11 @@ describe('module "adapter/http"', () => {
         describe('#status()', () => {
           const value = 201;
 
-          it('returns `this`', () => {
+          test('returns `this`', () => {
             expect(subject.status(value)).toBe(subject);
           });
 
-          it('properly modifies the status code', () => {
+          test('properly modifies the status code', () => {
             subject.status(value);
 
             expect(subject).toMatchSnapshot();
@@ -207,7 +207,7 @@ describe('module "adapter/http"', () => {
             subject.headers.set(key, value);
           });
 
-          it('proxies headers#get()', () => {
+          test('proxies headers#get()', () => {
             expect(subject.getHeader(key)).toBe(value);
             expect(res.getHeader(key)).toBe(value);
           });
@@ -218,7 +218,7 @@ describe('module "adapter/http"', () => {
             subject.headers.set('Content-Type', MIME_TYPE);
           });
 
-          it('proxies headers#set()', () => {
+          test('proxies headers#set()', () => {
             subject.setHeader('X-Test-Header', 'true');
 
             expect(subject.headers).toMatchSnapshot();
@@ -235,7 +235,7 @@ describe('module "adapter/http"', () => {
               .set('X-Test-Header', 'true');
           });
 
-          it('proxies headers#delete()', () => {
+          test('proxies headers#delete()', () => {
             subject.removeHeader('X-Test-Header');
 
             expect(subject.headers).toMatchSnapshot();

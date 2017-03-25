@@ -11,7 +11,7 @@ describe('util sleep()', () => {
     jest.resetAllMocks();
   });
 
-  it('resolves with undefined', async () => {
+  test('resolves with undefined', async () => {
     const result = sleep(AMOUNT);
 
     jest.runAllTimers();
@@ -19,7 +19,7 @@ describe('util sleep()', () => {
     expect(await result).toBeUndefined();
   });
 
-  it('sleeps for the correct amount of time', async () => {
+  test('sleeps for the correct amount of time', async () => {
     sleep(AMOUNT);
 
     jest.runAllTimers();

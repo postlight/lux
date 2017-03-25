@@ -31,7 +31,7 @@ const KEYS = [
 
 describe('module "compiler"', () => {
   describe('util formatName()', () => {
-    it('transforms an array of keys into identifiers', () => {
+    test('transforms an array of keys into identifiers', () => {
       expect(KEYS.map(formatName)).toMatchSnapshot();
     });
   });

@@ -104,7 +104,7 @@ describe('module "controller"', () => {
         return [request, response];
       };
 
-      it('returns an array of records', async () => {
+      test('returns an array of records', async () => {
         const [request, response] = await mockArgs();
         const result = await subject.index(request, response);
 
@@ -112,7 +112,7 @@ describe('module "controller"', () => {
         result.forEach(item => assertRecord(item));
       });
 
-      it('supports specifying page size', async () => {
+      test('supports specifying page size', async () => {
         const [request, response] = await mockArgs('?page[size]=10');
         const result = await subject.index(request, response);
 
@@ -121,7 +121,7 @@ describe('module "controller"', () => {
         result.forEach(item => assertRecord(item));
       });
 
-      it('supports filter parameters', async () => {
+      test('supports filter parameters', async () => {
         const [request, response] = await mockArgs('?filter[is-public]=false');
         const result = await subject.index(request, response);
 
@@ -134,7 +134,7 @@ describe('module "controller"', () => {
         });
       });
 
-      it('supports sparse field sets', async () => {
+      test('supports sparse field sets', async () => {
         const [request, response] = await mockArgs('?fields[posts]=id,title');
         const result = await subject.index(request, response);
 
@@ -149,7 +149,7 @@ describe('module "controller"', () => {
         });
       });
 
-      it('supports eager loading relationships', async () => {
+      test('supports eager loading relationships', async () => {
         const [request, response] = await mockArgs('?include=user');
         const result = await subject.index(request, response);
 
@@ -189,13 +189,13 @@ describe('module "controller"', () => {
         return [request, response];
       };
 
-      it('returns a single record', async () => {
+      test('returns a single record', async () => {
         const [request, response] = await mockArgs(1);
 
         assertRecord(await subject.show(request, response));
       });
 
-      it('throws an error if the record is not found', async () => {
+      test('throws an error if the record is not found', async () => {
         const [request, response] = await mockArgs(10000);
 
         await subject
@@ -205,7 +205,7 @@ describe('module "controller"', () => {
           });
       });
 
-      it('supports sparse field sets', async () => {
+      test('supports sparse field sets', async () => {
         const { id, title } = getDefaultProps();
         const [request, response] = await mockArgs(
           1,
@@ -218,7 +218,7 @@ describe('module "controller"', () => {
         });
       });
 
-      it('supports eager loading relationships', async () => {
+      test('supports eager loading relationships', async () => {
         const [request, response] = await mockArgs(1, '?include=user');
 
         assertRecord(await subject.show(request, response), {
@@ -259,7 +259,7 @@ describe('module "controller"', () => {
         await result.destroy();
       });
 
-      it('returns the newly created record', async () => {
+      test('returns the newly created record', async () => {
         const title = '#create() Test';
         const isPublic = true;
         const [request, response] = await mockArgs({
@@ -284,7 +284,7 @@ describe('module "controller"', () => {
         });
       });
 
-      it('sets `response.statusCode` to the number `201`', async () => {
+      test('sets `response.statusCode` to the number `201`', async () => {
         const [request, response] = await mockArgs({
           data: {
             type: 'posts',
@@ -299,7 +299,7 @@ describe('module "controller"', () => {
         expect(response.statusCode).toBe(201);
       });
 
-      it('sets the correct `Location` header', async () => {
+      test('sets the correct `Location` header', async () => {
         const [request, response] = await mockArgs({
           data: {
             type: 'posts',
@@ -365,7 +365,7 @@ describe('module "controller"', () => {
         await record.destroy();
       });
 
-      it('returns a record if attribute(s) change', async () => {
+      test('returns a record if attribute(s) change', async () => {
         const id = record.getPrimaryKey();
         const isPublic = true;
         const [request, response] = await mockArgs(id, {
@@ -386,7 +386,7 @@ describe('module "controller"', () => {
         });
       });
 
-      it('returns a record if relationships(s) change', async () => {
+      test('returns a record if relationships(s) change', async () => {
         const id = record.getPrimaryKey();
 
         const newUser = await (async () => {
@@ -470,13 +470,13 @@ describe('module "controller"', () => {
         ));
       });
 
-      it('returns the number `204` if no changes occur', async () => {
+      test('returns the number `204` if no changes occur', async () => {
         const [request, response] = await mockArgs(record.getPrimaryKey());
 
         expect(await subject.update(request, response)).toBe(204);
       });
 
-      it('throws an error if the record is not found', async () => {
+      test('throws an error if the record is not found', async () => {
         const [request, response] = await mockArgs(10000);
 
         await subject
@@ -486,7 +486,7 @@ describe('module "controller"', () => {
           });
       });
 
-      it('supports sparse field sets', async () => {
+      test('supports sparse field sets', async () => {
         const id = record.getPrimaryKey();
 
         const newUser = await (async () => {
@@ -579,13 +579,13 @@ describe('module "controller"', () => {
         });
       });
 
-      it('returns the number `204` if the record is destroyed', async () => {
+      test('returns the number `204` if the record is destroyed', async () => {
         const [request, response] = await mockArgs(record.getPrimaryKey());
 
         expect(await subject.destroy(request, response)).toBe(204);
       });
 
-      it('throws an error if the record is not found', async () => {
+      test('throws an error if the record is not found', async () => {
         const [request, response] = await mockArgs(10000);
 
         await subject
@@ -620,7 +620,7 @@ describe('module "controller"', () => {
         return [request, response];
       };
 
-      it('returns the number `204`', async () => {
+      test('returns the number `204`', async () => {
         const [request, response] = await mockArgs();
 
         expect(await subject.preflight(request, response)).toBe(204);

@@ -3,7 +3,7 @@
 import promiseHash from '../promise-hash';
 
 describe('util promiseHash()', () => {
-  it('resolves `Promise`s within an object', () => {
+  test('resolves `Promise`s within an object', () => {
     const subject = {
       a: 1,
       b: Promise.resolve(2),
@@ -17,7 +17,7 @@ describe('util promiseHash()', () => {
     });
   });
 
-  it('properly bubbles rejections upward', () => {
+  test('properly bubbles rejections upward', () => {
     const subject = {
       a: 1,
       b: Promise.reject(new Error('Test')),

@@ -26,12 +26,12 @@ describe('util camelizeKeys()', () => {
     },
   };
 
-  it('can shallow camelize an objects keys', () => {
+  test('can shallow camelize an objects keys', () => {
     expect(camelizeKeys(subjectA)).toMatchSnapshot();
     expect(camelizeKeys(subjectB)).toMatchSnapshot();
   });
 
-  it('can deep camelize an objects keys', () => {
+  test('can deep camelize an objects keys', () => {
     expect(camelizeKeys(subjectA, true)).toMatchSnapshot();
     expect(camelizeKeys(subjectB, true)).toMatchSnapshot();
   });
@@ -56,12 +56,12 @@ describe('util dasherizeKeys()', () => {
     },
   };
 
-  it('can shallow dasherize an objects keys', () => {
+  test('can shallow dasherize an objects keys', () => {
     expect(dasherizeKeys(subjectA)).toMatchSnapshot();
     expect(dasherizeKeys(subjectB)).toMatchSnapshot();
   });
 
-  it('can deep dasherize an objects keys', () => {
+  test('can deep dasherize an objects keys', () => {
     expect(dasherizeKeys(subjectA, true)).toMatchSnapshot();
     expect(dasherizeKeys(subjectB, true)).toMatchSnapshot();
   });
@@ -86,12 +86,12 @@ describe('util underscoreKeys()', () => {
     },
   };
 
-  it('can shallow underscore an objects keys', () => {
+  test('can shallow underscore an objects keys', () => {
     expect(underscoreKeys(subjectA)).toMatchSnapshot();
     expect(underscoreKeys(subjectB)).toMatchSnapshot();
   });
 
-  it('can deep underscore an objects keys', () => {
+  test('can deep underscore an objects keys', () => {
     expect(underscoreKeys(subjectA, true)).toMatchSnapshot();
     expect(underscoreKeys(subjectB, true)).toMatchSnapshot();
   });
@@ -107,28 +107,28 @@ describe('util transformKeys()', () => {
     },
   };
 
-  it('can shallow transform an objects keys', () => {
+  test('can shallow transform an objects keys', () => {
     const result = transformKeys(subject, key => `${key}Transformed`);
 
     expect(result).toMatchSnapshot();
   });
 
-  it('can deep transform an objects keys', () => {
+  test('can deep transform an objects keys', () => {
     const result = transformKeys(subject, key => `${key}Transformed`, true);
 
     expect(result).toMatchSnapshot();
   });
 
-  it('does not mutate the source object', () => {
+  test('does not mutate the source object', () => {
     expect(subject).toMatchSnapshot();
   });
 
-  it('throws when something other than an object is passed in', () => {
+  test('throws when something other than an object is passed in', () => {
     // $FlowIgnore
     expect(() => transformKeys('', key => key, true)).toThrow();
   });
 
-  it('does not fail when an array is used as a source object', () => {
+  test('does not fail when an array is used as a source object', () => {
     const source = [1, 2, 3];
 
     expect(transformKeys(source, key => key, true)).toEqual(source);

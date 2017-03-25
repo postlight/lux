@@ -29,7 +29,7 @@ describe('module "fs"', () => {
         });
 
         describe('event "change"', () => {
-          it('is called when a file is modified', async () => {
+          test('is called when a file is modified', async () => {
             subject.once('change', files => {
               expect(files).toEqual(expect.any(Array));
             });
@@ -39,7 +39,7 @@ describe('module "fs"', () => {
         });
 
         describe('#destroy()', () => {
-          it('does not throw an error', () => {
+          test('does not throw an error', () => {
             expect(() => subject.destroy()).not.toThrow();
           });
         });
@@ -54,7 +54,7 @@ describe('module "fs"', () => {
       });
 
       describe('event "change"', () => {
-        it('is called when a file is modified', async () => {
+        test('is called when a file is modified', async () => {
           subject.once('change', files => {
             expect(files).toEqual(expect.any(Array));
           });
@@ -64,7 +64,7 @@ describe('module "fs"', () => {
       });
 
       describe('#destroy()', () => {
-        it('does not throw an error', () => {
+        test('does not throw an error', () => {
           expect(() => subject.destroy()).not.toThrow();
         });
       });

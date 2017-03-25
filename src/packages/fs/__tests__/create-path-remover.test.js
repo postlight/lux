@@ -34,7 +34,7 @@ describe('module "fs/utils/create-path-remover"', () => {
           jest.resetModules();
         });
 
-        it('creates a path remover function', () => {
+        test('creates a path remover function', () => {
           const removePath = createPathRemover(basePath);
 
           expect(removePath(subject)).toEqual(file);

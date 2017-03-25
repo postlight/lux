@@ -5,7 +5,7 @@ import sortByNamespace from '../utils/sort-by-namespace';
 
 describe('module "loader/builder"', () => {
   describe('util sortByNamespace()', () => {
-    it('returns -1 if "root" is the first argument', () => {
+    test('returns -1 if "root" is the first argument', () => {
       const result = sortByNamespace(
         ['root', new FreezeableMap()],
         ['api', new FreezeableMap()]
@@ -14,7 +14,7 @@ describe('module "loader/builder"', () => {
       expect(result).toBe(-1);
     });
 
-    it('returns 1 if "root" is the second argument', () => {
+    test('returns 1 if "root" is the second argument', () => {
       const result = sortByNamespace(
         ['api', new FreezeableMap()],
         ['root', new FreezeableMap()]
@@ -23,7 +23,7 @@ describe('module "loader/builder"', () => {
       expect(result).toBe(1);
     });
 
-    it('returns -1 if the first argument is shorter than the second', () => {
+    test('returns -1 if the first argument is shorter than the second', () => {
       const result = sortByNamespace(
         ['api', new FreezeableMap()],
         ['admin', new FreezeableMap()]
@@ -32,7 +32,7 @@ describe('module "loader/builder"', () => {
       expect(result).toBe(-1);
     });
 
-    it('returns 1 if the first argument is longer than the second', () => {
+    test('returns 1 if the first argument is longer than the second', () => {
       const result = sortByNamespace(
         ['admin', new FreezeableMap()],
         ['api', new FreezeableMap()]

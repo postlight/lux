@@ -23,20 +23,20 @@ describe('module "loader"', () => {
       subject = createLoader(APP_PATH);
     });
 
-    it('can create a loader function', () => {
+    test('can create a loader function', () => {
       expect(subject).toEqual(expect.any(Function));
       expect(subject).toHaveLength(1);
     });
 
-    it('can load an Application', () => {
+    test('can load an Application', () => {
       expect(subject('application')).toEqual(expect.any(Function));
     });
 
-    it('can load a config object', () => {
+    test('can load a config object', () => {
       expect(subject('config')).toEqual(expect.any(Object));
     });
 
-    it('can load Controllers', () => {
+    test('can load Controllers', () => {
       const result = subject('controllers');
 
       expect(result instanceof FreezeableMap).toBe(true);
@@ -48,7 +48,7 @@ describe('module "loader"', () => {
       });
     });
 
-    it('can load Migrations', () => {
+    test('can load Migrations', () => {
       const result = subject('migrations');
 
       expect(result instanceof FreezeableMap).toBe(true);
@@ -58,7 +58,7 @@ describe('module "loader"', () => {
       });
     });
 
-    it('can load Models', () => {
+    test('can load Models', () => {
       const result = subject('models');
 
       expect(result instanceof FreezeableMap).toBe(true);
@@ -68,15 +68,15 @@ describe('module "loader"', () => {
       });
     });
 
-    it('can load a routes function', () => {
+    test('can load a routes function', () => {
       expect(subject('routes')).toEqual(expect.any(Function));
     });
 
-    it('can load a database seed function', () => {
+    test('can load a database seed function', () => {
       expect(subject('seed')).toEqual(expect.any(Function));
     });
 
-    it('can load Serializers', () => {
+    test('can load Serializers', () => {
       const result = subject('serializers');
 
       expect(result instanceof FreezeableMap).toBe(true);

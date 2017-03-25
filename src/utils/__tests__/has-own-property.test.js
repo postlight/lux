@@ -13,19 +13,19 @@ describe('util hasOwnProperty()', () => {
     });
   });
 
-  it('returns true when an object has a property', () => {
+  test('returns true when an object has a property', () => {
     const result = hasOwnProperty(subject, 'x');
 
     expect(result).toBe(true);
   });
 
-  it('returns false when an object\'s prototype has a property', () => {
+  test('returns false when an object\'s prototype has a property', () => {
     const result = hasOwnProperty(subject, 'y');
 
     expect(result).toBe(false);
   });
 
-  it('returns false when an object does not have a property', () => {
+  test('returns false when an object does not have a property', () => {
     const result = hasOwnProperty(subject, 'z');
 
     expect(result).toBe(false);

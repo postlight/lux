@@ -3,7 +3,7 @@
 import range from '../range';
 
 describe('util range()', () => {
-  it('creates an iterable sequence of numbers', () => {
+  test('creates an iterable sequence of numbers', () => {
     const subject = range(1, 3);
 
     expect(subject.next()).toEqual({

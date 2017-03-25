@@ -35,7 +35,7 @@ describe('module "router/route/params"', () => {
         });
       });
 
-      it('contains query', () => {
+      test('contains query', () => {
         expect(params.has('userId')).toBe(true);
       });
     });
@@ -61,7 +61,7 @@ describe('module "router/route/params"', () => {
         });
       });
 
-      it('contains sort', () => {
+      test('contains sort', () => {
         expect(params).toEqual(
           expect.objectContaining({
             sort: expect.anything(),
@@ -69,7 +69,7 @@ describe('module "router/route/params"', () => {
         );
       });
 
-      it('contains page cursor', () => {
+      test('contains page cursor', () => {
         expect(params).toEqual(
           expect.objectContaining({
             page: {
@@ -80,7 +80,7 @@ describe('module "router/route/params"', () => {
         );
       });
 
-      it('contains model fields', () => {
+      test('contains model fields', () => {
         const { model, serializer: { attributes } } = controller;
 
         expect(params).toEqual(
@@ -105,7 +105,7 @@ describe('module "router/route/params"', () => {
         });
       });
 
-      it('contains model fields', () => {
+      test('contains model fields', () => {
         const { model, serializer: { attributes } } = controller;
 
         expect(params).toEqual(
@@ -128,7 +128,7 @@ describe('module "router/route/params"', () => {
         });
       });
 
-      it('is an empty object literal', () => {
+      test('is an empty object literal', () => {
         expect(params).toEqual({});
       });
     });
@@ -143,7 +143,7 @@ describe('module "router/route/params"', () => {
         });
       });
 
-      it('is an empty object literal', () => {
+      test('is an empty object literal', () => {
         expect(params).toEqual({});
       });
     });

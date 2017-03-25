@@ -23,7 +23,7 @@ describe('module "loader/resolver"', () => {
   });
 
   describe('#closestChild()', () => {
-    it('can find the closest child by a namespaced key suffix', () => {
+    test('can find the closest child by a namespaced key suffix', () => {
       const serializers = load('serializers');
 
       expect(() => closestChild(serializers, 'users')).not.toThrow();
@@ -31,7 +31,7 @@ describe('module "loader/resolver"', () => {
   });
 
   describe('#closestAncestor()', () => {
-    it('can find the closest ancestor by a namespaced key', () => {
+    test('can find the closest ancestor by a namespaced key', () => {
       const serializers = load('serializers');
 
       expect(() => closestAncestor(serializers, 'admin/users')).not.toThrow();

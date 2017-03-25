@@ -34,7 +34,7 @@ describe('module "controller"', () => {
       await app.destroy();
     });
 
-    it('returns the correct params object', () => {
+    test('returns the correct params object', () => {
       const subject = createParams({
         id: 1,
         sort: 'title',
@@ -68,13 +68,13 @@ describe('module "controller"', () => {
         });
       });
 
-      it('converts `number` and `size` to `page` and `limit`', () => {
+      test('converts `number` and `size` to `page` and `limit`', () => {
         expect(paramsToQuery(Post, subject)).toMatchSnapshot();
       });
     });
 
     describe('- sort', () => {
-      it('converts asc parameters', () => {
+      test('converts asc parameters', () => {
         const subject = createParams({
           sort: 'title'
         });
@@ -82,7 +82,7 @@ describe('module "controller"', () => {
         expect(paramsToQuery(Post, subject)).toMatchSnapshot();
       });
 
-      it('converts desc parameters', () => {
+      test('converts desc parameters', () => {
         const subject = createParams({
           sort: '-title'
         });
@@ -92,7 +92,7 @@ describe('module "controller"', () => {
     });
 
     describe('- fields', () => {
-      it('can properly build included fields', () => {
+      test('can properly build included fields', () => {
         const subject = createParams({
           fields: {
             users: [
@@ -107,7 +107,7 @@ describe('module "controller"', () => {
         expect(paramsToQuery(Post, subject)).toMatchSnapshot();
       });
 
-      it('ignores invalid field sets', () => {
+      test('ignores invalid field sets', () => {
         const subject = createParams({
           fields: {
             authors: [
@@ -122,7 +122,7 @@ describe('module "controller"', () => {
         expect(paramsToQuery(Post, subject)).toMatchSnapshot();
       });
 
-      it('only adds `id` when the include array is `undefined`', () => {
+      test('only adds `id` when the include array is `undefined`', () => {
         const subject = createParams({
           fields: {
             images: [

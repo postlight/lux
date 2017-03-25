@@ -4,7 +4,7 @@ import * as diff from '../diff';
 
 describe('util diff', () => {
   describe('.map()', () => {
-    it('returns a map containing the difference between two maps', () => {
+    test('returns a map containing the difference between two maps', () => {
       const result = diff.map(
         new Map([
           ['x', 1]

@@ -14,7 +14,7 @@ describe('util createQueryString()', () => {
     };
   });
 
-  it('can build a query string from a nested object', () => {
+  test('can build a query string from a nested object', () => {
     expect(createQueryString(subject)).toMatchSnapshot();
   });
 });

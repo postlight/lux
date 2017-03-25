@@ -142,7 +142,7 @@ describe('module "serializer"', () => {
         global.Date.prototype.toISOString = toISOString;
       });
 
-      it('works with a single instance of `Model`', async () => {
+      test('works with a single instance of `Model`', async () => {
         const id = 1;
         const post = await Post.find(id);
         const result = await subject.format({
@@ -158,7 +158,7 @@ describe('module "serializer"', () => {
         expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
       });
 
-      it('works with an array of `Model` instances', async () => {
+      test('works with an array of `Model` instances', async () => {
         const posts = await Post.page(1).order('createdAt');
         const result = await subject.format({
           data: posts,
@@ -173,7 +173,7 @@ describe('module "serializer"', () => {
         expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
       });
 
-      it('can build namespaced links', async () => {
+      test('can build namespaced links', async () => {
         const posts = await Post.page(1).order('createdAt');
         const result = await adminSubject.format({
           data: posts,
@@ -192,7 +192,7 @@ describe('module "serializer"', () => {
         expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
       });
 
-      it('supports including a has-one relationship', async () => {
+      test('supports including a has-one relationship', async () => {
         const id = 18;
         const post = await Post.find(id).include('image');
         const result = await subject.format({
@@ -211,7 +211,7 @@ describe('module "serializer"', () => {
         expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
       });
 
-      it('supports including belongs-to relationships', async () => {
+      test('supports including belongs-to relationships', async () => {
         const id = 1;
         const post = await Post.find(id).include('user');
         const result = await subject.format({
@@ -230,7 +230,7 @@ describe('module "serializer"', () => {
         expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
       });
 
-      it('supports including a one-to-many relationship', async () => {
+      test('supports including a one-to-many relationship', async () => {
         const id = 2;
         const post = await Post.find(id).include('comments');
         const result = await subject.format({
@@ -249,7 +249,7 @@ describe('module "serializer"', () => {
         expect(JSON.stringify(result, null, 2)).toMatchSnapshot();
       });
 
-      it('supports including a many-to-many relationship', async () => {
+      test('supports including a many-to-many relationship', async () => {
         const id = 8;
         const post = await Post.find(id).include('tags');
         const result = await subject.format({

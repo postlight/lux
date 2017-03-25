@@ -15,7 +15,7 @@ describe('module "luxify"', () => {
       }
     ]);
 
-    it('promisifies a callback based middleware function', () => {
+    test('promisifies a callback based middleware function', () => {
       const subject = luxify((req, res, next) => {
         next();
       });
@@ -23,7 +23,7 @@ describe('module "luxify"', () => {
       expect(subject(request, response)).toEqual(expect.any(Promise));
     });
 
-    it('resolves when Response#end is called', () => {
+    test('resolves when Response#end is called', () => {
       const subject = luxify((req, res) => {
         res.end('Hello world!');
       });
@@ -33,7 +33,7 @@ describe('module "luxify"', () => {
       });
     });
 
-    it('resolves when Response#send is called', () => {
+    test('resolves when Response#send is called', () => {
       const subject = luxify((req, res) => {
         Reflect.apply(Reflect.get(res, 'send'), res, ['Hello world!']);
       });
@@ -43,7 +43,7 @@ describe('module "luxify"', () => {
       });
     });
 
-    it('resolves when Response#json is called', () => {
+    test('resolves when Response#json is called', () => {
       const subject = luxify((req, res) => {
         Reflect.apply(Reflect.get(res, 'json'), res, [{
           data: 'Hello world!'
@@ -57,7 +57,7 @@ describe('module "luxify"', () => {
       });
     });
 
-    it('rejects when an error is passed to `next`', () => {
+    test('rejects when an error is passed to `next`', () => {
       const subject = luxify((req, res, next) => {
         next(new Error('Test'));
       });
@@ -67,7 +67,7 @@ describe('module "luxify"', () => {
       });
     });
 
-    it('properly proxies untrapped response properties', () => {
+    test('properly proxies untrapped response properties', () => {
       luxify((req, res) => {
         expect(res.getHeader).toEqual(expect.any(Function));
         expect(res.setHeader).toEqual(expect.any(Function));

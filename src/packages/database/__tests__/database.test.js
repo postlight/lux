@@ -55,14 +55,14 @@ describe('module "database"', () => {
     });
 
     describe('#constructor()', () => {
-      it('creates an instance of `Database`', async () => {
+      test('creates an instance of `Database`', async () => {
         const store = await createDatabase();
 
         expect(store).toBeInstanceOf(Database);
         await store.connection.destroy();
       });
 
-      it('fails when an invalid database driver is used', async () => {
+      test('fails when an invalid database driver is used', async () => {
         const store = await createDatabase({
           development: {
             ...DEFAULT_CONFIG.development,
@@ -97,15 +97,15 @@ describe('module "database"', () => {
         await subject.connection.destroy();
       });
 
-      it('works with a singular key', () => {
+      test('works with a singular key', () => {
         expect(() => subject.modelFor('post')).not.toThrow();
       });
 
-      it('works with a plural key', () => {
+      test('works with a plural key', () => {
         expect(() => subject.modelFor('posts')).not.toThrow();
       });
 
-      it('throws an error if a model does not exist', () => {
+      test('throws an error if a model does not exist', () => {
         expect(() => subject.modelFor('not-a-model-name')).toThrow();
       });
     });

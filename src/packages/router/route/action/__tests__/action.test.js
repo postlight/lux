@@ -39,12 +39,12 @@ describe('module "router/route/action"', () => {
       await app.destroy();
     });
 
-    it('returns an array of functions', () => {
+    test('returns an array of functions', () => {
       expect(result).toEqual(expect.any(Array));
       expect(result).toHaveLength(1);
     });
 
-    it('resolves with the expected value', async () => {
+    test('resolves with the expected value', async () => {
       const fn = result.slice().pop();
       const data = await fn(
         request.create({
@@ -81,7 +81,7 @@ describe('module "router/route/action"', () => {
       defaultPerPage: 25
     });
 
-    it('works with vanilla params', () => {
+    test('works with vanilla params', () => {
       const base = `${DOMAIN}/${RESOURCE}`;
 
       [1, 2, 3, 4].forEach(number => {
@@ -130,7 +130,7 @@ describe('module "router/route/action"', () => {
       });
     });
 
-    it('works with a custom size', () => {
+    test('works with a custom size', () => {
       const size = 10;
       const base = `${DOMAIN}/${RESOURCE}?page%5Bsize%5D=${size}`;
 
@@ -181,7 +181,7 @@ describe('module "router/route/action"', () => {
       });
     });
 
-    it('works with complex parameter sets', () => {
+    test('works with complex parameter sets', () => {
       const base =
         `${DOMAIN}/${RESOURCE}?sort=-created-at&include=user&fields%5Bposts%5D=`
         + 'title&fields%5Busers%5D=name';
@@ -244,7 +244,7 @@ describe('module "router/route/action"', () => {
       });
     });
 
-    it('works when the total is 0', () => {
+    test('works when the total is 0', () => {
       const options = getOptions({
         total: 0,
       });
@@ -252,7 +252,7 @@ describe('module "router/route/action"', () => {
       expect(createPageLinks(options)).toMatchSnapshot();
     });
 
-    it('works when the maximum page is exceeded', () => {
+    test('works when the maximum page is exceeded', () => {
       const options = getOptions({
         params: {
           page: {

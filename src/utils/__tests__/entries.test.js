@@ -14,7 +14,7 @@ describe('util entries()', () => {
       jest.resetModules();
     });
 
-    it('creates an `Array` of key-value pairs from an object', () => {
+    test('creates an `Array` of key-value pairs from an object', () => {
       expect(entries({ a: 1, b: 2, c: 3 })).toMatchSnapshot();
     });
   });
@@ -24,7 +24,7 @@ describe('util entries()', () => {
       ({ default: entries } = require('../entries'));
     });
 
-    it('creates an `Array` of key-value pairs from an object', () => {
+    test('creates an `Array` of key-value pairs from an object', () => {
       expect(entries({ a: 1, b: 2, c: 3 })).toMatchSnapshot();
     });
   });

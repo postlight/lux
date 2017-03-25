@@ -28,7 +28,7 @@ describe('module "adapter/mock"', () => {
   });
 
   describe('#default()', () => {
-    it('resolves with a request/response tuple', async () => {
+    test('resolves with a request/response tuple', async () => {
       const result = await adapter({
         logger,
         url: '/posts',
@@ -69,7 +69,7 @@ describe('module "adapter/mock"', () => {
           });
         });
 
-        it('builds a request from an options object', () => {
+        test('builds a request from an options object', () => {
           expect(subject).toMatchSnapshot();
         });
       });
@@ -86,7 +86,7 @@ describe('module "adapter/mock"', () => {
           });
         });
 
-        it('builds a request from an options object', () => {
+        test('builds a request from an options object', () => {
           expect(subject).toMatchSnapshot();
         });
       });
@@ -111,14 +111,14 @@ describe('module "adapter/mock"', () => {
           resolve.mockClear();
         });
 
-        it('builds a response from an options object', () => {
+        test('builds a response from an options object', () => {
           expect(subject).toMatchSnapshot();
         });
 
         describe('=> Response', () => {
           ['end', 'send'].forEach(method => {
             describe(`#${method}()`, () => {
-              it('calls the resolver function', () => {
+              test('calls the resolver function', () => {
                 const body = 'Test';
 
                 if (method === 'end') {
@@ -141,13 +141,13 @@ describe('module "adapter/mock"', () => {
           });
         });
 
-        it('builds a response from an options object', () => {
+        test('builds a response from an options object', () => {
           expect(subject).toMatchSnapshot();
         });
 
         describe('=> Response', () => {
           describe('#status()', () => {
-            it('returns `this`', () => {
+            test('returns `this`', () => {
               expect(subject.status(201)).toBe(subject);
               expect(subject).toMatchSnapshot();
             });
@@ -158,14 +158,14 @@ describe('module "adapter/mock"', () => {
               subject.headers.set('Content-Type', MIME_TYPE);
             });
 
-            it('proxies headers#get()', () => {
+            test('proxies headers#get()', () => {
               expect(subject.getHeader('Content-Type')).toBe(MIME_TYPE);
               expect(subject.getHeader('X-Test-Header')).toBeUndefined();
             });
           });
 
           describe('#setHeader()', () => {
-            it('proxies headers#set()', () => {
+            test('proxies headers#set()', () => {
               subject.setHeader('Content-Type', MIME_TYPE);
               expect(subject.headers.get('Content-Type')).toBe(MIME_TYPE);
             });
@@ -178,7 +178,7 @@ describe('module "adapter/mock"', () => {
                 .set('X-Test-Header', 'true');
             });
 
-            it('proxies headers#delete()', () => {
+            test('proxies headers#delete()', () => {
               subject.removeHeader('X-Test-Header');
               expect(subject.headers).toMatchSnapshot();
             });

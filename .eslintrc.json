@@ -10,21 +10,22 @@
   },
   "globals": {
     "$PropertyType": true,
-    "Class": true,
-    "Process": true,
-    "Generator": true,
-    "Knex$SchemaBuilder": true,
-    "Knex$QueryBuilder": true,
-    "Knex$Transaction": true,
-    "afterEach": true,
     "afterAll": true,
-    "beforeEach": true,
+    "afterEach": true,
     "beforeAll": true,
+    "beforeEach": true,
+    "Class": true,
     "describe": true,
     "expect": true,
+    "Generator": true,
     "it": true,
+    "jasmine": true,
     "jest": true,
-    "jasmine": true
+    "Knex$QueryBuilder": true,
+    "Knex$SchemaBuilder": true,
+    "Knex$Transaction": true,
+    "Process": true,
+    "test": true
   },
   "settings": {
     "flowtype": {

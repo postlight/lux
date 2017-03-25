@@ -132,7 +132,7 @@ describe('module "database/relationship"', () => {
 
   describe('#get()', () => {
     describe('has-one relationships', () => {
-      it('resolves with the correct value when present', async () => {
+      test('resolves with the correct value when present', async () => {
         const result = await get(record, 'image');
 
         expect(result).toBeTruthy();
@@ -148,7 +148,7 @@ describe('module "database/relationship"', () => {
     });
 
     describe('belongs-to relationships', () => {
-      it('resolves with the correct value when present', async () => {
+      test('resolves with the correct value when present', async () => {
         const result = await get(record, 'user');
 
         expect(result).toBeTruthy();
@@ -166,7 +166,7 @@ describe('module "database/relationship"', () => {
     });
 
     describe('one-to-many relationships', () => {
-      it('resolves with the correct value when present', async () => {
+      test('resolves with the correct value when present', async () => {
         const result = await get(record, 'comments');
 
         expect(Array.isArray(result)).toBe(true);
@@ -186,7 +186,7 @@ describe('module "database/relationship"', () => {
     });
 
     describe('many-to-many relationships', () => {
-      it('resolves with the correct value when present', async () => {
+      test('resolves with the correct value when present', async () => {
         const result = await get(record, 'comments');
 
         expect(Array.isArray(result)).toBe(true);
@@ -225,7 +225,7 @@ describe('module "database/relationship"', () => {
         await del('images').where('id', image.getPrimaryKey());
       });
 
-      it('can add a record to the relationship', () => {
+      test('can add a record to the relationship', () => {
         set(record, 'image', image);
 
         expect(image.toObject()).toEqual(
@@ -261,7 +261,7 @@ describe('module "database/relationship"', () => {
         await del('users').where('id', user.getPrimaryKey());
       });
 
-      it('can add a record to the relationship', () => {
+      test('can add a record to the relationship', () => {
         set(record, 'user', user);
 
         expect(user.toObject()).toEqual(
@@ -299,7 +299,7 @@ describe('module "database/relationship"', () => {
         await del('comments').where('id', comment.getPrimaryKey());
       });
 
-      it('can add records to the relationship', () => {
+      test('can add records to the relationship', () => {
         set(record, 'comments', [comment]);
 
         const dirty = record.dirtyRelationships.get('comments');
@@ -321,7 +321,7 @@ describe('module "database/relationship"', () => {
         );
       });
 
-      it('can remove records from the relationship', () => {
+      test('can remove records from the relationship', () => {
         set(record, 'comments', []);
 
         expect(record.dirtyRelationships.get('comments')).toEqual([]);

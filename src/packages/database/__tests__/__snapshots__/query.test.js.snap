@@ -540,7 +540,7 @@ Array [
 ]
 `;
 
-exports[`module "database/query" class Query #include() properly modifies #snapshots when using an array of strings 1`] = `
+exports[`module "database/query" class Query #include() it works when using an array of strings 1`] = `
 Array [
   Array [
     Array [

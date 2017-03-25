@@ -3,7 +3,7 @@
 import tryCatch, { tryCatchSync } from '../try-catch';
 
 describe('util tryCatch()', () => {
-  it('is a async functional equivalent of try...catch', async () => {
+  test('is a async functional equivalent of try...catch', async () => {
     let value = await tryCatch(() => Promise.resolve(false));
 
     expect(value).toBe(false);
@@ -17,7 +17,7 @@ describe('util tryCatch()', () => {
 });
 
 describe('util tryCatchSync()', () => {
-  it('is a functional equivalent of try...catch', () => {
+  test('is a functional equivalent of try...catch', () => {
     let value = tryCatchSync(() => false);
 
     expect(value).toBe(false);

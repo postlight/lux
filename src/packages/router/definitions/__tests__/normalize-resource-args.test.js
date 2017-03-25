@@ -5,7 +5,7 @@ import normalizeResourceArgs from '../context/utils/normalize-resource-args';
 
 describe('module "router/definitions/context"', () => {
   describe('util normalizeResourceArgs()', () => {
-    it('normalizes arguments with a name only', () => {
+    test('normalizes arguments with a name only', () => {
       const result = normalizeResourceArgs(['posts']);
 
       expect(result).toEqual(
@@ -20,7 +20,7 @@ describe('module "router/definitions/context"', () => {
       );
     });
 
-    it('normalizes arguments with a name and options', () => {
+    test('normalizes arguments with a name and options', () => {
       const result = normalizeResourceArgs(['posts', {
         only: [
           'show',
@@ -43,7 +43,7 @@ describe('module "router/definitions/context"', () => {
       );
     });
 
-    it('normalizes arguments with a name and builder', () => {
+    test('normalizes arguments with a name and builder', () => {
       const result = normalizeResourceArgs(['posts', function build() {
         return undefined;
       }]);
@@ -60,7 +60,7 @@ describe('module "router/definitions/context"', () => {
       );
     });
 
-    it('normalizes arguments with a name, options, and builder', () => {
+    test('normalizes arguments with a name, options, and builder', () => {
       const result = normalizeResourceArgs(['posts', {
         only: [
           'show',

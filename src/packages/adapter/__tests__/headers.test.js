@@ -19,7 +19,7 @@ describe('module "adapters/headers"', () => {
         });
       });
 
-      it('creates an instance of Headers', () => {
+      test('creates an instance of Headers', () => {
         expect(subject).toMatchSnapshot();
       });
     });
@@ -33,12 +33,12 @@ describe('module "adapters/headers"', () => {
           subject.set(key, MIME_TYPE);
         });
 
-        it('returns the correct value for the given key', () => {
+        test('returns the correct value for the given key', () => {
           // $FlowIgnore
           expect(subject[method](key)).toBe(value);
         });
 
-        it('is not case sensitive', () => {
+        test('is not case sensitive', () => {
           // $FlowIgnore
           expect(subject[method](key.toUpperCase())).toBe(value);
         });
@@ -49,7 +49,7 @@ describe('module "adapters/headers"', () => {
       const key = 'Accept';
       const value = MIME_TYPE;
 
-      it('sets the correct value for the given key', () => {
+      test('sets the correct value for the given key', () => {
         expect(subject.set(key, value)).toMatchSnapshot();
       });
     });
@@ -62,12 +62,12 @@ describe('module "adapters/headers"', () => {
         subject.set(key, value);
       });
 
-      it('deletes the entry for a given key', () => {
+      test('deletes the entry for a given key', () => {
         subject.delete(key);
         expect(subject.size).toBe(0);
       });
 
-      it('is not case sensitive', () => {
+      test('is not case sensitive', () => {
         subject.delete(key.toUpperCase());
         expect(subject.size).toBe(0);
       });
@@ -84,14 +84,14 @@ describe('module "adapters/headers"', () => {
     });
 
     describe('#set()', () => {
-      it('calls the change handler', () => {
+      test('calls the change handler', () => {
         subject.set(key, value);
         expect(handleChange).toBeCalledWith('SET', [key, value]);
       });
     });
 
     describe('#delete()', () => {
-      it('calls the change handler', () => {
+      test('calls the change handler', () => {
         subject.delete(key);
         expect(handleChange).toBeCalledWith('DELETE', [key, null]);
       });

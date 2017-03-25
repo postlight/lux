@@ -4,25 +4,25 @@ import * as query from '../utils/query';
 
 describe('module "adapters/query"', () => {
   describe('#camelize()', () => {
-    it('works with spaces', () => {
+    test('works with spaces', () => {
       expect(query.camelize('test camelize')).toBe('testCamelize');
     });
 
-    it('works with dashes', () => {
+    test('works with dashes', () => {
       expect(query.camelize('test-camelize')).toBe('testCamelize');
     });
 
-    it('works with underscores', () => {
+    test('works with underscores', () => {
       expect(query.camelize('test_camelize')).toBe('testCamelize');
     });
 
-    it('works with an empty string', () => {
+    test('works with an empty string', () => {
       expect(query.camelize('')).toBe('');
     });
   });
 
   describe('#fromObject()', () => {
-    it('coerces types from strings', () => {
+    test('coerces types from strings', () => {
       const result = query.fromObject({
         num: '100',
         csv: '1,2,3',
@@ -44,7 +44,7 @@ describe('module "adapters/query"', () => {
       });
     });
 
-    it('can convert objects recursively', () => {
+    test('can convert objects recursively', () => {
       const result = query.fromObject({
         data: {
           num: '100',
@@ -70,7 +70,7 @@ describe('module "adapters/query"', () => {
       });
     });
 
-    it('always coerces `include` to an array', () => {
+    test('always coerces `include` to an array', () => {
       [
         { include: '1' },
         { include: '1,2,3' },
@@ -80,7 +80,7 @@ describe('module "adapters/query"', () => {
       });
     });
 
-    it('always coerces `fields` to an object containing arrays', () => {
+    test('always coerces `fields` to an object containing arrays', () => {
       const result = query.fromObject({
         fields: {
           posts: 'id,title,body,2',

@@ -39,29 +39,29 @@ describe('util proxy', () => {
     });
 
     describe('- properties', () => {
-      it('captures and returns values defined in as traps', () => {
+      test('captures and returns values defined in as traps', () => {
         // $FlowIgnore
         expect(proxied.isProxied).toBe(true);
       });
 
-      it('forwards unknown properties to the proxy target', () => {
+      test('forwards unknown properties to the proxy target', () => {
         expect(proxied.radius).toBe(base.radius);
       });
     });
 
     describe('- methods', () => {
-      it('captures and returns values defined in as traps', () => {
+      test('captures and returns values defined in as traps', () => {
         // $FlowIgnore
         expect(proxied.shortArea()).toBe(314.16);
       });
 
-      it('forwards unknown methods to the proxy target', () => {
+      test('forwards unknown methods to the proxy target', () => {
         expect(proxied.area()).toBe(base.area());
       });
     });
 
     describe('#unwrap', () => {
-      it('returns the proxy target', () => {
+      test('returns the proxy target', () => {
         // $FlowIgnore
         expect(proxied.unwrap()).toBe(base);
       });

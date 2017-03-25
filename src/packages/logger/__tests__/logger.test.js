@@ -63,7 +63,7 @@ describe('module "logger"', () => {
       }
     });
 
-    it('writes to stdout at the logger level', (done) => {
+    test('writes to stdout at the logger level', (done) => {
       unhookWrite = hookWrite(ln => {
         const { message, level } = JSON.parse(ln);
         expect(message).toBe(TEST_MESSAGE);
@@ -73,7 +73,7 @@ describe('module "logger"', () => {
       jsonLogger.info(TEST_MESSAGE);
     });
 
-    it('does write messages above the logger level', (done) => {
+    test('does write messages above the logger level', (done) => {
       unhookWrite = hookWrite(ln => {
         const { message, level } = JSON.parse(ln);
         expect(message).toBe(TEST_MESSAGE);
@@ -83,7 +83,7 @@ describe('module "logger"', () => {
       jsonLogger.warn(TEST_MESSAGE);
     });
 
-    it('does not write messages below the logger level', (done) => {
+    test('does not write messages below the logger level', (done) => {
       unhookWrite = hookWrite(() => {
         done(new Error('Should not log message of lower level.'));
       });
@@ -91,7 +91,7 @@ describe('module "logger"', () => {
       setTimeout(() => done(), 50);
     });
 
-    it('writes with a recent timestamp', (done) => {
+    test('writes with a recent timestamp', (done) => {
       const oldTimestamp = Date.now();
       unhookWrite = hookWrite(ln => {
         const { timestamp } = JSON.parse(ln);
@@ -101,7 +101,7 @@ describe('module "logger"', () => {
       jsonLogger.info(TEST_MESSAGE);
     });
 
-    it('writes json', (done) => {
+    test('writes json', (done) => {
       unhookWrite = hookWrite(ln => {
         const trimmed = ln.trim();
 
@@ -111,7 +111,7 @@ describe('module "logger"', () => {
       jsonLogger.info(TEST_MESSAGE);
     });
 
-    it('does not write when disabled', (done) => {
+    test('does not write when disabled', (done) => {
       unhookWrite = hookWrite(() => {
         done(new Error('Logger should not write when disabled'));
       });
@@ -121,7 +121,7 @@ describe('module "logger"', () => {
   });
 
   describe('#line()', () => {
-    it('returns a single line string from a multi-line string', () => {
+    test('returns a single line string from a multi-line string', () => {
       expect(line`
         this
         is

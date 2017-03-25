@@ -33,7 +33,7 @@ describe('module "database/transaction"', () => {
   });
 
   describe('.createTransactionResultProxy()', () => {
-    it('has a #didPersist property', () => {
+    test('has a #didPersist property', () => {
       const proxy = createTransactionResultProxy(new Subject(), true);
 
       expect(proxy.didPersist).toBe(true);
@@ -66,7 +66,7 @@ describe('module "database/transaction"', () => {
         }
       });
 
-      it('calls create on the model with the trx object', async () => {
+      test('calls create on the model with the trx object', async () => {
         const args = [{}];
 
         await Subject.transaction(trx => {
@@ -112,7 +112,7 @@ describe('module "database/transaction"', () => {
           }
         });
 
-        it(`calls ${method} on the instance with the trx object`, async () => {
+        test(`calls ${method} on the instance`, async () => {
           const obj = {};
           const args = [];
 
