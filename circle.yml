@@ -20,9 +20,6 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dependency-cache-{{ checksum "yarn.lock" }}
-            # If cache for the exact version of `yarn.lock` is not present, then
-            # load the most recent one.
             - dependency-cache-
       - run:
           name: Install Dependencies
@@ -33,7 +30,7 @@ jobs:
             yarn install
             cd ../../
       - save_cache:
-          key: dependency-cache-{{ checksum "yarn.lock" }}
+          key: dependency-cache-{{ epoch }}
           paths:
             - ~/.yarn
             - ~/.yarn-cache
