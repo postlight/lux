@@ -14,7 +14,7 @@ services:
   - mysql
   - postgresql
 environment:
-  nodejs_version: 6
+  nodejs_version: 6.10.0
   NODE_ENV: test
   CREATE_DATABASE: CREATE DATABASE lux_test;
   DROP_DATABASE: DROP DATABASE IF EXISTS lux_test;
