@@ -357,7 +357,7 @@ class Controller {
    * dealing with many common tasks, such as authentication.
    *
    * Functions called from the `beforeAction` hook will have `request` and
-   * `response` objects passed as arguements.
+   * `response` objects passed as arguments.
    *
    * **Example:**
    *
@@ -405,7 +405,7 @@ class Controller {
    *
    * Functions called from the `afterAction` hook will have `request` and
    * `response` objects passed as arguments as well as a third `payload`
-   * arguements that is a reference to resolved data of the Controller action
+   * arguments that is a reference to resolved data of the Controller action
    * that was called within the current `request` / `response` cycle. If you
    * return a value from a function added to the `afterAction` hook, that value
    * will be used instead of the resolved data from the preceding Conroller

@@ -104,7 +104,7 @@ class Route extends FreezeableSet<Action<any>> {
       }
     } else {
       throw new TypeError(
-        'Arguements `controller` and `action`  must not be undefined'
+        'Arguments `controller` and `action` must not be undefined'
       );
     }
 
