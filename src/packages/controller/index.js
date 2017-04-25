@@ -405,14 +405,15 @@ class Controller {
    *
    * Functions called from the `afterAction` hook will have `request` and
    * `response` objects passed as arguments as well as a third `payload`
-   * arguments that is a reference to resolved data of the Controller action
-   * that was called within the current `request` / `response` cycle. If you
-   * return a value from a function added to the `afterAction` hook, that value
-   * will be used instead of the resolved data from the preceding Conroller
-   * action. Subsequent hooks called from an `afterAction` hook will will use
-   * the value returned or resolved from preceding hook. This makes
-   * `afterAction` a great place to modify the data you are sending back to the
-   * client.
+   * argument. The `payload` argument is a reference to the resolved data of
+   * the Controller action that was called within the current `request` /
+   * `response` cycle. You need to explicitly return this `payload` in order for
+   * the afterAction to resolve with it's data. If you return a modified value
+   * from a function added to the `afterAction` hook, that value will be used
+   * instead of the resolved data from the preceding Controller action.
+   * Subsequent hooks called from an `afterAction` hook will will use the value
+   * returned or resolved from the preceding hook. This makes `afterAction` a
+   * great place to modify the data you are sending back to the client.
    *
    * **Example:**
    *
