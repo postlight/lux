@@ -96,8 +96,12 @@ export function formatInclude(include: string | Array<string>): Array<string> {
  */
 export default function format(params: Object, method: Request$method): Object {
   const result = entries(params).reduce((obj, param) => {
-    const [, value] = param;
+    let [, value] = param;
     let [key] = param;
+
+    if (key.endsWith('[]') && !Array.isArray(value)) {
+      value = [value];
+    }
 
     key = key.replace(BRACKETS, '');
 
