@@ -562,6 +562,47 @@ describe('module "database/model"', () => {
       });
     });
 
+    describe('.whereBetween()', () => {
+      class Subject extends Model {
+        static tableName = 'posts';
+      }
+
+      before(async () => {
+        await Subject.initialize(store, () => {
+          return store.connection(Subject.tableName);
+        });
+      });
+
+      it('returns an instance of `Query`', () => {
+        const result = Subject.whereBetween({
+          userId: [1, 10]
+        });
+
+        expect(result).to.be.an.instanceof(Query);
+      });
+    });
+
+    describe('.whereRaw()', () => {
+      class Subject extends Model {
+        static tableName = 'posts';
+      }
+
+      before(async () => {
+        await Subject.initialize(store, () => {
+          return store.connection(Subject.tableName);
+        });
+      });
+
+      it('returns an instance of `Query`', () => {
+        const result = Subject.whereRaw(
+          `"title" LIKE ?`,
+          [`%Test%`]
+        );
+
+        expect(result).to.be.an.instanceof(Query);
+      });
+    });
+
     describe('.not()', () => {
       class Subject extends Model {
         static tableName = 'posts';

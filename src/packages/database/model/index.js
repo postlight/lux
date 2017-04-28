@@ -1342,6 +1342,16 @@ class Model {
     return new Query(this).where(conditions);
   }
 
+  static whereBetween(conditions: Object): Query<Array<this>> {
+    return new Query(this).whereBetween(conditions);
+  }
+
+  static whereRaw(
+    query: string,
+    bindings: Array<any> = []): Query<Array<this>> {
+    return new Query(this).whereRaw(query, bindings);
+  }
+
   static not(conditions: Object): Query<Array<this>> {
     return new Query(this).not(conditions);
   }

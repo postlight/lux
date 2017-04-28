@@ -48,7 +48,7 @@ export default async function seed(trx) {
     Array.from(range(1, 100)).map(() => (
       Post.transacting(trx).create({
         body: lorem.paragraphs(),
-        title: lorem.sentence(),
+        title: `${arguments[1] === 0 ? 'Test ' : ''} ${lorem.sentence()}`,
         userId: randomize([...range(1, 100)]),
         isPublic: random.boolean()
       })

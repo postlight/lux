@@ -407,6 +407,16 @@ describe('module "database/query"', () => {
         ]);
       });
 
+      it('properly handles null conditions', () => {
+        const result = subject.where({
+          isPublic: null
+        });
+
+        expect(result.snapshots).to.deep.equal([
+          ['whereNull', ['posts.is_public']]
+        ]);
+      });
+
       it('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.where({
           isPublic: true
@@ -418,6 +428,93 @@ describe('module "database/query"', () => {
           result.forEach(item => {
             assertItem(item);
             expect(item).to.have.property('isPublic', true);
+          });
+        }
+      });
+    });
+
+    describe('#whereBetween()', () => {
+      let subject;
+
+      beforeEach(() => {
+        subject = new Query(TestModel);
+      });
+
+      it('returns `this`', () => {
+        const result = subject.whereBetween({
+          userId: [1, 10]
+        });
+
+        expect(result).to.equal(subject);
+      });
+
+      it('properly modifies #snapshots', () => {
+        const result = subject.whereBetween({
+          userId: [1, 10]
+        });
+
+        expect(result.snapshots).to.deep.equal([
+          ['whereBetween', ['posts.user_id', [1, 10]]]
+        ]);
+      });
+
+      it('resolves with the correct array of `Model` instances', async () => {
+        const result = await subject.whereBetween({
+          userId: [1, 10]
+        });
+
+        expect(result).to.be.an('array');
+
+        if (Array.isArray(result)) {
+          result.forEach(item => {
+            assertItem(item);
+            expect(item.userId).to.be.above(0).and.below(11);
+
+          });
+        }
+      });
+    });
+
+    describe('#whereRaw()', () => {
+      let subject;
+
+      beforeEach(() => {
+        subject = new Query(TestModel);
+      });
+
+      it('returns `this`', () => {
+        const result = subject.whereRaw(
+          `"title" LIKE ?`,
+          [`%Test%`]
+        );
+
+        expect(result).to.equal(subject);
+      });
+
+      it('properly modifies #snapshots', () => {
+        const result = subject.whereRaw(
+          `"title" LIKE ?`,
+          [`%Test%`]
+        );
+
+        expect(result.snapshots).to.deep.equal([
+          ['whereRaw', [`"title" LIKE ?`, [`%Test%`]]]
+        ]);
+      });
+
+      it('resolves with the correct array of `Model` instances', async () => {
+        const result = await subject.whereRaw(
+          `"title" LIKE ?`,
+          [`%Test%`]
+        );
+
+        expect(result).to.be.an('array');
+
+        if (Array.isArray(result)) {
+          result.forEach(item => {
+            assertItem(item);
+            expect(item.title).to.match(/Test/);
+
           });
         }
       });
