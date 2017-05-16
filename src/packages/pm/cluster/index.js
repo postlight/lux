@@ -193,7 +193,7 @@ class Cluster extends EventEmitter {
       const timeout = setTimeout(() => worker.kill(), 5000);
 
       worker.once('disconnect', () => {
-        worker.emit('exit');
+        worker.kill();
       });
 
       worker.once('exit', () => {
