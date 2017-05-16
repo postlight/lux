@@ -1,5 +1,31 @@
 # Lux Changelog
 
+### v1.2.0 (May 16, 2017)
+
+##### Commits
+
+*   [[`73bb9d1817`](https://github.com/postlight/lux/commit/73bb9d1817)] - **deps**: update outdated dependencies (#704) (Zachary Golba)
+*   [[`5ba179700d`](https://github.com/postlight/lux/commit/5ba179700d)] - **fix**: gracefully shutdown workers instead of waiting for the timeout to pass (fixes #702) (#703) (Nick Schot)
+*   [[`df96fd669b`](https://github.com/postlight/lux/commit/df96fd669b)] - **feat**: expands knex query coverage on models (#691) (Will Viles)
+*   [[`dd200af8a2`](https://github.com/postlight/lux/commit/dd200af8a2)] - **docs**: clarify after action behavior (#690) (Nick Schot)
+*   [[`b636bf527d`](https://github.com/postlight/lux/commit/b636bf527d)] - **docs**: fix typos (#689) (Nick Schot)
+*   [[`608409d670`](https://github.com/postlight/lux/commit/608409d670)] - **docs**: add code of conduct and contributing documentation (#671) (Zachary Golba)
+*   [[`61bb4f4b04`](https://github.com/postlight/lux/commit/61bb4f4b04)] - **feat**: source code & test app debugger (#685) (Will Viles)
+*   [[`7858af506c`](https://github.com/postlight/lux/commit/7858af506c)] - **fix**: serialized responses containing a self join is missing attributes (#675) (Zachary Golba)
+*   [[`2e223dfc8e`](https://github.com/postlight/lux/commit/2e223dfc8e)] - **feat**: allow creating model instance with a specific id (#679) (Jame)
+*   [[`33a0ef3194`](https://github.com/postlight/lux/commit/33a0ef3194)] - **deps**: update babel-plugin-istanbul to version 4.0.0 (#680) (Greenkeeper)
+*   [[`9c50ed46d2`](https://github.com/postlight/lux/commit/9c50ed46d2)] - **deps**: update eslint-config-airbnb-base to version 11.1.0 (#677) (Greenkeeper)
+*   [[`ed943b506a`](https://github.com/postlight/lux/commit/ed943b506a)] - **deps**: update eslint to version 3.15.0 (#676) (Greenkeeper)
+*   [[`1e703f1a1e`](https://github.com/postlight/lux/commit/1e703f1a1e)] - **deps**: update third party type definitions (#670) (Zachary Golba)
+*   [[`c44ec71414`](https://github.com/postlight/lux/commit/c44ec71414)] - **deps**: update fb-watchman to version 2.0.0 (#673) (Greenkeeper)
+*   [[`478d4d27c5`](https://github.com/postlight/lux/commit/478d4d27c5)] - **dx**: add .nvmrc file (#672) (Zachary Golba)
+*   [[`8b9c4772f3`](https://github.com/postlight/lux/commit/8b9c4772f3)] - **deps**: update source-map-support to version 0.4.11 (#667) (Greenkeeper)
+*   [[`8035ab7dd8`](https://github.com/postlight/lux/commit/8035ab7dd8)] - **deps**: update inflection to version 1.12.0 (#669) (Greenkeeper)
+*   [[`1ed30b373c`](https://github.com/postlight/lux/commit/1ed30b373c)] - **deps**: update fb-watchman to version 1.9.2 (#668) (Greenkeeper)
+*   [[`41793aedc8`](https://github.com/postlight/lux/commit/41793aedc8)] - **deps**: update eslint to version 3.14.1 (#665) (Greenkeeper)
+*   [[`f3cd85926a`](https://github.com/postlight/lux/commit/f3cd85926a)] - **test**: properly test against pg driver on appveyor (#664) (Zachary Golba)
+*   [[`65821af0c1`](https://github.com/postlight/lux/commit/65821af0c1)] - **release**: v1.1.7 🔧 (#663) (Zachary Golba)
+
 ### v1.1.7 (Jan 24, 2017)
 
 ##### Commits
@@ -601,7 +627,7 @@ function routes() {
 
   this.namespace('admin', function () {
     this.resource('posts');
-  });  
+  });
 }
 ```
 
