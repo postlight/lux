@@ -13,6 +13,8 @@ describe('module "database/model"', () => {
     let Image: Class<Model>;
     let Comment: Class<Model>;
 
+
+
     beforeAll(async () => {
       app = await getTestApp();
       ({ store } = app);
@@ -508,15 +510,55 @@ describe('module "database/model"', () => {
       });
     });
 
+    describe('.whereBetween()', () => {
+      class Subject extends Model {
+        static tableName = 'posts';
+      }
+
+      beforeAll(async () => {
+        await Subject.initialize(store, () =>
+          store.connection(Subject.tableName)
+        );
+      });
+
+      it('returns an instance of `Query`', () => {
+        const result = Subject.whereBetween({
+          userId: [1, 10]
+        });
+
+        expect(result instanceof Query).toBe(true);
+      });
+    });
+
+    describe('.whereRaw()', () => {
+      class Subject extends Model {
+        static tableName = 'posts';
+      }
+
+      beforeAll(async () => {
+        await Subject.initialize(store, () =>
+          store.connection(Subject.tableName)
+        );
+      });
+
+      it('returns an instance of `Query`', () => {
+        const result = Subject.whereRaw(
+          `"title" LIKE ?`,
+          [`%Test%`]
+        );
+
+        expect(result instanceof Query).toBe(true);
+      });
+    });
+
     describe('.first()', () => {
       class Subject extends Model {
         static tableName = 'posts';
       }
 
       beforeAll(async () => {
-        await Subject.initialize(
-          store,
-          () => store.connection(Subject.tableName)
+        await Subject.initialize(store, () =>
+          store.connection(Subject.tableName)
         );
       });
 

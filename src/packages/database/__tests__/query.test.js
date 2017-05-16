@@ -132,6 +132,14 @@ describe('module "database/query"', () => {
 
         expect(result.map(item => item.toObject())).toMatchSnapshot();
       });
+
+      test('properly handles null conditions', () => {
+        const result = subject.where({
+          isPublic: null
+        });
+
+        expect(result.snapshots).toMatchSnapshot();
+      });
     });
 
     describe('#not()', () => {
@@ -399,6 +407,87 @@ describe('module "database/query"', () => {
           result.forEach(item => {
             assertItem(item);
             expect(item.isPublic).toBe(true);
+          });
+        }
+      });
+    });
+
+    describe('#whereBetween()', () => {
+      let subject;
+
+      beforeEach(() => {
+        subject = new Query(TestModel);
+      });
+
+      test('returns `this`', () => {
+        const result = subject.whereBetween({
+          userId: [1, 10]
+        });
+
+        expect(result).toBe(subject);
+      });
+
+      test('properly modifies #snapshots', () => {
+        const result = subject.whereBetween({
+          userId: [1, 10]
+        });
+
+        expect(result.snapshots).toMatchSnapshot();
+      });
+
+      test('resolves with the correct array of `Model` instances', async () => {
+        const result = await subject.whereBetween({
+          userId: [1, 10]
+        });
+
+        expect(result).toEqual(expect.any(Array));
+
+        if (Array.isArray(result)) {
+          result.forEach(item => {
+            assertItem(item);
+            expect(item.userId > 0 && item.userId < 11).toBe(true);
+          });
+        }
+      });
+    });
+
+    describe('#whereRaw()', () => {
+      let subject;
+
+      beforeEach(() => {
+        subject = new Query(TestModel);
+      });
+
+      test('returns `this`', () => {
+        const result = subject.whereRaw(
+          '"title" LIKE ?',
+          ['%Test%']
+        );
+
+        expect(result).toBe(subject);
+      });
+
+      test('properly modifies #snapshots', () => {
+        const result = subject.whereRaw(
+          '"title" LIKE ?',
+          ['%Test%']
+        );
+
+        expect(result.snapshots).toMatchSnapshot();
+      });
+
+      test('resolves with the correct array of `Model` instances', async () => {
+        const result = await subject.whereRaw(
+          '"title" LIKE ?',
+          ['%Test%']
+        );
+
+        expect(result).toEqual(expect.any(Array));
+
+        if (Array.isArray(result)) {
+          result.forEach(item => {
+            assertItem(item);
+            expect(item.title).toMatch(/Test/);
           });
         }
       });

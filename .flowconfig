@@ -15,7 +15,6 @@ decl/
 
 [options]
 emoji=true
-strip_root=true
 suppress_comment=\\(.\\|\n\\)*\\$FlowIgnore
 
 module.name_mapper='LUX_LOCAL' -> '<PROJECT_ROOT>'
@@ -25,6 +24,3 @@ unsafe.enable_getters_and_setters=true
 
 esproposal.class_static_fields=enable
 esproposal.class_instance_fields=enable
-
-[version]
-^0.42.0

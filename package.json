@@ -67,7 +67,7 @@
     "eslint-plugin-import": "2.2.0",
     "eslint-plugin-jest": "20.0.1",
     "faker": "4.1.0",
-    "flow-bin": "0.42.0",
+    "flow-bin": "0.46.0",
     "flow-typed": "2.1.2",
     "jest": "20.0.1",
     "jest-cli": "20.0.1",
@@ -81,7 +81,6 @@
     "testRegex": "\\.test\\.js$",
     "testEnvironment": "node",
     "cacheDirectory": "./.jest-cache",
-    "collectCoverage": true,
     "coveragePathIgnorePatterns": [
       "/test/",
       "/__tests__/",

@@ -2,6 +2,8 @@
 
 exports[`module "database/query" class Query #all() does not modify #snapshots 1`] = `Array []`;
 
+exports[`module "database/query" class Query #all() properly handles null conditions 1`] = `Array []`;
+
 exports[`module "database/query" class Query #all() resolves with the correct array of \`Model\` instances 1`] = `
 Array [
   Object {
@@ -854,6 +856,35 @@ Array [
   Array [
     "limit",
     10,
+  ],
+]
+`;
+
+exports[`module "database/query" class Query #whereBetween() properly modifies #snapshots 1`] = `
+Array [
+  Array [
+    "whereBetween",
+    Array [
+      "posts.user_id",
+      Array [
+        1,
+        10,
+      ],
+    ],
+  ],
+]
+`;
+
+exports[`module "database/query" class Query #whereRaw() properly modifies #snapshots 1`] = `
+Array [
+  Array [
+    "whereRaw",
+    Array [
+      "\\"title\\" LIKE ?",
+      Array [
+        "%Test%",
+      ],
+    ],
   ],
 ]
 `;

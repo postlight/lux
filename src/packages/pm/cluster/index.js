@@ -235,6 +235,7 @@ class Cluster extends EventEmitter {
           return arr;
         }, []);
 
+      // $FlowIgnore
       return composeAsync(...groups)();
     }
 

@@ -475,6 +475,7 @@ class Query<+T: any> extends Promise {
     return super.then(onFulfilled, onRejected);
   } // eslint-disable-line brace-style
 
+  // $FlowIgnore
   catch<U>(onRejected?: (error: Error) => ?Promise<U> | U): Promise<U> {
     runQuery(this);
     return super.catch(onRejected);
