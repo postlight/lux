@@ -25,6 +25,8 @@ type CompileOptions = {
   useStrict?: boolean;
 };
 
+let cache;
+
 /**
  * @private
  */
@@ -119,8 +121,11 @@ export async function compile(
       }),
       babel(),
       lux(path.resolve(path.sep, dir, 'app'))
-    ]
+    ],
+    cache: cache
   });
+
+  cache = bundle;
 
   await rmrf(entry);
 
