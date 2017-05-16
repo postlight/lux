@@ -190,15 +190,19 @@ class Cluster extends EventEmitter {
     return new Promise(resolve => {
       this.workers.delete(worker);
 
-      worker.send('shutdown');
-      worker.disconnect();
-
       const timeout = setTimeout(() => worker.kill(), 5000);
+
+      worker.once('disconnect', () => {
+        worker.emit('exit');
+      });
 
       worker.once('exit', () => {
         resolve(worker);
         clearTimeout(timeout);
       });
+
+      worker.send('shutdown');
+      worker.disconnect();
     });
   }
 
