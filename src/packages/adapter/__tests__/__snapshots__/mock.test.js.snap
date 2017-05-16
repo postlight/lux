@@ -5,12 +5,9 @@ Array [
   Request {
     "defaultParams": Object {},
     "encrypted": false,
-    "headers": Array [
-      Array [
-        "accept",
-        "application/vnd.api+json",
-      ],
-    ],
+    "headers": Map {
+      "accept" => "application/vnd.api+json",
+    },
     "logger": Logger {
       "enabled": false,
       "filter": Object {
@@ -40,7 +37,7 @@ Array [
   Response {
     "end": [Function],
     "getHeader": [Function],
-    "headers": Array [],
+    "headers": Map {},
     "logger": Logger {
       "enabled": false,
       "filter": Object {
@@ -64,16 +61,10 @@ exports[`module "adapter/mock" #request #create() - with \`body\` builds a reque
 Request {
   "defaultParams": Object {},
   "encrypted": false,
-  "headers": Array [
-    Array [
-      "accept",
-      "application/vnd.api+json",
-    ],
-    Array [
-      "content-type",
-      "application/vnd.api+json",
-    ],
-  ],
+  "headers": Map {
+    "accept" => "application/vnd.api+json",
+    "content-type" => "application/vnd.api+json",
+  },
   "logger": Logger {
     "enabled": false,
     "filter": Object {
@@ -115,12 +106,9 @@ exports[`module "adapter/mock" #request #create() - without \`body\` builds a re
 Request {
   "defaultParams": Object {},
   "encrypted": false,
-  "headers": Array [
-    Array [
-      "accept",
-      "application/vnd.api+json",
-    ],
-  ],
+  "headers": Map {
+    "accept" => "application/vnd.api+json",
+  },
   "logger": Logger {
     "enabled": false,
     "filter": Object {
@@ -154,7 +142,7 @@ Array [
   Array [
     Object {
       "body": "Test",
-      "headers": Array [],
+      "headers": Map {},
       "statusCode": 200,
       "statusText": "OK",
     },
@@ -167,7 +155,7 @@ Array [
   Array [
     Object {
       "body": "Test",
-      "headers": Array [],
+      "headers": Map {},
       "statusCode": 200,
       "statusText": "OK",
     },
@@ -179,7 +167,7 @@ exports[`module "adapter/mock" #response #create() - with a resolver function bu
 Response {
   "end": [Function],
   "getHeader": [Function],
-  "headers": Array [],
+  "headers": Map {},
   "logger": Logger {
     "enabled": false,
     "filter": Object {
@@ -199,19 +187,16 @@ Response {
 `;
 
 exports[`module "adapter/mock" #response #create() - without a resolver function => Response #removeHeader() proxies headers#delete() 1`] = `
-Array [
-  Array [
-    "content-type",
-    "application/vnd.api+json",
-  ],
-]
+Map {
+  "content-type" => "application/vnd.api+json",
+}
 `;
 
 exports[`module "adapter/mock" #response #create() - without a resolver function => Response #status() returns \`this\` 1`] = `
 Response {
   "end": [Function],
   "getHeader": [Function],
-  "headers": Array [],
+  "headers": Map {},
   "logger": Logger {
     "enabled": false,
     "filter": Object {
@@ -234,7 +219,7 @@ exports[`module "adapter/mock" #response #create() - without a resolver function
 Response {
   "end": [Function],
   "getHeader": [Function],
-  "headers": Array [],
+  "headers": Map {},
   "logger": Logger {
     "enabled": false,
     "filter": Object {

@@ -13,6 +13,7 @@ import { rollup } from 'rollup';
 
 import { rmrf, readdir, readdirRec, isJSFile } from '../fs';
 import template from '../template';
+import { NODE_ENV } from '../../constants';
 
 import onwarn from './utils/handle-warning';
 import isExternal from './utils/is-external';
@@ -27,6 +28,8 @@ type Options = {
   local?: string;
   useStrict?: boolean;
 };
+
+let cache;
 
 /**
  * @private
@@ -101,6 +104,7 @@ export async function compile(
     entry,
     onwarn,
     external,
+    cache,
     plugins: [
       alias({
         resolve: ['.js'],
@@ -127,6 +131,10 @@ export async function compile(
       lux(path.resolve(path.sep, dir, 'app'))
     ]
   });
+
+  if (NODE_ENV === 'development') {
+    cache = bundle;
+  }
 
   await rmrf(entry);
 

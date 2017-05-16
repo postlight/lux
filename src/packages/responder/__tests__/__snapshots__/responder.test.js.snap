@@ -5,12 +5,9 @@ Array [
   Array [
     Object {
       "body": "{\\"errors\\":[{\\"status\\":\\"401\\",\\"title\\":\\"Unauthorized\\"}],\\"jsonapi\\":{\\"version\\":\\"1.0\\"}}",
-      "headers": Array [
-        Array [
-          "content-type",
-          "application/vnd.api+json",
-        ],
-      ],
+      "headers": Map {
+        "content-type" => "application/vnd.api+json",
+      },
       "statusCode": 401,
       "statusText": "OK",
     },
@@ -23,7 +20,7 @@ Array [
   Array [
     Object {
       "body": "undefined",
-      "headers": Array [],
+      "headers": Map {},
       "statusCode": 204,
       "statusText": "OK",
     },
@@ -36,12 +33,9 @@ Array [
   Array [
     Object {
       "body": "{\\"errors\\":[{\\"status\\":\\"404\\",\\"title\\":\\"Not Found\\"}],\\"jsonapi\\":{\\"version\\":\\"1.0\\"}}",
-      "headers": Array [
-        Array [
-          "content-type",
-          "application/vnd.api+json",
-        ],
-      ],
+      "headers": Map {
+        "content-type" => "application/vnd.api+json",
+      },
       "statusCode": 404,
       "statusText": "OK",
     },
@@ -54,7 +48,7 @@ Array [
   Array [
     Object {
       "body": "",
-      "headers": Array [],
+      "headers": Map {},
       "statusCode": 204,
       "statusText": "OK",
     },
@@ -67,12 +61,9 @@ Array [
   Array [
     Object {
       "body": "{\\"errors\\":[{\\"status\\":\\"400\\",\\"title\\":\\"Bad Request\\"}],\\"jsonapi\\":{\\"version\\":\\"1.0\\"}}",
-      "headers": Array [
-        Array [
-          "content-type",
-          "application/vnd.api+json",
-        ],
-      ],
+      "headers": Map {
+        "content-type" => "application/vnd.api+json",
+      },
       "statusCode": 400,
       "statusText": "OK",
     },
@@ -85,12 +76,9 @@ Array [
   Array [
     Object {
       "body": "Hello World",
-      "headers": Array [
-        Array [
-          "content-type",
-          "text/plain",
-        ],
-      ],
+      "headers": Map {
+        "content-type" => "text/plain",
+      },
       "statusCode": 200,
       "statusText": "OK",
     },
@@ -103,12 +91,9 @@ Array [
   Array [
     Object {
       "body": "{\\"errors\\":[{\\"status\\":\\"403\\",\\"title\\":\\"Forbidden\\",\\"detail\\":\\"Forbidden\\"}],\\"jsonapi\\":{\\"version\\":\\"1.0\\"}}",
-      "headers": Array [
-        Array [
-          "content-type",
-          "application/vnd.api+json",
-        ],
-      ],
+      "headers": Map {
+        "content-type" => "application/vnd.api+json",
+      },
       "statusCode": 403,
       "statusText": "OK",
     },
@@ -121,12 +106,9 @@ Array [
   Array [
     Object {
       "body": "{\\"errors\\":[{\\"status\\":\\"500\\",\\"title\\":\\"Internal Server Error\\",\\"detail\\":\\"test\\"}],\\"jsonapi\\":{\\"version\\":\\"1.0\\"}}",
-      "headers": Array [
-        Array [
-          "content-type",
-          "application/vnd.api+json",
-        ],
-      ],
+      "headers": Map {
+        "content-type" => "application/vnd.api+json",
+      },
       "statusCode": 500,
       "statusText": "OK",
     },
@@ -139,12 +121,9 @@ Array [
   Array [
     Object {
       "body": "{\\"errors\\":[{\\"status\\":\\"404\\",\\"title\\":\\"Not Found\\"}],\\"jsonapi\\":{\\"version\\":\\"1.0\\"}}",
-      "headers": Array [
-        Array [
-          "content-type",
-          "application/vnd.api+json",
-        ],
-      ],
+      "headers": Map {
+        "content-type" => "application/vnd.api+json",
+      },
       "statusCode": 404,
       "statusText": "OK",
     },
@@ -157,12 +136,9 @@ Array [
   Array [
     Object {
       "body": "[\\"test\\",true]",
-      "headers": Array [
-        Array [
-          "content-type",
-          "application/vnd.api+json",
-        ],
-      ],
+      "headers": Map {
+        "content-type" => "application/vnd.api+json",
+      },
       "statusCode": 200,
       "statusText": "OK",
     },
@@ -175,12 +151,9 @@ Array [
   Array [
     Object {
       "body": "{\\"test\\":true}",
-      "headers": Array [
-        Array [
-          "content-type",
-          "application/vnd.api+json",
-        ],
-      ],
+      "headers": Map {
+        "content-type" => "application/vnd.api+json",
+      },
       "statusCode": 200,
       "statusText": "OK",
     },
@@ -193,12 +166,9 @@ Array [
   Array [
     Object {
       "body": "{\\"errors\\":[{\\"status\\":\\"404\\",\\"title\\":\\"Not Found\\"}],\\"jsonapi\\":{\\"version\\":\\"1.0\\"}}",
-      "headers": Array [
-        Array [
-          "content-type",
-          "application/vnd.api+json",
-        ],
-      ],
+      "headers": Map {
+        "content-type" => "application/vnd.api+json",
+      },
       "statusCode": 404,
       "statusText": "OK",
     },

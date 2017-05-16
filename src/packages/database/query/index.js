@@ -199,13 +199,21 @@ class Query<+T: any> extends Promise {
 
         if (Array.isArray(value)) {
           if (value.length > 1) {
-            this.snapshots.push([not ? 'whereNotIn' : 'whereIn', [key, value]]);
+            this.snapshots.push([
+              not ? 'whereNotIn' : 'whereIn',
+              [key, value]
+            ]);
           } else {
             return {
               ...obj,
               [key]: value[0]
             };
           }
+        } else if (value === null) {
+          this.snapshots.push([
+            not ? 'whereNotNull' : 'whereNull',
+            [key]
+          ]);
         } else {
           return {
             ...obj,
@@ -221,6 +229,38 @@ class Query<+T: any> extends Promise {
       this.snapshots.push([not ? 'whereNot' : 'where', where]);
     }
 
+    return this;
+  }
+
+  whereBetween(conditions: Object, not: boolean = false): this {
+    const {
+      model: {
+        tableName
+      }
+    } = this;
+
+    entries(conditions).forEach((condition) => {
+      let [key] = condition;
+      const [, value] = condition;
+      const columnName = this.model.columnNameFor(key);
+
+      if (columnName) {
+        key = `${tableName}.${columnName}`;
+
+        if (Array.isArray(value)) {
+          this.snapshots.push([
+            `where${not ? 'NotBetween' : 'Between'}`,
+            [key, value]
+          ]);
+        }
+      }
+    });
+
+    return this;
+  }
+
+  whereRaw(query: string, bindings: Array<any> = []): this {
+    this.snapshots.push(['whereRaw', [query, bindings]]);
     return this;
   }
 

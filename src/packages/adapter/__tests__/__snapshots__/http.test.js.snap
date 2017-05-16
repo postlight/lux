@@ -5,7 +5,7 @@ Array [
   Request {
     "defaultParams": Object {},
     "encrypted": false,
-    "headers": Array [],
+    "headers": Map {},
     "logger": Logger {
       "enabled": false,
       "filter": Object {
@@ -35,7 +35,7 @@ Array [
   Response {
     "end": [Function],
     "getHeader": [Function],
-    "headers": Array [],
+    "headers": Map {},
     "logger": Logger {
       "enabled": false,
       "filter": Object {
@@ -59,16 +59,10 @@ exports[`module "adapter/http" #request #create() - with body - without error bu
 Request {
   "defaultParams": Object {},
   "encrypted": false,
-  "headers": Array [
-    Array [
-      "content-type",
-      "application/vnd.api+json",
-    ],
-    Array [
-      "content-length",
-      87,
-    ],
-  ],
+  "headers": Map {
+    "content-type" => "application/vnd.api+json",
+    "content-length" => 87,
+  },
   "logger": Logger {
     "enabled": false,
     "filter": Object {
@@ -111,32 +105,23 @@ Request {
 exports[`module "adapter/http" #request #create() - without body builds a request from an http.IncomingMessage 1`] = `Promise {}`;
 
 exports[`module "adapter/http" #response #create() => Response #removeHeader() proxies headers#delete() 1`] = `
-Array [
-  Array [
-    "content-type",
-    "application/vnd.api+json",
-  ],
-]
+Map {
+  "content-type" => "application/vnd.api+json",
+}
 `;
 
 exports[`module "adapter/http" #response #create() => Response #setHeader() proxies headers#set() 1`] = `
-Array [
-  Array [
-    "content-type",
-    "application/vnd.api+json",
-  ],
-  Array [
-    "x-test-header",
-    "true",
-  ],
-]
+Map {
+  "content-type" => "application/vnd.api+json",
+  "x-test-header" => "true",
+}
 `;
 
 exports[`module "adapter/http" #response #create() => Response #status() properly modifies the status code 1`] = `
 Response {
   "end": [Function],
   "getHeader": [Function],
-  "headers": Array [],
+  "headers": Map {},
   "logger": Logger {
     "enabled": false,
     "filter": Object {
@@ -159,7 +144,7 @@ exports[`module "adapter/http" #response #create() builds a response from an htt
 Response {
   "end": [Function],
   "getHeader": [Function],
-  "headers": Array [],
+  "headers": Map {},
   "logger": Logger {
     "enabled": false,
     "filter": Object {
