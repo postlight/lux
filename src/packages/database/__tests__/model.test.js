@@ -13,8 +13,6 @@ describe('module "database/model"', () => {
     let Image: Class<Model>;
     let Comment: Class<Model>;
 
-
-
     beforeAll(async () => {
       app = await getTestApp();
       ({ store } = app);
@@ -543,8 +541,8 @@ describe('module "database/model"', () => {
 
       it('returns an instance of `Query`', () => {
         const result = Subject.whereRaw(
-          `"title" LIKE ?`,
-          [`%Test%`]
+          '"title" LIKE ?',
+          ['%Test%']
         );
 
         expect(result instanceof Query).toBe(true);
