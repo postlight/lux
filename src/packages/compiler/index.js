@@ -13,7 +13,7 @@ import { rollup } from 'rollup';
 import { rmrf, readdir, readdirRec, isJSFile } from '../fs';
 import template from '../template';
 
-import { NODE_ENV } from '../../../constants';
+import { NODE_ENV } from '../../constants';
 import onwarn from './utils/handle-warning';
 import isExternal from './utils/is-external';
 import createManifest from './utils/create-manifest';
