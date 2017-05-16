@@ -12,8 +12,8 @@ import { rollup } from 'rollup';
 
 import { rmrf, readdir, readdirRec, isJSFile } from '../fs';
 import template from '../template';
-
 import { NODE_ENV } from '../../constants';
+
 import onwarn from './utils/handle-warning';
 import isExternal from './utils/is-external';
 import createManifest from './utils/create-manifest';
@@ -101,6 +101,7 @@ export async function compile(
     entry,
     onwarn,
     external,
+    cache,
     plugins: [
       alias({
         resolve: ['.js'],
@@ -122,11 +123,10 @@ export async function compile(
       }),
       babel(),
       lux(path.resolve(path.sep, dir, 'app'))
-    ],
-    cache: cache
+    ]
   });
 
-  if(NODE_ENV === 'development'){
+  if (NODE_ENV === 'development') {
     cache = bundle;
   }
 
