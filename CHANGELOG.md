@@ -4,6 +4,7 @@
 
 ##### Commits
 
+*   [[`10eaa2309c`](https://github.com/postlight/lux/commit/10eaa2309c)] - **feat**: enable rollup cache feature (#700) (Nick Schot)
 *   [[`73bb9d1817`](https://github.com/postlight/lux/commit/73bb9d1817)] - **deps**: update outdated dependencies (#704) (Zachary Golba)
 *   [[`5ba179700d`](https://github.com/postlight/lux/commit/5ba179700d)] - **fix**: gracefully shutdown workers instead of waiting for the timeout to pass (fixes #702) (#703) (Nick Schot)
 *   [[`df96fd669b`](https://github.com/postlight/lux/commit/df96fd669b)] - **feat**: expands knex query coverage on models (#691) (Will Viles)
