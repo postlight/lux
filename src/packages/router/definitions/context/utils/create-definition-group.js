@@ -1,11 +1,11 @@
 /* @flow */
 
-import { METHODS } from '../../../../request';
-import type { Method } from '../../../../request';
+import { METHODS } from '../../../../request'
+import type { Method } from '../../../../request'
 // eslint-disable-next-line no-unused-vars
-import type { Route$type, Router$Namespace } from '../../../index';
+import type { Route$type, Router$Namespace } from '../../../index'
 
-import createDefinition from './create-definition';
+import createDefinition from './create-definition'
 
 /**
  * @private
@@ -32,7 +32,7 @@ function createDefinitionGroup<T: Router$Namespace>(
           namespace,
         })
       ),
-    }), {});
+    }), {})
 }
 
-export default createDefinitionGroup;
+export default createDefinitionGroup

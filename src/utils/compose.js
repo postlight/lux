@@ -4,8 +4,8 @@
  * @private
  */
 export function tap<T>(input: T): T {
-  console.log(input); // eslint-disable-line no-console
-  return input;
+  console.log(input) // eslint-disable-line no-console
+  return input
 }
 
 /**
@@ -18,7 +18,7 @@ export function compose<T, U>(
   return input => main(etc.reduceRight(
     (value, fn) => fn(value),
     input
-  ));
+  ))
 }
 
 /**
@@ -31,5 +31,5 @@ export function composeAsync<T, U>(
   return input => etc.reduceRight(
     (value, fn) => Promise.resolve(value).then(fn),
     Promise.resolve(input)
-  ).then(main);
+  ).then(main)
 }

@@ -1,4 +1,4 @@
-import Action from '../models/action';
+import Action from '../models/action'
 
 export default function track(trackable, trx) {
   if (trackable) {
@@ -7,8 +7,8 @@ export default function track(trackable, trx) {
       .create({
         trackableId: trackable.id,
         trackableType: trackable.constructor.name
-      });
+      })
   }
 
-  return Promise.resolve();
+  return Promise.resolve()
 }

@@ -1,30 +1,30 @@
 /* @flow */
 
-import sleep from '../sleep';
+import sleep from '../sleep'
 
-const AMOUNT = 500;
+const AMOUNT = 500
 
-jest.useFakeTimers();
+jest.useFakeTimers()
 
 describe('util sleep()', () => {
   afterEach(() => {
-    jest.resetAllMocks();
-  });
+    jest.resetAllMocks()
+  })
 
   test('resolves with undefined', async () => {
-    const result = sleep(AMOUNT);
+    const result = sleep(AMOUNT)
 
-    jest.runAllTimers();
+    jest.runAllTimers()
 
-    expect(await result).toBeUndefined();
-  });
+    expect(await result).toBeUndefined()
+  })
 
   test('sleeps for the correct amount of time', async () => {
-    sleep(AMOUNT);
+    sleep(AMOUNT)
 
-    jest.runAllTimers();
+    jest.runAllTimers()
 
-    expect(setTimeout.mock.calls).toHaveLength(1);
-    expect(setTimeout.mock.calls).toMatchSnapshot();
-  });
-});
+    expect(setTimeout.mock.calls).toHaveLength(1)
+    expect(setTimeout.mock.calls).toMatchSnapshot()
+  })
+})

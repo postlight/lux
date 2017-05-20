@@ -1,8 +1,8 @@
 /* @flow */
 
-import { MIME_TYPE } from '../constants';
-import { line } from '../../logger';
-import createServerError from '../../../errors/utils/create-server-error';
+import { MIME_TYPE } from '../constants'
+import { line } from '../../logger'
+import createServerError from '../../../errors/utils/create-server-error'
 
 /**
  * @private
@@ -12,8 +12,8 @@ class InvalidContentTypeError extends TypeError {
     super(line`
       Content-Type: '${contentType}' is not supported. Try your request again
       with Content-Type: '${MIME_TYPE}'.
-    `);
+    `)
   }
 }
 
-export default createServerError(InvalidContentTypeError, 400);
+export default createServerError(InvalidContentTypeError, 400)

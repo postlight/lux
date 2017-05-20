@@ -1,4 +1,4 @@
-import { Model } from 'LUX_LOCAL';
+import { Model } from 'LUX_LOCAL'
 
 class Friendship extends Model {
   static belongsTo = {
@@ -14,4 +14,4 @@ class Friendship extends Model {
   };
 }
 
-export default Friendship;
+export default Friendship

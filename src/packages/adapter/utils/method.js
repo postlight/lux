@@ -1,11 +1,11 @@
 /* @flow */
 
-import type Request, { Method } from '../../request';
+import type Request, { Method } from '../../request'
 
 type Headers = $PropertyType<Request, 'headers'>;
 
 export function resolve(method: string, headers: Headers): Method {
-  const value = headers.get('x-http-method-override') || method;
+  const value = headers.get('x-http-method-override') || method
 
   switch (value) {
     case 'GET':
@@ -14,9 +14,9 @@ export function resolve(method: string, headers: Headers): Method {
     case 'PATCH':
     case 'DELETE':
     case 'OPTIONS':
-      return value;
+      return value
 
     default:
-      throw new Error(`Method "${value}" is not supported.`);
+      throw new Error(`Method "${value}" is not supported.`)
   }
 }

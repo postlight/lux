@@ -1,8 +1,8 @@
-import path from 'path';
+import path from 'path'
 
-import json from 'rollup-plugin-json';
-import babel from 'rollup-plugin-babel';
-import resolve from 'rollup-plugin-node-resolve';
+import json from 'rollup-plugin-json'
+import babel from 'rollup-plugin-babel'
+import resolve from 'rollup-plugin-node-resolve'
 
 export default {
   dest: 'dist/index.js',
@@ -15,10 +15,10 @@ export default {
   ),
   onwarn: ({ code, message }) => {
     if (code === 'UNUSED_EXTERNAL_IMPORT') {
-      return;
+      return
     }
     // eslint-disable-next-line no-console
-    console.warn(message);
+    console.warn(message)
   },
   plugins: [
     json(),
@@ -35,4 +35,4 @@ export default {
     || id === '\u0000babelHelpers'
   ),
   sourceMap: true
-};
+}

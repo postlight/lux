@@ -1,6 +1,6 @@
 /* @flow */
 
-import type Query from '../index';
+import type Query from '../index'
 
 export default function scopesFor<T>(target: Query<T>): {
   [key: string]: () => Query<T>
@@ -11,8 +11,8 @@ export default function scopesFor<T>(target: Query<T>): {
       get() {
         // eslint-disable-next-line func-names
         const scope = function (...args: Array<any>) {
-          const fn = Reflect.get(target.model, name);
-          const { snapshots } = Reflect.apply(fn, target.model, args);
+          const fn = Reflect.get(target.model, name)
+          const { snapshots } = Reflect.apply(fn, target.model, args)
 
           Object.assign(target, {
             snapshots: [
@@ -22,20 +22,20 @@ export default function scopesFor<T>(target: Query<T>): {
                 name
               ])
             ]
-          });
+          })
 
-          return target;
-        };
+          return target
+        }
 
         Reflect.defineProperty(scope, 'name', {
           value: name,
           writable: false,
           enumerable: false,
           configurable: false
-        });
+        })
 
-        return scope;
+        return scope
       }
     }
-  }), {});
+  }), {})
 }

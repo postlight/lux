@@ -1,11 +1,11 @@
 /* @flow */
 
-import type Request from '../../request';
-import type Response from '../../response';
-import type Logger from '../index';
+import type Request from '../../request'
+import type Response from '../../response'
+import type Logger from '../index'
 
-import logText from './utils/log-text';
-import logJSON from './utils/log-json';
+import logText from './utils/log-text'
+import logJSON from './utils/log-json'
 
 export type RequestLogger = (
   req: Request,
@@ -25,13 +25,13 @@ export function createRequestLogger(logger: Logger): RequestLogger {
         startTime,
         request: req,
         response: res
-      });
+      })
     } else {
       logText(logger, {
         startTime,
         request: req,
         response: res
-      });
+      })
     }
-  };
+  }
 }

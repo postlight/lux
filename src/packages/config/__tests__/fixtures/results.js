@@ -1,9 +1,9 @@
 /* @flow */
 
-import { NODE_ENV } from '../../../../constants';
+import { NODE_ENV } from '../../../../constants'
 
-const isTestENV = NODE_ENV === 'test';
-const isProdENV = NODE_ENV === 'production';
+const isTestENV = NODE_ENV === 'test'
+const isProdENV = NODE_ENV === 'production'
 
 export const CREATE_DEFAULT_CONFIG_RESULT = {
   server: {
@@ -20,4 +20,4 @@ export const CREATE_DEFAULT_CONFIG_RESULT = {
       params: []
     }
   }
-};
+}

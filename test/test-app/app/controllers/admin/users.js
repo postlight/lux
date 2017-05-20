@@ -1,7 +1,7 @@
-import UsersController from '../users';
+import UsersController from '../users'
 
 class AdminUsersController extends UsersController {
 
 }
 
-export default AdminUsersController;
+export default AdminUsersController

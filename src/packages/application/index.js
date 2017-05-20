@@ -1,21 +1,21 @@
 /* @flow */
 
-import EventEmitter from 'events';
+import EventEmitter from 'events'
 
-import { createDefaultConfig } from '../config';
-import * as responder from '../responder';
-import merge from '../../utils/merge';
-import tryCatch from '../../utils/try-catch';
-import type Logger from '../logger';
-import type Router from '../router';
-import type Controller from '../controller';
-import type Serializer from '../serializer';
-import type { Config } from '../config';
-import type { Adapter } from '../adapter';
-import type { FreezeableMap } from '../freezeable';
-import type Database, { Model, Config as DatabaseConfig } from '../database';
+import { createDefaultConfig } from '../config'
+import * as responder from '../responder'
+import merge from '../../utils/merge'
+import tryCatch from '../../utils/try-catch'
+import type Logger from '../logger'
+import type Router from '../router'
+import type Controller from '../controller'
+import type Serializer from '../serializer'
+import type { Config } from '../config'
+import type { Adapter } from '../adapter'
+import type { FreezeableMap } from '../freezeable'
+import type Database, { Model, Config as DatabaseConfig } from '../database'
 
-import initialize from './initialize';
+import initialize from './initialize'
 
 export type Options = Config & {
   path: string;
@@ -104,8 +104,8 @@ class Application extends EventEmitter {
    * @public
    */
   constructor(options: Options): Promise<Application> {
-    super();
-    return initialize(this, merge(createDefaultConfig(), options));
+    super()
+    return initialize(this, merge(createDefaultConfig(), options))
   }
 
   /**
@@ -114,31 +114,31 @@ class Application extends EventEmitter {
    */
   exec(...args: Array<any>): Promise<void> {
     return tryCatch(async () => {
-      const [request, response] = await this.adapter(...args);
+      const [request, response] = await this.adapter(...args)
 
-      this.emit('request:start', request, response);
+      this.emit('request:start', request, response)
 
-      const respond = responder.create(request, response);
-      const route = this.router.match(request);
+      const respond = responder.create(request, response)
+      const route = this.router.match(request)
 
       if (route) {
-        this.emit('request:match', request, response, route);
+        this.emit('request:match', request, response, route)
 
         const data = await route
           .visit(request, response)
           .catch(err => {
-            this.emit('request:error', request, response, err);
-          });
+            this.emit('request:error', request, response, err)
+          })
 
-        respond(data);
-        this.emit('request:complete', request, response);
+        respond(data)
+        this.emit('request:complete', request, response)
       } else {
-        respond(404);
-        this.emit('request:complete', request, response);
+        respond(404)
+        this.emit('request:complete', request, response)
       }
     }, err => {
-      this.emit('error', err);
-    });
+      this.emit('error', err)
+    })
   }
 
   /**
@@ -146,9 +146,9 @@ class Application extends EventEmitter {
    * @private
    */
   async destroy(): Promise<void> {
-    await this.store.connection.destroy();
+    await this.store.connection.destroy()
   }
 }
 
-export default Application;
-export type { Application$opts, Application$factoryOpts } from './interfaces';
+export default Application
+export type { Application$opts, Application$factoryOpts } from './interfaces'

@@ -1,7 +1,7 @@
-import CommentsController from '../comments';
+import CommentsController from '../comments'
 
 class AdminCommentsController extends CommentsController {
 
 }
 
-export default AdminCommentsController;
+export default AdminCommentsController

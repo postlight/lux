@@ -65,4 +65,4 @@ export const STATUS_CODES: Map<number, string> = (
     [510, 'Not Extended'],
     [511, 'Network Authentication Required'],
   ])
-);
+)

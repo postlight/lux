@@ -1,4 +1,4 @@
-import { Serializer } from 'LUX_LOCAL';
+import { Serializer } from 'LUX_LOCAL'
 
 class ImagesSerializer extends Serializer {
   attributes = [
@@ -10,4 +10,4 @@ class ImagesSerializer extends Serializer {
   ];
 }
 
-export default ImagesSerializer;
+export default ImagesSerializer

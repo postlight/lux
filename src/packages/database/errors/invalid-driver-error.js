@@ -1,9 +1,9 @@
 /* @flow */
 
-import { green, yellow } from 'chalk';
+import { green, yellow } from 'chalk'
 
-import { VALID_DRIVERS } from '../constants';
-import { line } from '../../logger';
+import { VALID_DRIVERS } from '../constants'
+import { line } from '../../logger'
 
 /**
  * @private
@@ -14,8 +14,8 @@ class InvalidDriverError extends Error {
       Invalid database driver ${yellow(driver)} in ./config/database.js.
       Please use one of the following database drivers:
       ${VALID_DRIVERS.map(str => green(str)).join(', ')}.
-    `);
+    `)
   }
 }
 
-export default InvalidDriverError;
+export default InvalidDriverError

@@ -1,9 +1,9 @@
 /* @flow */
 
-import * as path from 'path';
+import * as path from 'path'
 
-import template from '../../template';
-import { writeFile } from '../../fs';
+import template from '../../template'
+import { writeFile } from '../../fs'
 
 /**
  * @private
@@ -69,11 +69,11 @@ export default async function createBootScript(dir: string, {
           process.emit('error', err);
         }
       });
-  `;
+  `
 
   if (useStrict) {
-    data = `'use strict';\n\n${data}`;
+    data = `'use strict';\n\n${data}`
   }
 
-  await writeFile(path.join(dir, 'dist', 'boot.js'), Buffer.from(data));
+  await writeFile(path.join(dir, 'dist', 'boot.js'), Buffer.from(data))
 }

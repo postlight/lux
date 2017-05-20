@@ -1,7 +1,7 @@
 /* @flow */
 
-import type Logger from '../logger';
-import type { ObjectMap } from '../../interfaces';
+import type Logger from '../logger'
+import type { ObjectMap } from '../../interfaces'
 
 export type URL = {
   protocol?: string;
@@ -53,9 +53,9 @@ class Request {
   defaultParams: ObjectMap<any>;
 
   constructor(options: Options) {
-    Object.assign(this, options);
+    Object.assign(this, options)
   }
 }
 
-export default Request;
-export * from './constants';
+export default Request
+export * from './constants'

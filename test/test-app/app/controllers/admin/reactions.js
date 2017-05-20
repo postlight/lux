@@ -1,7 +1,7 @@
-import ReactionsController from '../reactions';
+import ReactionsController from '../reactions'
 
 class AdminReactionsController extends ReactionsController {
 
 }
 
-export default AdminReactionsController;
+export default AdminReactionsController

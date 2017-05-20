@@ -8,5 +8,5 @@ export default function mapToObject<T>(
     .reduce((obj, [key, value]) => ({
       ...obj,
       [String(key)]: value
-    }), {});
+    }), {})
 }

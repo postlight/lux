@@ -1,14 +1,14 @@
 /* @flow */
 
-import { camelize } from 'inflection';
+import { camelize } from 'inflection'
 
-import entries from '../../../utils/entries';
-import uniq from '../../../utils/uniq';
-import type Model from '../model';
+import entries from '../../../utils/entries'
+import uniq from '../../../utils/uniq'
+import type Model from '../model'
 
-import scopesFor from './utils/scopes-for';
-import formatSelect from './utils/format-select';
-import { runQuery, createRunner } from './runner';
+import scopesFor from './utils/scopes-for'
+import formatSelect from './utils/format-select'
+import { runQuery, createRunner } from './runner'
 
 /**
  * @class Query
@@ -47,18 +47,18 @@ class Query<+T: any> extends Promise {
   relationships: Object;
 
   constructor(model: Class<Model>) {
-    let resolve;
-    let reject;
+    let resolve
+    let reject
 
     super((res, rej) => {
-      resolve = res;
-      reject = rej;
-    });
+      resolve = res
+      reject = rej
+    })
 
     createRunner(this, {
       resolve,
       reject
-    });
+    })
 
     Object.defineProperties(this, {
       model: {
@@ -95,75 +95,75 @@ class Query<+T: any> extends Promise {
         enumerable: false,
         configurable: false
       }
-    });
+    })
 
-    Object.defineProperties(this, scopesFor(this));
+    Object.defineProperties(this, scopesFor(this))
   }
 
   // $FlowIgnore
   static get [Symbol.species]() {
-    return Promise;
+    return Promise
   }
 
   all(): this {
-    return this;
+    return this
   }
 
   not(conditions: Object = {}): this {
-    return this.where(conditions, true);
+    return this.where(conditions, true)
   }
 
   find(primaryKey: any): this {
     Object.assign(this, {
       isFind: true,
       collection: false
-    });
+    })
 
     this.where({
       [this.model.primaryKey]: primaryKey
-    });
+    })
 
     if (!this.shouldCount) {
-      this.limit(1);
+      this.limit(1)
     }
 
-    return this;
+    return this
   }
 
   page(num: number): this {
     if (this.shouldCount) {
-      return this;
+      return this
     }
 
-    let limit = this.snapshots.find(([name]) => name === 'limit');
+    let limit = this.snapshots.find(([name]) => name === 'limit')
 
     if (limit) {
-      [, limit] = limit;
+      [, limit] = limit
     }
 
     if (typeof limit !== 'number') {
-      limit = 25;
+      limit = 25
     }
 
-    this.limit(limit);
+    this.limit(limit)
 
-    return this.offset(Math.max(parseInt(num, 10) - 1, 0) * limit);
+    return this.offset(Math.max(parseInt(num, 10) - 1, 0) * limit)
   }
 
   limit(amount: number): this {
     if (!this.shouldCount) {
-      this.snapshots.push(['limit', amount]);
+      this.snapshots.push(['limit', amount])
     }
 
-    return this;
+    return this
   }
 
   order(attr: string, direction: string = 'ASC'): this {
     if (!this.shouldCount) {
-      const columnName = this.model.columnNameFor(attr);
+      const columnName = this.model.columnNameFor(attr)
 
       if (columnName) {
-        const dirUpcase = direction.toUpperCase();
+        const dirUpcase = direction.toUpperCase()
 
         this.snapshots = this.snapshots
           .filter(([method]) => method !== 'orderByRaw')
@@ -172,11 +172,11 @@ class Query<+T: any> extends Promise {
               .map(key => `${this.model.tableName}.${key} ${dirUpcase}`)
               .join(', ')
             ]
-          ]);
+          ])
       }
     }
 
-    return this;
+    return this
   }
 
   where(conditions: Object = {}, not: boolean = false): this {
@@ -184,17 +184,17 @@ class Query<+T: any> extends Promise {
       model: {
         tableName
       }
-    } = this;
+    } = this
 
     const where = entries(conditions).reduce((obj, condition) => {
-      let [key, value] = condition;
-      const columnName = this.model.columnNameFor(key);
+      let [key, value] = condition
+      const columnName = this.model.columnNameFor(key)
 
       if (columnName) {
-        key = `${tableName}.${columnName}`;
+        key = `${tableName}.${columnName}`
 
         if (typeof value === 'undefined') {
-          value = null;
+          value = null
         }
 
         if (Array.isArray(value)) {
@@ -202,34 +202,34 @@ class Query<+T: any> extends Promise {
             this.snapshots.push([
               not ? 'whereNotIn' : 'whereIn',
               [key, value]
-            ]);
+            ])
           } else {
             return {
               ...obj,
               [key]: value[0]
-            };
+            }
           }
         } else if (value === null) {
           this.snapshots.push([
             not ? 'whereNotNull' : 'whereNull',
             [key]
-          ]);
+          ])
         } else {
           return {
             ...obj,
             [key]: value
-          };
+          }
         }
       }
 
-      return obj;
-    }, {});
+      return obj
+    }, {})
 
     if (Object.keys(where).length) {
-      this.snapshots.push([not ? 'whereNot' : 'where', where]);
+      this.snapshots.push([not ? 'whereNot' : 'where', where])
     }
 
-    return this;
+    return this
   }
 
   whereBetween(conditions: Object, not: boolean = false): this {
@@ -237,71 +237,71 @@ class Query<+T: any> extends Promise {
       model: {
         tableName
       }
-    } = this;
+    } = this
 
     entries(conditions).forEach((condition) => {
-      let [key] = condition;
-      const [, value] = condition;
-      const columnName = this.model.columnNameFor(key);
+      let [key] = condition
+      const [, value] = condition
+      const columnName = this.model.columnNameFor(key)
 
       if (columnName) {
-        key = `${tableName}.${columnName}`;
+        key = `${tableName}.${columnName}`
 
         if (Array.isArray(value)) {
           this.snapshots.push([
             `where${not ? 'NotBetween' : 'Between'}`,
             [key, value]
-          ]);
+          ])
         }
       }
-    });
+    })
 
-    return this;
+    return this
   }
 
   whereRaw(query: string, bindings: Array<any> = []): this {
-    this.snapshots.push(['whereRaw', [query, bindings]]);
-    return this;
+    this.snapshots.push(['whereRaw', [query, bindings]])
+    return this
   }
 
   first(): this {
     if (!this.shouldCount) {
       const willSort = this.snapshots.some(
         ([method]) => method === 'orderByRaw'
-      );
+      )
 
-      this.collection = false;
+      this.collection = false
 
       if (!willSort) {
-        this.order(this.model.primaryKey, 'ASC');
+        this.order(this.model.primaryKey, 'ASC')
       }
 
-      this.limit(1);
+      this.limit(1)
     }
 
-    return this;
+    return this
   }
 
   last(): this {
     if (!this.shouldCount) {
       const willSort = this.snapshots.some(
         ([method]) => method === 'orderByRaw'
-      );
+      )
 
-      this.collection = false;
+      this.collection = false
 
       if (!willSort) {
-        this.order(this.model.primaryKey, 'DESC');
+        this.order(this.model.primaryKey, 'DESC')
       }
 
-      this.limit(1);
+      this.limit(1)
     }
 
-    return this;
+    return this
   }
 
   count(): Query<number> {
-    const validName = /^(where(Not)?(In)?)$/g;
+    const validName = /^(where(Not)?(In)?)$/g
 
     Object.assign(this, {
       shouldCount: true,
@@ -310,93 +310,93 @@ class Query<+T: any> extends Promise {
         ['count', '* as countAll'],
         ...this.snapshots.filter(([name]) => validName.test(name))
       ]
-    });
+    })
 
-    return this;
+    return this
   }
 
   offset(amount: number): this {
     if (!this.shouldCount) {
-      this.snapshots.push(['offset', amount]);
+      this.snapshots.push(['offset', amount])
     }
 
-    return this;
+    return this
   }
 
   select(...attrs: Array<string>): this {
     if (!this.shouldCount) {
-      this.snapshots.push(['select', formatSelect(this.model, attrs)]);
+      this.snapshots.push(['select', formatSelect(this.model, attrs)])
     }
 
-    return this;
+    return this
   }
 
   distinct(...attrs: Array<string>): this {
     if (!this.shouldCount) {
-      this.snapshots.push(['distinct', formatSelect(this.model, attrs)]);
+      this.snapshots.push(['distinct', formatSelect(this.model, attrs)])
     }
 
-    return this.select();
+    return this.select()
   }
 
   include(...relationships: Array<Object | string>): this {
-    let included;
+    let included
 
     if (!this.shouldCount) {
       if (relationships.length === 1 && typeof relationships[0] === 'object') {
         included = entries(relationships[0]).reduce((arr, relationship) => {
-          const [name] = relationship;
-          const opts = this.model.relationshipFor(name);
-          let [, attrs] = relationship;
+          const [name] = relationship
+          const opts = this.model.relationshipFor(name)
+          let [, attrs] = relationship
 
           if (opts) {
             if (!attrs.length) {
-              attrs = opts.model.attributeNames;
+              attrs = opts.model.attributeNames
             }
 
             return [...arr, {
               name,
               attrs,
               relationship: opts
-            }];
+            }]
           }
 
-          return arr;
-        }, []);
+          return arr
+        }, [])
       } else {
         included = relationships.reduce((arr, name) => {
-          let str = name;
+          let str = name
 
           if (typeof str !== 'string') {
-            str = String(str);
+            str = String(str)
           }
 
-          const opts = this.model.relationshipFor(str);
+          const opts = this.model.relationshipFor(str)
 
           if (opts) {
-            const attrs = opts.model.attributeNames;
+            const attrs = opts.model.attributeNames
 
             return [...arr, {
               attrs,
               name: str,
               relationship: opts
-            }];
+            }]
           }
 
-          return arr;
-        }, []);
+          return arr
+        }, [])
       }
 
       const willInclude = included
         .filter(opts => {
-          const { name, relationship } = opts;
-          let { attrs } = opts;
+          const { name, relationship } = opts
+          let { attrs } = opts
 
           if (relationship.type === 'hasMany') {
             attrs = relationship.through ? attrs : [
               ...attrs,
               camelize(relationship.foreignKey, true)
-            ];
+            ]
 
             this.relationships[name] = {
               attrs,
@@ -404,18 +404,18 @@ class Query<+T: any> extends Promise {
               model: relationship.model,
               through: relationship.through,
               foreignKey: relationship.foreignKey
-            };
+            }
 
-            return false;
+            return false
           }
 
-          return true;
+          return true
         })
         .reduce((arr, { name, attrs, relationship }) => {
           arr.push([
             'includeSelect',
             formatSelect(relationship.model, attrs, `${name}.`)
-          ]);
+          ])
 
           if (relationship.type === 'belongsTo') {
             arr.push(['leftOuterJoin', [
@@ -424,61 +424,61 @@ class Query<+T: any> extends Promise {
               '=',
               `${relationship.model.tableName}.` +
                 `${relationship.model.primaryKey}`
-            ]]);
+            ]])
           } else if (relationship.type === 'hasOne') {
             arr.push(['leftOuterJoin', [
               relationship.model.tableName,
               `${this.model.tableName}.${this.model.primaryKey}`,
               '=',
               `${relationship.model.tableName}.${relationship.foreignKey}`
-            ]]);
+            ]])
           }
 
-          return arr;
-        }, []);
+          return arr
+        }, [])
 
-      this.snapshots.push(...willInclude);
+      this.snapshots.push(...willInclude)
     }
 
-    return this;
+    return this
   }
 
   unscope(...scopes: Array<string>): this {
     if (scopes.length) {
       const keys = scopes.map(scope => {
         if (scope === 'order') {
-          return 'orderByRaw';
+          return 'orderByRaw'
         }
 
-        return scope;
-      });
+        return scope
+      })
 
       this.snapshots = this.snapshots.filter(([, , scope]) => {
         if (typeof scope === 'string') {
-          return keys.indexOf(scope) < 0;
+          return keys.indexOf(scope) < 0
         }
 
-        return true;
-      });
+        return true
+      })
     } else {
-      this.snapshots = this.snapshots.filter(([, , scope]) => !scope);
+      this.snapshots = this.snapshots.filter(([, , scope]) => !scope)
     }
 
-    return this;
+    return this
   }
 
   then<U>(
     onFulfilled?: (value: T) => Promise<U> | U,
     onRejected?: (error: Error) => Promise<U> | U
   ): Promise<U> {
-    runQuery(this);
-    return super.then(onFulfilled, onRejected);
+    runQuery(this)
+    return super.then(onFulfilled, onRejected)
   } // eslint-disable-line brace-style
 
   // $FlowIgnore
   catch<U>(onRejected?: (error: Error) => ?Promise<U> | U): Promise<U> {
-    runQuery(this);
-    return super.catch(onRejected);
+    runQuery(this)
+    return super.catch(onRejected)
   }
 
   static from(src: any): Query<T> {
@@ -488,20 +488,20 @@ class Query<+T: any> extends Promise {
       collection,
       shouldCount,
       relationships
-    } = src;
+    } = src
 
-    const dest = Reflect.construct(this, [model]);
+    const dest = Reflect.construct(this, [model])
 
     Object.assign(dest, {
       snapshots,
       collection,
       shouldCount,
       relationships
-    });
+    })
 
-    return dest;
+    return dest
   }
 }
 
-export default Query;
-export { RecordNotFoundError } from './errors';
+export default Query
+export { RecordNotFoundError } from './errors'

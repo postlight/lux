@@ -1,11 +1,11 @@
 /* @flow */
 
-import type { Adapter } from '../index';
-import type Application from '../../application';
-import type { ObjectMap } from '../../../interfaces';
+import type { Adapter } from '../index'
+import type Application from '../../application'
+import type { ObjectMap } from '../../../interfaces'
 
-import * as request from './request';
-import * as response from './response';
+import * as request from './request'
+import * as response from './response'
 
 type Options = {
   url: string;
@@ -29,7 +29,7 @@ function createAdapter({ logger }: Application): Adapter {
         logger,
         resolve,
       }),
-    ]);
+    ])
   }
 
   Object.defineProperty(adapter, 'type', {
@@ -37,10 +37,10 @@ function createAdapter({ logger }: Application): Adapter {
     writable: false,
     enumerable: true,
     configurable: false,
-  });
+  })
 
-  return adapter;
+  return adapter
 }
 
-export default createAdapter;
-export { request, response };
+export default createAdapter
+export { request, response }

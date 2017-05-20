@@ -1,9 +1,9 @@
 /* @flow */
 
 // eslint-disable-next-line no-duplicate-imports
-import { tableFor } from '../../index';
-import type { Model } from '../../index';
-import type { Relationship$opts } from '../interfaces';
+import { tableFor } from '../../index'
+import type { Model } from '../../index'
+import type { Relationship$opts } from '../interfaces'
 
 type Params = {
   record: Model;
@@ -18,7 +18,7 @@ function updateHasOne({
   opts,
   trx
 }: Params): Array<Object> {
-  const recordPrimaryKey = record.getPrimaryKey();
+  const recordPrimaryKey = record.getPrimaryKey()
 
   if (value) {
     if (value instanceof opts.model) {
@@ -39,7 +39,7 @@ function updateHasOne({
             `${opts.model.tableName}.${opts.model.primaryKey}`,
             value.getPrimaryKey()
           )
-      ];
+      ]
     }
   } else {
     return [
@@ -49,10 +49,10 @@ function updateHasOne({
           `${opts.model.tableName}.${opts.foreignKey}`,
           recordPrimaryKey
         )
-    ];
+    ]
   }
 
-  return [];
+  return []
 }
 
 function updateHasMany({
@@ -61,7 +61,7 @@ function updateHasMany({
   opts,
   trx
 }: Params): Array<Object> {
-  const recordPrimaryKey = record.getPrimaryKey();
+  const recordPrimaryKey = record.getPrimaryKey()
 
   if (Array.isArray(value) && value.length) {
     return [
@@ -81,7 +81,7 @@ function updateHasMany({
           `${opts.model.tableName}.${opts.model.primaryKey}`,
           value.map(item => item.getPrimaryKey())
         )
-    ];
+    ]
   }
 
   return [
@@ -91,7 +91,7 @@ function updateHasMany({
         `${opts.model.tableName}.${opts.foreignKey}`,
         recordPrimaryKey
       )
-  ];
+  ]
 }
 
 function updateBelongsTo({
@@ -101,10 +101,10 @@ function updateBelongsTo({
   trx
 }: Params): Array<Object> {
   if (value instanceof opts.model) {
-    const inverseOpts = opts.model.relationshipFor(opts.inverse);
-    const foreignKeyValue = value.getPrimaryKey();
+    const inverseOpts = opts.model.relationshipFor(opts.inverse)
+    const foreignKeyValue = value.getPrimaryKey()
 
-    Reflect.set(record, opts.foreignKey, foreignKeyValue);
+    Reflect.set(record, opts.foreignKey, foreignKeyValue)
 
     if (inverseOpts && inverseOpts.type === 'hasOne') {
       return [
@@ -115,11 +115,11 @@ function updateBelongsTo({
             `${record.constructor.tableName}.${record.constructor.primaryKey}`,
             record.getPrimaryKey()
           )
-      ];
+      ]
     }
   }
 
-  return [];
+  return []
 }
 
 /**
@@ -130,25 +130,25 @@ export default function updateRelationship(
   name: string,
   trx: Object
 ): Array<Object> {
-  const opts = record.constructor.relationshipFor(name);
+  const opts = record.constructor.relationshipFor(name)
 
   if (!opts) {
     const {
       constructor: {
         name: className
       }
-    } = record;
+    } = record
 
-    throw new Error(`Could not find relationship '${name} on '${className}`);
+    throw new Error(`Could not find relationship '${name} on '${className}`)
   }
 
-  const { dirtyRelationships } = record;
+  const { dirtyRelationships } = record
 
   if (!dirtyRelationships.has(name)) {
-    return [];
+    return []
   }
 
-  const value = dirtyRelationships.get(name);
+  const value = dirtyRelationships.get(name)
 
   switch (opts.type) {
     case 'hasOne':
@@ -157,7 +157,7 @@ export default function updateRelationship(
         value,
         opts,
         trx
-      });
+      })
 
     case 'hasMany':
       return updateHasMany({
@@ -165,7 +165,7 @@ export default function updateRelationship(
         value,
         opts,
         trx
-      });
+      })
 
     default:
       return updateBelongsTo({
@@ -173,6 +173,6 @@ export default function updateRelationship(
         value,
         opts,
         trx
-      });
+      })
   }
 }

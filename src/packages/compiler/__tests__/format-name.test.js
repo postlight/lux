@@ -1,6 +1,6 @@
 /* @flow */
 
-import formatName from '../utils/format-name';
+import formatName from '../utils/format-name'
 
 const KEYS = [
   'actions',
@@ -27,12 +27,12 @@ const KEYS = [
   'admin/reactions',
   'admin/tags',
   'admin/users',
-];
+]
 
 describe('module "compiler"', () => {
   describe('util formatName()', () => {
     test('transforms an array of keys into identifiers', () => {
-      expect(KEYS.map(formatName)).toMatchSnapshot();
-    });
-  });
-});
+      expect(KEYS.map(formatName)).toMatchSnapshot()
+    })
+  })
+})

@@ -1,4 +1,4 @@
-import { Controller } from 'LUX_LOCAL';
+import { Controller } from 'LUX_LOCAL'
 
 class FriendshipsController extends Controller {
   params = [
@@ -7,4 +7,4 @@ class FriendshipsController extends Controller {
   ];
 }
 
-export default FriendshipsController;
+export default FriendshipsController

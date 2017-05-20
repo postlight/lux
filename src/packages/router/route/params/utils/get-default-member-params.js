@@ -1,6 +1,6 @@
 /* @flow */
 
-import type Controller from '../../../../controller';
+import type Controller from '../../../../controller'
 
 /**
  * @private
@@ -17,17 +17,17 @@ export default function getDefaultMemberParams({
     fields: {
       [model.resourceName]: attributes,
       ...[...hasOne, ...hasMany].reduce((include, key) => {
-        const opts = model.relationshipFor(key);
+        const opts = model.relationshipFor(key)
 
         if (!opts || model === opts.model) {
-          return include;
+          return include
         }
 
         return {
           ...include,
           [opts.model.resourceName]: [opts.model.primaryKey]
-        };
+        }
       }, {})
     }
-  };
+  }
 }

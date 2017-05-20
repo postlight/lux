@@ -1,6 +1,6 @@
-import { Model } from 'LUX_LOCAL';
+import { Model } from 'LUX_LOCAL'
 
-import track from '../utils/track';
+import track from '../utils/track'
 
 export const REACTION_TYPES = [
   ':+1:',
@@ -9,7 +9,7 @@ export const REACTION_TYPES = [
   ':tada:',
   ':laughing:',
   ':disappointed:'
-];
+]
 
 class Reaction extends Model {
   static belongsTo = {
@@ -29,14 +29,14 @@ class Reaction extends Model {
   static hooks = {
     async beforeSave({ postId, commentId }) {
       if (!commentId && !postId) {
-        throw new Error('Reactions must have a reactable (Post or Comment).');
+        throw new Error('Reactions must have a reactable (Post or Comment).')
       }
     },
 
     async afterCreate(reaction, trx) {
-      await track(reaction, trx);
+      await track(reaction, trx)
     }
   };
 }
 
-export default Reaction;
+export default Reaction

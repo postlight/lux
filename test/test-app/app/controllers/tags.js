@@ -1,4 +1,4 @@
-import { Controller } from 'LUX_LOCAL';
+import { Controller } from 'LUX_LOCAL'
 
 class TagsController extends Controller {
   params = [
@@ -6,4 +6,4 @@ class TagsController extends Controller {
   ];
 }
 
-export default TagsController;
+export default TagsController

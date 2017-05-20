@@ -1,15 +1,15 @@
 /* @flow */
 
-import compact from '../compact';
+import compact from '../compact'
 
 describe('util compact()', () => {
   test('removes null and undefined values from an `Array`', () => {
-    const result = compact([0, 'a', 1, null, {}, undefined, false]);
+    const result = compact([0, 'a', 1, null, {}, undefined, false])
 
-    expect(result).toHaveLength(5);
-    expect(result).not.toContain(null);
-    expect(result).not.toContain(undefined);
-  });
+    expect(result).toHaveLength(5)
+    expect(result).not.toContain(null)
+    expect(result).not.toContain(undefined)
+  })
 
   test('removes null and undefined values from an `Object`', () => {
     const values = {
@@ -18,14 +18,14 @@ describe('util compact()', () => {
       c: 1,
       d: {},
       e: false
-    };
+    }
 
     const result = compact({
       ...values,
       f: null,
       g: undefined
-    });
+    })
 
-    expect(result).toEqual(values);
-  });
-});
+    expect(result).toEqual(values)
+  })
+})

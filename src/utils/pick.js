@@ -1,6 +1,6 @@
 /* @flow */
 
-import setType from './set-type';
+import setType from './set-type'
 
 /**
  * @private
@@ -12,5 +12,5 @@ export default function pick<T: Object>(src: T, ...keys: Array<string>): T {
     .reduce((result, [key, value]) => ({
       ...result,
       [key]: value
-    }), {}));
+    }), {}))
 }

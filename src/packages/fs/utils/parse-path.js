@@ -1,8 +1,8 @@
 /* @flow */
 
-import * as path from 'path';
+import * as path from 'path'
 
-import { CWD } from '../../../constants';
+import { CWD } from '../../../constants'
 
 type ParsedPath = {
   absolute: string;
@@ -22,7 +22,7 @@ export default function parsePath(
   dir?: string = '',
   name?: string = ''
 ): ParsedPath {
-  const parsed = path.parse(path.join(cwd, dir, ...name.split(path.sep)));
+  const parsed = path.parse(path.join(cwd, dir, ...name.split(path.sep)))
 
   return {
     ...parsed,
@@ -31,5 +31,5 @@ export default function parsePath(
       parsed.dir.substr(parsed.dir.indexOf(dir)),
       parsed.base
     ),
-  };
+  }
 }

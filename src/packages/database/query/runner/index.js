@@ -1,12 +1,12 @@
 /* @flow */
 
-import { RecordNotFoundError } from '../errors';
-import { sql } from '../../../logger';
-import type Query from '../index';
+import { RecordNotFoundError } from '../errors'
+import { sql } from '../../../logger'
+import type Query from '../index'
 
-import { RUNNERS } from './constants';
-import getFindParam from './utils/get-find-param';
-import buildResults from './utils/build-results';
+import { RUNNERS } from './constants'
+import getFindParam from './utils/get-find-param'
+import buildResults from './utils/build-results'
 
 /**
  * @private
@@ -16,11 +16,11 @@ export function createRunner(target: Query<*>, opts: {
   reject?: (error: Error) => void;
 }): void {
   if (opts.resolve && opts.reject) {
-    const { resolve, reject } = opts;
-    let didRun = false;
+    const { resolve, reject } = opts
+    let didRun = false
 
     RUNNERS.set(target, async () => {
-      let results;
+      let results
       const {
         model,
         isFind,
@@ -28,77 +28,77 @@ export function createRunner(target: Query<*>, opts: {
         collection,
         shouldCount,
         relationships
-      } = target;
+      } = target
 
       if (didRun) {
-        return;
+        return
       }
 
-      didRun = true;
+      didRun = true
 
       if (!shouldCount && !snapshots.some(([name]) => name === 'select')) {
-        target.select(...target.model.attributeNames);
+        target.select(...target.model.attributeNames)
       }
 
       const records: any = snapshots.reduce((
         query,
         snapshot
       ) => {
-        let [name, params] = snapshot;
+        let [name, params] = snapshot
 
         if (!shouldCount && name === 'includeSelect') {
-          name = 'select';
+          name = 'select'
         }
 
-        const method = Reflect.get(query, name);
+        const method = Reflect.get(query, name)
 
         if (!Array.isArray(params)) {
-          params = [params];
+          params = [params]
         }
 
-        return Reflect.apply(method, query, params);
-      }, model.table());
+        return Reflect.apply(method, query, params)
+      }, model.table())
 
       if (model.store.debug) {
         records.on('query', () => {
-          setImmediate(() => model.logger.debug(sql`${records.toString()}`));
-        });
+          setImmediate(() => model.logger.debug(sql`${records.toString()}`))
+        })
       }
 
       if (shouldCount) {
-        let [{ countAll: count }] = await records;
-        count = parseInt(count, 10);
+        let [{ countAll: count }] = await records
+        count = parseInt(count, 10)
 
-        resolve(Number.isFinite(count) ? count : 0);
+        resolve(Number.isFinite(count) ? count : 0)
       } else {
         results = await buildResults({
           model,
           records,
           relationships
-        });
+        })
 
         if (collection) {
-          resolve(results);
+          resolve(results)
         } else {
-          const [result] = results;
+          const [result] = results
 
           if (!result && isFind) {
-            const err = new RecordNotFoundError(model, getFindParam(target));
+            const err = new RecordNotFoundError(model, getFindParam(target))
 
-            reject(err);
+            reject(err)
           }
 
-          resolve(result);
+          resolve(result)
         }
       }
-    });
+    })
   }
 }
 
 export function runQuery(target: Query<*>): void {
-  const runner = RUNNERS.get(target);
+  const runner = RUNNERS.get(target)
 
   if (runner) {
-    runner();
+    runner()
   }
 }

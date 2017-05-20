@@ -1,4 +1,4 @@
-import { Model } from 'LUX_LOCAL';
+import { Model } from 'LUX_LOCAL'
 
 class Notification extends Model {
   static belongsTo = {
@@ -9,4 +9,4 @@ class Notification extends Model {
   };
 }
 
-export default Notification;
+export default Notification

@@ -1,7 +1,7 @@
-import ApplicationSerializer from '../application';
+import ApplicationSerializer from '../application'
 
 class AdminApplicationSerializer extends ApplicationSerializer {
 
 }
 
-export default AdminApplicationSerializer;
+export default AdminApplicationSerializer

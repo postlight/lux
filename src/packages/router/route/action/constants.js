@@ -1,3 +1,3 @@
 /* @flow */
 
-export const FINAL_HANDLER = '__FINAL_HANDLER__';
+export const FINAL_HANDLER = '__FINAL_HANDLER__'

@@ -1,4 +1,4 @@
-import { Controller } from 'LUX_LOCAL';
+import { Controller } from 'LUX_LOCAL'
 
 class ImagesController extends Controller {
   params = [
@@ -7,4 +7,4 @@ class ImagesController extends Controller {
   ];
 }
 
-export default ImagesController;
+export default ImagesController

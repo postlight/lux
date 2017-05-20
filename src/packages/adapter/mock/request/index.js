@@ -1,15 +1,15 @@
 /* @flow */
 
-import * as url from 'url';
+import * as url from 'url'
 
-import qs from 'qs';
+import qs from 'qs'
 
-import Request from '../../../request';
-import type Logger from '../../../logger';
-import * as query from '../../utils/query';
-import * as method from '../../utils/method';
-import { Headers } from '../../utils/headers';
-import type { ObjectMap } from '../../../../interfaces';
+import Request from '../../../request'
+import type Logger from '../../../logger'
+import * as query from '../../utils/query'
+import * as method from '../../utils/method'
+import { Headers } from '../../utils/headers'
+import type { ObjectMap } from '../../../../interfaces'
 
 type Options = {
   url: string;
@@ -20,15 +20,15 @@ type Options = {
 };
 
 export function create(options: Options): Request {
-  const urlData = url.parse(options.url);
-  const params = query.fromObject(qs.parse(urlData.query));
-  const headers = new Headers(options.headers);
+  const urlData = url.parse(options.url)
+  const params = query.fromObject(qs.parse(urlData.query))
+  const headers = new Headers(options.headers)
 
   if (options.body) {
-    Object.assign(params, options.body);
+    Object.assign(params, options.body)
   }
 
-  headers.freeze();
+  headers.freeze()
 
   return new Request({
     params,
@@ -38,5 +38,5 @@ export function create(options: Options): Request {
     method: method.resolve(options.method, headers),
     encrypted: urlData.protocol === 'https:',
     defaultParams: {},
-  });
+  })
 }

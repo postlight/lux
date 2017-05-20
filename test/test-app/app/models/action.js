@@ -1,14 +1,14 @@
-import { Model } from 'LUX_LOCAL';
+import { Model } from 'LUX_LOCAL'
 
-import Comment from './comment';
-import Notification from './notification';
-import Post from './post';
-import Reaction from './reaction';
-import User from './user';
+import Comment from './comment'
+import Notification from './notification'
+import Post from './post'
+import Reaction from './reaction'
+import User from './user'
 
 const createMessageTemplate = resourceType => (name, reactionType) => (
   `${name} reacted to your ${resourceType} with ${reactionType}`
-);
+)
 
 /* TODO: Add support for polymorphic relationship to a 'trackable'.
  * https://github.com/postlight/lux/issues/75
@@ -16,18 +16,18 @@ const createMessageTemplate = resourceType => (name, reactionType) => (
 class Action extends Model {
   static hooks = {
     async afterCreate(action, trx) {
-      await action.notifyOwner(trx);
+      await action.notifyOwner(trx)
     }
   };
 
   async notifyOwner(trx) {
-    const { trackableId, trackableType } = this;
+    const { trackableId, trackableType } = this
 
     if (trackableType === 'Comment') {
       const trackable = await Comment
         .first()
         .select('postId', 'userId')
-        .where({ id: trackableId });
+        .where({ id: trackableId })
 
       if (trackable) {
         const [user, post] = await Promise.all([
@@ -39,7 +39,7 @@ class Action extends Model {
             .first()
             .select('userId')
             .where({ id: trackable.postId })
-        ]);
+        ])
 
         if (user && post) {
           await Notification
@@ -47,27 +47,27 @@ class Action extends Model {
             .create({
               message: `${user.name} commented on your post!`,
               recipientId: post.userId
-            });
+            })
         }
       }
     } else if (trackableType === 'Reaction') {
-      let reactableId;
-      let createMessage;
-      let ReactableModel;
+      let reactableId
+      let createMessage
+      let ReactableModel
 
       const reaction = await Reaction
         .first()
-        .where({ id: trackableId });
+        .where({ id: trackableId })
 
       if (reaction) {
         if (!reaction.postId) {
-          ReactableModel = Comment;
-          createMessage = createMessageTemplate('comment');
-          reactableId = reaction.commentId;
+          ReactableModel = Comment
+          createMessage = createMessageTemplate('comment')
+          reactableId = reaction.commentId
         } else {
-          ReactableModel = Post;
-          createMessage = createMessageTemplate('post');
-          reactableId = reaction.postId;
+          ReactableModel = Post
+          createMessage = createMessageTemplate('post')
+          reactableId = reaction.postId
         }
 
         const [user, reactable] = await Promise.all([
@@ -79,7 +79,7 @@ class Action extends Model {
             .first()
             .select('userId')
             .where({ id: reactableId })
-        ]);
+        ])
 
         if (user && reactable) {
           await Notification
@@ -87,11 +87,11 @@ class Action extends Model {
             .create({
               message: createMessage(user.name, reaction.type),
               recipientId: reactable.userId,
-            });
+            })
         }
       }
     }
   }
 }
 
-export default Action;
+export default Action

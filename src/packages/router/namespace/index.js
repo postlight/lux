@@ -1,12 +1,12 @@
 /* @flow */
 
-import { FreezeableSet, freezeProps } from '../../freezeable';
-import type Controller from '../../controller';
-import type { Route, Router$Namespace } from '../index';
+import { FreezeableSet, freezeProps } from '../../freezeable'
+import type Controller from '../../controller'
+import type { Route, Router$Namespace } from '../index'
 
-import normalizeName from './utils/normalize-name';
-import normalizePath from './utils/normalize-path';
-import type { Namespace$opts } from './interfaces';
+import normalizeName from './utils/normalize-name'
+import normalizePath from './utils/normalize-path'
+import type { Namespace$opts } from './interfaces'
 
 /**
  * @private
@@ -31,7 +31,7 @@ class Namespace extends FreezeableSet<Route | Router$Namespace> {
     controller,
     controllers
   }: Namespace$opts) {
-    super();
+    super()
 
     Object.assign(this, {
       controller,
@@ -40,25 +40,25 @@ class Namespace extends FreezeableSet<Route | Router$Namespace> {
       path: normalizePath(path),
       isRoot: path === '/',
       namespace: namespace || this
-    });
+    })
 
     freezeProps(this, true,
       'name',
       'path',
       'controller',
       'namespace'
-    );
+    )
 
     freezeProps(this, false,
       'isRoot',
       'controllers'
-    );
+    )
   }
 }
 
-export default Namespace;
+export default Namespace
 
-export { default as normalizeName } from './utils/normalize-name';
-export { default as normalizePath } from './utils/normalize-path';
+export { default as normalizeName } from './utils/normalize-name'
+export { default as normalizePath } from './utils/normalize-path'
 
-export type { Namespace$opts } from './interfaces';
+export type { Namespace$opts } from './interfaces'

@@ -13,8 +13,8 @@ type CompilerWarning = {
  */
 export default function handleWarning(warning: CompilerWarning): void {
   if (warning.code === 'UNUSED_EXTERNAL_IMPORT') {
-    return;
+    return
   }
   // eslint-disable-next-line no-console
-  console.warn(warning.message);
+  console.warn(warning.message)
 }

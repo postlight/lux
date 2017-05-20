@@ -1,7 +1,7 @@
 /* @flow */
 
-import { WARN, ERROR, LEVELS, FORMATS } from '../constants';
-import { createWriter } from '../writer';
+import { WARN, ERROR, LEVELS, FORMATS } from '../constants'
+import { createWriter } from '../writer'
 
 const {
   stdout: {
@@ -10,94 +10,94 @@ const {
   stderr: {
     write: writeErr,
   },
-} = process;
+} = process
 
 describe('module "logger/writer"', () => {
   describe('#createWriter()', () => {
     beforeAll(() => {
-      global.process.stdout.write = jest.fn();
-      global.process.stderr.write = jest.fn();
-    });
+      global.process.stdout.write = jest.fn()
+      global.process.stderr.write = jest.fn()
+    })
 
     afterAll(() => {
-      global.process.stdout.write = writeOut;
-      global.process.stderr.write = writeErr;
-    });
+      global.process.stdout.write = writeOut
+      global.process.stderr.write = writeErr
+    })
 
     FORMATS.forEach(format => {
       describe(`- format "${format}"`, () => {
-        let subject;
+        let subject
 
         beforeAll(() => {
-          subject = createWriter(format);
-        });
+          subject = createWriter(format)
+        })
 
         LEVELS.forEach((num, level) => {
           describe(`- level "${level}"`, () => {
             test('can write message objects', () => {
-              const message = 'Hello world!';
-              let mockForLevel;
+              const message = 'Hello world!'
+              let mockForLevel
 
               subject({
                 level,
                 message,
                 timestamp: new Date().toISOString(),
-              });
+              })
 
               switch (level) {
                 case WARN:
                 case ERROR:
-                  mockForLevel = process.stderr.write;
-                  break;
+                  mockForLevel = process.stderr.write
+                  break
 
                 default:
-                  mockForLevel = process.stdout.write;
-                  break;
+                  mockForLevel = process.stdout.write
+                  break
               }
 
-              expect(mockForLevel).toBeCalled();
-            });
+              expect(mockForLevel).toBeCalled()
+            })
 
             test('can write nested message objects', () => {
-              const message = { message: 'Hello world!' };
-              let mockForLevel;
+              const message = { message: 'Hello world!' }
+              let mockForLevel
 
               subject({
                 level,
                 message,
                 timestamp: new Date().toISOString(),
-              });
+              })
 
               switch (level) {
                 case WARN:
                 case ERROR:
-                  mockForLevel = process.stderr.write;
-                  break;
+                  mockForLevel = process.stderr.write
+                  break
 
                 default:
-                  mockForLevel = process.stdout.write;
-                  break;
+                  mockForLevel = process.stdout.write
+                  break
               }
 
-              expect(mockForLevel).toBeCalled();
-            });
+              expect(mockForLevel).toBeCalled()
+            })
 
             if (level === ERROR) {
               test('can write error stack traces', () => {
-                const message = new Error('Test');
+                const message = new Error('Test')
 
                 subject({
                   level,
                   message,
                   timestamp: new Date().toISOString(),
-                });
+                })
 
-                expect(process.stderr.write).toBeCalled();
-              });
+                expect(process.stderr.write).toBeCalled()
+              })
             }
-          });
-        });
-      });
-    });
-  });
-});
+          })
+        })
+      })
+    })
+  })
+})

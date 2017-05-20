@@ -1,9 +1,9 @@
-import PostsController from '../posts';
+import PostsController from '../posts'
 
 class AdminPostsController extends PostsController {
   index(req, res) {
-    return super.index(req, res).unscope('isPublic');
+    return super.index(req, res).unscope('isPublic')
   }
 }
 
-export default AdminPostsController;
+export default AdminPostsController

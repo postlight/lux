@@ -1,42 +1,42 @@
 /* @flow */
 
-import promisify from '../promisify';
+import promisify from '../promisify'
 
 describe('module "utils/promisify"', () => {
   describe('#default()', () => {
-    let source;
-    let target;
+    let source
+    let target
 
     beforeEach(() => {
       source = jest.fn().mockImplementation(function impl(data, callback) {
         if (data instanceof Error) {
-          callback(data);
+          callback(data)
         } else {
-          callback(null, this ? this : data);
+          callback(null, this ? this : data)
         }
-      });
-      target = promisify(source);
-    });
+      })
+      target = promisify(source)
+    })
 
     test('converts a callback interface into a promise interface', async () => {
-      const data = {};
+      const data = {}
 
-      expect(await target(data)).toBe(data);
-    });
+      expect(await target(data)).toBe(data)
+    })
 
     test('supports optionally supplying `this` context', async () => {
-      const data = {};
-      const context = {};
+      const data = {}
+      const context = {}
 
-      target = promisify(source, context);
+      target = promisify(source, context)
 
-      expect(await target(data)).toBe(context);
-    });
+      expect(await target(data)).toBe(context)
+    })
 
     test('properly rejects when an error occurs', async () => {
       await target(new Error()).catch(err => {
-        expect(err).toBeInstanceOf(Error);
-      });
-    });
-  });
-});
+        expect(err).toBeInstanceOf(Error)
+      })
+    })
+  })
+})

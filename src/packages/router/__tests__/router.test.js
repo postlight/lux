@@ -1,23 +1,23 @@
 /* @flow */
 
-import Logger from '../../logger';
-import Route from '../route';
-import Router from '../index';
-import Controller from '../../controller';
-import Serializer from '../../serializer';
-import { Model } from '../../database';
-import { FreezeableMap } from '../../freezeable';
-import { request } from '../../adapter/mock';
+import Logger from '../../logger'
+import Route from '../route'
+import Router from '../index'
+import Controller from '../../controller'
+import Serializer from '../../serializer'
+import { Model } from '../../database'
+import { FreezeableMap } from '../../freezeable'
+import { request } from '../../adapter/mock'
 
 describe('module "router"', () => {
   describe('class Router', () => {
-    let controller;
-    let controllers;
+    let controller
+    let controllers
 
     beforeAll(() => {
       const columnFor = () => ({
         type: 'number',
-      });
+      })
 
       class Post extends Model {
         static resourceName = 'posts';
@@ -29,12 +29,12 @@ describe('module "router"', () => {
         static columnFor = columnFor;
       }
 
-      const appController = new Controller();
+      const appController = new Controller()
       const adminController = new Controller({
         parent: controller,
-      });
+      })
 
-      controller = appController;
+      controller = appController
       controllers = new FreezeableMap([
         ['application', controller],
         ['posts', new Controller({
@@ -53,8 +53,8 @@ describe('module "router"', () => {
           parent: adminController,
           serializer: new Serializer(),
         })]
-      ]);
-    });
+      ])
+    })
 
     describe('- defining a single route', () => {
       test('works as expected', () => {
@@ -65,13 +65,13 @@ describe('module "router"', () => {
           routes() {
             this.resource('users', {
               only: ['index']
-            });
+            })
           }
-        });
+        })
 
-        expect(subject.has('GET:/users')).toBe(true);
-      });
-    });
+        expect(subject.has('GET:/users')).toBe(true)
+      })
+    })
 
     describe('- defining a complete resource', () => {
       test('works as expected', () => {
@@ -80,20 +80,20 @@ describe('module "router"', () => {
           controllers,
 
           routes() {
-            this.resource('posts');
+            this.resource('posts')
           }
-        });
+        })
 
-        expect(subject.has('GET:/posts')).toBe(true);
-        expect(subject.has('GET:/posts/:dynamic')).toBe(true);
-        expect(subject.has('POST:/posts')).toBe(true);
-        expect(subject.has('PATCH:/posts/:dynamic')).toBe(true);
-        expect(subject.has('DELETE:/posts/:dynamic')).toBe(true);
-        expect(subject.has('HEAD:/posts')).toBe(true);
-        expect(subject.has('HEAD:/posts/:dynamic')).toBe(true);
-        expect(subject.has('OPTIONS:/posts')).toBe(true);
-        expect(subject.has('OPTIONS:/posts/:dynamic')).toBe(true);
-      });
+        expect(subject.has('GET:/posts')).toBe(true)
+        expect(subject.has('GET:/posts/:dynamic')).toBe(true)
+        expect(subject.has('POST:/posts')).toBe(true)
+        expect(subject.has('PATCH:/posts/:dynamic')).toBe(true)
+        expect(subject.has('DELETE:/posts/:dynamic')).toBe(true)
+        expect(subject.has('HEAD:/posts')).toBe(true)
+        expect(subject.has('HEAD:/posts/:dynamic')).toBe(true)
+        expect(subject.has('OPTIONS:/posts')).toBe(true)
+        expect(subject.has('OPTIONS:/posts/:dynamic')).toBe(true)
+      })
 
       test('throws an error when a controller is missing', () => {
         expect(() => (
@@ -101,12 +101,12 @@ describe('module "router"', () => {
             controller,
             controllers,
             routes() {
-              this.resource('articles');
+              this.resource('articles')
             },
           })
-        )).toThrow();
-      });
-    });
+        )).toThrow()
+      })
+    })
 
     describe('- defining a complete namespace', () => {
       test('works as expected', () => {
@@ -115,21 +115,21 @@ describe('module "router"', () => {
           controllers,
           routes() {
             this.namespace('admin', function admin() {
-              this.resource('posts');
-            });
+              this.resource('posts')
+            })
           },
-        });
+        })
 
-        expect(subject.has('GET:/admin/posts')).toBe(true);
-        expect(subject.has('GET:/admin/posts/:dynamic')).toBe(true);
-        expect(subject.has('POST:/admin/posts')).toBe(true);
-        expect(subject.has('PATCH:/admin/posts/:dynamic')).toBe(true);
-        expect(subject.has('DELETE:/admin/posts/:dynamic')).toBe(true);
-        expect(subject.has('HEAD:/admin/posts')).toBe(true);
-        expect(subject.has('HEAD:/admin/posts/:dynamic')).toBe(true);
-        expect(subject.has('OPTIONS:/admin/posts')).toBe(true);
-        expect(subject.has('OPTIONS:/admin/posts/:dynamic')).toBe(true);
-      });
+        expect(subject.has('GET:/admin/posts')).toBe(true)
+        expect(subject.has('GET:/admin/posts/:dynamic')).toBe(true)
+        expect(subject.has('POST:/admin/posts')).toBe(true)
+        expect(subject.has('PATCH:/admin/posts/:dynamic')).toBe(true)
+        expect(subject.has('DELETE:/admin/posts/:dynamic')).toBe(true)
+        expect(subject.has('HEAD:/admin/posts')).toBe(true)
+        expect(subject.has('HEAD:/admin/posts/:dynamic')).toBe(true)
+        expect(subject.has('OPTIONS:/admin/posts')).toBe(true)
+        expect(subject.has('OPTIONS:/admin/posts/:dynamic')).toBe(true)
+      })
 
       test('throws an error when a controller is missing', () => {
         expect(() => (
@@ -138,17 +138,17 @@ describe('module "router"', () => {
             controllers,
             routes() {
               this.namespace('v1', function v1() {
-                this.resource('posts');
-              });
+                this.resource('posts')
+              })
             }
           })
-        )).toThrow();
-      });
-    });
+        )).toThrow()
+      })
+    })
 
     describe('#match()', () => {
-      let logger;
-      let subject;
+      let logger
+      let subject
 
       beforeAll(() => {
         logger = new Logger({
@@ -158,16 +158,16 @@ describe('module "router"', () => {
             params: [],
           },
           enabled: false,
-        });
+        })
 
         subject = new Router({
           controller,
           controllers,
           routes() {
-            this.resource('posts');
+            this.resource('posts')
           },
-        });
-      });
+        })
+      })
 
       test('can match a route for a request with a dynamic url', () => {
         expect(
@@ -184,8 +184,8 @@ describe('module "router"', () => {
               defaultParams: {},
             })
           )
-        ).toBeInstanceOf(Route);
-      });
+        ).toBeInstanceOf(Route)
+      })
 
       test('can match a route for a request with a non-dynamic url', () => {
         expect(
@@ -200,8 +200,8 @@ describe('module "router"', () => {
               defaultParams: {},
             })
           )
-        ).toBeInstanceOf(Route);
-      });
-    });
-  });
-});
+        ).toBeInstanceOf(Route)
+      })
+    })
+  })
+})

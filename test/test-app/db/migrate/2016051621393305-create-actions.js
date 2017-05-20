@@ -1,21 +1,21 @@
 export function up(schema) {
   return schema.createTable('actions', table => {
-    table.increments('id');
+    table.increments('id')
 
     table.integer('trackable_id')
       .index()
-      .notNullable();
+      .notNullable()
 
     table.string('trackable_type')
       .index()
-      .notNullable();
+      .notNullable()
 
-    table.timestamps();
-    table.index('created_at');
-    table.index('updated_at');
-  });
+    table.timestamps()
+    table.index('created_at')
+    table.index('updated_at')
+  })
 }
 
 export function down(schema) {
-  return schema.dropTable('actions');
+  return schema.dropTable('actions')
 }

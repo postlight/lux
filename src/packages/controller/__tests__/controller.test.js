@@ -1,15 +1,15 @@
 /* @flow */
 
-import faker from 'faker';
+import faker from 'faker'
 
-import { MIME_TYPE } from '../../jsonapi';
-import Controller from '../index';
-import Serializer from '../../serializer';
-import * as Adapters from '../../adapter';
-import noop from '../../../utils/noop';
-import { getTestApp } from '../../../../test/utils/test-app';
+import { MIME_TYPE } from '../../jsonapi'
+import Controller from '../index'
+import Serializer from '../../serializer'
+import * as Adapters from '../../adapter'
+import noop from '../../../utils/noop'
+import { getTestApp } from '../../../../test/utils/test-app'
 
-const HOST = 'localhost:4000';
+const HOST = 'localhost:4000'
 const DEFAULT_FIELDS = {
   posts: [
     'body',
@@ -32,14 +32,14 @@ const DEFAULT_FIELDS = {
   tags: [
     'id',
   ],
-};
+}
 
 describe('module "controller"', () => {
   describe('class Controller', () => {
-    let Post;
-    let subject;
-    let adapter;
-    let app;
+    let Post
+    let subject
+    let adapter
+    let app
 
     const getDefaultProps = () => ({
       id: expect.anything(),
@@ -47,22 +47,22 @@ describe('module "controller"', () => {
       isPublic: expect.any(Boolean),
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
-    });
+    })
 
     const assertRecord = (item, props = getDefaultProps()) => {
-      expect(item).toBeInstanceOf(Post);
+      expect(item).toBeInstanceOf(Post)
 
       if (item instanceof Post) {
         expect(item.toObject()).toEqual(
           expect.objectContaining(props)
-        );
+        )
       }
-    };
+    }
 
     beforeAll(async () => {
-      app = await getTestApp();
-      Post = app.store.modelFor('post');
-      adapter = Adapters.mock(app);
+      app = await getTestApp()
+      Post = app.store.modelFor('post')
+      adapter = Adapters.mock(app)
       subject = new Controller({
         model: Post,
         namespace: '',
@@ -71,14 +71,14 @@ describe('module "controller"', () => {
           parent: null,
           namespace: ''
         })
-      });
+      })
 
-      subject.controllers = app.controllers;
-    });
+      subject.controllers = app.controllers
+    })
 
     afterAll(async () => {
-      await app.destroy();
-    });
+      await app.destroy()
+    })
 
     describe('#index()', () => {
       const mockArgs = async (query = '') => {
@@ -89,7 +89,7 @@ describe('module "controller"', () => {
             Host: HOST,
           },
           resolve: noop,
-        });
+        })
 
         Object.assign(request.defaultParams, {
           sort: 'createdAt',
@@ -99,61 +99,61 @@ describe('module "controller"', () => {
             size: 25,
             number: 1,
           },
-        });
+        })
 
-        return [request, response];
-      };
+        return [request, response]
+      }
 
       test('returns an array of records', async () => {
-        const [request, response] = await mockArgs();
-        const result = await subject.index(request, response);
+        const [request, response] = await mockArgs()
+        const result = await subject.index(request, response)
 
-        expect(result).toBeInstanceOf(Array);
-        result.forEach(item => assertRecord(item));
-      });
+        expect(result).toBeInstanceOf(Array)
+        result.forEach(item => assertRecord(item))
+      })
 
       test('supports specifying page size', async () => {
-        const [request, response] = await mockArgs('?page[size]=10');
-        const result = await subject.index(request, response);
+        const [request, response] = await mockArgs('?page[size]=10')
+        const result = await subject.index(request, response)
 
-        expect(result).toBeInstanceOf(Array);
-        expect(result).toHaveLength(10);
-        result.forEach(item => assertRecord(item));
-      });
+        expect(result).toBeInstanceOf(Array)
+        expect(result).toHaveLength(10)
+        result.forEach(item => assertRecord(item))
+      })
 
       test('supports filter parameters', async () => {
-        const [request, response] = await mockArgs('?filter[is-public]=false');
-        const result = await subject.index(request, response);
+        const [request, response] = await mockArgs('?filter[is-public]=false')
+        const result = await subject.index(request, response)
 
-        expect(result).toBeInstanceOf(Array);
+        expect(result).toBeInstanceOf(Array)
         result.forEach(item => {
           assertRecord(item, {
             ...getDefaultProps(),
             isPublic: false,
-          });
-        });
-      });
+          })
+        })
+      })
 
       test('supports sparse field sets', async () => {
-        const [request, response] = await mockArgs('?fields[posts]=id,title');
-        const result = await subject.index(request, response);
+        const [request, response] = await mockArgs('?fields[posts]=id,title')
+        const result = await subject.index(request, response)
 
-        expect(result).toBeInstanceOf(Array);
+        expect(result).toBeInstanceOf(Array)
         result.forEach(item => {
-          const { id, title } = getDefaultProps();
+          const { id, title } = getDefaultProps()
 
           assertRecord(item, {
             id,
             title,
-          });
-        });
-      });
+          })
+        })
+      })
 
       test('supports eager loading relationships', async () => {
-        const [request, response] = await mockArgs('?include=user');
-        const result = await subject.index(request, response);
+        const [request, response] = await mockArgs('?include=user')
+        const result = await subject.index(request, response)
 
-        expect(result).toBeInstanceOf(Array);
+        expect(result).toBeInstanceOf(Array)
         result.forEach(item => {
           assertRecord(item, {
             ...getDefaultProps(),
@@ -162,10 +162,10 @@ describe('module "controller"', () => {
               name: expect.any(String),
               email: expect.any(String),
             }),
-          });
-        });
-      });
-    });
+          })
+        })
+      })
+    })
 
     describe('#show()', () => {
       const mockArgs = async (id, query = '') => {
@@ -176,50 +176,50 @@ describe('module "controller"', () => {
             Host: HOST,
           },
           resolve: noop,
-        });
+        })
 
         Object.assign(request.params, {
           id,
-        });
+        })
 
         Object.assign(request.defaultParams, {
           fields: DEFAULT_FIELDS,
-        });
+        })
 
-        return [request, response];
-      };
+        return [request, response]
+      }
 
       test('returns a single record', async () => {
-        const [request, response] = await mockArgs(1);
+        const [request, response] = await mockArgs(1)
 
-        assertRecord(await subject.show(request, response));
-      });
+        assertRecord(await subject.show(request, response))
+      })
 
       test('throws an error if the record is not found', async () => {
-        const [request, response] = await mockArgs(10000);
+        const [request, response] = await mockArgs(10000)
 
         await subject
           .show(request, response)
           .catch(err => {
-            expect(err).toEqual(expect.any(Error));
-          });
-      });
+            expect(err).toEqual(expect.any(Error))
+          })
+      })
 
       test('supports sparse field sets', async () => {
-        const { id, title } = getDefaultProps();
+        const { id, title } = getDefaultProps()
         const [request, response] = await mockArgs(
           1,
           '?fields[posts]=id,title'
-        );
+        )
 
         assertRecord(await subject.show(request, response), {
           id,
           title,
-        });
-      });
+        })
+      })
 
       test('supports eager loading relationships', async () => {
-        const [request, response] = await mockArgs(1, '?include=user');
+        const [request, response] = await mockArgs(1, '?include=user')
 
         assertRecord(await subject.show(request, response), {
           ...getDefaultProps(),
@@ -228,12 +228,12 @@ describe('module "controller"', () => {
             name: expect.any(String),
             email: expect.any(String),
           }),
-        });
-      });
-    });
+        })
+      })
+    })
 
     describe('#create()', () => {
-      let result;
+      let result
 
       const mockArgs = async params => {
         const [request, response] = await adapter({
@@ -244,24 +244,24 @@ describe('module "controller"', () => {
             'Content-Type': MIME_TYPE,
           },
           resolve: noop,
-        });
+        })
 
-        Object.assign(request.params, params);
+        Object.assign(request.params, params)
 
         Object.assign(request.defaultParams, {
           fields: DEFAULT_FIELDS,
-        });
+        })
 
-        return [request, response];
-      };
+        return [request, response]
+      }
 
       afterEach(async () => {
-        await result.destroy();
-      });
+        await result.destroy()
+      })
 
       test('returns the newly created record', async () => {
-        const title = '#create() Test';
-        const isPublic = true;
+        const title = '#create() Test'
+        const isPublic = true
         const [request, response] = await mockArgs({
           data: {
             type: 'posts',
@@ -273,16 +273,16 @@ describe('module "controller"', () => {
           include: [
             'user',
           ],
-        });
+        })
 
-        result = await subject.create(request, response);
+        result = await subject.create(request, response)
 
         assertRecord(result, {
           ...getDefaultProps(),
           title,
           isPublic,
-        });
-      });
+        })
+      })
 
       test('sets `response.statusCode` to the number `201`', async () => {
         const [request, response] = await mockArgs({
@@ -292,12 +292,12 @@ describe('module "controller"', () => {
               title: '#create() Test',
             },
           },
-        });
+        })
 
-        result = await subject.create(request, response);
+        result = await subject.create(request, response)
 
-        expect(response.statusCode).toBe(201);
-      });
+        expect(response.statusCode).toBe(201)
+      })
 
       test('sets the correct `Location` header', async () => {
         const [request, response] = await mockArgs({
@@ -307,20 +307,20 @@ describe('module "controller"', () => {
               title: '#create() Test',
             },
           },
-        });
+        })
 
-        result = await subject.create(request, response);
+        result = await subject.create(request, response)
 
         expect(
           response.headers.get('location')
-        ).toBe(`http://${HOST}/posts/${result.getPrimaryKey()}`);
-      });
-    });
+        ).toBe(`http://${HOST}/posts/${result.getPrimaryKey()}`)
+      })
+    })
 
     describe('#update()', () => {
-      let User;
-      let Comment;
-      let record;
+      let User
+      let Comment
+      let record
 
       const getDefaultParams = () => ({
         type: 'posts',
@@ -329,7 +329,7 @@ describe('module "controller"', () => {
             title: '#update() Test',
           },
         },
-      });
+      })
 
       const mockArgs = async (id, params = getDefaultParams()) => {
         const [request, response] = await adapter({
@@ -340,34 +340,34 @@ describe('module "controller"', () => {
             'Content-Type': MIME_TYPE,
           },
           resolve: noop,
-        });
+        })
 
         Object.assign(request.params, params, {
           id,
-        });
+        })
 
         Object.assign(request.defaultParams, {
           fields: DEFAULT_FIELDS,
-        });
+        })
 
-        return [request, response];
-      };
+        return [request, response]
+      }
 
       beforeEach(async () => {
-        User = app.store.modelFor('user');
-        Comment = app.store.modelFor('comment');
+        User = app.store.modelFor('user')
+        Comment = app.store.modelFor('comment')
         record = await Post
           .create({ title: '#update() Test' })
-          .then(post => post.unwrap());
-      });
+          .then(post => post.unwrap())
+      })
 
       afterEach(async () => {
-        await record.destroy();
-      });
+        await record.destroy()
+      })
 
       test('returns a record if attribute(s) change', async () => {
-        const id = record.getPrimaryKey();
-        const isPublic = true;
+        const id = record.getPrimaryKey()
+        const isPublic = true
         const [request, response] = await mockArgs(id, {
           type: 'posts',
           data: {
@@ -375,37 +375,37 @@ describe('module "controller"', () => {
               isPublic,
             },
           },
-        });
+        })
 
         // $FlowIgnore
-        expect(record.isPublic).toBe(!isPublic);
+        expect(record.isPublic).toBe(!isPublic)
         assertRecord(await subject.update(request, response), {
           ...getDefaultProps(),
           id,
           isPublic,
-        });
-      });
+        })
+      })
 
       test('returns a record if relationships(s) change', async () => {
-        const id = record.getPrimaryKey();
+        const id = record.getPrimaryKey()
 
         const newUser = await (async () => {
           const result = await User.create({
             name: `${faker.name.firstName()} ${faker.name.lastName()}`,
             email: faker.internet.email(),
             password: faker.internet.password(8),
-          });
+          })
 
-          return result.unwrap();
-        })();
+          return result.unwrap()
+        })()
 
         const newComment = await (async () => {
           const result = await Comment.create({
             message: faker.lorem.sentence(),
-          });
+          })
 
-          return result.unwrap();
-        })();
+          return result.unwrap()
+        })()
 
         const [request, response] = await mockArgs(id, {
           type: 'posts',
@@ -427,23 +427,23 @@ describe('module "controller"', () => {
               },
             },
           },
-        });
+        })
 
         const [user, comments] = await Promise.all([
           // $FlowIgnore
           record.user,
           // $FlowIgnore
           record.comments,
-        ]);
+        ])
 
-        expect(user).toBeNull();
-        expect(comments).toEqual([]);
+        expect(user).toBeNull()
+        expect(comments).toEqual([])
 
-        await subject.update(request, response);
+        await subject.update(request, response)
 
         record = await Post
           .find(id)
-          .include('user', 'comments');
+          .include('user', 'comments')
 
         assertRecord(record, {
           ...getDefaultProps(),
@@ -456,7 +456,7 @@ describe('module "controller"', () => {
               newComment.getAttributes('id', 'message')
             ),
           ]),
-        });
+        })
 
         await Post.transaction(trx => (
           Promise.all([
@@ -467,37 +467,37 @@ describe('module "controller"', () => {
               .transacting(trx)
               .destroy(),
           ])
-        ));
-      });
+        ))
+      })
 
       test('returns the number `204` if no changes occur', async () => {
-        const [request, response] = await mockArgs(record.getPrimaryKey());
+        const [request, response] = await mockArgs(record.getPrimaryKey())
 
-        expect(await subject.update(request, response)).toBe(204);
-      });
+        expect(await subject.update(request, response)).toBe(204)
+      })
 
       test('throws an error if the record is not found', async () => {
-        const [request, response] = await mockArgs(10000);
+        const [request, response] = await mockArgs(10000)
 
         await subject
           .update(request, response)
           .catch(err => {
-            expect(err).toEqual(expect.any(Error));
-          });
-      });
+            expect(err).toEqual(expect.any(Error))
+          })
+      })
 
       test('supports sparse field sets', async () => {
-        const id = record.getPrimaryKey();
+        const id = record.getPrimaryKey()
 
         const newUser = await (async () => {
           const result = await User.create({
             name: `${faker.name.firstName()} ${faker.name.lastName()}`,
             email: faker.internet.email(),
             password: faker.internet.password(8),
-          });
+          })
 
-          return result.unwrap();
-        })();
+          return result.unwrap()
+        })()
 
         const [request, response] = await mockArgs(id, {
           type: 'posts',
@@ -521,17 +521,17 @@ describe('module "controller"', () => {
           include: [
             'user',
           ],
-        });
+        })
 
         const [user, comments] = await Promise.all([
           // $FlowIgnore
           record.user,
           // $FlowIgnore
           record.comments,
-        ]);
+        ])
 
-        expect(user).toBeNull();
-        expect(comments).toEqual([]);
+        expect(user).toBeNull()
+        expect(comments).toEqual([])
 
         assertRecord(await subject.update(request, response), {
           ...getDefaultProps(),
@@ -543,14 +543,14 @@ describe('module "controller"', () => {
               'email'
             )
           ),
-        });
+        })
 
-        await newUser.destroy();
-      });
-    });
+        await newUser.destroy()
+      })
+    })
 
     describe('#destroy()', () => {
-      let record;
+      let record
 
       const mockArgs = async id => {
         const [request, response] = await adapter({
@@ -560,41 +560,41 @@ describe('module "controller"', () => {
             Host: HOST,
           },
           resolve: noop,
-        });
+        })
 
         Object.assign(request.params, {
           id,
-        });
+        })
 
         Object.assign(request.defaultParams, {
           fields: DEFAULT_FIELDS,
-        });
+        })
 
-        return [request, response];
-      };
+        return [request, response]
+      }
 
       beforeAll(async () => {
         record = await Post.create({
           title: '#destroy() Test'
-        });
-      });
+        })
+      })
 
       test('returns the number `204` if the record is destroyed', async () => {
-        const [request, response] = await mockArgs(record.getPrimaryKey());
+        const [request, response] = await mockArgs(record.getPrimaryKey())
 
-        expect(await subject.destroy(request, response)).toBe(204);
-      });
+        expect(await subject.destroy(request, response)).toBe(204)
+      })
 
       test('throws an error if the record is not found', async () => {
-        const [request, response] = await mockArgs(10000);
+        const [request, response] = await mockArgs(10000)
 
         await subject
           .destroy(request, response)
           .catch(err => {
-            expect(err).toEqual(expect.any(Error));
-          });
-      });
-    });
+            expect(err).toEqual(expect.any(Error))
+          })
+      })
+    })
 
     describe('#preflight()', () => {
       const mockArgs = async () => {
@@ -605,7 +605,7 @@ describe('module "controller"', () => {
             Host: HOST,
           },
           resolve: noop,
-        });
+        })
 
         Object.assign(request.defaultParams, {
           sort: 'createdAt',
@@ -615,16 +615,16 @@ describe('module "controller"', () => {
             size: 25,
             number: 1,
           },
-        });
+        })
 
-        return [request, response];
-      };
+        return [request, response]
+      }
 
       test('returns the number `204`', async () => {
-        const [request, response] = await mockArgs();
+        const [request, response] = await mockArgs()
 
-        expect(await subject.preflight(request, response)).toBe(204);
-      });
-    });
-  });
-});
+        expect(await subject.preflight(request, response)).toBe(204)
+      })
+    })
+  })
+})

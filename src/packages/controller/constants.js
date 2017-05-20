@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { BuiltInAction } from './index';
+import type { BuiltInAction } from './index'
 
 export const BUILT_IN_ACTIONS: Array<BuiltInAction> = (
   Object.freeze([
@@ -10,4 +10,4 @@ export const BUILT_IN_ACTIONS: Array<BuiltInAction> = (
     'update',
     'destroy',
   ])
-);
+)

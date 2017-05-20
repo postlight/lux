@@ -1,10 +1,10 @@
 /* @flow */
 
-import { FreezeableSet } from '../../../../freezeable';
-import validateType from '../utils/validate-type';
+import { FreezeableSet } from '../../../../freezeable'
+import validateType from '../utils/validate-type'
 
-import validateValue from './utils/validate-value';
-import type { Parameter$opts } from './interfaces';
+import validateValue from './utils/validate-value'
+import type { Parameter$opts } from './interfaces'
 
 /**
  * @private
@@ -25,27 +25,27 @@ class Parameter extends FreezeableSet<mixed> {
     required,
     sanitize
   }: Parameter$opts) {
-    super(values);
+    super(values)
 
     Object.assign(this, {
       path,
       type,
       required: Boolean(required),
       sanitize: Boolean(sanitize)
-    });
+    })
 
-    this.freeze();
+    this.freeze()
   }
 
   validate<V>(value: V): V {
-    validateType(this, value);
+    validateType(this, value)
 
     if (this.size > 0) {
-      return validateValue(this, value);
+      return validateValue(this, value)
     }
 
-    return value;
+    return value
   }
 }
 
-export default Parameter;
+export default Parameter

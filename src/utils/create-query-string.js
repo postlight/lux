@@ -1,6 +1,6 @@
 /* @flow */
 
-import entries from './entries';
+import entries from './entries'
 
 /**
  * A replacement for querystring.stringify that supports nested objects.
@@ -9,10 +9,10 @@ import entries from './entries';
  */
 export default function createQueryString(src: Object, prop?: string): string {
   return entries(src).reduce((str, [key, value], index) => {
-    let result = str;
+    let result = str
 
     if (index > 0) {
-      result += '&';
+      result += '&'
     }
 
     if (prop) {
@@ -22,26 +22,26 @@ export default function createQueryString(src: Object, prop?: string): string {
         + key
         + encodeURIComponent(']')
          }=`
-      );
+      )
     } else {
-      result += `${key}=`;
+      result += `${key}=`
     }
 
     if (value && typeof value === 'object') {
       if (Array.isArray(value)) {
-        result += value.map(encodeURIComponent).join();
+        result += value.map(encodeURIComponent).join()
       } else {
         result = (
           result.substr(0, result.length - (key.length + 1))
           + createQueryString(value, key)
-        );
+        )
       }
     } else if (!value && typeof value !== 'number') {
-      result += 'null';
+      result += 'null'
     } else {
-      result += encodeURIComponent(value);
+      result += encodeURIComponent(value)
     }
 
-    return result;
-  }, '');
+    return result
+  }, '')
 }

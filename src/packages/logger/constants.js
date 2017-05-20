@@ -1,19 +1,19 @@
 /* @flow */
 
-import { FreezeableMap, FreezeableSet } from '../freezeable';
+import { FreezeableMap, FreezeableSet } from '../freezeable'
 
-import type { Level, Format } from './index';
+import type { Level, Format } from './index'
 
-export const DEBUG = 'DEBUG';
-export const INFO = 'INFO';
-export const WARN = 'WARN';
-export const ERROR = 'ERROR';
+export const DEBUG = 'DEBUG'
+export const INFO = 'INFO'
+export const WARN = 'WARN'
+export const ERROR = 'ERROR'
 
 export const FORMATS: FreezeableSet<Format> = (
   new FreezeableSet(['text', 'json'])
-);
+)
 
-FORMATS.freeze();
+FORMATS.freeze()
 
 export const LEVELS: FreezeableMap<Level, number> = (
   new FreezeableMap([
@@ -22,6 +22,6 @@ export const LEVELS: FreezeableMap<Level, number> = (
     [WARN, 2],
     [ERROR, 3],
   ])
-);
+)
 
-LEVELS.freeze();
+LEVELS.freeze()

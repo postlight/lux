@@ -1,20 +1,20 @@
 /* @flow */
 
-import { join as joinPath } from 'path';
-import { watch as nativeWatch } from 'fs';
-import type { FSWatcher } from 'fs'; // eslint-disable-line no-duplicate-imports
+import { join as joinPath } from 'path'
+import { watch as nativeWatch } from 'fs'
+import type { FSWatcher } from 'fs' // eslint-disable-line no-duplicate-imports
 
-import { Client as Watchman } from 'fb-watchman';
+import { Client as Watchman } from 'fb-watchman'
 
-import exec from '../../../utils/exec';
-import tryCatch from '../../../utils/try-catch';
-import isJSFile from '../utils/is-js-file';
-import { freezeProps } from '../../freezeable';
+import exec from '../../../utils/exec'
+import tryCatch from '../../../utils/try-catch'
+import isJSFile from '../utils/is-js-file'
+import { freezeProps } from '../../freezeable'
 
 // eslint-disable-next-line no-unused-vars
-import type Watcher, { Client } from './index';
+import type Watcher, { Client } from './index'
 
-const SUBSCRIPTION_NAME = 'lux-watcher';
+const SUBSCRIPTION_NAME = 'lux-watcher'
 
 /**
  * @private
@@ -24,9 +24,9 @@ function fallback(instance: Watcher, path: string): FSWatcher {
     recursive: true
   }, (type, name) => {
     if (isJSFile(name)) {
-      instance.emit('change', [{ name, type }]);
+      instance.emit('change', [{ name, type }])
     }
-  });
+  })
 }
 
 /**
@@ -34,12 +34,12 @@ function fallback(instance: Watcher, path: string): FSWatcher {
  */
 function setupWatchmen(instance: Watcher, path: string): Promise<Client> {
   return new Promise((resolve, reject) => {
-    const client = new Watchman();
+    const client = new Watchman()
 
     client.capabilityCheck({}, (capabilityErr) => {
       if (capabilityErr) {
-        reject(capabilityErr);
-        return;
+        reject(capabilityErr)
+        return
       }
 
       client.command(['watch-project', path], (watchErr, {
@@ -47,14 +47,14 @@ function setupWatchmen(instance: Watcher, path: string): Promise<Client> {
         relative_path: relativePath
       } = {}) => {
         if (watchErr) {
-          reject(watchErr);
-          return;
+          reject(watchErr)
+          return
         }
 
         client.command(['clock', watch], (clockErr, { clock: since }) => {
           if (clockErr) {
-            reject(clockErr);
-            return;
+            reject(clockErr)
+            return
           }
 
           client.command(['subscribe', watch, SUBSCRIPTION_NAME, {
@@ -76,8 +76,8 @@ function setupWatchmen(instance: Watcher, path: string): Promise<Client> {
             ]
           }], (subscribeErr) => {
             if (subscribeErr) {
-              reject(subscribeErr);
-              return;
+              reject(subscribeErr)
+              return
             }
 
             client.on('subscription', ({
@@ -88,16 +88,16 @@ function setupWatchmen(instance: Watcher, path: string): Promise<Client> {
               subscription: string
             }): void => {
               if (subscription === SUBSCRIPTION_NAME) {
-                instance.emit('change', files);
+                instance.emit('change', files)
               }
-            });
+            })
 
-            resolve(client);
-          });
-        });
-      });
-    });
-  });
+            resolve(client)
+          })
+        })
+      })
+    })
+  })
 }
 
 /**
@@ -108,25 +108,25 @@ export default async function initialize<T: Watcher>(
   path: string,
   useWatchman: boolean
 ): Promise<T> {
-  const appPath = joinPath(path, 'app');
-  let client;
+  const appPath = joinPath(path, 'app')
+  let client
 
   if (useWatchman) {
     await tryCatch(async () => {
-      await exec('which watchman');
-      client = await setupWatchmen(instance, appPath);
-    });
+      await exec('which watchman')
+      client = await setupWatchmen(instance, appPath)
+    })
   }
 
   Object.assign(instance, {
     path: appPath,
     client: client || fallback(instance, appPath)
-  });
+  })
 
   freezeProps(instance, true,
     'path',
     'client'
-  );
+  )
 
-  return instance;
+  return instance
 }

@@ -1,8 +1,8 @@
 /* @flow */
 
-import * as cp from 'child_process';
+import * as cp from 'child_process'
 
-import promisify from './promisify';
+import promisify from './promisify'
 
 type Options = {
   cwd?: string;
@@ -21,6 +21,6 @@ type Options = {
  */
 const exec: (command: string, options?: Options) => Promise<Buffer> = (
   promisify(cp.exec)
-);
+)
 
-export default exec;
+export default exec

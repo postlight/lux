@@ -1,7 +1,7 @@
-import NotificationsController from '../notifications';
+import NotificationsController from '../notifications'
 
 class AdminNotificationsController extends NotificationsController {
 
 }
 
-export default AdminNotificationsController;
+export default AdminNotificationsController

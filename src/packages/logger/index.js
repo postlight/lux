@@ -1,12 +1,12 @@
 /* @flow */
 
-import { LUX_CONSOLE } from '../../constants';
-import K from '../../utils/k';
+import { LUX_CONSOLE } from '../../constants'
+import K from '../../utils/k'
 
-import { LEVELS } from './constants';
-import { createWriter } from './writer';
-import { createRequestLogger } from './request-logger';
-import type { RequestLogger } from './request-logger';
+import { LEVELS } from './constants'
+import { createWriter } from './writer'
+import { createRequestLogger } from './request-logger'
+import type { RequestLogger } from './request-logger'
 
 export type Format = 'text' | 'json';
 export type LogFunction = (data: string | Object) => void;
@@ -206,12 +206,12 @@ class Logger {
   request: RequestLogger;
 
   constructor({ level, format, filter, enabled }: Config) {
-    let write = K;
-    let request = K;
+    let write = K
+    let request = K
 
     if (!LUX_CONSOLE && enabled) {
-      write = createWriter(format);
-      request = createRequestLogger(this);
+      write = createWriter(format)
+      request = createRequestLogger(this)
     }
 
     Object.defineProperties(this, {
@@ -245,9 +245,9 @@ class Logger {
         enumerable: false,
         configurable: false
       }
-    });
+    })
 
-    const levelNum = LEVELS.get(level) || 0;
+    const levelNum = LEVELS.get(level) || 0
 
     LEVELS.forEach((val, key) => {
       Object.defineProperty(this, key.toLowerCase(), {
@@ -256,13 +256,13 @@ class Logger {
             message,
             level: key,
             timestamp: this.getTimestamp()
-          });
+          })
         } : K,
         writable: false,
         enumerable: false,
         configurable: false,
-      });
-    });
+      })
+    })
   }
 
   /**
@@ -271,10 +271,10 @@ class Logger {
    * @private
    */
   getTimestamp() {
-    return new Date().toISOString();
+    return new Date().toISOString()
   }
 }
 
-export default Logger;
-export { default as line } from './utils/line';
-export { default as sql } from './utils/sql';
+export default Logger
+export { default as line } from './utils/line'
+export { default as sql } from './utils/sql'

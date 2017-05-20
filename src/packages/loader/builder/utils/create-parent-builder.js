@@ -1,10 +1,10 @@
 /* @flow */
 
-import { posix } from 'path';
+import { posix } from 'path'
 
-import type { Builder$Construct, Builder$ParentBuilder } from '../interfaces';
+import type { Builder$Construct, Builder$ParentBuilder } from '../interfaces'
 
-import sortByNamespace from './sort-by-namespace';
+import sortByNamespace from './sort-by-namespace'
 
 export default function createParentBuilder<T>(
   construct: Builder$Construct<T>
@@ -13,34 +13,34 @@ export default function createParentBuilder<T>(
     .from(target)
     .sort(sortByNamespace)
     .reduce((result, [key, value]) => {
-      let parent = value.get('application') || null;
+      let parent = value.get('application') || null
 
       if (parent) {
-        let grandparent = null;
+        let grandparent = null
 
         if (key !== 'root') {
           grandparent = result.find(namespace => {
-            const dirname = posix.dirname(key);
+            const dirname = posix.dirname(key)
 
             if (namespace.key === 'root') {
-              return dirname === '.';
+              return dirname === '.'
             }
 
-            return dirname === namespace.key;
-          });
+            return dirname === namespace.key
+          })
 
           if (grandparent) {
-            grandparent = grandparent.parent;
+            grandparent = grandparent.parent
           }
         }
 
-        parent = construct(`${key}/application`, parent, grandparent);
+        parent = construct(`${key}/application`, parent, grandparent)
       }
 
       return [...result, {
         key,
         value,
         parent
-      }];
-    }, []);
+      }]
+    }, [])
 }

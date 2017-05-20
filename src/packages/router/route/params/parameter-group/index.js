@@ -1,13 +1,13 @@
 /* @flow */
 
-import { FreezeableMap } from '../../../../freezeable';
-import { InvalidParameterError } from '../errors';
-import isNull from '../../../../../utils/is-null';
-import entries from '../../../../../utils/entries';
-import validateType from '../utils/validate-type';
-import type { ParameterLike, ParameterLike$opts } from '../index';
+import { FreezeableMap } from '../../../../freezeable'
+import { InvalidParameterError } from '../errors'
+import isNull from '../../../../../utils/is-null'
+import entries from '../../../../../utils/entries'
+import validateType from '../utils/validate-type'
+import type { ParameterLike, ParameterLike$opts } from '../index'
 
-import hasRequiredParams from './utils/has-required-params';
+import hasRequiredParams from './utils/has-required-params'
 
 /**
  * @private
@@ -26,47 +26,47 @@ class ParameterGroup extends FreezeableMap<string, ParameterLike> {
     required,
     sanitize
   }: ParameterLike$opts) {
-    super(contents);
+    super(contents)
 
     Object.assign(this, {
       path,
       type: 'object',
       required: Boolean(required),
       sanitize: Boolean(sanitize)
-    });
+    })
 
-    this.freeze();
+    this.freeze()
   }
 
   validate<V: Object>(params: V): V {
-    const validated = {};
+    const validated = {}
 
     if (isNull(params)) {
-      return params;
+      return params
     }
 
     if (validateType(this, params) && hasRequiredParams(this, params)) {
-      const { sanitize } = this;
-      let { path } = this;
+      const { sanitize } = this
+      let { path } = this
 
       if (path.length) {
-        path = `${path}.`;
+        path = `${path}.`
       }
 
       for (const [key, value] of entries(params)) {
-        const match = this.get(key);
+        const match = this.get(key)
 
         if (match) {
-          Reflect.set(validated, key, match.validate(value));
+          Reflect.set(validated, key, match.validate(value))
         } else if (!match && !sanitize) {
-          throw new InvalidParameterError(`${path}${key}`);
+          throw new InvalidParameterError(`${path}${key}`)
         }
       }
     }
 
     // $FlowIgnore
-    return validated;
+    return validated
   }
 }
 
-export default ParameterGroup;
+export default ParameterGroup

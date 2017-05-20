@@ -1,24 +1,24 @@
 /* @flow */
 
-import createServerError from '../../../../../errors/utils/create-server-error';
-import { line } from '../../../../logger';
+import createServerError from '../../../../../errors/utils/create-server-error'
+import { line } from '../../../../logger'
 
 /**
  * @private
  */
 class ResourceMismatchError extends TypeError {
   constructor(path: string, expected: mixed, actual: mixed) {
-    let normalized = actual;
+    let normalized = actual
 
     if (typeof normalized === 'string') {
-      normalized = `'${String(normalized)}'`;
+      normalized = `'${String(normalized)}'`
     }
 
     super(line`
       Expected '${String(expected)}' for parameter '${path}' but got
       ${String(normalized)}.
-    `);
+    `)
   }
 }
 
-export default createServerError(ResourceMismatchError, 409);
+export default createServerError(ResourceMismatchError, 409)

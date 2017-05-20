@@ -1,25 +1,25 @@
 export function up(schema) {
   return schema.createTable('users', table => {
-    table.increments('id');
+    table.increments('id')
 
     table.string('name')
       .index()
-      .notNullable();
+      .notNullable()
 
     table.string('email')
       .index()
       .unique()
-      .notNullable();
+      .notNullable()
 
     table.string('password')
-      .notNullable();
+      .notNullable()
 
-    table.timestamps();
-    table.index('created_at');
-    table.index('updated_at');
-  });
+    table.timestamps()
+    table.index('created_at')
+    table.index('updated_at')
+  })
 }
 
 export function down(schema) {
-  return schema.dropTable('users');
+  return schema.dropTable('users')
 }

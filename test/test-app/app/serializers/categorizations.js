@@ -1,4 +1,4 @@
-import { Serializer } from 'LUX_LOCAL';
+import { Serializer } from 'LUX_LOCAL'
 
 class CategorizationsSerializer extends Serializer {
   hasOne = [
@@ -7,4 +7,4 @@ class CategorizationsSerializer extends Serializer {
   ];
 }
 
-export default CategorizationsSerializer;
+export default CategorizationsSerializer

@@ -1,12 +1,12 @@
 /* @flow */
 
-import { BUILT_IN_ACTIONS } from '../../../controller';
-import normalizeResourceArgs from '../context/utils/normalize-resource-args';
+import { BUILT_IN_ACTIONS } from '../../../controller'
+import normalizeResourceArgs from '../context/utils/normalize-resource-args'
 
 describe('module "router/definitions/context"', () => {
   describe('util normalizeResourceArgs()', () => {
     test('normalizes arguments with a name only', () => {
-      const result = normalizeResourceArgs(['posts']);
+      const result = normalizeResourceArgs(['posts'])
 
       expect(result).toEqual(
         expect.arrayContaining([
@@ -17,8 +17,8 @@ describe('module "router/definitions/context"', () => {
           },
           expect.any(Function),
         ])
-      );
-    });
+      )
+    })
 
     test('normalizes arguments with a name and options', () => {
       const result = normalizeResourceArgs(['posts', {
@@ -26,7 +26,7 @@ describe('module "router/definitions/context"', () => {
           'show',
           'index'
         ]
-      }]);
+      }])
 
       expect(result).toEqual(
         expect.arrayContaining([
@@ -40,13 +40,13 @@ describe('module "router/definitions/context"', () => {
           },
           expect.any(Function),
         ])
-      );
-    });
+      )
+    })
 
     test('normalizes arguments with a name and builder', () => {
       const result = normalizeResourceArgs(['posts', function build() {
-        return undefined;
-      }]);
+        return undefined
+      }])
 
       expect(result).toEqual(
         expect.arrayContaining([
@@ -57,8 +57,8 @@ describe('module "router/definitions/context"', () => {
           },
           expect.any(Function),
         ])
-      );
-    });
+      )
+    })
 
     test('normalizes arguments with a name, options, and builder', () => {
       const result = normalizeResourceArgs(['posts', {
@@ -67,8 +67,8 @@ describe('module "router/definitions/context"', () => {
           'index'
         ]
       }, function build() {
-        return undefined;
-      }]);
+        return undefined
+      }])
 
       expect(result).toEqual(
         expect.arrayContaining([
@@ -82,7 +82,7 @@ describe('module "router/definitions/context"', () => {
           },
           expect.any(Function),
         ])
-      );
-    });
-  });
-});
+      )
+    })
+  })
+})

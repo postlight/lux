@@ -1,28 +1,28 @@
 export function up(schema) {
   return schema.createTable('posts', table => {
-    table.increments('id');
+    table.increments('id')
 
-    table.text('body');
+    table.text('body')
 
     table.string('title')
       .index()
       .notNullable()
-      .defaultTo('New Post');
+      .defaultTo('New Post')
 
     table.boolean('is_public')
       .index()
       .defaultTo(false)
-      .notNullable();
+      .notNullable()
 
     table.integer('user_id')
-      .index();
+      .index()
 
-    table.timestamps();
-    table.index('created_at');
-    table.index('updated_at');
-  });
+    table.timestamps()
+    table.index('created_at')
+    table.index('updated_at')
+  })
 }
 
 export function down(schema) {
-  return schema.dropTable('posts');
+  return schema.dropTable('posts')
 }

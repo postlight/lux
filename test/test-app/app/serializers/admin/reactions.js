@@ -1,7 +1,7 @@
-import ReactionsSerializer from '../reactions';
+import ReactionsSerializer from '../reactions'
 
 class AdminReactionsSerializer extends ReactionsSerializer {
 
 }
 
-export default AdminReactionsSerializer;
+export default AdminReactionsSerializer

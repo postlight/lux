@@ -1,8 +1,8 @@
 /* @flow */
 
-import { MIME_TYPE } from '../constants';
-import { line } from '../../logger';
-import createServerError from '../../../errors/utils/create-server-error';
+import { MIME_TYPE } from '../constants'
+import { line } from '../../logger'
+import createServerError from '../../../errors/utils/create-server-error'
 
 /**
  * @private
@@ -12,8 +12,8 @@ class NotAcceptableError extends TypeError {
     super(line`
       Media type parameters is not supported. Try your request again
       without specifying '${contentType.replace(MIME_TYPE, '')}'.
-    `);
+    `)
   }
 }
 
-export default createServerError(NotAcceptableError, 406);
+export default createServerError(NotAcceptableError, 406)

@@ -13,16 +13,16 @@ export default function createServerError<T: Error>(
 ): Class<ServerError<T>> {
   const Target = class extends Source {
     statusCode: number;
-  };
+  }
 
   Object.defineProperty(Target, 'name', {
     value: Source.name,
-  });
+  })
 
   Object.defineProperty(Target.prototype, 'statusCode', {
     value: statusCode,
-  });
+  })
 
   // $FlowIgnore
-  return Target;
+  return Target
 }

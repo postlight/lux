@@ -1,4 +1,4 @@
-import { Model } from 'LUX_LOCAL';
+import { Model } from 'LUX_LOCAL'
 
 class Image extends Model {
   static belongsTo = {
@@ -8,4 +8,4 @@ class Image extends Model {
   };
 }
 
-export default Image;
+export default Image

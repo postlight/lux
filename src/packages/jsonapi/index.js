@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { ObjectMap } from '../../interfaces';
+import type { ObjectMap } from '../../interfaces'
 
 /* eslint-disable no-use-before-define */
 
@@ -82,7 +82,7 @@ export type Document = {
   };
 };
 
-export * from './constants';
-export * from './errors';
-export { default as isJSONAPI } from './utils/is-jsonapi';
-export { default as hasMediaType } from './utils/has-media-type';
+export * from './constants'
+export * from './errors'
+export { default as isJSONAPI } from './utils/is-jsonapi'
+export { default as hasMediaType } from './utils/has-media-type'

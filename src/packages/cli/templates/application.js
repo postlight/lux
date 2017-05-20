@@ -1,10 +1,10 @@
 /* @flow */
 
-import { classify } from 'inflection';
+import { classify } from 'inflection'
 
-import template from '../../template';
-import chain from '../../../utils/chain';
-import underscore from '../../../utils/underscore';
+import template from '../../template'
+import chain from '../../../utils/chain'
+import underscore from '../../../utils/underscore'
 
 /**
  * @private
@@ -13,7 +13,7 @@ export default (name: string): string => {
   const normalized = chain(name)
     .pipe(underscore)
     .pipe(classify)
-    .value();
+    .value()
 
   return template`
     import { Application } from 'lux-framework';
@@ -23,5 +23,5 @@ export default (name: string): string => {
     }
 
     export default ${normalized};
-  `;
-};
+  `
+}

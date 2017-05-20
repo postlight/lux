@@ -1,4 +1,4 @@
-import { Controller } from 'LUX_LOCAL';
+import { Controller } from 'LUX_LOCAL'
 
 class CustomController extends Controller {
   query = [
@@ -6,8 +6,8 @@ class CustomController extends Controller {
   ];
 
   index() {
-    return 204;
-  };
+    return 204
+  }
 }
 
-export default CustomController;
+export default CustomController

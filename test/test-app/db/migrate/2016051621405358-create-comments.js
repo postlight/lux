@@ -1,27 +1,27 @@
 export function up(schema) {
   return schema.createTable('comments', table => {
-    table.increments('id');
+    table.increments('id')
 
     table.string('message')
-      .notNullable();
+      .notNullable()
 
     table.boolean('edited')
       .index()
       .notNullable()
-      .defaultTo(false);
+      .defaultTo(false)
 
     table.integer('user_id')
-      .index();
+      .index()
 
     table.integer('post_id')
-      .index();
+      .index()
 
-    table.timestamps();
-    table.index('created_at');
-    table.index('updated_at');
-  });
+    table.timestamps()
+    table.index('created_at')
+    table.index('updated_at')
+  })
 }
 
 export function down(schema) {
-  return schema.dropTable('comments');
+  return schema.dropTable('comments')
 }

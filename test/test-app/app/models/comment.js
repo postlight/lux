@@ -1,6 +1,6 @@
-import { Model } from 'LUX_LOCAL';
+import { Model } from 'LUX_LOCAL'
 
-import track from '../utils/track';
+import track from '../utils/track'
 
 class Comment extends Model {
   static belongsTo = {
@@ -25,9 +25,9 @@ class Comment extends Model {
 
   static hooks = {
     async afterCreate(comment, trx) {
-      await track(comment, trx);
+      await track(comment, trx)
     }
   };
 }
 
-export default Comment;
+export default Comment

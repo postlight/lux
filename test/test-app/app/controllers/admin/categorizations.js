@@ -1,7 +1,7 @@
-import CategorizationsController from '../categorizations';
+import CategorizationsController from '../categorizations'
 
 class AdminCategorizationsController extends CategorizationsController {
 
 }
 
-export default AdminCategorizationsController;
+export default AdminCategorizationsController

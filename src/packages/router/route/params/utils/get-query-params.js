@@ -1,9 +1,9 @@
 /* @flow */
 
-import Parameter from '../parameter';
-import ParameterGroup from '../parameter-group';
-import type Controller from '../../../../controller';
-import type { ParameterLike } from '../interfaces';
+import Parameter from '../parameter'
+import ParameterGroup from '../parameter-group'
+import type Controller from '../../../../controller'
+import type { ParameterLike } from '../interfaces'
 
 /**
  * @private
@@ -14,7 +14,7 @@ function getPageParam(): [string, ParameterLike] {
     ['number', new Parameter({ path: 'page.number', type: 'number' })]
   ], {
     path: 'page'
-  })];
+  })]
 }
 
 /**
@@ -31,7 +31,7 @@ function getSortParam({
       ...sort,
       ...sort.map(value => `-${value}`)
     ]
-  })];
+  })]
 }
 
 /**
@@ -47,7 +47,7 @@ function getFilterParam({
     })
   ]), {
     path: 'filter'
-  })];
+  })]
 }
 
 /**
@@ -61,7 +61,7 @@ function getFieldsParam({
     attributes
   }
 }: Controller): [string, ParameterLike] {
-  const relationships = [...hasOne, ...hasMany];
+  const relationships = [...hasOne, ...hasMany]
 
   return ['fields', new ParameterGroup([
     [model.resourceName, new Parameter({
@@ -71,7 +71,7 @@ function getFieldsParam({
       sanitize: true
     })],
     ...relationships.reduce((result, relationship) => {
-      const opts = model.relationshipFor(relationship);
+      const opts = model.relationshipFor(relationship)
 
       if (opts) {
         return [
@@ -87,15 +87,15 @@ function getFieldsParam({
               ...opts.model.serializer.attributes
             ]
           })]
-        ];
+        ]
       }
 
-      return result;
+      return result
     }, [])
   ], {
     path: 'fields',
     sanitize: true
-  })];
+  })]
 }
 
 /**
@@ -107,13 +107,13 @@ function getIncludeParam({
     hasMany
   }
 }: Controller): [string, ParameterLike] {
-  const relationships = [...hasOne, ...hasMany];
+  const relationships = [...hasOne, ...hasMany]
 
   return ['include', new Parameter({
     path: 'include',
     type: 'array',
     values: relationships
-  })];
+  })]
 }
 
 /**
@@ -124,7 +124,7 @@ export function getCustomParams({
 }: Controller): Array<[string, ParameterLike]> {
   return query.map(param => [param, new Parameter({
     path: param
-  })]);
+  })])
 }
 
 /**
@@ -138,10 +138,10 @@ export function getMemberQueryParams(
       getFieldsParam(controller),
       getIncludeParam(controller),
       ...getCustomParams(controller)
-    ];
+    ]
   }
 
-  return getCustomParams(controller);
+  return getCustomParams(controller)
 }
 
 /**
@@ -158,8 +158,8 @@ export function getCollectionQueryParams(
       getFieldsParam(controller),
       getIncludeParam(controller),
       ...getCustomParams(controller)
-    ];
+    ]
   }
 
-  return getCustomParams(controller);
+  return getCustomParams(controller)
 }

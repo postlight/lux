@@ -1,50 +1,50 @@
 /* @flow */
 
-import Route from '../route';
-import Resource from '../resource';
-import type Router, { Router$Namespace } from '../index'; // eslint-disable-line max-len, no-unused-vars
+import Route from '../route'
+import Resource from '../resource'
+import type Router, { Router$Namespace } from '../index' // eslint-disable-line max-len, no-unused-vars
 
-import { contextFor } from './context';
+import { contextFor } from './context'
 
 /**
  * @private
  */
 export function build<T: Router$Namespace>(builder?: () => void, namespace: T) {
-  const context = contextFor(build).create(namespace);
+  const context = contextFor(build).create(namespace)
 
   if (namespace instanceof Resource) {
-    const { only } = namespace;
+    const { only } = namespace
 
     context.member(function member() {
       if (only.has('show')) {
-        this.get('/', 'show');
+        this.get('/', 'show')
       }
 
       if (only.has('update')) {
-        this.patch('/', 'update');
+        this.patch('/', 'update')
       }
 
       if (only.has('destroy')) {
-        this.delete('/', 'destroy');
+        this.delete('/', 'destroy')
       }
-    });
+    })
 
     context.collection(function collection() {
       if (only.has('index')) {
-        this.get('/', 'index');
+        this.get('/', 'index')
       }
 
       if (only.has('create')) {
-        this.post('/', 'create');
+        this.post('/', 'create')
       }
-    });
+    })
   }
 
   if (builder) {
-    Reflect.apply(builder, context, []);
+    Reflect.apply(builder, context, [])
   }
 
-  return namespace;
+  return namespace
 }
 
 /**
@@ -53,11 +53,11 @@ export function build<T: Router$Namespace>(builder?: () => void, namespace: T) {
 export function define<T: Router$Namespace>(router: Router, parent: T) {
   parent.forEach(child => {
     if (child instanceof Route) {
-      const { method, staticPath } = child;
+      const { method, staticPath } = child
 
-      router.set(`${method}:${staticPath}`, child);
+      router.set(`${method}:${staticPath}`, child)
     } else {
-      define(router, child);
+      define(router, child)
     }
-  });
+  })
 }

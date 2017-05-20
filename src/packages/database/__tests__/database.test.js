@@ -1,11 +1,11 @@
 /* @flow */
 
-import Database from '../index';
-import { getTestApp } from '../../../../test/utils/test-app';
+import Database from '../index'
+import { getTestApp } from '../../../../test/utils/test-app'
 
-const DATABASE_DRIVER: string = Reflect.get(process.env, 'DATABASE_DRIVER');
-const DATABASE_USERNAME: string = Reflect.get(process.env, 'DATABASE_USERNAME');
-const DATABASE_PASSWORD: string = Reflect.get(process.env, 'DATABASE_PASSWORD');
+const DATABASE_DRIVER: string = Reflect.get(process.env, 'DATABASE_DRIVER')
+const DATABASE_USERNAME: string = Reflect.get(process.env, 'DATABASE_USERNAME')
+const DATABASE_PASSWORD: string = Reflect.get(process.env, 'DATABASE_PASSWORD')
 
 const DEFAULT_CONFIG = {
   development: {
@@ -25,17 +25,17 @@ const DEFAULT_CONFIG = {
     driver: 'sqlite3',
     database: 'lux_test'
   }
-};
+}
 
 describe('module "database"', () => {
   describe('class Database', () => {
-    let app;
-    let createDatabase;
+    let app
+    let createDatabase
 
     beforeAll(async () => {
-      app = await getTestApp();
+      app = await getTestApp()
 
-      const { path, models, logger } = app;
+      const { path, models, logger } = app
 
       createDatabase = (config = DEFAULT_CONFIG) => (
         Promise.resolve(
@@ -47,20 +47,20 @@ describe('module "database"', () => {
             checkMigrations: false
           })
         )
-      );
-    });
+      )
+    })
 
     afterAll(async () => {
-      await app.destroy();
-    });
+      await app.destroy()
+    })
 
     describe('#constructor()', () => {
       test('creates an instance of `Database`', async () => {
-        const store = await createDatabase();
+        const store = await createDatabase()
 
-        expect(store).toBeInstanceOf(Database);
-        await store.connection.destroy();
-      });
+        expect(store).toBeInstanceOf(Database)
+        await store.connection.destroy()
+      })
 
       test('fails when an invalid database driver is used', async () => {
         const store = await createDatabase({
@@ -77,37 +77,37 @@ describe('module "database"', () => {
             driver: 'invalid-driver'
           }
         }).catch(err => {
-          expect(err.constructor.name).toBe('InvalidDriverError');
-        });
+          expect(err.constructor.name).toBe('InvalidDriverError')
+        })
 
         if (store) {
-          await store.connection.destroy();
+          await store.connection.destroy()
         }
-      });
-    });
+      })
+    })
 
     describe('#modelFor()', () => {
-      let subject;
+      let subject
 
       beforeEach(async () => {
-        subject = await createDatabase();
-      });
+        subject = await createDatabase()
+      })
 
       afterEach(async () => {
-        await subject.connection.destroy();
-      });
+        await subject.connection.destroy()
+      })
 
       test('works with a singular key', () => {
-        expect(() => subject.modelFor('post')).not.toThrow();
-      });
+        expect(() => subject.modelFor('post')).not.toThrow()
+      })
 
       test('works with a plural key', () => {
-        expect(() => subject.modelFor('posts')).not.toThrow();
-      });
+        expect(() => subject.modelFor('posts')).not.toThrow()
+      })
 
       test('throws an error if a model does not exist', () => {
-        expect(() => subject.modelFor('not-a-model-name')).toThrow();
-      });
-    });
-  });
-});
+        expect(() => subject.modelFor('not-a-model-name')).toThrow()
+      })
+    })
+  })
+})

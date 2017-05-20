@@ -1,14 +1,14 @@
 /* @flow */
 
-import { BUILT_IN_ACTIONS } from '../../../controller';
+import { BUILT_IN_ACTIONS } from '../../../controller'
 // eslint-disable-next-line no-duplicate-imports
-import type { BuiltInAction } from '../../../controller';
+import type { BuiltInAction } from '../../../controller'
 
 /**
  * @private
  */
 function normalizeOnly(only: Array<BuiltInAction>): Array<BuiltInAction> {
-  return BUILT_IN_ACTIONS.filter(action => only.includes(action));
+  return BUILT_IN_ACTIONS.filter(action => only.includes(action))
 }
 
-export default normalizeOnly;
+export default normalizeOnly

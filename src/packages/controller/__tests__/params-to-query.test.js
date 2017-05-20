@@ -1,15 +1,15 @@
 /* @flow */
 
-import type { Model } from '../../database';
-import type Request from '../../request';
-import merge from '../../../utils/merge';
-import paramsToQuery from '../utils/params-to-query';
-import { getTestApp } from '../../../../test/utils/test-app';
+import type { Model } from '../../database'
+import type Request from '../../request'
+import merge from '../../../utils/merge'
+import paramsToQuery from '../utils/params-to-query'
+import { getTestApp } from '../../../../test/utils/test-app'
 
 describe('module "controller"', () => {
   describe('util paramsToQuery()', () => {
-    let app;
-    let Post: Class<Model>;
+    let app
+    let Post: Class<Model>
     const createParams = (obj: Object): $PropertyType<Request, 'params'> => (
       merge({
         sort: 'createdAt',
@@ -23,16 +23,16 @@ describe('module "controller"', () => {
           ]
         }
       }, obj)
-    );
+    )
 
     beforeAll(async () => {
-      app = await getTestApp();
-      Post = app.store.modelFor('post');
-    });
+      app = await getTestApp()
+      Post = app.store.modelFor('post')
+    })
 
     afterAll(async () => {
-      await app.destroy();
-    });
+      await app.destroy()
+    })
 
     test('returns the correct params object', () => {
       const subject = createParams({
@@ -51,13 +51,13 @@ describe('module "controller"', () => {
             'title'
           ]
         }
-      });
+      })
 
-      expect(paramsToQuery(Post, subject)).toMatchSnapshot();
-    });
+      expect(paramsToQuery(Post, subject)).toMatchSnapshot()
+    })
 
     describe('- page', () => {
-      let subject;
+      let subject
 
       beforeEach(() => {
         subject = createParams({
@@ -65,31 +65,31 @@ describe('module "controller"', () => {
             size: 10,
             number: 2
           }
-        });
-      });
+        })
+      })
 
       test('converts `number` and `size` to `page` and `limit`', () => {
-        expect(paramsToQuery(Post, subject)).toMatchSnapshot();
-      });
-    });
+        expect(paramsToQuery(Post, subject)).toMatchSnapshot()
+      })
+    })
 
     describe('- sort', () => {
       test('converts asc parameters', () => {
         const subject = createParams({
           sort: 'title'
-        });
+        })
 
-        expect(paramsToQuery(Post, subject)).toMatchSnapshot();
-      });
+        expect(paramsToQuery(Post, subject)).toMatchSnapshot()
+      })
 
       test('converts desc parameters', () => {
         const subject = createParams({
           sort: '-title'
-        });
+        })
 
-        expect(paramsToQuery(Post, subject)).toMatchSnapshot();
-      });
-    });
+        expect(paramsToQuery(Post, subject)).toMatchSnapshot()
+      })
+    })
 
     describe('- fields', () => {
       test('can properly build included fields', () => {
@@ -102,10 +102,10 @@ describe('module "controller"', () => {
           include: [
             'user',
           ],
-        });
+        })
 
-        expect(paramsToQuery(Post, subject)).toMatchSnapshot();
-      });
+        expect(paramsToQuery(Post, subject)).toMatchSnapshot()
+      })
 
       test('ignores invalid field sets', () => {
         const subject = createParams({
@@ -117,10 +117,10 @@ describe('module "controller"', () => {
           include: [
             'author'
           ]
-        });
+        })
 
-        expect(paramsToQuery(Post, subject)).toMatchSnapshot();
-      });
+        expect(paramsToQuery(Post, subject)).toMatchSnapshot()
+      })
 
       test('only adds `id` when the include array is `undefined`', () => {
         const subject = createParams({
@@ -130,10 +130,10 @@ describe('module "controller"', () => {
               'url'
             ]
           }
-        });
+        })
 
-        expect(paramsToQuery(Post, subject)).toMatchSnapshot();
-      });
-    });
-  });
-});
+        expect(paramsToQuery(Post, subject)).toMatchSnapshot()
+      })
+    })
+  })
+})

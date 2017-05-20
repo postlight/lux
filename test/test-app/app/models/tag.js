@@ -1,4 +1,4 @@
-import { Model } from 'LUX_LOCAL';
+import { Model } from 'LUX_LOCAL'
 
 class Tag extends Model {
   static hasMany = {
@@ -9,4 +9,4 @@ class Tag extends Model {
   };
 }
 
-export default Tag;
+export default Tag

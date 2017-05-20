@@ -9,17 +9,17 @@ export default function insertValues(
 ) {
   if (values.length) {
     return strings.reduce((result, part, idx): string => {
-      let value = values[idx];
+      let value = values[idx]
 
       if (value && typeof value.toString === 'function') {
-        value = value.toString();
+        value = value.toString()
       } else {
-        value = '';
+        value = ''
       }
 
-      return result + part + value;
-    }, '');
+      return result + part + value
+    }, '')
   }
 
-  return strings.join('');
+  return strings.join('')
 }

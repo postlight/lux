@@ -1,13 +1,13 @@
 /* @flow */
 
-import { posix, dirname, basename } from 'path';
+import { posix, dirname, basename } from 'path'
 
-import { camelize } from 'inflection';
+import { camelize } from 'inflection'
 
-import underscore from '../../../utils/underscore';
-import { compose } from '../../../utils/compose';
+import underscore from '../../../utils/underscore'
+import { compose } from '../../../utils/compose'
 
-const DOUBLE_COLON = /::/g;
+const DOUBLE_COLON = /::/g
 
 /**
  * @private
@@ -20,6 +20,6 @@ const formatName: (source: string) => string = compose(
     dirname(name),
     basename(name, '.js')
   )
-);
+)
 
-export default formatName;
+export default formatName

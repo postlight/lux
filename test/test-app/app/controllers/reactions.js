@@ -1,4 +1,4 @@
-import { Controller } from 'LUX_LOCAL';
+import { Controller } from 'LUX_LOCAL'
 
 class ReactionsController extends Controller {
   params = [
@@ -9,4 +9,4 @@ class ReactionsController extends Controller {
   ];
 }
 
-export default ReactionsController;
+export default ReactionsController

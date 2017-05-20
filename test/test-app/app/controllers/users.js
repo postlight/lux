@@ -1,6 +1,6 @@
-import { Controller } from 'LUX_LOCAL';
+import { Controller } from 'LUX_LOCAL'
 
-import User from '../models/user';
+import User from '../models/user'
 
 class UsersController extends Controller {
   params = [
@@ -19,8 +19,8 @@ class UsersController extends Controller {
       }
     }
   }) {
-    return User.authenticate(email, password);
+    return User.authenticate(email, password)
   }
 }
 
-export default UsersController;
+export default UsersController

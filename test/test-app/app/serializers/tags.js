@@ -1,4 +1,4 @@
-import { Serializer } from 'LUX_LOCAL';
+import { Serializer } from 'LUX_LOCAL'
 
 class TagsSerializer extends Serializer {
   attributes = [
@@ -10,4 +10,4 @@ class TagsSerializer extends Serializer {
   ];
 }
 
-export default TagsSerializer;
+export default TagsSerializer

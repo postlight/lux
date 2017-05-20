@@ -1,9 +1,9 @@
 /* @flow */
 
-import Response from '../../../response';
-import { ResponseHeaders } from '../../utils/headers';
-import noop from '../../../../utils/noop';
-import type Logger from '../../../logger';
+import Response from '../../../response'
+import { ResponseHeaders } from '../../utils/headers'
+import noop from '../../../../utils/noop'
+import type Logger from '../../../logger'
 
 type Options = {
   logger: Logger;
@@ -19,7 +19,7 @@ export function create(options: Options): Response {
     statusMessage: 'OK',
 
     end(body: string): void {
-      this.send(body);
+      this.send(body)
     },
 
     send(body: string): void {
@@ -28,32 +28,32 @@ export function create(options: Options): Response {
           headers,
           statusCode,
           statusMessage,
-        } = this;
+        } = this
 
         options.resolve({
           body,
           headers,
           statusCode,
           statusText: statusMessage,
-        });
+        })
       }
     },
 
     status(code: number): Response {
-      this.statusCode = code;
-      return this;
+      this.statusCode = code
+      return this
     },
 
     getHeader(key: string): void | string {
-      return this.headers.get(key);
+      return this.headers.get(key)
     },
 
     setHeader(key: string, value: string): void {
-      this.headers.set(key, value);
+      this.headers.set(key, value)
     },
 
     removeHeader(key: string): void {
-      this.headers.delete(key);
+      this.headers.delete(key)
     },
-  });
+  })
 }

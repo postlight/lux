@@ -1,9 +1,9 @@
 /* @flow */
 
-import noop from '../noop';
+import noop from '../noop'
 
 describe('util noop()', () => {
   test('returns undefined', () => {
-    expect(noop()).toBeUndefined();
-  });
-});
+    expect(noop()).toBeUndefined()
+  })
+})

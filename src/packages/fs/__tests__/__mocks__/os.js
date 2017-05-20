@@ -1,9 +1,9 @@
 /* @flow */
 
-let PLATFORM = 'linux';
+let PLATFORM = 'linux'
 
 export const __setPlatform__ = (value: string) => {
-  PLATFORM = value;
-};
+  PLATFORM = value
+}
 
-export const platform = () => PLATFORM;
+export const platform = () => PLATFORM

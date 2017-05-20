@@ -7,13 +7,13 @@ export default function getStaticPath(
   path: string,
   dynamicSegments: Array<string>
 ) {
-  let staticPath = path;
+  let staticPath = path
 
   if (dynamicSegments.length) {
-    const pattern = new RegExp(`(${dynamicSegments.join('|')})`, 'g');
+    const pattern = new RegExp(`(${dynamicSegments.join('|')})`, 'g')
 
-    staticPath = path.replace(pattern, 'dynamic');
+    staticPath = path.replace(pattern, 'dynamic')
   }
 
-  return staticPath;
+  return staticPath
 }

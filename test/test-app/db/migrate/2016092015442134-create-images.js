@@ -1,22 +1,22 @@
 export function up(schema) {
   return schema.createTable('images', table => {
-    table.increments('id');
+    table.increments('id')
 
     table
       .string('url')
       .index()
-      .notNullable();
+      .notNullable()
 
     table
       .integer('post_id')
-      .index();
+      .index()
 
-    table.timestamps();
-    table.index('created_at');
-    table.index('updated_at');
-  });
+    table.timestamps()
+    table.index('created_at')
+    table.index('updated_at')
+  })
 }
 
 export function down(schema) {
-  return schema.dropTable('images');
+  return schema.dropTable('images')
 }

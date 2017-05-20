@@ -1,7 +1,7 @@
 /* @flow */
 
-import { FreezeableMap } from '../../freezeable';
-import type { Bundle$Namespace, Bundle$NamespaceGroup } from '../index';
+import { FreezeableMap } from '../../freezeable'
+import type { Bundle$Namespace, Bundle$NamespaceGroup } from '../index'
 
 /**
  * @private
@@ -12,36 +12,36 @@ export function resolve<T>(
   return Array
     .from(group)
     .map(([key, value]) => {
-      let namespace = key.split('/');
+      let namespace = key.split('/')
 
       namespace = namespace
         .slice(0, Math.max(namespace.length - 1, 0))
-        .join('/');
+        .join('/')
 
       if (namespace) {
         return [
           key.substr(namespace.length + 1),
           value,
           namespace
-        ];
+        ]
       }
 
       return [
         key,
         value,
         'root'
-      ];
+      ]
     })
     .reduce((map, [key, value, namespace]) => {
-      let nsValue = map.get(namespace);
+      let nsValue = map.get(namespace)
 
       if (!nsValue) {
-        nsValue = new FreezeableMap();
+        nsValue = new FreezeableMap()
       }
 
-      return map.set(namespace, nsValue.set(key, value));
-    }, new FreezeableMap());
+      return map.set(namespace, nsValue.set(key, value))
+    }, new FreezeableMap())
 }
 
-export { default as closestAncestor } from './utils/closest-ancestor';
-export { default as closestChild } from './utils/closest-child';
+export { default as closestAncestor } from './utils/closest-ancestor'
+export { default as closestChild } from './utils/closest-child'

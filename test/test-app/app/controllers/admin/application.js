@@ -1,7 +1,7 @@
-import ApplicationController from '../application';
+import ApplicationController from '../application'
 
 class AdminApplicationController extends ApplicationController {
 
 }
 
-export default AdminApplicationController;
+export default AdminApplicationController

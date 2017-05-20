@@ -1,11 +1,11 @@
 /* @flow */
 
-import Controller from '../../controller';
-import createReplacer from '../utils/create-replacer';
+import Controller from '../../controller'
+import createReplacer from '../utils/create-replacer'
 
 describe('module "router"', () => {
   describe('util createReplacer()', () => {
-    let subject;
+    let subject
 
     beforeAll(async () => {
       class PostsController extends Controller {}
@@ -22,21 +22,21 @@ describe('module "router"', () => {
         ['admin/health', new AdminHealthController({
           namespace: 'admin',
         })]
-      ]));
-    });
+      ]))
+    })
 
     test('returns an instance of RegExp', () => {
-      expect(subject instanceof RegExp).toBe(true);
-    });
+      expect(subject instanceof RegExp).toBe(true)
+    })
 
     test('correctly replaces dynamic parts', () => {
       expect(
         'posts/1'.replace(subject, '$1/:dynamic')
-      ).toBe('posts/:dynamic');
+      ).toBe('posts/:dynamic')
 
       expect(
         'health/1'.replace(subject, '$1/:dynamic')
-      ).toBe('health/:dynamic');
-    });
-  });
-});
+      ).toBe('health/:dynamic')
+    })
+  })
+})

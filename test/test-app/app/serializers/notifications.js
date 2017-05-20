@@ -1,4 +1,4 @@
-import { Serializer } from 'LUX_LOCAL';
+import { Serializer } from 'LUX_LOCAL'
 
 class NotificationsSerializer extends Serializer {
   attributes = [
@@ -13,4 +13,4 @@ class NotificationsSerializer extends Serializer {
   ];
 }
 
-export default NotificationsSerializer;
+export default NotificationsSerializer

@@ -1,6 +1,6 @@
 /* @flow */
 
-import * as diff from '../diff';
+import * as diff from '../diff'
 
 describe('util diff', () => {
   describe('.map()', () => {
@@ -13,12 +13,12 @@ describe('util diff', () => {
           ['x', 1],
           ['y', 2]
         ])
-      );
+      )
 
-      expect(result instanceof Map).toBe(true);
+      expect(result instanceof Map).toBe(true)
       expect([...result]).toEqual([
         ['y', 2]
-      ]);
-    });
-  });
-});
+      ])
+    })
+  })
+})

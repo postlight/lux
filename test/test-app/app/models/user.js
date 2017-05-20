@@ -1,6 +1,6 @@
-import { Model } from 'LUX_LOCAL';
+import { Model } from 'LUX_LOCAL'
 
-import { hashPassword, comparePassword } from '../utils/password';
+import { hashPassword, comparePassword } from '../utils/password'
 
 class User extends Model {
   static hasMany = {
@@ -36,7 +36,7 @@ class User extends Model {
   static hooks = {
     async beforeSave(user) {
       if (user.isNew || user.dirtyAttributes.has('password')) {
-        user.password = await hashPassword(user.password);
+        user.password = await hashPassword(user.password)
       }
     }
   };
@@ -45,25 +45,25 @@ class User extends Model {
     findByEmail(email) {
       return this.first().where({
         email
-      });
+      })
     }
   };
 
   static validates = {
     password(password = '') {
-      return password.length >= 8;
+      return password.length >= 8
     }
   };
 
   static async authenticate(email, password) {
-    const user = await this.findByEmail(email);
+    const user = await this.findByEmail(email)
 
     if (user) {
-      const isAuthenticated = await comparePassword(password, user.password);
+      const isAuthenticated = await comparePassword(password, user.password)
 
-      return isAuthenticated && user;
+      return isAuthenticated && user
     }
   }
 }
 
-export default User;
+export default User

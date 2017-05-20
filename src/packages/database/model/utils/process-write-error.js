@@ -1,17 +1,17 @@
 /* @flow */
 
-import { UNIQUE_CONSTRAINT } from '../../constants';
-import { UniqueConstraintError } from '../../errors';
+import { UNIQUE_CONSTRAINT } from '../../constants'
+import { UniqueConstraintError } from '../../errors'
 
 /**
  * @private
  */
 export default function resolveWriteError(err: Error) {
-  const { message } = err;
+  const { message } = err
 
   if (UNIQUE_CONSTRAINT.test(message)) {
-    return new UniqueConstraintError(message);
+    return new UniqueConstraintError(message)
   }
 
-  return err;
+  return err
 }

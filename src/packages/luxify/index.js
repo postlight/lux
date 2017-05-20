@@ -1,10 +1,10 @@
 /* @flow */
 
-import type { Action } from '../router';
-import type Request from '../request';
-import type Response from '../response';
+import type { Action } from '../router'
+import type Request from '../request'
+import type Response from '../response'
 
-import createResponseProxy from './utils/create-response-proxy';
+import createResponseProxy from './utils/create-response-proxy'
 
 /**
  * Convert traditional node HTTP server middleware into a lux compatible
@@ -28,18 +28,18 @@ export default function luxify(
         createResponseProxy(res, resolve),
         (err) => {
           if (err && err instanceof Error) {
-            reject(err);
+            reject(err)
           } else {
-            resolve();
+            resolve()
           }
         }
-      ]);
-    });
-  };
+      ])
+    })
+  }
 
   Reflect.defineProperty(result, 'name', {
     value: middleware.name
-  });
+  })
 
-  return result;
+  return result
 }

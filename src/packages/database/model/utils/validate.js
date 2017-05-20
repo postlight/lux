@@ -1,7 +1,7 @@
 /* @flow */
 
-import Validation, { ValidationError } from '../../validation';
-import type { Model } from '../../index';
+import Validation, { ValidationError } from '../../validation'
+import type { Model } from '../../index'
 
 /**
  * @private
@@ -18,9 +18,9 @@ export default function validate(instance: Model): true {
     .map(props => new Validation(props))
     .reduce((result, validation) => {
       if (!validation.isValid()) {
-        throw new ValidationError(validation.key, String(validation.value));
+        throw new ValidationError(validation.key, String(validation.value))
       }
 
-      return result;
-    }, true);
+      return result
+    }, true)
 }

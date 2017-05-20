@@ -1,4 +1,4 @@
-import { Serializer } from 'LUX_LOCAL';
+import { Serializer } from 'LUX_LOCAL'
 
 class CommentsSerializer extends Serializer {
   attributes = [
@@ -18,4 +18,4 @@ class CommentsSerializer extends Serializer {
   ];
 }
 
-export default CommentsSerializer;
+export default CommentsSerializer

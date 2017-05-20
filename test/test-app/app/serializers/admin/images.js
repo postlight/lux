@@ -1,7 +1,7 @@
-import ImagesSerializer from '../images';
+import ImagesSerializer from '../images'
 
 class AdminImagesSerializer extends ImagesSerializer {
 
 }
 
-export default AdminImagesSerializer;
+export default AdminImagesSerializer

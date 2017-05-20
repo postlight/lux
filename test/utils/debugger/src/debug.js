@@ -1,44 +1,44 @@
 /* @flow */
 
-import { spawn } from 'child_process';
+import { spawn } from 'child_process'
 
 // @const repoDir
 // Starting CWD in the repo root
 
-const repoDir = process.cwd();
+const repoDir = process.cwd()
 
 // @function log
 // Shortcut for console.log
 
 // eslint-disable-next-line no-console
-function log(...msg) { console.log(...msg); }
+function log(...msg) { console.log(...msg) }
 
 // @async runCommand
 // Run a terminal command
 
 async function runCommand(command, args = [], messages = []) {
-  let [preMsg, successMsg] = messages;
+  let [preMsg, successMsg] = messages
 
   if (typeof preMsg === 'undefined') {
-    preMsg = '';
+    preMsg = ''
   }
 
   if (typeof successMsg === 'undefined') {
-    successMsg = '';
+    successMsg = ''
   }
 
-  log(preMsg);
+  log(preMsg)
 
   return new Promise((resolve, reject) => {
-    const run = spawn(command, args);
+    const run = spawn(command, args)
 
-    run.stderr.once('data', reject);
-    run.stdout.on('data', data => log(data.toString()));
+    run.stderr.once('data', reject)
+    run.stdout.on('data', data => log(data.toString()))
 
-    run.once('exit', () => resolve(successMsg));
+    run.once('exit', () => resolve(successMsg))
   })
   .then(log)
-  .catch(err => log(err.toString()));
+  .catch(err => log(err.toString()))
 }
 
 // @async runInspector
@@ -46,52 +46,52 @@ async function runCommand(command, args = [], messages = []) {
 // and open URL in Chrome window
 
 function runInspector() {
-  log('Starting node inspector...');
+  log('Starting node inspector...')
 
   return new Promise(() => {
-    const inspectArgs = '--inspect=4000 dist/boot.js'.split(' ');
-    const run = spawn('node', inspectArgs);
+    const inspectArgs = '--inspect=4000 dist/boot.js'.split(' ')
+    const run = spawn('node', inspectArgs)
 
-    let url;
+    let url
 
     function openURL(target) {
       runCommand(
         'osascript',
         ['-e', `tell application "Google Chrome" to open location "${target}"`],
         ['Opening in Google Chrome (OSX Users only)']
-      );
+      )
     }
 
     function parseURL(source) {
-      const parts = source.split('chrome-devtools');
+      const parts = source.split('chrome-devtools')
 
-      return `chrome-devtools${parts[1]}`.replace(/\s+/g, '');
+      return `chrome-devtools${parts[1]}`.replace(/\s+/g, '')
     }
 
     run.stderr.on('data', (buff) => {
       if (url) {
-        return;
+        return
       }
 
-      const msg = buff.toString();
+      const msg = buff.toString()
 
-      log(msg);
-      url = parseURL(msg);
-      openURL(url);
-    });
+      log(msg)
+      url = parseURL(msg)
+      openURL(url)
+    })
 
-    run.stdout.on('data', data => log(data.toString()));
-    run.on('exit', (code) => log(`Child exited with code ${code}`));
+    run.stdout.on('data', data => log(data.toString()))
+    run.on('exit', (code) => log(`Child exited with code ${code}`))
   })
   .then(msg => log(msg))
-  .catch(err => log(err.toString));
+  .catch(err => log(err.toString))
 }
 
 // @listener
 // Ensure repoDir is returned to when process exits
 
 process.on('exit', () => {
-  process.chdir(repoDir);
+  process.chdir(repoDir)
 });
 
 // @async
@@ -106,24 +106,24 @@ process.on('exit', () => {
     'dist',
     'test/test-app/dist',
     'test-results.xml',
-  ];
+  ]
 
   await runCommand('shx', cleanArgs, [
     'Cleaning Lux repo...',
     'Repo cleaned.',
-  ]);
+  ])
 
   await runCommand('rollup', ['-c'], [
     'Building Lux source...',
     'Lux source built.',
-  ]);
+  ])
 
-  process.chdir('./test/test-app');
+  process.chdir('./test/test-app')
 
   await runCommand('lux', ['build'], [
     'Building Lux test-app...',
     'Lux test-app built.',
-  ]);
+  ])
 
-  await runInspector();
-}());
+  await runInspector()
+}())

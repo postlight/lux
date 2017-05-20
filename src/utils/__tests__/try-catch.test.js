@@ -1,33 +1,33 @@
 /* @flow */
 
-import tryCatch, { tryCatchSync } from '../try-catch';
+import tryCatch, { tryCatchSync } from '../try-catch'
 
 describe('util tryCatch()', () => {
   test('is a async functional equivalent of try...catch', async () => {
-    let value = await tryCatch(() => Promise.resolve(false));
+    let value = await tryCatch(() => Promise.resolve(false))
 
-    expect(value).toBe(false);
+    expect(value).toBe(false)
 
     await tryCatch(() => Promise.reject(new Error('Test')), () => {
-      value = true;
-    });
+      value = true
+    })
 
-    expect(value).toBe(true);
-  });
-});
+    expect(value).toBe(true)
+  })
+})
 
 describe('util tryCatchSync()', () => {
   test('is a functional equivalent of try...catch', () => {
-    let value = tryCatchSync(() => false);
+    let value = tryCatchSync(() => false)
 
-    expect(value).toBe(false);
+    expect(value).toBe(false)
 
     tryCatchSync(() => {
-      throw new Error('Test');
+      throw new Error('Test')
     }, () => {
-      value = true;
-    });
+      value = true
+    })
 
-    expect(value).toBe(true);
-  });
-});
+    expect(value).toBe(true)
+  })
+})

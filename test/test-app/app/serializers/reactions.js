@@ -1,4 +1,4 @@
-import { Serializer } from 'LUX_LOCAL';
+import { Serializer } from 'LUX_LOCAL'
 
 class ReactionsSerializer extends Serializer {
   attributes = [
@@ -13,4 +13,4 @@ class ReactionsSerializer extends Serializer {
   ];
 }
 
-export default ReactionsSerializer;
+export default ReactionsSerializer

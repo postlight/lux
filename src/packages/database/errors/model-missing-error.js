@@ -5,8 +5,8 @@
  */
 class ModelMissingError extends Error {
   constructor(name: string) {
-    super(`Could not resolve model by name '${name}'`);
+    super(`Could not resolve model by name '${name}'`)
   }
 }
 
-export default ModelMissingError;
+export default ModelMissingError

@@ -1,8 +1,8 @@
 /* @flow */
 
-import { FORMATS } from '../constants';
-import { createRequestLogger } from '../request-logger';
-import Logger from '../index';
+import { FORMATS } from '../constants'
+import { createRequestLogger } from '../request-logger'
+import Logger from '../index'
 
 const {
   stdout: {
@@ -11,23 +11,23 @@ const {
   stderr: {
     write: writeErr,
   },
-} = process;
+} = process
 
 describe('module "logger/request-logger"', () => {
   describe('#createRequestLogger()', () => {
     beforeAll(() => {
-      global.process.stdout.write = jest.fn();
-      global.process.stderr.write = jest.fn();
-    });
+      global.process.stdout.write = jest.fn()
+      global.process.stderr.write = jest.fn()
+    })
 
     afterAll(() => {
-      global.process.stdout.write = writeOut;
-      global.process.stderr.write = writeErr;
-    });
+      global.process.stdout.write = writeOut
+      global.process.stderr.write = writeErr
+    })
 
     FORMATS.forEach(format => {
       describe(`- format "${format}"`, () => {
-        let subject;
+        let subject
 
         beforeAll(() => {
           const logger = new Logger({
@@ -37,15 +37,15 @@ describe('module "logger/request-logger"', () => {
             filter: {
               params: []
             }
-          });
+          })
 
-          subject = createRequestLogger(logger);
-        });
+          subject = createRequestLogger(logger)
+        })
 
         test('returns a request logger function', () => {
-          expect(typeof subject).toBe('function');
-          expect(subject).toHaveLength(3);
-        });
+          expect(typeof subject).toBe('function')
+          expect(subject).toHaveLength(3)
+        })
 
         describe('- logger function', () => {
           test('does not throw an error', async () => {
@@ -53,10 +53,10 @@ describe('module "logger/request-logger"', () => {
               // subject(req, res, {
               //   startTime: Date.now()
               // });
-            }).not.toThrow();
-          });
-        });
-      });
-    });
-  });
-});
+            }).not.toThrow()
+          })
+        })
+      })
+    })
+  })
+})

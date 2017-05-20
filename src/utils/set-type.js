@@ -19,5 +19,5 @@
  * @private
  */
 export default function setType(fn: () => any): any {
-  return fn();
+  return fn()
 }

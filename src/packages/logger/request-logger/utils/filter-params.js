@@ -1,6 +1,6 @@
 /* @flow */
 
-import entries from '../../../../utils/entries';
+import entries from '../../../../utils/entries'
 
 /**
  * @private
@@ -19,5 +19,5 @@ export default function filterParams(
       [key]: value && typeof value === 'object' && !Array.isArray(value)
         ? filterParams(value, ...filtered)
         : value
-    }), {});
+    }), {})
 }

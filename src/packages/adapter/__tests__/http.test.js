@@ -1,11 +1,11 @@
 /* @flow */
 
-import { IncomingMessage, ServerResponse } from 'http';
+import { IncomingMessage, ServerResponse } from 'http'
 
-import { MIME_TYPE } from '../../jsonapi';
-import Logger from '../../logger';
-import createAdapter, { request, response } from '../http';
-import { getTestApp } from '../../../../test/utils/test-app';
+import { MIME_TYPE } from '../../jsonapi'
+import Logger from '../../logger'
+import createAdapter, { request, response } from '../http'
+import { getTestApp } from '../../../../test/utils/test-app'
 
 const logger = new Logger({
   level: 'ERROR',
@@ -14,52 +14,52 @@ const logger = new Logger({
     params: [],
   },
   enabled: false,
-});
+})
 
 describe('module "adapter/http"', () => {
-  let app;
-  let req;
-  let res;
-  let adapter;
+  let app
+  let req
+  let res
+  let adapter
 
   beforeAll(async () => {
-    app = await getTestApp();
-    adapter = createAdapter(app);
-  });
+    app = await getTestApp()
+    adapter = createAdapter(app)
+  })
 
   afterAll(async () => {
-    await app.destroy();
-  });
+    await app.destroy()
+  })
 
   describe('#default()', () => {
     beforeEach(() => {
       req = new IncomingMessage({
         encrypted: false,
-      });
+      })
 
       Object.assign(req, {
         url: '/posts',
         method: 'GET',
-      });
+      })
 
-      res = new ServerResponse(req);
-    });
+      res = new ServerResponse(req)
+    })
 
     test('resolves with a request/response tuple', async () => {
-      expect(await adapter(req, res)).toMatchSnapshot();
-    });
-  });
+      expect(await adapter(req, res)).toMatchSnapshot()
+    })
+  })
 
   describe('#request', () => {
     describe('#create()', () => {
       describe('- with body', () => {
-        let promise;
+        let promise
 
         describe('- with error', () => {
           beforeEach(() => {
             req = new IncomingMessage({
               encrypted: false,
-            });
+            })
 
             Object.assign(req, {
               url: '/posts',
@@ -68,19 +68,19 @@ describe('module "adapter/http"', () => {
                 'content-type': MIME_TYPE,
                 'content-length': 0,
               },
-            });
+            })
 
-            promise = request.create(req, logger);
+            promise = request.create(req, logger)
 
-            req.emit('error', new Error('Test'));
-          });
+            req.emit('error', new Error('Test'))
+          })
 
           test('builds a request from an http.IncomingMessage', async () => {
             await promise.catch(err => {
-              expect(err).toBeInstanceOf(Error);
-            });
-          });
-        });
+              expect(err).toBeInstanceOf(Error)
+            })
+          })
+        })
 
         describe('- without error', () => {
           beforeEach(() => {
@@ -93,11 +93,11 @@ describe('module "adapter/http"', () => {
                   'is-public': false,
                 },
               },
-            });
+            })
 
             req = new IncomingMessage({
               encrypted: false,
-            });
+            })
 
             Object.assign(req, {
               url: '/posts',
@@ -106,145 +106,145 @@ describe('module "adapter/http"', () => {
                 'content-type': MIME_TYPE,
                 'content-length': data.length,
               },
-            });
+            })
 
-            promise = request.create(req, logger);
+            promise = request.create(req, logger)
 
-            req.push(data);
-            req.push(null);
-          });
+            req.push(data)
+            req.push(null)
+          })
 
           test('builds a request from an http.IncomingMessage', async () => {
-            expect(await promise).toMatchSnapshot();
-          });
-        });
-      });
+            expect(await promise).toMatchSnapshot()
+          })
+        })
+      })
 
       describe('- without body', () => {
-        let subject;
+        let subject
 
         beforeEach(() => {
           req = new IncomingMessage({
             encrypted: false,
-          });
+          })
 
           Object.assign(req, {
             url: '/posts',
             method: 'GET',
-          });
+          })
 
-          subject = request.create(req, logger);
-        });
+          subject = request.create(req, logger)
+        })
 
         test('builds a request from an http.IncomingMessage', () => {
-          expect(subject).toMatchSnapshot();
-        });
-      });
-    });
-  });
+          expect(subject).toMatchSnapshot()
+        })
+      })
+    })
+  })
 
   describe('#response', () => {
     describe('#create()', () => {
-      let subject;
+      let subject
 
       beforeEach(() => {
-        subject = response.create(res, logger);
-      });
+        subject = response.create(res, logger)
+      })
 
       test('builds a response from an http.ServerResponse', () => {
-        expect(subject).toMatchSnapshot();
-      });
+        expect(subject).toMatchSnapshot()
+      })
 
       describe('=> Response', () => {
         ['end', 'send'].forEach(method => {
           beforeAll(() => {
-            Reflect.set(res, 'end', jest.fn());
-          });
+            Reflect.set(res, 'end', jest.fn())
+          })
 
           afterAll(() => {
-            Reflect.set(res, 'end', ServerResponse.prototype.end);
-          });
+            Reflect.set(res, 'end', ServerResponse.prototype.end)
+          })
 
           afterEach(() => {
-            res.end.mockClear();
-          });
+            res.end.mockClear()
+          })
 
           describe(`#${method}()`, () => {
             test('calls the http.ServerResponse#end', () => {
-              const body = 'Test';
+              const body = 'Test'
 
               if (method === 'end') {
-                subject.end(body);
+                subject.end(body)
               } else {
-                subject.send(body);
+                subject.send(body)
               }
 
-              expect(res.end).toBeCalledWith(body);
-            });
-          });
-        });
+              expect(res.end).toBeCalledWith(body)
+            })
+          })
+        })
 
         describe('#status()', () => {
-          const value = 201;
+          const value = 201
 
           test('returns `this`', () => {
-            expect(subject.status(value)).toBe(subject);
-          });
+            expect(subject.status(value)).toBe(subject)
+          })
 
           test('properly modifies the status code', () => {
-            subject.status(value);
+            subject.status(value)
 
-            expect(subject).toMatchSnapshot();
-            expect(res.statusCode).toBe(value);
-          });
-        });
+            expect(subject).toMatchSnapshot()
+            expect(res.statusCode).toBe(value)
+          })
+        })
 
         describe('#getHeader()', () => {
-          const key = 'Content-Type';
-          const value = MIME_TYPE;
+          const key = 'Content-Type'
+          const value = MIME_TYPE
 
           beforeEach(() => {
-            subject.headers.set(key, value);
-          });
+            subject.headers.set(key, value)
+          })
 
           test('proxies headers#get()', () => {
-            expect(subject.getHeader(key)).toBe(value);
-            expect(res.getHeader(key)).toBe(value);
-          });
-        });
+            expect(subject.getHeader(key)).toBe(value)
+            expect(res.getHeader(key)).toBe(value)
+          })
+        })
 
         describe('#setHeader()', () => {
           beforeEach(() => {
-            subject.headers.set('Content-Type', MIME_TYPE);
-          });
+            subject.headers.set('Content-Type', MIME_TYPE)
+          })
 
           test('proxies headers#set()', () => {
-            subject.setHeader('X-Test-Header', 'true');
+            subject.setHeader('X-Test-Header', 'true')
 
-            expect(subject.headers).toMatchSnapshot();
+            expect(subject.headers).toMatchSnapshot()
             subject.headers.forEach((value, key) => {
-              expect(res.getHeader(key)).toBe(value);
-            });
-          });
-        });
+              expect(res.getHeader(key)).toBe(value)
+            })
+          })
+        })
 
         describe('#removeHeader()', () => {
           beforeEach(() => {
             subject.headers
               .set('Content-Type', MIME_TYPE)
-              .set('X-Test-Header', 'true');
-          });
+              .set('X-Test-Header', 'true')
+          })
 
           test('proxies headers#delete()', () => {
-            subject.removeHeader('X-Test-Header');
+            subject.removeHeader('X-Test-Header')
 
-            expect(subject.headers).toMatchSnapshot();
+            expect(subject.headers).toMatchSnapshot()
             subject.headers.forEach((value, key) => {
-              expect(res.getHeader(key)).toBe(value);
-            });
-          });
-        });
-      });
-    });
-  });
-});
+              expect(res.getHeader(key)).toBe(value)
+            })
+          })
+        })
+      })
+    })
+  })
+})

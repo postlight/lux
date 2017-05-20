@@ -1,31 +1,31 @@
 /* @flow */
 
-import * as path from 'path';
+import * as path from 'path'
 
-import noop from '../../../utils/noop';
-import { stat, rmdir, readdir, unlink } from '../index';
+import noop from '../../../utils/noop'
+import { stat, rmdir, readdir, unlink } from '../index'
 
 /**
  * @private
  */
 async function rmrf(target: string): Promise<boolean> {
-  const stats = await stat(target).catch(noop);
+  const stats = await stat(target).catch(noop)
 
   if (stats) {
     if (stats.isDirectory()) {
-      const files = await readdir(target);
+      const files = await readdir(target)
 
       await Promise.all(
         files.map(file => rmrf(path.join(target, file)))
-      );
+      )
 
-      await rmdir(target).catch(noop);
+      await rmdir(target).catch(noop)
     } else {
-      await unlink(target);
+      await unlink(target)
     }
   }
 
-  return true;
+  return true
 }
 
-export default rmrf;
+export default rmrf

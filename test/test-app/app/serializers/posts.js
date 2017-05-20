@@ -1,4 +1,4 @@
-import { Serializer } from 'LUX_LOCAL';
+import { Serializer } from 'LUX_LOCAL'
 
 class PostsSerializer extends Serializer {
   attributes = [
@@ -20,4 +20,4 @@ class PostsSerializer extends Serializer {
   ];
 }
 
-export default PostsSerializer;
+export default PostsSerializer

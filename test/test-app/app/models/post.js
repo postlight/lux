@@ -1,6 +1,6 @@
-import { Model } from 'LUX_LOCAL';
+import { Model } from 'LUX_LOCAL'
 
-import track from '../utils/track';
+import track from '../utils/track'
 
 class Post extends Model {
   static hasOne = {
@@ -32,7 +32,7 @@ class Post extends Model {
 
   static hooks = {
     async afterCreate(post, trx) {
-      await track(post, trx);
+      await track(post, trx)
     }
   };
 
@@ -40,9 +40,9 @@ class Post extends Model {
     isPublic() {
       return this.where({
         isPublic: true
-      });
+      })
     }
   };
 }
 
-export default Post;
+export default Post

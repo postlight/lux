@@ -1,8 +1,8 @@
 /* @flow */
 
-import isNull from '../../../../utils/is-null';
-import isUndefined from '../../../../utils/is-undefined';
-import type { Attribute$meta } from '../index';
+import isNull from '../../../../utils/is-null'
+import isUndefined from '../../../../utils/is-undefined'
+import type { Attribute$meta } from '../index'
 
 /**
  * @private
@@ -18,20 +18,20 @@ export default function createSetter({
   return function setter(nextValue) {
     if (!nullable) {
       if (isNull(nextValue) || isUndefined(nextValue)) {
-        return;
+        return
       }
     }
 
-    let { currentChangeSet: changeSet } = this;
-    const valueToSet = normalize(nextValue);
-    const currentValue = changeSet.get(key) || defaultValue;
+    let { currentChangeSet: changeSet } = this
+    const valueToSet = normalize(nextValue)
+    const currentValue = changeSet.get(key) || defaultValue
 
     if (!changeSet.has(key) || valueToSet !== currentValue) {
       if (changeSet.isPersisted) {
-        changeSet = changeSet.applyTo(this);
+        changeSet = changeSet.applyTo(this)
       }
 
-      changeSet.set(key, valueToSet);
+      changeSet.set(key, valueToSet)
     }
-  };
+  }
 }

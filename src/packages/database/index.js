@@ -1,14 +1,14 @@
 /* @flow */
 
-import type Knex from 'knex';
+import type Knex from 'knex'
 
-import type Logger from '../logger';
+import type Logger from '../logger'
 
-import { ModelMissingError } from './errors';
-import Model from './model';
-import initialize from './initialize';
-import normalizeModelName from './utils/normalize-model-name';
-import type { Database$opts } from './interfaces';
+import { ModelMissingError } from './errors'
+import Model from './model'
+import initialize from './initialize'
+import normalizeModelName from './utils/normalize-model-name'
+import type { Database$opts } from './interfaces'
 
 /**
  * @private
@@ -41,7 +41,7 @@ class Database {
       config,
       logger,
       checkMigrations
-    });
+    })
   }
 
   /**
@@ -53,27 +53,27 @@ class Database {
    * @type {Boolean}
    */
   get hasPool(): boolean {
-    return Boolean(this.config.pool);
+    return Boolean(this.config.pool)
   }
 
   modelFor(type: string): Class<Model> {
-    const model = this.models.get(normalizeModelName(type));
+    const model = this.models.get(normalizeModelName(type))
 
     if (!model) {
-      throw new ModelMissingError(type);
+      throw new ModelMissingError(type)
     }
 
-    return model;
+    return model
   }
 }
 
-export default Database;
-export { default as Query } from './query';
-export { default as Model, tableFor } from './model';
-export { default as Migration, generateTimestamp } from './migration';
-export { default as connect } from './utils/connect';
-export { default as typeForColumn } from './utils/type-for-column';
-export { default as createMigrations } from './utils/create-migrations';
-export { default as pendingMigrations } from './utils/pending-migrations';
+export default Database
+export { default as Query } from './query'
+export { default as Model, tableFor } from './model'
+export { default as Migration, generateTimestamp } from './migration'
+export { default as connect } from './utils/connect'
+export { default as typeForColumn } from './utils/type-for-column'
+export { default as createMigrations } from './utils/create-migrations'
+export { default as pendingMigrations } from './utils/pending-migrations'
 
-export type { Database$opts, Config } from './interfaces';
+export type { Database$opts, Config } from './interfaces'

@@ -1,33 +1,33 @@
 /* @flow */
 
-import * as faker from 'faker';
+import * as faker from 'faker'
 
-import { get, set } from '../relationship';
-import { getTestApp } from '../../../../test/utils/test-app';
+import { get, set } from '../relationship'
+import { getTestApp } from '../../../../test/utils/test-app'
 
 describe('module "database/relationship"', () => {
-  let app;
-  let del;
-  let store;
-  let insert;
-  let record;
-  let postId;
-  let userId;
-  let tagIds;
-  let imageId;
-  let commentIds;
-  let categorizationIds;
+  let app
+  let del
+  let store
+  let insert
+  let record
+  let postId
+  let userId
+  let tagIds
+  let imageId
+  let commentIds
+  let categorizationIds
 
   const timestamps = () => ({
     created_at: new Date(),
     updated_at: new Date(),
-  });
+  })
 
   beforeAll(async () => {
     app = await getTestApp();
-    ({ store } = app);
+    ({ store } = app)
 
-    del = table => store.connection(table).del();
+    del = table => store.connection(table).del()
     insert = (table, data) => (
       store.connection(table).insert(data).returning('id')
     );
@@ -43,9 +43,9 @@ describe('module "database/relationship"', () => {
       title: '#get() test',
       user_id: userId,
       ...timestamps(),
-    });
+    })
 
-    let tagsResult;
+    let tagsResult
     let commentsResult;
 
     // eslint-disable-next-line prefer-const
@@ -86,10 +86,10 @@ describe('module "database/relationship"', () => {
           ...timestamps(),
         }),
       ]),
-    ]);
+    ])
 
-    tagIds = [].concat(...tagsResult);
-    commentIds = [].concat(...commentsResult);
+    tagIds = [].concat(...tagsResult)
+    commentIds = [].concat(...commentsResult)
 
     const categorizationsResult = await Promise.all([
       insert('categorizations', {
@@ -107,10 +107,10 @@ describe('module "database/relationship"', () => {
         post_id: postId,
         ...timestamps(),
       }),
-    ]);
+    ])
 
-    categorizationIds = [].concat(...categorizationsResult);
-  });
+    categorizationIds = [].concat(...categorizationsResult)
+  })
 
   afterAll(async () => {
     await Promise.all([
@@ -120,38 +120,38 @@ describe('module "database/relationship"', () => {
       del('tags').whereIn('id', tagIds),
       del('comments').whereIn('id', commentIds),
       del('categorizations').whereIn('id', categorizationIds),
-    ]);
-    await app.destroy();
-  });
+    ])
+    await app.destroy()
+  })
 
   beforeEach(async () => {
     record = await store
       .modelFor('post')
-      .find(postId);
-  });
+      .find(postId)
+  })
 
   describe('#get()', () => {
     describe('has-one relationships', () => {
       test('resolves with the correct value when present', async () => {
-        const result = await get(record, 'image');
+        const result = await get(record, 'image')
 
-        expect(result).toBeTruthy();
+        expect(result).toBeTruthy()
 
         if (result && typeof result === 'object' && !Array.isArray(result)) {
           expect(result.toObject()).toEqual(
             expect.objectContaining({
               post: expect.objectContaining(record.getAttributes()),
             })
-          );
+          )
         }
-      });
-    });
+      })
+    })
 
     describe('belongs-to relationships', () => {
       test('resolves with the correct value when present', async () => {
-        const result = await get(record, 'user');
+        const result = await get(record, 'user')
 
-        expect(result).toBeTruthy();
+        expect(result).toBeTruthy()
 
         if (result && typeof result === 'object' && !Array.isArray(result)) {
           expect(result.toObject()).toEqual(
@@ -160,16 +160,16 @@ describe('module "database/relationship"', () => {
                 expect.objectContaining(record.getAttributes()),
               ])
             })
-          );
+          )
         }
-      });
-    });
+      })
+    })
 
     describe('one-to-many relationships', () => {
       test('resolves with the correct value when present', async () => {
-        const result = await get(record, 'comments');
+        const result = await get(record, 'comments')
 
-        expect(Array.isArray(result)).toBe(true);
+        expect(Array.isArray(result)).toBe(true)
 
         if (Array.isArray(result)) {
           result.forEach(comment => {
@@ -179,17 +179,17 @@ describe('module "database/relationship"', () => {
                   record.getAttributes()
                 ),
               })
-            );
-          });
+            )
+          })
         }
-      });
-    });
+      })
+    })
 
     describe('many-to-many relationships', () => {
       test('resolves with the correct value when present', async () => {
-        const result = await get(record, 'comments');
+        const result = await get(record, 'comments')
 
-        expect(Array.isArray(result)).toBe(true);
+        expect(Array.isArray(result)).toBe(true)
 
         if (Array.isArray(result)) {
           result.forEach(tag => {
@@ -199,34 +199,34 @@ describe('module "database/relationship"', () => {
                   record.getAttributes()
                 ),
               })
-            );
-          });
+            )
+          })
         }
-      });
-    });
-  });
+      })
+    })
+  })
 
   describe('#set()', () => {
     describe('has-one relationships', () => {
-      let image;
+      let image
 
       beforeAll(async () => {
         const [newImageId] = await insert('images', {
           url: faker.image.imageUrl(),
           ...timestamps(),
-        });
+        })
 
         image = await store
           .modelFor('image')
-          .find(newImageId);
-      });
+          .find(newImageId)
+      })
 
       afterAll(async () => {
-        await del('images').where('id', image.getPrimaryKey());
-      });
+        await del('images').where('id', image.getPrimaryKey())
+      })
 
       test('can add a record to the relationship', () => {
-        set(record, 'image', image);
+        set(record, 'image', image)
 
         expect(image.toObject()).toEqual(
           expect.objectContaining({
@@ -234,15 +234,15 @@ describe('module "database/relationship"', () => {
               record.getAttributes()
             ),
           }),
-        );
+        )
 
-        expect(image.dirtyRelationships.get('post')).toBe(record);
-        expect(record.dirtyRelationships.get('image')).toBe(image);
-      });
-    });
+        expect(image.dirtyRelationships.get('post')).toBe(record)
+        expect(record.dirtyRelationships.get('image')).toBe(image)
+      })
+    })
 
     describe('belongs-to relationships', () => {
-      let user;
+      let user
 
       beforeAll(async () => {
         const [newUserId] = await insert('users', {
@@ -250,19 +250,19 @@ describe('module "database/relationship"', () => {
           email: faker.internet.email(),
           password: faker.internet.password(8),
           ...timestamps(),
-        });
+        })
 
         user = await store
           .modelFor('user')
-          .find(newUserId);
-      });
+          .find(newUserId)
+      })
 
       afterAll(async () => {
-        await del('users').where('id', user.getPrimaryKey());
-      });
+        await del('users').where('id', user.getPrimaryKey())
+      })
 
       test('can add a record to the relationship', () => {
-        set(record, 'user', user);
+        set(record, 'user', user)
 
         expect(user.toObject()).toEqual(
           expect.objectContaining({
@@ -275,37 +275,37 @@ describe('module "database/relationship"', () => {
               })
             ]),
           }),
-        );
+        )
 
-        expect(record.dirtyRelationships.get('user')).toBe(user);
-      });
-    });
+        expect(record.dirtyRelationships.get('user')).toBe(user)
+      })
+    })
 
     describe('one-to-many relationships', () => {
-      let comment;
+      let comment
 
       beforeEach(async () => {
         const [newCommentId] = await insert('comments', {
           message: faker.lorem.sentence(),
           ...timestamps(),
-        });
+        })
 
         comment = await store
           .modelFor('comment')
-          .find(newCommentId);
-      });
+          .find(newCommentId)
+      })
 
       afterEach(async () => {
-        await del('comments').where('id', comment.getPrimaryKey());
-      });
+        await del('comments').where('id', comment.getPrimaryKey())
+      })
 
       test('can add records to the relationship', () => {
-        set(record, 'comments', [comment]);
+        set(record, 'comments', [comment])
 
-        const dirty = record.dirtyRelationships.get('comments');
+        const dirty = record.dirtyRelationships.get('comments')
 
-        expect(Array.isArray(dirty)).toBe(true);
-        dirty.forEach(expect(comment).toBe);
+        expect(Array.isArray(dirty)).toBe(true)
+        dirty.forEach(expect(comment).toBe)
 
         expect(comment.toObject()).toEqual(
           expect.objectContaining({
@@ -318,19 +318,19 @@ describe('module "database/relationship"', () => {
               ]),
             }),
           })
-        );
-      });
+        )
+      })
 
       test('can remove records from the relationship', () => {
-        set(record, 'comments', []);
+        set(record, 'comments', [])
 
-        expect(record.dirtyRelationships.get('comments')).toEqual([]);
+        expect(record.dirtyRelationships.get('comments')).toEqual([])
         expect(record.toObject()).toEqual(
           expect.objectContaining({
             comments: [],
           })
-        );
-      });
-    });
-  });
-});
+        )
+      })
+    })
+  })
+})

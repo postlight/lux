@@ -1,7 +1,7 @@
-import FriendshipsController from '../friendships';
+import FriendshipsController from '../friendships'
 
 class AdminFriendshipsController extends FriendshipsController {
 
 }
 
-export default AdminFriendshipsController;
+export default AdminFriendshipsController

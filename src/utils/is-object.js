@@ -17,5 +17,5 @@
  * @private
  */
 export default function isObject(value: mixed): boolean {
-  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value)
 }

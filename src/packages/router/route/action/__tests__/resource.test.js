@@ -1,13 +1,13 @@
 /* @flow */
 
-import { VERSION } from '../../../../jsonapi';
-import Logger from '../../../../logger';
-import { request, response } from '../../../../adapter/mock';
-import noop from '../../../../../utils/noop';
-import { getTestApp } from '../../../../../../test/utils/test-app';
-import resource from '../enhancers/resource';
+import { VERSION } from '../../../../jsonapi'
+import Logger from '../../../../logger'
+import { request, response } from '../../../../adapter/mock'
+import noop from '../../../../../utils/noop'
+import { getTestApp } from '../../../../../../test/utils/test-app'
+import resource from '../enhancers/resource'
 
-const DOMAIN = 'localhost:4000';
+const DOMAIN = 'localhost:4000'
 const DEFAULT_FIELDS = {
   posts: [
     'body',
@@ -30,7 +30,7 @@ const DEFAULT_FIELDS = {
   tags: [
     'id',
   ],
-};
+}
 
 const logger = new Logger({
   level: 'ERROR',
@@ -39,22 +39,22 @@ const logger = new Logger({
     params: [],
   },
   enabled: false,
-});
+})
 
 describe('module "router/route/action"', () => {
-  let app;
+  let app
 
   beforeAll(async () => {
-    app = await getTestApp();
-  });
+    app = await getTestApp()
+  })
 
   afterAll(async () => {
-    await app.destroy();
-  });
+    await app.destroy()
+  })
 
   describe('enhancer resource()', () => {
     describe('- type "collection"', () => {
-      let subject;
+      let subject
 
       const mockArgs = () => {
         const req = request.create({
@@ -67,12 +67,12 @@ describe('module "router/route/action"', () => {
           },
           encrypted: false,
           defaultParams: {},
-        });
+        })
 
         const res = response.create({
           logger,
           resolve: noop,
-        });
+        })
 
         Object.assign(req.defaultParams, {
           sort: 'createdAt',
@@ -82,24 +82,24 @@ describe('module "router/route/action"', () => {
             number: 1,
           },
           fields: DEFAULT_FIELDS,
-        });
+        })
 
-        return [req, res];
-      };
+        return [req, res]
+      }
 
       beforeAll(() => {
-        const controller = app.controllers.get('posts');
+        const controller = app.controllers.get('posts')
         // $FlowIgnore
-        subject = resource(controller.index.bind(controller), controller);
-      });
+        subject = resource(controller.index.bind(controller), controller)
+      })
 
       test('returns an enhanced action', () => {
-        expect(subject).toBeInstanceOf(Function);
-        expect(subject).toHaveLength(2);
-      });
+        expect(subject).toBeInstanceOf(Function)
+        expect(subject).toHaveLength(2)
+      })
 
       test('resolves with a serialized payload', async () => {
-        const [req, res] = mockArgs();
+        const [req, res] = mockArgs()
 
         expect(await subject(req, res)).toEqual(
           expect.objectContaining({
@@ -113,9 +113,9 @@ describe('module "router/route/action"', () => {
               version: VERSION,
             },
           })
-        );
-      });
-    });
+        )
+      })
+    })
 
     describe('- type "member"', () => {
       const mockArgs = url => {
@@ -131,23 +131,23 @@ describe('module "router/route/action"', () => {
           defaultParams: {
             fields: DEFAULT_FIELDS,
           },
-        });
+        })
 
         const res = response.create({
           logger,
           resolve: noop,
-        });
+        })
 
         Object.assign(req.params, {
           id: 1,
-        });
+        })
 
         Object.assign(req.defaultParams, {
           fields: DEFAULT_FIELDS,
-        });
+        })
 
-        return [req, res];
-      };
+        return [req, res]
+      }
 
       const getExpectedResult = () => (
         expect.objectContaining({
@@ -164,66 +164,66 @@ describe('module "router/route/action"', () => {
             version: VERSION,
           },
         })
-      );
+      )
 
       describe('- with "root" namespace', () => {
-        let subject;
+        let subject
 
         beforeAll(() => {
-          const controller = app.controllers.get('posts');
+          const controller = app.controllers.get('posts')
 
           // $FlowIgnore
-          subject = resource(controller.show.bind(controller), controller);
-        });
+          subject = resource(controller.show.bind(controller), controller)
+        })
 
         test('returns an enhanced action', () => {
-          expect(subject).toBeInstanceOf(Function);
-          expect(subject).toHaveLength(2);
-        });
+          expect(subject).toBeInstanceOf(Function)
+          expect(subject).toHaveLength(2)
+        })
 
         test('resolves with a serialized payload', async () => {
-          const [req, res] = mockArgs('/posts/1');
+          const [req, res] = mockArgs('/posts/1')
 
-          expect(await subject(req, res)).toEqual(getExpectedResult());
-        });
-      });
+          expect(await subject(req, res)).toEqual(getExpectedResult())
+        })
+      })
 
       describe('- with "admin" namespace', () => {
-        let subject;
+        let subject
 
         beforeAll(async () => {
-          const controller = app.controllers.get('admin/posts');
+          const controller = app.controllers.get('admin/posts')
 
           // $FlowIgnore
-          subject = resource(controller.show.bind(controller), controller);
-        });
+          subject = resource(controller.show.bind(controller), controller)
+        })
 
         test('returns an enhanced action', () => {
-          expect(subject).toBeInstanceOf(Function);
-          expect(subject).toHaveLength(2);
-        });
+          expect(subject).toBeInstanceOf(Function)
+          expect(subject).toHaveLength(2)
+        })
 
         test('resolves with a serialized payload', async () => {
-          const [req, res] = mockArgs('/admin/posts/1');
+          const [req, res] = mockArgs('/admin/posts/1')
 
-          expect(await subject(req, res)).toEqual(getExpectedResult());
-        });
-      });
+          expect(await subject(req, res)).toEqual(getExpectedResult())
+        })
+      })
 
       describe('- with non-model data', () => {
-        let subject;
+        let subject
 
         beforeAll(() => {
-          const controller = app.controllers.get('posts');
+          const controller = app.controllers.get('posts')
 
           // $FlowIgnore
-          subject = resource(() => Promise.resolve(null), controller);
-        });
+          subject = resource(() => Promise.resolve(null), controller)
+        })
 
         test('returns an enhanced action', () => {
-          expect(subject).toBeInstanceOf(Function);
-          expect(subject).toHaveLength(2);
-        });
+          expect(subject).toBeInstanceOf(Function)
+          expect(subject).toHaveLength(2)
+        })
 
         test('resolves with the result of the action', async () => {
           const result = await subject(
@@ -242,11 +242,11 @@ describe('module "router/route/action"', () => {
               logger,
               resolve: noop,
             })
-          );
+          )
 
-          expect(result).toBeNull();
-        });
-      });
-    });
-  });
-});
+          expect(result).toBeNull()
+        })
+      })
+    })
+  })
+})

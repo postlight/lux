@@ -1,15 +1,15 @@
 /* @flow */
 
-import noop from '../../../../../utils/noop';
-import Logger from '../../../../logger';
-import { request, response } from '../../../../adapter/mock';
-import { createAction, createPageLinks } from '../index';
-import { getTestApp } from '../../../../../../test/utils/test-app';
-import type Controller from '../../../../controller';
-import type { Action } from '../index';
+import noop from '../../../../../utils/noop'
+import Logger from '../../../../logger'
+import { request, response } from '../../../../adapter/mock'
+import { createAction, createPageLinks } from '../index'
+import { getTestApp } from '../../../../../../test/utils/test-app'
+import type Controller from '../../../../controller'
+import type { Action } from '../index'
 
-const DOMAIN = 'http://localhost:4000';
-const RESOURCE = 'posts';
+const DOMAIN = 'http://localhost:4000'
+const RESOURCE = 'posts'
 
 const logger = new Logger({
   level: 'ERROR',
@@ -18,34 +18,34 @@ const logger = new Logger({
     params: [],
   },
   enabled: false,
-});
+})
 
 describe('module "router/route/action"', () => {
   describe('#createAction()', () => {
-    let app;
-    let result;
+    let app
+    let result
 
     beforeAll(async () => {
-      app = await getTestApp();
+      app = await getTestApp()
 
       // $FlowIgnore
-      const controller: Controller = app.controllers.get('health');
-      const action: Action<any> = controller.index;
+      const controller: Controller = app.controllers.get('health')
+      const action: Action<any> = controller.index
 
-      result = createAction('custom', action, controller);
-    });
+      result = createAction('custom', action, controller)
+    })
 
     afterAll(async () => {
-      await app.destroy();
-    });
+      await app.destroy()
+    })
 
     test('returns an array of functions', () => {
-      expect(result).toEqual(expect.any(Array));
-      expect(result).toHaveLength(1);
-    });
+      expect(result).toEqual(expect.any(Array))
+      expect(result).toHaveLength(1)
+    })
 
     test('resolves with the expected value', async () => {
-      const fn = result.slice().pop();
+      const fn = result.slice().pop()
       const data = await fn(
         request.create({
           logger,
@@ -60,11 +60,11 @@ describe('module "router/route/action"', () => {
           logger,
           resolve: noop,
         })
-      );
+      )
 
-      expect(data).toBe(204);
-    });
-  });
+      expect(data).toBe(204)
+    })
+  })
 
   describe('#createPageLinks()', () => {
     const getOptions = ({
@@ -79,7 +79,7 @@ describe('module "router/route/action"', () => {
       domain: DOMAIN,
       pathname: `/${RESOURCE}`,
       defaultPerPage: 25
-    });
+    })
 
     test('works with vanilla params', () => {
       const base = `${DOMAIN}/${RESOURCE}`;
@@ -91,7 +91,7 @@ describe('module "router/route/action"', () => {
               number
             }
           }
-        });
+        })
 
         let target = {
           self: `${base}?page%5Bnumber%5D=${number}`,
@@ -99,7 +99,7 @@ describe('module "router/route/action"', () => {
           last: `${base}?page%5Bnumber%5D=4`,
           prev: `${base}?page%5Bnumber%5D=${number - 1}`,
           next: `${base}?page%5Bnumber%5D=${number + 1}`
-        };
+        }
 
         // eslint-disable-next-line default-case
         switch (number) {
@@ -108,30 +108,30 @@ describe('module "router/route/action"', () => {
               ...target,
               self: target.first,
               prev: null
-            };
-            break;
+            }
+            break
 
           case 2:
             target = {
               ...target,
               prev: target.first
-            };
-            break;
+            }
+            break
 
           case 4:
             target = {
               ...target,
               next: null
-            };
-            break;
+            }
+            break
         }
 
-        expect(createPageLinks(opts)).toEqual(target);
-      });
-    });
+        expect(createPageLinks(opts)).toEqual(target)
+      })
+    })
 
     test('works with a custom size', () => {
-      const size = 10;
+      const size = 10
       const base = `${DOMAIN}/${RESOURCE}?page%5Bsize%5D=${size}`;
 
       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].forEach(number => {
@@ -142,7 +142,7 @@ describe('module "router/route/action"', () => {
               number
             }
           }
-        });
+        })
 
         let target = {
           self: `${base}&page%5Bnumber%5D=${number}`,
@@ -150,7 +150,7 @@ describe('module "router/route/action"', () => {
           last: `${base}&page%5Bnumber%5D=10`,
           prev: `${base}&page%5Bnumber%5D=${number - 1}`,
           next: `${base}&page%5Bnumber%5D=${number + 1}`
-        };
+        }
 
         // eslint-disable-next-line default-case
         switch (number) {
@@ -159,27 +159,27 @@ describe('module "router/route/action"', () => {
               ...target,
               self: target.first,
               prev: null
-            };
-            break;
+            }
+            break
 
           case 2:
             target = {
               ...target,
               prev: target.first
-            };
-            break;
+            }
+            break
 
           case 10:
             target = {
               ...target,
               next: null
-            };
-            break;
+            }
+            break
         }
 
-        expect(createPageLinks(opts)).toEqual(target);
-      });
-    });
+        expect(createPageLinks(opts)).toEqual(target)
+      })
+    })
 
     test('works with complex parameter sets', () => {
       const base =
@@ -205,7 +205,7 @@ describe('module "router/route/action"', () => {
               number
             }
           }
-        });
+        })
 
         let target = {
           self: `${base}&page%5Bnumber%5D=${number}`,
@@ -213,7 +213,7 @@ describe('module "router/route/action"', () => {
           last: `${base}&page%5Bnumber%5D=4`,
           prev: `${base}&page%5Bnumber%5D=${number - 1}`,
           next: `${base}&page%5Bnumber%5D=${number + 1}`
-        };
+        }
 
         // eslint-disable-next-line default-case
         switch (number) {
@@ -222,35 +222,35 @@ describe('module "router/route/action"', () => {
               ...target,
               self: target.first,
               prev: null
-            };
-            break;
+            }
+            break
 
           case 2:
             target = {
               ...target,
               prev: target.first
-            };
-            break;
+            }
+            break
 
           case 4:
             target = {
               ...target,
               next: null
-            };
-            break;
+            }
+            break
         }
 
-        expect(createPageLinks(opts)).toEqual(target);
-      });
-    });
+        expect(createPageLinks(opts)).toEqual(target)
+      })
+    })
 
     test('works when the total is 0', () => {
       const options = getOptions({
         total: 0,
-      });
+      })
 
-      expect(createPageLinks(options)).toMatchSnapshot();
-    });
+      expect(createPageLinks(options)).toMatchSnapshot()
+    })
 
     test('works when the maximum page is exceeded', () => {
       const options = getOptions({
@@ -259,9 +259,9 @@ describe('module "router/route/action"', () => {
             number: 1000,
           },
         },
-      });
+      })
 
-      expect(createPageLinks(options)).toMatchSnapshot();
-    });
-  });
-});
+      expect(createPageLinks(options)).toMatchSnapshot()
+    })
+  })
+})

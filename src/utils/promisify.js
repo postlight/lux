@@ -11,13 +11,13 @@ function promisify(source: Function, context?: ?Object): Target {
     new Promise((resolve, reject) => {
       source.apply(context, [...args, (err, ...result) => {
         if (err) {
-          reject(err);
-          return;
+          reject(err)
+          return
         }
-        resolve(result.length > 1 ? result : result[0]);
-      }]);
+        resolve(result.length > 1 ? result : result[0])
+      }])
     })
-  );
+  )
 }
 
-export default promisify;
+export default promisify

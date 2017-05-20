@@ -1,14 +1,14 @@
 /* @flow */
 
-import { cyan } from 'chalk';
+import { cyan } from 'chalk'
 
-import { CWD, PORT, NODE_ENV } from '../../../constants';
-import Logger from '../../logger';
-import { createLoader } from '../../loader';
-import { createCluster } from '../../pm';
-import { watch } from '../../fs';
+import { CWD, PORT, NODE_ENV } from '../../../constants'
+import Logger from '../../logger'
+import { createLoader } from '../../loader'
+import { createCluster } from '../../pm'
+import { watch } from '../../fs'
 
-import { build } from './build';
+import { build } from './build'
 
 /**
  * @private
@@ -22,17 +22,17 @@ export async function serve({
   cluster: boolean;
   useStrict: boolean;
 }): Promise<void> {
-  const load = createLoader(CWD);
-  const { logging } = load('config');
-  const logger = new Logger(logging);
+  const load = createLoader(CWD)
+  const { logging } = load('config')
+  const logger = new Logger(logging)
 
   if (hot) {
-    const watcher = await watch(CWD);
+    const watcher = await watch(CWD)
 
     watcher.on('change', async (changed) => {
-      await build(useStrict);
-      process.emit('update', changed);
-    });
+      await build(useStrict)
+      process.emit('update', changed)
+    })
   }
 
   createCluster({
@@ -41,6 +41,6 @@ export async function serve({
     port: PORT,
     maxWorkers: cluster ? undefined : 1
   }).once('ready', () => {
-    logger.info(`Lux Server listening on port: ${cyan(`${PORT}`)}`);
-  });
+    logger.info(`Lux Server listening on port: ${cyan(`${PORT}`)}`)
+  })
 }

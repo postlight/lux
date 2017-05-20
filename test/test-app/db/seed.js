@@ -1,6 +1,6 @@
-import __fixtures__ from './__fixtures__.json';
+import __fixtures__ from './__fixtures__.json'
 
-const CHUNK_SIZE = 100;
+const CHUNK_SIZE = 100
 
 export default function seed(trx, connection) {
   const promises = Object
@@ -17,9 +17,9 @@ export default function seed(trx, connection) {
     .reduce((arr, [table, rows]) => {
       arr[arr.length] = connection
         .batchInsert(table, rows, CHUNK_SIZE)
-        .transacting(trx);
-      return arr;
-    }, []);
+        .transacting(trx)
+      return arr
+    }, [])
 
-  return Promise.all(promises);
+  return Promise.all(promises)
 }

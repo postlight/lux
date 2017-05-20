@@ -1,17 +1,17 @@
 /* @flow */
 
-import { Model } from '../database';
-import { freezeProps } from '../freezeable';
-import getDomain from '../../utils/get-domain';
-import type Serializer from '../serializer';
+import { Model } from '../database'
+import { freezeProps } from '../freezeable'
+import getDomain from '../../utils/get-domain'
+import type Serializer from '../serializer'
 // eslint-disable-next-line no-duplicate-imports
-import type { Query } from '../database';
-import type Request from '../request';
-import type Response from '../response';
+import type { Query } from '../database'
+import type Request from '../request'
+import type Response from '../response'
 
-import findOne from './utils/find-one';
-import findMany from './utils/find-many';
-import resolveRelationships from './utils/resolve-relationships';
+import findOne from './utils/find-one'
+import findMany from './utils/find-many'
+import resolveRelationships from './utils/resolve-relationships'
 
 export type BuiltInAction =
   | 'show'
@@ -562,11 +562,11 @@ class Controller {
   hasSerializer: boolean;
 
   constructor(options: Options<*> = {}) {
-    const { model, serializer } = options;
-    let { namespace } = options;
+    const { model, serializer } = options
+    let { namespace } = options
 
     if (typeof namespace !== 'string') {
-      namespace = '';
+      namespace = ''
     }
 
     Object.assign(this, {
@@ -576,19 +576,19 @@ class Controller {
       hasModel: Boolean(model),
       hasNamespace: Boolean(namespace),
       hasSerializer: Boolean(serializer)
-    });
+    })
 
     freezeProps(this, true,
       'model',
       'namespace',
       'serializer'
-    );
+    )
 
     freezeProps(this, false,
       'hasModel',
       'hasNamespace',
       'hasSerializer'
-    );
+    )
   }
 
   /**
@@ -604,7 +604,7 @@ class Controller {
    * @public
    */
   index(req: Request): Query<Array<Model>> {
-    return findMany(this.model, req);
+    return findMany(this.model, req)
   }
 
   /**
@@ -620,7 +620,7 @@ class Controller {
    * @public
    */
   show(request: Request): Query<Model> {
-    return findOne(this.model, request);
+    return findOne(this.model, request)
   }
 
   /**
@@ -635,7 +635,7 @@ class Controller {
    * @public
    */
   async create(req: Request, res: Response): Promise<Model> {
-    const { model } = this;
+    const { model } = this
 
     const {
       url: {
@@ -647,21 +647,21 @@ class Controller {
           relationships
         }
       }
-    } = req;
+    } = req
 
     const record = await model.create({
       ...attributes,
       ...resolveRelationships(model, relationships)
-    });
+    })
 
     res.setHeader(
       'Location',
       `${getDomain(req) + (pathname || '')}/${record.getPrimaryKey()}`
-    );
+    )
 
-    Reflect.set(res, 'statusCode', 201);
+    Reflect.set(res, 'statusCode', 201)
 
-    return record.unwrap();
+    return record.unwrap()
   }
 
   /**
@@ -677,8 +677,8 @@ class Controller {
    * @public
    */
   async update(request: Request): Promise<number | Model> {
-    const { model } = this;
-    const record = await findOne(this.model, request);
+    const { model } = this
+    const record = await findOne(this.model, request)
 
     const {
       params: {
@@ -687,20 +687,20 @@ class Controller {
           relationships,
         },
       },
-    } = request;
+    } = request
 
     Object.assign(
       record,
       attributes,
       resolveRelationships(model, relationships)
-    );
+    )
 
     if (record.isDirty) {
-      await record.save();
-      return record.reload();
+      await record.save()
+      return record.reload()
     }
 
-    return 204;
+    return 204
   }
 
   /**
@@ -717,7 +717,7 @@ class Controller {
   destroy(req: Request): Promise<number> {
     return findOne(this.model, req)
       .then(record => record.destroy())
-      .then(() => 204);
+      .then(() => 204)
   }
 
   /**
@@ -730,9 +730,9 @@ class Controller {
    * @public
    */
   preflight(): Promise<number> {
-    return Promise.resolve(204);
+    return Promise.resolve(204)
   }
 }
 
-export default Controller;
-export { BUILT_IN_ACTIONS } from './constants';
+export default Controller
+export { BUILT_IN_ACTIONS } from './constants'

@@ -1,11 +1,11 @@
 /* @flow */
 
-import uniq from '../uniq';
+import uniq from '../uniq'
 
 describe('util uniq()', () => {
   test('it works with an array', () => {
-    expect(uniq([1, 1, 2, 2, 3, 3])).toEqual([1, 2, 3]);
-  });
+    expect(uniq([1, 1, 2, 2, 3, 3])).toEqual([1, 2, 3])
+  })
 
   test('it works with an array of objects', () => {
     const subject = [
@@ -21,7 +21,7 @@ describe('util uniq()', () => {
         id: 2,
         name: 'Test 2'
       }
-    ];
+    ]
 
     expect(uniq(subject, 'id')).toEqual([
       {
@@ -32,14 +32,14 @@ describe('util uniq()', () => {
         id: 2,
         name: 'Test 2'
       }
-    ]);
-  });
+    ])
+  })
 
   test('it does not mutate the source array', () => {
-    const subject = [1, 1, 2, 2, 3, 3];
+    const subject = [1, 1, 2, 2, 3, 3]
 
-    uniq(subject);
+    uniq(subject)
 
-    expect(subject).toEqual([1, 1, 2, 2, 3, 3]);
-  });
-});
+    expect(subject).toEqual([1, 1, 2, 2, 3, 3])
+  })
+})

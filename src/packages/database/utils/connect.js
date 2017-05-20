@@ -1,16 +1,16 @@
-import { join as joinPath } from 'path';
+import { join as joinPath } from 'path'
 
-import type Knex from 'knex';
+import type Knex from 'knex'
 
-import { NODE_ENV, DATABASE_URL } from '../../../constants';
-import { VALID_DRIVERS } from '../constants';
-import { InvalidDriverError } from '../errors';
+import { NODE_ENV, DATABASE_URL } from '../../../constants'
+import { VALID_DRIVERS } from '../constants'
+import { InvalidDriverError } from '../errors'
 
 /**
  * @private
  */
 export default function connect(path: string, config: Object = {}): Knex {
-  let { pool } = config;
+  let { pool } = config
 
   const {
     host,
@@ -23,33 +23,33 @@ export default function connect(path: string, config: Object = {}): Knex {
     port,
     ssl,
     url
-  } = config;
+  } = config
 
   if (VALID_DRIVERS.indexOf(driver) < 0) {
-    throw new InvalidDriverError(driver);
+    throw new InvalidDriverError(driver)
   }
 
   if (pool && typeof pool === 'number') {
     pool = {
       min: pool > 1 ? 2 : 1,
       max: pool
-    };
+    }
   }
 
-  const knex: Class<Knex> = require(joinPath(path, 'node_modules', 'knex'));
-  const usingSQLite = driver === 'sqlite3';
-  let filename;
+  const knex: Class<Knex> = require(joinPath(path, 'node_modules', 'knex'))
+  const usingSQLite = driver === 'sqlite3'
+  let filename
 
   if (usingSQLite) {
     if (memory) {
-      pool = undefined;
-      filename = ':memory:';
+      pool = undefined
+      filename = ':memory:'
     } else {
       filename = joinPath(
         path,
         'db',
         `${database || 'default'}_${NODE_ENV}.sqlite`
-      );
+      )
     }
   }
 
@@ -68,5 +68,5 @@ export default function connect(path: string, config: Object = {}): Knex {
     debug: false,
     client: driver,
     useNullAsDefault: usingSQLite,
-  });
+  })
 }

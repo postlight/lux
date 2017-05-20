@@ -1,32 +1,32 @@
-import { REACTION_TYPES } from '../../app/models/reaction';
+import { REACTION_TYPES } from '../../app/models/reaction'
 
 export function up(schema) {
   return schema.createTable('reactions', table => {
-    table.increments('id');
+    table.increments('id')
 
     table
       .enum('type', REACTION_TYPES)
       .index()
-      .notNullable();
+      .notNullable()
 
     table
       .integer('user_id')
-      .index();
+      .index()
 
     table
       .integer('post_id')
-      .index();
+      .index()
 
     table
       .integer('comment_id')
-      .index();
+      .index()
 
-    table.timestamps();
-    table.index('created_at');
-    table.index('updated_at');
-  });
+    table.timestamps()
+    table.index('created_at')
+    table.index('updated_at')
+  })
 }
 
 export function down(schema) {
-  return schema.dropTable('reactions');
+  return schema.dropTable('reactions')
 }

@@ -1,7 +1,7 @@
-import PostsSerializer from '../posts';
+import PostsSerializer from '../posts'
 
 class AdminPostsSerializer extends PostsSerializer {
 
 }
 
-export default AdminPostsSerializer;
+export default AdminPostsSerializer

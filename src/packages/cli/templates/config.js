@@ -1,13 +1,13 @@
 /* @flow */
 
-import template from '../../template';
+import template from '../../template'
 
 /**
  * @private
  */
 export default (name: string, env: string): string => {
-  const isTestENV = env === 'test';
-  const isProdENV = env === 'production';
+  const isTestENV = env === 'test'
+  const isProdENV = env === 'production'
 
   return template`
     export default {
@@ -21,5 +21,5 @@ export default (name: string, env: string): string => {
         }
       }
     };
-  `;
-};
+  `
+}

@@ -1,16 +1,16 @@
 /* @flow */
 
-import Model from '../model';
+import Model from '../model'
 import {
   createTransactionResultProxy,
   createStaticTransactionProxy,
   createInstanceTransactionProxy
-} from '../transaction';
-import { getTestApp } from '../../../../test/utils/test-app';
+} from '../transaction'
+import { getTestApp } from '../../../../test/utils/test-app'
 
 describe('module "database/transaction"', () => {
-  const tableName = 'posts';
-  let app;
+  const tableName = 'posts'
+  let app
 
   // $FlowIgnore
   class Subject extends Model {
@@ -18,131 +18,131 @@ describe('module "database/transaction"', () => {
   }
 
   beforeAll(async () => {
-    app = await getTestApp();
+    app = await getTestApp()
 
-    const { store } = app;
+    const { store } = app
 
     await Subject.initialize(
       store,
       () => store.connection(tableName)
-    );
-  });
+    )
+  })
 
   afterAll(async () => {
-    await app.destroy();
-  });
+    await app.destroy()
+  })
 
   describe('.createTransactionResultProxy()', () => {
     test('has a #didPersist property', () => {
-      const proxy = createTransactionResultProxy(new Subject(), true);
+      const proxy = createTransactionResultProxy(new Subject(), true)
 
-      expect(proxy.didPersist).toBe(true);
-    });
-  });
+      expect(proxy.didPersist).toBe(true)
+    })
+  })
 
   describe('.createStaticTransactionProxy()', () => {
     describe('#create()', () => {
-      const { create } = Subject;
-      let mockCreate;
-      let instance;
+      const { create } = Subject
+      let mockCreate
+      let instance
 
       beforeAll(async () => {
         mockCreate = jest.fn().mockImplementation((...args) => (
           create.apply(Subject, args)
-        ));
+        ))
 
-        Subject.create = mockCreate;
-      });
+        Subject.create = mockCreate
+      })
 
       afterAll(() => {
-        Subject.create = create;
-      });
+        Subject.create = create
+      })
 
       afterEach(async () => {
-        mockCreate.mockClear();
+        mockCreate.mockClear()
 
         if (instance) {
-          await instance.destroy();
+          await instance.destroy()
         }
-      });
+      })
 
       test('calls create on the model with the trx object', async () => {
-        const args = [{}];
+        const args = [{}]
 
         await Subject.transaction(trx => {
-          args.push(trx);
-          return createStaticTransactionProxy(Subject, trx).create(args[0]);
-        });
+          args.push(trx)
+          return createStaticTransactionProxy(Subject, trx).create(args[0])
+        })
 
-        expect(mockCreate).toBeCalledWith(...args);
-      });
-    });
-  });
+        expect(mockCreate).toBeCalledWith(...args)
+      })
+    })
+  })
 
   describe('.createInstanceTransactionProxy()', () => {
     ['save', 'update', 'destroy'].forEach(method => {
       describe(`#${method}()`, () => {
-        let instance;
-        let ogMethod;
-        let mockMethod;
+        let instance
+        let ogMethod
+        let mockMethod
 
         beforeAll(async () => {
           await Subject.create().then(proxy => {
             // $FlowIgnore
-            instance = proxy.unwrap();
-            ogMethod = instance[method];
+            instance = proxy.unwrap()
+            ogMethod = instance[method]
 
             mockMethod = jest.fn().mockImplementation((...args) => (
               ogMethod.apply(instance, args)
-            ));
+            ))
 
-            instance[method] = mockMethod;
-          });
-        });
+            instance[method] = mockMethod
+          })
+        })
 
         afterAll(() => {
-          instance[method] = ogMethod;
-        });
+          instance[method] = ogMethod
+        })
 
         afterEach(async () => {
-          mockMethod.mockReset();
+          mockMethod.mockReset()
 
           if (method !== 'destroy') {
-            await instance.destroy();
+            await instance.destroy()
           }
-        });
+        })
 
         test(`calls ${method} on the instance`, async () => {
-          const obj = {};
-          const args = [];
+          const obj = {}
+          const args = []
 
           await instance.transaction(trx => {
-            const proxied = createInstanceTransactionProxy(instance, trx);
-            let promise = Promise.resolve(instance);
+            const proxied = createInstanceTransactionProxy(instance, trx)
+            let promise = Promise.resolve(instance)
 
             switch (method) {
               case 'save':
-                promise = proxied.save();
-                break;
+                promise = proxied.save()
+                break
 
               case 'update':
-                args.push(obj);
-                promise = proxied.update(obj);
-                break;
+                args.push(obj)
+                promise = proxied.update(obj)
+                break
 
               default:
-                promise = proxied.destroy();
-                break;
+                promise = proxied.destroy()
+                break
             }
 
-            args.push(trx);
+            args.push(trx)
 
-            return promise;
-          });
+            return promise
+          })
 
-          expect(mockMethod).toBeCalledWith(...args);
-        });
-      });
-    });
-  });
-});
+          expect(mockMethod).toBeCalledWith(...args)
+        })
+      })
+    })
+  })
+})

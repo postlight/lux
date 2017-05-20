@@ -1,6 +1,6 @@
 /* @flow */
 
-import isObject from './is-object';
+import isObject from './is-object'
 
 /**
  * @private
@@ -8,16 +8,16 @@ import isObject from './is-object';
 export default function stringify(value?: ?mixed, spaces?: number): string {
   switch (typeof value) {
     case 'string':
-      return value;
+      return value
 
     case 'number':
-      return String(value);
+      return String(value)
 
     case 'undefined':
-      return 'undefined';
+      return 'undefined'
 
     default:
-      return JSON.stringify(value, null, spaces);
+      return JSON.stringify(value, null, spaces)
   }
 }
 
@@ -25,27 +25,27 @@ export default function stringify(value?: ?mixed, spaces?: number): string {
  * @private
  */
 export function circular(value?: ?mixed, spaces?: number): string {
-  const cache = new WeakSet();
+  const cache = new WeakSet()
 
   switch (typeof value) {
     case 'string':
-      return value;
+      return value
 
     case 'number':
-      return String(value);
+      return String(value)
 
     case 'undefined':
-      return 'undefined';
+      return 'undefined'
 
     default:
       return JSON.stringify(value, (key, val) => {
         if (isObject(val)) {
           if (cache.has(val)) {
-            return undefined;
+            return undefined
           }
-          cache.add(val);
+          cache.add(val)
         }
-        return val;
-      }, spaces);
+        return val
+      }, spaces)
   }
 }

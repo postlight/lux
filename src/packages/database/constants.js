@@ -1,6 +1,6 @@
 /* @flow */
 
-export const UNIQUE_CONSTRAINT = /UNIQUE\sCONSTRAINT/ig;
+export const UNIQUE_CONSTRAINT = /UNIQUE\sCONSTRAINT/ig
 
 export const VALID_DRIVERS = [
   'pg',
@@ -11,7 +11,7 @@ export const VALID_DRIVERS = [
   'mariasql',
   'strong-oracle',
   'oracle'
-];
+]
 
 export const TYPE_ALIASES = new Map([
   ['enu', 'array'],
@@ -40,4 +40,4 @@ export const TYPE_ALIASES = new Map([
   ['decimal', 'number'],
   ['floating', 'number'],
   ['bigInteger', 'number']
-]);
+])

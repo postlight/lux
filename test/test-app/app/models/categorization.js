@@ -1,4 +1,4 @@
-import { Model } from 'LUX_LOCAL';
+import { Model } from 'LUX_LOCAL'
 
 class Categorization extends Model {
   static belongsTo = {
@@ -12,4 +12,4 @@ class Categorization extends Model {
   };
 }
 
-export default Categorization;
+export default Categorization

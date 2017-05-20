@@ -1,6 +1,6 @@
 /* @flow */
 
-import K from './k';
+import K from './k'
 
 /**
  * A utility function used for wrapping async code that would otherwise need a
@@ -37,15 +37,15 @@ export default async function tryCatch<T, F:() => Promise<T>>(
   fn: F,
   rescue: Function = K
 ): Promise<void | T> {
-  let result;
+  let result
 
   try {
-    result = await fn();
+    result = await fn()
   } catch (err) {
-    result = await rescue(err);
+    result = await rescue(err)
   }
 
-  return result;
+  return result
 }
 
 /**
@@ -74,13 +74,13 @@ export function tryCatchSync<T, F:() => T>(
   fn: F,
   rescue: Function = K
 ): void | T {
-  let result;
+  let result
 
   try {
-    result = fn();
+    result = fn()
   } catch (err) {
-    result = rescue(err);
+    result = rescue(err)
   }
 
-  return result;
+  return result
 }

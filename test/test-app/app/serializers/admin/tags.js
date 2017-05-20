@@ -1,7 +1,7 @@
-import TagsSerializer from '../tags';
+import TagsSerializer from '../tags'
 
 class AdminTagsSerializer extends TagsSerializer {
 
 }
 
-export default AdminTagsSerializer;
+export default AdminTagsSerializer

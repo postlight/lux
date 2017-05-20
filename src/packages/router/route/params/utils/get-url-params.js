@@ -1,7 +1,7 @@
 /* @flow */
 
-import Parameter from '../parameter';
-import type { ParameterLike } from '../interfaces';
+import Parameter from '../parameter'
+import type { ParameterLike } from '../interfaces'
 
 /**
  * @private
@@ -12,5 +12,5 @@ export default function getURLParams(
   return dynamicSegments.map(param => [param, new Parameter({
     path: param,
     required: true
-  })]);
+  })])
 }

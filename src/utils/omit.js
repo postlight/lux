@@ -1,7 +1,7 @@
 /* @flow */
 
-import entries from './entries';
-import setType from './set-type';
+import entries from './entries'
+import setType from './set-type'
 
 /**
  * @private
@@ -12,5 +12,5 @@ export default function omit<T: Object>(src: T, ...omitted: Array<string>): T {
     .reduce((result, [key, value]: [string, mixed]) => ({
       ...result,
       [key]: value
-    }), {}));
+    }), {}))
 }

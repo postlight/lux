@@ -10,5 +10,5 @@
  * @private
  */
 export default function K(): any {
-  return this;
+  return this
 }

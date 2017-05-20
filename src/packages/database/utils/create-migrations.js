@@ -1,6 +1,6 @@
 /* @flow */
 
-import type Database from '../index';
+import type Database from '../index'
 
 /**
  * @private
@@ -8,13 +8,13 @@ import type Database from '../index';
 export default async function createMigrations(
   schema: $PropertyType<Database, 'schema'>
 ): Promise<boolean> {
-  const hasTable: boolean = await schema().hasTable('migrations');
+  const hasTable: boolean = await schema().hasTable('migrations')
 
   if (!hasTable) {
     await schema().createTable('migrations', table => {
-      table.string('version', 16).primary();
-    });
+      table.string('version', 16).primary()
+    })
   }
 
-  return true;
+  return true
 }

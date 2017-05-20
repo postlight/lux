@@ -1,16 +1,16 @@
 /* @flow */
 
-import { posix } from 'path';
+import { posix } from 'path'
 
-import { Model } from '../../../database';
-import Controller from '../../../controller';
-import Serializer from '../../../serializer';
-import { FreezeableMap } from '../../../freezeable';
-import createParentBuilder from '../utils/create-parent-builder';
+import { Model } from '../../../database'
+import Controller from '../../../controller'
+import Serializer from '../../../serializer'
+import { FreezeableMap } from '../../../freezeable'
+import createParentBuilder from '../utils/create-parent-builder'
 
 describe('module "loader/builder"', () => {
   describe('util createParentBuilder()', () => {
-    let subject;
+    let subject
 
     class ApplicationController extends Controller {}
     class ApiApplicationController extends Controller {}
@@ -18,21 +18,21 @@ describe('module "loader/builder"', () => {
 
     beforeEach(async () => {
       subject = createParentBuilder((key, target, parent) => {
-        const namespace = posix.dirname(key).replace('.', '');
+        const namespace = posix.dirname(key).replace('.', '')
         const serializer = new Serializer({
           namespace,
           model: Model,
           parent: null,
-        });
+        })
 
         return Reflect.construct(target, [{
           parent,
           namespace,
           serializer,
           model: Model,
-        }]);
-      });
-    });
+        }])
+      })
+    })
 
     test('correctly builds parent objects', () => {
       subject(new FreezeableMap([
@@ -48,21 +48,21 @@ describe('module "loader/builder"', () => {
       ])).forEach(({ key, parent }) => {
         switch (key) {
           case 'root':
-            expect(parent).toBeInstanceOf(ApplicationController);
-            break;
+            expect(parent).toBeInstanceOf(ApplicationController)
+            break
 
           case 'api':
-            expect(parent).toBeInstanceOf(ApiApplicationController);
-            break;
+            expect(parent).toBeInstanceOf(ApiApplicationController)
+            break
 
           case 'api/v1':
-            expect(parent).toBeInstanceOf(ApiV1ApplicationController);
-            break;
+            expect(parent).toBeInstanceOf(ApiV1ApplicationController)
+            break
 
           default:
-            throw new Error(`Unexpected key "${key}".`);
+            throw new Error(`Unexpected key "${key}".`)
         }
-      });
-    });
-  });
-});
+      })
+    })
+  })
+})

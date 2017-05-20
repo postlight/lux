@@ -1,6 +1,6 @@
 /* @flow */
 
-import type Controller from '../../controller';
+import type Controller from '../../controller'
 
 /**
  * @private
@@ -11,26 +11,26 @@ export default function createReplacer(
   const names = Array
     .from(controllers)
     .map(([, controller]) => {
-      const { model, namespace } = controller;
+      const { model, namespace } = controller
 
       if (model) {
-        return model.resourceName;
+        return model.resourceName
       }
 
-      let { constructor: { name } } = controller;
+      let { constructor: { name } } = controller
 
       name = name
         .replace(/controller/ig, '')
-        .toLowerCase();
+        .toLowerCase()
 
       return namespace
         .split('/')
         .reduce((str, part) => (
           str.replace(new RegExp(part, 'ig'), '')
-        ), name);
+        ), name)
     })
     .filter((str, idx, arr) => idx === arr.lastIndexOf(str))
-    .join('|');
+    .join('|')
 
-  return new RegExp(`(${names})/(\\d+)`, 'ig');
+  return new RegExp(`(${names})/(\\d+)`, 'ig')
 }

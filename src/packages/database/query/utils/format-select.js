@@ -1,8 +1,8 @@
 /* @flow */
 
-import { camelize } from 'inflection';
+import { camelize } from 'inflection'
 
-import Model from '../../model';
+import Model from '../../model'
 
 /**
  * @private
@@ -13,8 +13,8 @@ export default function formatSelect(
   prefix: string = ''
 ) {
   return attrs.map(attr => {
-    const name = model.columnNameFor(attr) || 'undefined';
+    const name = model.columnNameFor(attr) || 'undefined'
 
-    return `${model.tableName}.${name} AS ${prefix}${camelize(name, true)}`;
-  });
+    return `${model.tableName}.${name} AS ${prefix}${camelize(name, true)}`
+  })
 }

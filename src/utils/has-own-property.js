@@ -5,5 +5,5 @@ export default function hasOwnProperty(target: Object, key: string): boolean {
     Object.prototype.hasOwnProperty,
     target,
     [key]
-  );
+  )
 }

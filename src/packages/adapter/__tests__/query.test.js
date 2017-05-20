@@ -1,25 +1,25 @@
 /* @flow */
 
-import * as query from '../utils/query';
+import * as query from '../utils/query'
 
 describe('module "adapters/query"', () => {
   describe('#camelize()', () => {
     test('works with spaces', () => {
-      expect(query.camelize('test camelize')).toBe('testCamelize');
-    });
+      expect(query.camelize('test camelize')).toBe('testCamelize')
+    })
 
     test('works with dashes', () => {
-      expect(query.camelize('test-camelize')).toBe('testCamelize');
-    });
+      expect(query.camelize('test-camelize')).toBe('testCamelize')
+    })
 
     test('works with underscores', () => {
-      expect(query.camelize('test_camelize')).toBe('testCamelize');
-    });
+      expect(query.camelize('test_camelize')).toBe('testCamelize')
+    })
 
     test('works with an empty string', () => {
-      expect(query.camelize('')).toBe('');
-    });
-  });
+      expect(query.camelize('')).toBe('')
+    })
+  })
 
   describe('#fromObject()', () => {
     test('coerces types from strings', () => {
@@ -31,7 +31,7 @@ describe('module "adapters/query"', () => {
         true: 'true',
         false: 'false',
         string: 'test',
-      });
+      })
 
       expect(result).toEqual({
         num: 100,
@@ -41,8 +41,8 @@ describe('module "adapters/query"', () => {
         true: true,
         false: false,
         string: 'test',
-      });
-    });
+      })
+    })
 
     test('can convert objects recursively', () => {
       const result = query.fromObject({
@@ -55,7 +55,7 @@ describe('module "adapters/query"', () => {
           false: 'false',
           string: 'test',
         },
-      });
+      })
 
       expect(result).toEqual({
         data: {
@@ -67,8 +67,8 @@ describe('module "adapters/query"', () => {
           false: false,
           string: 'test',
         },
-      });
-    });
+      })
+    })
 
     test('always coerces `include` to an array', () => {
       [
@@ -76,9 +76,9 @@ describe('module "adapters/query"', () => {
         { include: '1,2,3' },
         { include: 'test-include,include-test' },
       ].forEach(item => {
-        expect(query.fromObject(item)).toMatchSnapshot();
-      });
-    });
+        expect(query.fromObject(item)).toMatchSnapshot()
+      })
+    })
 
     test('always coerces `fields` to an object containing arrays', () => {
       const result = query.fromObject({
@@ -87,9 +87,9 @@ describe('module "adapters/query"', () => {
           users: 'id,name,email',
           comments: 'id,message',
         },
-      });
+      })
 
-      expect(result).toMatchSnapshot();
-    });
-  });
-});
+      expect(result).toMatchSnapshot()
+    })
+  })
+})

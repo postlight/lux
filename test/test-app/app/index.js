@@ -1,7 +1,7 @@
-import { Application } from 'LUX_LOCAL';
+import { Application } from 'LUX_LOCAL'
 
 class TestApp extends Application {
 
 }
 
-export default TestApp;
+export default TestApp

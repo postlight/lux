@@ -1,24 +1,24 @@
 /* @flow */
 
-import { FREEZER } from '../constants';
-import insert from '../../../utils/insert';
-import isObject from '../../../utils/is-object';
+import { FREEZER } from '../constants'
+import insert from '../../../utils/insert'
+import isObject from '../../../utils/is-object'
 
 /**
  * @private
  */
 export default function freeze<T>(value: T): T {
-  FREEZER.add(value);
-  return value;
+  FREEZER.add(value)
+  return value
 }
 
 /**
  * @private
  */
 export function freezeArray<T>(target: Array<T>): Array<T> {
-  const result = insert(new Array(target.length), target);
+  const result = insert(new Array(target.length), target)
 
-  return Object.freeze(result);
+  return Object.freeze(result)
 }
 
 /**
@@ -26,12 +26,12 @@ export function freezeArray<T>(target: Array<T>): Array<T> {
  */
 export function freezeValue<T: any>(value: T): T {
   if (value && typeof value.freeze === 'function') {
-    return Object.freeze(value).freeze(true);
+    return Object.freeze(value).freeze(true)
   } else if (isObject(value)) {
-    return Object.freeze(value);
+    return Object.freeze(value)
   }
 
-  return value;
+  return value
 }
 
 /**
@@ -50,9 +50,9 @@ export function freezeProps<T>(
       enumerable: makePublic,
       configurable: false,
     }
-  }), {}));
+  }), {}))
 
-  return target;
+  return target
 }
 
 /**
@@ -64,12 +64,12 @@ export function deepFreezeProps<T>(
   ...props: Array<string>
 ): T {
   Object.defineProperties(target, props.reduce((obj, key) => {
-    let value = Reflect.get(target, key);
+    let value = Reflect.get(target, key)
 
     if (Array.isArray(value)) {
-      value = freezeArray(value);
+      value = freezeArray(value)
     } else {
-      value = freezeValue(value);
+      value = freezeValue(value)
     }
 
     return {
@@ -80,8 +80,8 @@ export function deepFreezeProps<T>(
         enumerable: makePublic,
         configurable: false,
       }
-    };
-  }, {}));
+    }
+  }, {}))
 
-  return target;
+  return target
 }

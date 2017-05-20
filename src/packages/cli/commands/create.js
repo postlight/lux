@@ -1,41 +1,41 @@
-import { EOL } from 'os';
+import { EOL } from 'os'
 
-import Ora from 'ora';
-import { green } from 'chalk';
+import Ora from 'ora'
+import { green } from 'chalk'
 
-import { CWD } from '../../../constants';
-import { mkdir, writeFile } from '../../fs';
-import template from '../../template';
-import exec from '../../../utils/exec';
-import driverFor from '../utils/driver-for';
-import appTemplate from '../templates/application';
-import configTemplate from '../templates/config';
-import routesTemplate from '../templates/routes';
-import dbTemplate from '../templates/database';
-import seedTemplate from '../templates/seed';
-import pkgJSONTemplate from '../templates/package-json';
-import babelrcTemplate from '../templates/babelrc';
-import eslintrcTemplate from '../templates/eslintrc';
-import readmeTemplate from '../templates/readme';
-import licenseTemplate from '../templates/license';
-import gitignoreTemplate from '../templates/gitignore';
+import { CWD } from '../../../constants'
+import { mkdir, writeFile } from '../../fs'
+import template from '../../template'
+import exec from '../../../utils/exec'
+import driverFor from '../utils/driver-for'
+import appTemplate from '../templates/application'
+import configTemplate from '../templates/config'
+import routesTemplate from '../templates/routes'
+import dbTemplate from '../templates/database'
+import seedTemplate from '../templates/seed'
+import pkgJSONTemplate from '../templates/package-json'
+import babelrcTemplate from '../templates/babelrc'
+import eslintrcTemplate from '../templates/eslintrc'
+import readmeTemplate from '../templates/readme'
+import licenseTemplate from '../templates/license'
+import gitignoreTemplate from '../templates/gitignore'
 
-import { generate } from './generate';
+import { generate } from './generate'
 
 /**
  * @private
  */
 export async function create(name, database) {
-  const driver = driverFor(database);
-  const project = `${CWD}/${name}`;
+  const driver = driverFor(database)
+  const project = `${CWD}/${name}`
 
-  await mkdir(project);
+  await mkdir(project)
 
   await Promise.all([
     mkdir(`${project}/app`),
     mkdir(`${project}/config`),
     mkdir(`${project}/db`)
-  ]);
+  ])
 
   await Promise.all([
     mkdir(`${project}/app/models`),
@@ -45,7 +45,7 @@ export async function create(name, database) {
     mkdir(`${project}/app/utils`),
     mkdir(`${project}/config/environments`),
     mkdir(`${project}/db/migrate`)
-  ]);
+  ])
 
   await Promise.all([
     writeFile(
@@ -112,7 +112,7 @@ export async function create(name, database) {
       `${project}/.gitignore`,
       gitignoreTemplate()
     )
-  ]);
+  ])
 
   const logOutput = template`
     ${green('create')} app/index.js
@@ -130,10 +130,10 @@ export async function create(name, database) {
     ${green('create')} .babelrc
     ${green('create')} .eslintrc.json
     ${green('create')} .gitignore
-  `;
+  `
 
-  process.stdout.write(logOutput.substr(0, logOutput.length - 1));
-  process.stdout.write(EOL);
+  process.stdout.write(logOutput.substr(0, logOutput.length - 1))
+  process.stdout.write(EOL)
 
   await Promise.all([
     generate({
@@ -147,29 +147,29 @@ export async function create(name, database) {
       type: 'controller',
       name: 'application'
     })
-  ]);
+  ])
 
   await exec('git init && git add .', {
     cwd: project
-  });
+  })
 
-  process.stdout.write(`${green('initialize')} git`);
-  process.stdout.write(EOL);
+  process.stdout.write(`${green('initialize')} git`)
+  process.stdout.write(EOL)
 
   const spinner = new Ora({
     text: 'Installing dependencies from npm...',
     spinner: 'dots'
-  });
+  })
 
-  spinner.start();
+  spinner.start()
 
   await exec('npm install', {
     cwd: project
-  });
+  })
 
   await exec(`npm install --save --save-exact ${driver}`, {
     cwd: project
-  });
+  })
 
-  spinner.stop();
+  spinner.stop()
 }

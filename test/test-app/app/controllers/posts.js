@@ -1,4 +1,4 @@
-import { Controller } from 'LUX_LOCAL';
+import { Controller } from 'LUX_LOCAL'
 
 class PostsController extends Controller {
   params = [
@@ -10,8 +10,8 @@ class PostsController extends Controller {
   ];
 
   index(req, res) {
-    return super.index(req, res).isPublic();
+    return super.index(req, res).isPublic()
   }
 }
 
-export default PostsController;
+export default PostsController

@@ -1,32 +1,32 @@
 /* @flow */
 
-import Controller from '../../../controller';
-import * as Adapters from '../../../adapter';
-import K from '../../../../utils/k';
-import { getTestApp } from '../../../../../test/utils/test-app';
-import Route from '../index';
+import Controller from '../../../controller'
+import * as Adapters from '../../../adapter'
+import K from '../../../../utils/k'
+import { getTestApp } from '../../../../../test/utils/test-app'
+import Route from '../index'
 
 describe('module "router/route"', () => {
   describe('class Route', () => {
-    let app;
-    let adapter;
+    let app
+    let adapter
 
     beforeAll(async () => {
-      app = await getTestApp();
-      adapter = Adapters.mock(app);
-    });
+      app = await getTestApp()
+      adapter = Adapters.mock(app)
+    })
 
     afterAll(async () => {
-      await app.destroy();
-    });
+      await app.destroy()
+    })
 
     describe('#constructor()', () => {
-      let controller: Controller;
+      let controller: Controller
 
       beforeAll(() => {
         // $FlowIgnore
-        controller = app.controllers.get('posts');
-      });
+        controller = app.controllers.get('posts')
+      })
 
       test('creates an instance of route', () => {
         const result = new Route({
@@ -35,10 +35,10 @@ describe('module "router/route"', () => {
           path: 'posts',
           action: 'index',
           method: 'GET'
-        });
+        })
 
-        expect(result).toBeInstanceOf(Route);
-      });
+        expect(result).toBeInstanceOf(Route)
+      })
 
       test('throws when a handler is not found', () => {
         expect(() => (
@@ -49,8 +49,8 @@ describe('module "router/route"', () => {
             action: 'invalidHandler',
             method: 'GET'
           })
-        )).toThrow();
-      });
+        )).toThrow()
+      })
 
       test('throws when an an action is not provided', () => {
         expect(() => (
@@ -61,8 +61,8 @@ describe('module "router/route"', () => {
             path: 'posts',
             method: 'GET'
           })
-        )).toThrow();
-      });
+        )).toThrow()
+      })
 
       test('throws when an an controller is not provided', () => {
         expect(() => (
@@ -73,17 +73,17 @@ describe('module "router/route"', () => {
             action: 'index',
             method: 'GET'
           })
-        )).toThrow();
-      });
-    });
+        )).toThrow()
+      })
+    })
 
     describe('#parseParams()', () => {
-      let staticRoute: Route;
-      let dynamicRoute: Route;
+      let staticRoute: Route
+      let dynamicRoute: Route
 
       beforeAll(() => {
         // $FlowIgnore
-        const controller: Controller = app.controllers.get('posts');
+        const controller: Controller = app.controllers.get('posts')
 
         staticRoute = new Route({
           controller,
@@ -91,31 +91,31 @@ describe('module "router/route"', () => {
           path: 'posts',
           action: 'index',
           method: 'GET',
-        });
+        })
         dynamicRoute = new Route({
           controller,
           type: 'member',
           path: 'posts/:id',
           action: 'show',
           method: 'GET',
-        });
-      });
+        })
+      })
 
       test('is empty for static paths', () => {
-        expect(staticRoute.parseParams(['1'])).toEqual({});
-      });
+        expect(staticRoute.parseParams(['1'])).toEqual({})
+      })
 
       test('contains params matching dynamic segments', () => {
-        expect(dynamicRoute.parseParams(['1'])).toEqual({ id: 1 });
-      });
+        expect(dynamicRoute.parseParams(['1'])).toEqual({ id: 1 })
+      })
 
       test('does not contain params for unmatched dynamic segments', () => {
-        expect(dynamicRoute.parseParams(['1', '2'])).toEqual({ id: 1 });
-      });
-    });
+        expect(dynamicRoute.parseParams(['1', '2'])).toEqual({ id: 1 })
+      })
+    })
 
     describe('#execHandlers()', () => {
-      let subject: Route;
+      let subject: Route
 
       const mockArgs = () => (
         adapter({
@@ -124,7 +124,7 @@ describe('module "router/route"', () => {
           headers: {},
           resolve: K,
         })
-      );
+      )
 
       describe('- with action only', () => {
         beforeAll(async () => {
@@ -145,16 +145,16 @@ describe('module "router/route"', () => {
             controller: new TestController({
               namespace: ''
             })
-          });
-        });
+          })
+        })
 
         test('resolves with the correct data', async () => {
-          const [request, response] = await mockArgs();
-          const result = await subject.execHandlers(request, response);
+          const [request, response] = await mockArgs()
+          const result = await subject.execHandlers(request, response)
 
-          expect(result).toMatchSnapshot();
-        });
-      });
+          expect(result).toMatchSnapshot()
+        })
+      })
 
       describe('- with `beforeAction`', () => {
         beforeAll(async () => {
@@ -183,16 +183,16 @@ describe('module "router/route"', () => {
             controller: new TestController({
               namespace: ''
             })
-          });
-        });
+          })
+        })
 
         test('resolves with the correct data', async () => {
-          const [request, response] = await mockArgs();
-          const result = await subject.execHandlers(request, response);
+          const [request, response] = await mockArgs()
+          const result = await subject.execHandlers(request, response)
 
-          expect(result).toMatchSnapshot();
-        });
-      });
+          expect(result).toMatchSnapshot()
+        })
+      })
 
       describe('- with `afterAction`', () => {
         beforeAll(async () => {
@@ -214,22 +214,22 @@ describe('module "router/route"', () => {
             controller: new TestController({
               namespace: ''
             })
-          });
-        });
+          })
+        })
 
         test('resolves with the correct data', async () => {
-          const [request, response] = await mockArgs();
-          const result = await subject.execHandlers(request, response);
+          const [request, response] = await mockArgs()
+          const result = await subject.execHandlers(request, response)
 
-          expect(result).toMatchSnapshot();
-        });
-      });
+          expect(result).toMatchSnapshot()
+        })
+      })
 
       describe('- with `beforeAction` and `afterAction`', () => {
-        let beforeAction;
+        let beforeAction
 
         beforeAll(async () => {
-          beforeAction = jest.fn();
+          beforeAction = jest.fn()
 
           class TestController extends Controller {
             beforeAction = [beforeAction];
@@ -259,34 +259,34 @@ describe('module "router/route"', () => {
             controller: new TestController({
               namespace: ''
             })
-          });
-        });
+          })
+        })
 
         afterEach(() => {
-          beforeAction.mockReset();
-        });
+          beforeAction.mockReset()
+        })
 
         test('resolves with the correct data', async () => {
-          const [request, response] = await mockArgs();
-          const result = await subject.execHandlers(request, response);
+          const [request, response] = await mockArgs()
+          const result = await subject.execHandlers(request, response)
 
-          expect(result).toMatchSnapshot();
-          expect(beforeAction).toBeCalledWith(request, response, undefined);
-        });
-      });
-    });
+          expect(result).toMatchSnapshot()
+          expect(beforeAction).toBeCalledWith(request, response, undefined)
+        })
+      })
+    })
 
     describe('#visit', () => {
-      let controller: Controller;
+      let controller: Controller
 
       beforeAll(() => {
         // $FlowIgnore
-        controller = app.controllers.get('posts');
+        controller = app.controllers.get('posts')
       });
 
       ['GET', 'OPTIONS'].forEach(method => {
         describe(`- method "${method}"`, () => {
-          let subject;
+          let subject
 
           const mockArgs = async (params = {}) => {
             const [request, response] = await adapter({
@@ -294,12 +294,12 @@ describe('module "router/route"', () => {
               url: '/posts',
               headers: {},
               resolve: K,
-            });
+            })
 
-            Object.assign(request.params, params);
+            Object.assign(request.params, params)
 
-            return [request, response];
-          };
+            return [request, response]
+          }
 
           beforeAll(() => {
             subject = new Route({
@@ -308,8 +308,8 @@ describe('module "router/route"', () => {
               type: 'collection',
               path: 'posts',
               action: 'preflight'
-            });
-          });
+            })
+          })
 
           describe('- with params', () => {
             test('works', async () => {
@@ -317,24 +317,24 @@ describe('module "router/route"', () => {
                 filter: {
                   title: 'New Post',
                 },
-              });
+              })
 
-              const result = await subject.visit(request, response);
+              const result = await subject.visit(request, response)
 
-              expect(result).toMatchSnapshot();
-            });
-          });
+              expect(result).toMatchSnapshot()
+            })
+          })
 
           describe('- without params', () => {
             test('works', async () => {
-              const [request, response] = await mockArgs();
-              const result = await subject.visit(request, response);
+              const [request, response] = await mockArgs()
+              const result = await subject.visit(request, response)
 
-              expect(result).toMatchSnapshot();
-            });
-          });
-        });
-      });
-    });
-  });
-});
+              expect(result).toMatchSnapshot()
+            })
+          })
+        })
+      })
+    })
+  })
+})

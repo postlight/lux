@@ -1,6 +1,6 @@
 /* @flow */
 
-import mapToObject from '../map-to-object';
+import mapToObject from '../map-to-object'
 
 describe('util mapToObject()', () => {
   test('returns an object containing key, value pairs from a map', () => {
@@ -14,6 +14,6 @@ describe('util mapToObject()', () => {
       x: 1,
       y: 2,
       z: 3
-    });
-  });
-});
+    })
+  })
+})

@@ -1,11 +1,11 @@
 /* @flow */
 
-import { join as joinPath } from 'path';
+import { join as joinPath } from 'path'
 
-import type Application from '../../src/packages/application';
+import type Application from '../../src/packages/application'
 
 export function getTestApp(): Promise<Application> {
-  const path = joinPath(__dirname, '..', 'test-app');
+  const path = joinPath(__dirname, '..', 'test-app')
 
   /* eslint-disable import/no-unresolved */
 
@@ -18,7 +18,7 @@ export function getTestApp(): Promise<Application> {
     database: Object;
     Application: Class<Application>;
     // $FlowIgnore
-  } = require('../test-app/dist/bundle');
+  } = require('../test-app/dist/bundle')
 
   /* eslint-enable import/no-unresolved */
 
@@ -26,5 +26,5 @@ export function getTestApp(): Promise<Application> {
     ...config,
     database,
     path,
-  });
+  })
 }

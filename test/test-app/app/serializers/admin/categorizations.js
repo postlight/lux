@@ -1,7 +1,7 @@
-import CategorizationsSerializer from '../categorizations';
+import CategorizationsSerializer from '../categorizations'
 
 class AdminCategorizationsSerializer extends CategorizationsSerializer {
 
 }
 
-export default AdminCategorizationsSerializer;
+export default AdminCategorizationsSerializer

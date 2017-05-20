@@ -1,4 +1,4 @@
-import { Serializer } from 'LUX_LOCAL';
+import { Serializer } from 'LUX_LOCAL'
 
 class FriendshipsSerializer extends Serializer {
   attributes = [
@@ -9,4 +9,4 @@ class FriendshipsSerializer extends Serializer {
   ];
 }
 
-export default FriendshipsSerializer;
+export default FriendshipsSerializer

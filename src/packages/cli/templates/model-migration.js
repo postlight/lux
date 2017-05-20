@@ -1,24 +1,24 @@
 /* @flow */
 
-import { pluralize } from 'inflection';
+import { pluralize } from 'inflection'
 
-import template from '../../template';
-import chain from '../../../utils/chain';
-import indent from '../utils/indent';
-import underscore from '../../../utils/underscore';
+import template from '../../template'
+import chain from '../../../utils/chain'
+import indent from '../utils/indent'
+import underscore from '../../../utils/underscore'
 
 /**
  * @private
  */
 export default (name: string, attrs: Array<string> | string): string => {
-  const indices = ['id'];
+  const indices = ['id']
   const table = chain(name)
     .pipe(str => str.substr(24))
     .pipe(underscore)
     .pipe(pluralize)
-    .value();
+    .value()
 
-  let body = '';
+  let body = ''
 
   if (Array.isArray(attrs)) {
     body = attrs
@@ -26,30 +26,30 @@ export default (name: string, attrs: Array<string> | string): string => {
       .map(attr => attr.split(':'))
       .filter(([, type]) => !/^has-(one|many)$/g.test(type))
       .map(attr => {
-        let [column, type] = attr;
+        let [column, type] = attr
 
-        column = underscore(column);
+        column = underscore(column)
 
         if (type === 'belongs-to') {
-          type = 'integer';
-          column = `${column}_id`;
+          type = 'integer'
+          column = `${column}_id`
 
           if (Array.isArray(indices)) {
-            indices.push(column);
+            indices.push(column)
           }
         }
 
-        return [column, type];
+        return [column, type]
       })
       .map((attr, index) => {
-        let [column] = attr;
-        const [, type] = attr;
-        const shouldIndex = indices.indexOf(column) >= 0;
+        let [column] = attr
+        const [, type] = attr
+        const shouldIndex = indices.indexOf(column) >= 0
 
-        column = `${indent(index > 0 ? 8 : 0)}table.${type}('${column}')`;
-        return shouldIndex ? `${column}.index();` : `${column};`;
+        column = `${indent(index > 0 ? 8 : 0)}table.${type}('${column}')`
+        return shouldIndex ? `${column}.index();` : `${column};`
       })
-      .join('\n');
+      .join('\n')
   }
 
   return template`
@@ -67,5 +67,5 @@ export default (name: string, attrs: Array<string> | string): string => {
     export function down(schema) {
       return schema.dropTable('${table}');
     }
-  `;
-};
+  `
+}

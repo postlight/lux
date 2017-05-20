@@ -1,9 +1,9 @@
 /* @flow */
 
-import { trapGet } from '../../../utils/proxy';
-import type { Model } from '../index'; // eslint-disable-line no-unused-vars
+import { trapGet } from '../../../utils/proxy'
+import type { Model } from '../index' // eslint-disable-line no-unused-vars
 
-import type { Transaction$ResultProxy } from './interfaces';
+import type { Transaction$ResultProxy } from './interfaces'
 
 /**
  * @private
@@ -15,10 +15,10 @@ export function createStaticTransactionProxy<T: Class<Model>>(
   return new Proxy(target, {
     get: trapGet({
       create(model: T, props: Object = {}) {
-        return model.create(props, trx);
+        return model.create(props, trx)
       }
     })
-  });
+  })
 }
 
 /**
@@ -31,18 +31,18 @@ export function createInstanceTransactionProxy<T: Model>(
   return new Proxy(target, {
     get: trapGet({
       save(model: T) {
-        return model.save(trx);
+        return model.save(trx)
       },
 
       update(model: T, props: Object = {}) {
-        return model.update(props, trx);
+        return model.update(props, trx)
       },
 
       destroy(model: T) {
-        return model.destroy(trx);
+        return model.destroy(trx)
       }
     })
-  });
+  })
 }
 
 /**
@@ -56,7 +56,7 @@ export function createTransactionResultProxy<T: Model, U: boolean>(
     get: trapGet({
       didPersist
     })
-  });
+  })
 }
 
-export type { Transaction$ResultProxy } from './interfaces';
+export type { Transaction$ResultProxy } from './interfaces'

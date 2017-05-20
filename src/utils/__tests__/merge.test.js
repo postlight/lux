@@ -1,6 +1,6 @@
 /* @flow */
 
-import merge from '../merge';
+import merge from '../merge'
 
 describe('util merge()', () => {
   test('recursively merges two objects together', () => {
@@ -13,7 +13,7 @@ describe('util merge()', () => {
         iii: 'c',
         iv: [1, 2, 3]
       }
-    };
+    }
 
     const y = {
       a: 1,
@@ -23,7 +23,7 @@ describe('util merge()', () => {
         ii: 'b',
         iii: 3
       }
-    };
+    }
 
     expect(merge(x, y)).toEqual({
       a: 1,
@@ -34,8 +34,8 @@ describe('util merge()', () => {
         iii: 3,
         iv: [1, 2, 3]
       }
-    });
-  });
+    })
+  })
 
   test('does not mutate the source objects', () => {
     const x = {
@@ -47,7 +47,7 @@ describe('util merge()', () => {
         iii: 'c',
         iv: [1, 2, 3]
       }
-    };
+    }
 
     const y = {
       a: 1,
@@ -57,9 +57,9 @@ describe('util merge()', () => {
         ii: 'b',
         iii: 3
       }
-    };
+    }
 
-    merge(x, y);
+    merge(x, y)
 
     expect(x).toEqual({
       a: 1,
@@ -70,7 +70,7 @@ describe('util merge()', () => {
         iii: 'c',
         iv: [1, 2, 3]
       }
-    });
+    })
 
     expect(y).toEqual({
       a: 1,
@@ -80,6 +80,6 @@ describe('util merge()', () => {
         ii: 'b',
         iii: 3
       }
-    });
-  });
-});
+    })
+  })
+})

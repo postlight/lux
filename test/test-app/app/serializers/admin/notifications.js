@@ -1,7 +1,7 @@
-import NotificationsSerializer from '../notifications';
+import NotificationsSerializer from '../notifications'
 
 class AdminNotificationsSerializer extends NotificationsSerializer {
 
 }
 
-export default AdminNotificationsSerializer;
+export default AdminNotificationsSerializer

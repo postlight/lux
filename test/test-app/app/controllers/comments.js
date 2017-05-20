@@ -1,4 +1,4 @@
-import { Controller } from 'LUX_LOCAL';
+import { Controller } from 'LUX_LOCAL'
 
 class CommentsController extends Controller {
   params = [
@@ -9,4 +9,4 @@ class CommentsController extends Controller {
   ];
 }
 
-export default CommentsController;
+export default CommentsController
