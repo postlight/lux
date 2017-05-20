@@ -153,4 +153,4 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 *   [JSON API](http://jsonapi.org/)
 *   [Knex.js](http://knexjs.org/)
-*   [Chai](http://chaijs.com/) / [Mocha](http://mochajs.org/)
+*   [Jest](https://facebook.github.io/jest/)
