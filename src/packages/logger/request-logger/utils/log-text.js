@@ -14,7 +14,7 @@ type Options = {
   request: Request;
   response: Response;
   startTime: number;
-};
+}
 
 /**
  * @private

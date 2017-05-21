@@ -17,7 +17,7 @@ import type { ParameterGroup } from './params'
 export type Type =
   | 'custom'
   | 'member'
-  | 'collection';
+  | 'collection'
 
 export type Options = {
   type: Type;
@@ -25,7 +25,7 @@ export type Options = {
   action: string;
   method: Method;
   controller: Controller;
-};
+}
 
 /**
  * @private

@@ -1,6 +1,6 @@
 /* @flow */
 
-type Target = (...args: Array<any>) => Promise<any>;
+type Target = (...args: Array<any>) => Promise<any>
 
 /**
  * Convert a function that implements a callback based interface into a function

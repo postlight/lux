@@ -8,7 +8,7 @@ import type Logger from '../../../logger'
 type Options = {
   logger: Logger;
   resolve?: (data: any) => void;
-};
+}
 
 export function create(options: Options): Response {
   return new Response({

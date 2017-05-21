@@ -2,7 +2,7 @@
 
 import Model from '../index'
 
-type Table = $PropertyType<Class<Model>, 'table'>;
+type Table = $PropertyType<Class<Model>, 'table'>
 
 function tableFor<T: Model | Class<Model>>(model: T, trx?: Object): Table {
   let table

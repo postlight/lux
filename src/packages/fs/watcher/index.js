@@ -9,7 +9,7 @@ import initialize from './initialize'
 
 export type Client =
   | FSWatcher
-  | Watchman;
+  | Watchman
 
 /**
  * @private

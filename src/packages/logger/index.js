@@ -8,25 +8,25 @@ import { createWriter } from './writer'
 import { createRequestLogger } from './request-logger'
 import type { RequestLogger } from './request-logger'
 
-export type Format = 'text' | 'json';
-export type LogFunction = (data: string | Object) => void;
+export type Format = 'text' | 'json'
+export type LogFunction = (data: string | Object) => void
 
 export type Level =
   | 'DEBUG'
   | 'INFO'
   | 'WARN'
-  | 'ERROR';
+  | 'ERROR'
 
 export type Filter = {
   params: Array<string>;
-};
+}
 
 export type Config = {
   level: Level;
   format: Format;
   filter: Filter;
   enabled: boolean;
-};
+}
 
 /**
  * @class Logger

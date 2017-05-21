@@ -6,7 +6,7 @@
 type CompilerWarning = {
   code: string;
   message: string;
-};
+}
 
 /**
  * @private

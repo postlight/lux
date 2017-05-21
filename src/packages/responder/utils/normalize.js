@@ -10,7 +10,7 @@ type ResponseData = {
   data: string;
   mimeType: string;
   statusCode: number;
-};
+}
 
 /**
  * @private

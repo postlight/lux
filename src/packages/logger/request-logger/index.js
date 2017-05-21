@@ -13,7 +13,7 @@ export type RequestLogger = (
   options: {
     startTime: number;
   }
-) => void;
+) => void
 
 /**
  * @private

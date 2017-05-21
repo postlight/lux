@@ -12,7 +12,7 @@ type ParsedPath = {
   name: string;
   relative: string;
   root: string;
-};
+}
 
 /**
  * @private

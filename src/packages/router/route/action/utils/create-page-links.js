@@ -6,14 +6,14 @@ import createQueryString from '../../../../../utils/create-query-string'
 import type { Params } from '../../../../request'
 import type { Document } from '../../../../jsonapi'
 
-type Links = $PropertyType<Document, 'links'>;
+type Links = $PropertyType<Document, 'links'>
 type Options = {
   total: number;
   params: Params;
   domain: string;
   pathname: void | string;
   defaultPerPage: number;
-};
+}
 
 function createLinkTemplate(options: Options) {
   if (options.pathname) {

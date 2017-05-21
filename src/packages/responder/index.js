@@ -5,7 +5,7 @@ import type Response from '../response'
 
 import normalize from './utils/normalize'
 
-type Responder = (content: any) => void;
+type Responder = (content: any) => void
 
 /**
  * @private

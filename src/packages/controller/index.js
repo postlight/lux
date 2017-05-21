@@ -18,24 +18,24 @@ export type BuiltInAction =
   | 'index'
   | 'create'
   | 'update'
-  | 'destroy';
+  | 'destroy'
 
 export type BeforeAction = (
   request: Request,
   response: Response,
-) => Promise<any>;
+) => Promise<any>
 
 export type AfterAction<T> = (
   request: Request,
   response: Response,
   data: T,
-) => Promise<T>;
+) => Promise<T>
 
 export type Options<T: Model> = {
   model?: Class<T>,
   namespace?: string,
   serializer?: Serializer<T>,
-};
+}
 
 /**
  * ## Overview

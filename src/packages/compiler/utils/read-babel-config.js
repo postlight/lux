@@ -7,7 +7,7 @@ import { readFile } from '../../fs'
 type BabelConfig = {
   presets?: Array<string>;
   plugins?: Array<string>;
-};
+}
 
 async function readBabelConfig(root: string): Promise<BabelConfig> {
   let data = await readFile(path.join(root, '.babelrc'))

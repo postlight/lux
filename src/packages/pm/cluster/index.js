@@ -22,14 +22,14 @@ export type Worker = EventEmitter & {
   kill(signal?: string): void;
   send(message: any): void;
   disconnect(): void;
-};
+}
 
 export type Options = {
   path: string;
   port: number;
   logger: Logger;
   maxWorkers?: number;
-};
+}
 
 /**
  * @private

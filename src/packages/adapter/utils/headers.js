@@ -4,7 +4,7 @@ import entries from '../../../utils/entries'
 import { FreezeableMap } from '../../freezeable'
 import type { ObjectMap } from '../../../interfaces'
 
-type HandleChange = (type: 'SET' | 'DELETE', data: [string, ?string]) => void;
+type HandleChange = (type: 'SET' | 'DELETE', data: [string, ?string]) => void
 
 export class Headers extends FreezeableMap<string, string> {
   constructor(value: ObjectMap<string> = {}) {

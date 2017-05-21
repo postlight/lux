@@ -9,38 +9,38 @@ type Value =
   | number
   | boolean
   | BaseObject
-  | Array<BaseObject>;
+  | Array<BaseObject>
 
 type BaseObject = ObjectMap<?Value> & {
   meta?: BaseObject;
-};
+}
 
 /* eslint-enable no-use-before-define */
 
 export type Link = {
   href: string;
   meta?: BaseObject;
-};
+}
 
 export type Links = {
   self?: ?(string | Link);
   related?: ?(string | Link);
-};
+}
 
 export type Version =
-  | '1.0';
+  | '1.0'
 
 export type Identifier = {
   id: string;
   type: string;
   meta?: BaseObject;
-};
+}
 
 export type Relationship = {
   data: Identifier;
   meta?: BaseObject;
   links?: Links;
-};
+}
 
 export type Resource = {
   id: string;
@@ -48,7 +48,7 @@ export type Resource = {
   links?: Links;
   attributes?: BaseObject;
   relationships?: ObjectMap<?Relationship>;
-};
+}
 
 export type ErrorData = {
   id?: string;
@@ -64,7 +64,7 @@ export type ErrorData = {
     pointer?: string;
     parameter?: string;
   };
-};
+}
 
 export type Document = {
   data?: Resource | Array<Resource>;
@@ -80,7 +80,7 @@ export type Document = {
     version: Version;
     meta?: BaseObject;
   };
-};
+}
 
 export * from './constants'
 export * from './errors'

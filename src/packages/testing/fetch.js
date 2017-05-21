@@ -10,9 +10,9 @@ type Options = {
   cache?: string;
   method?: Method;
   headers?: Object;
-};
+}
 
-export type Fetch = (url: string, options: Options) => Promise<any>;
+export type Fetch = (url: string, options: Options) => Promise<any>
 
 const getDefaultHeaders = () => ({
   Accept: MIME_TYPE,

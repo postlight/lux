@@ -14,7 +14,7 @@ type Options = {
   encoding?: string;
   maxBuffer?: number;
   killSignal?: string;
-};
+}
 
 /**
  * @private

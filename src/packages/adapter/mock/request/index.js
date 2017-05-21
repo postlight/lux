@@ -17,7 +17,7 @@ type Options = {
   method: string;
   logger: Logger;
   headers: ObjectMap<string>;
-};
+}
 
 export function create(options: Options): Request {
   const urlData = url.parse(options.url)

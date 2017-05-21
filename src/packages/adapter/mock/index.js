@@ -13,7 +13,7 @@ type Options = {
   method: string;
   headers: ObjectMap<string>;
   resolve?: (data: any) => void;
-};
+}
 
 function createAdapter({ logger }: Application): Adapter {
   function adapter({ url, body, method, headers, resolve }: Options) {

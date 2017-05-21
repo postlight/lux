@@ -2,7 +2,7 @@
 
 type ServerError<T: Error> = T & {
   statusCode: number;
-};
+}
 
 /**
  * @private

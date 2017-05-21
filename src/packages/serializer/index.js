@@ -18,7 +18,7 @@ type Options<T> = {
   model?: Class<T>,
   parent?: ?Serializer<*>,
   namespace?: string,
-};
+}
 
 /**
  * ## Overview

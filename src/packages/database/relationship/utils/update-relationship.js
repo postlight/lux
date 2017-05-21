@@ -10,7 +10,7 @@ type Params = {
   value: ?Model | Array<Model>;
   opts: Relationship$opts;
   trx: Object;
-};
+}
 
 function updateHasOne({
   record,

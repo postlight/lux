@@ -12,7 +12,7 @@ import createDefinition from './create-definition'
  */
 type DefinitionGroup = {
   [key: Method]: (name: string, action?: string) => void;
-};
+}
 
 /**
  * @private

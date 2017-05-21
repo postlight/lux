@@ -11,7 +11,7 @@ const MESSAGE = 'Processed Request'
 type Options = {
   request: Request;
   response: Response;
-};
+}
 
 /**
  * @private

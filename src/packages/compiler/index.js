@@ -27,7 +27,7 @@ import createBootScript from './utils/create-boot-script'
 type Options = {
   local?: string;
   useStrict?: boolean;
-};
+}
 
 let cache
 

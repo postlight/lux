@@ -14,7 +14,7 @@ export type Config = {
   };
   adapter: AdapterFactory;
   logging: LoggerConfig;
-};
+}
 
 export function createDefaultConfig(): Config {
   const isTestENV = NODE_ENV === 'test'

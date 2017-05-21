@@ -20,7 +20,7 @@ import initialize from './initialize'
 export type Options = Config & {
   path: string;
   database: DatabaseConfig;
-};
+}
 
 /**
  * @class Application

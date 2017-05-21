@@ -16,7 +16,7 @@ export type Options = {
   getHeader(key: string): void | string;
   setHeader(key: string, value: string): void;
   removeHeader(key: string): void;
-};
+}
 
 /* eslint-enable no-use-before-define */
 
