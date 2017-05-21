@@ -74,7 +74,7 @@
     "jest/no-focused-tests": "error",
     "jest/no-disabled-tests": "warn",
     "jest/no-identical-title": "error",
-    "flowtype/semi": 2,
+    "flowtype/semi": ["error", "never"],
     "flowtype/no-dupe-keys": 2,
     "flowtype/boolean-style": [2, "boolean"],
     "flowtype/generic-spacing": 2,
