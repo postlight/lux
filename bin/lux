@@ -152,7 +152,7 @@ cli
 cli
   .command('g <type> <name> [attrs...]')
   .alias('generate')
-  .description('Example: lux generate model user')
+  .description('Example: lux generate model user name:string email:string admin:boolean')
   .action((type, name, attrs) => {
     exec('generate', { type, name, attrs })
       .then(exit)
