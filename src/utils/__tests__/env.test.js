@@ -9,7 +9,7 @@ afterEach(() => {
 
 test('isDevelopment()', () => {
   setEnv('development')
-  expect(env.isDevelpment()).toBe(true)
+  expect(env.isDevelopment()).toBe(true)
 })
 
 test('isProduction()', () => {

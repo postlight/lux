@@ -23,7 +23,7 @@ function dataFor(status: number, err?: Error): string | Document {
     errData.title = title
   }
 
-  if (err && env.isDevelpment()) {
+  if (err && env.isDevelopment()) {
     errData.detail = err.message
   }
 
