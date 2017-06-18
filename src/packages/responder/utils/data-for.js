@@ -2,6 +2,7 @@
 
 import { VERSION } from '../../jsonapi'
 import { STATUS_CODES } from '../../../constants'
+import * as env from '../../../utils/env'
 // eslint-disable-next-line no-duplicate-imports
 import type { Document, ErrorData } from '../../jsonapi'
 
@@ -22,7 +23,7 @@ function dataFor(status: number, err?: Error): string | Document {
     errData.title = title
   }
 
-  if (err) {
+  if (err && env.isDevelpment()) {
     errData.detail = err.message
   }
 

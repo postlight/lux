@@ -86,6 +86,21 @@ Array [
 ]
 `;
 
+exports[`module "responder" #createResponder() #respond() - responding with an error details are ommited outside of development environments 1`] = `
+Array [
+  Array [
+    Object {
+      "body": "{\\"errors\\":[{\\"status\\":\\"500\\",\\"title\\":\\"Internal Server Error\\"}],\\"jsonapi\\":{\\"version\\":\\"1.0\\"}}",
+      "headers": Map {
+        "content-type" => "application/vnd.api+json",
+      },
+      "statusCode": 500,
+      "statusText": "OK",
+    },
+  ],
+]
+`;
+
 exports[`module "responder" #createResponder() #respond() - responding with an error works with errors containing a \`statusCode\` property 1`] = `
 Array [
   Array [

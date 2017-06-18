@@ -3,6 +3,7 @@
 import Logger from '../../logger'
 import { request, response } from '../../adapter/mock'
 import noop from '../../../utils/noop'
+import setEnv from '../../../../test/utils/set-env'
 import * as responder from '../index'
 
 describe('module "responder"', () => {
@@ -102,6 +103,14 @@ describe('module "responder"', () => {
       })
 
       describe('- responding with an error', () => {
+        beforeEach(() => {
+          setEnv('development')
+        })
+
+        afterAll(() => {
+          setEnv('test')
+        })
+
         test('works with vanilla errors', () => {
           expect(() => respond(new Error('test'))).not.toThrow()
           expect(resolve.mock.calls).toMatchSnapshot()
@@ -117,6 +126,13 @@ describe('module "responder"', () => {
           }
 
           expect(() => respond(new ForbiddenError())).not.toThrow()
+          expect(resolve.mock.calls).toMatchSnapshot()
+        })
+
+        test('details are ommited outside of development environments', () => {
+          setEnv('production')
+
+          respond(new Error('test'))
           expect(resolve.mock.calls).toMatchSnapshot()
         })
       })
