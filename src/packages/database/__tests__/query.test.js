@@ -179,6 +179,32 @@ describe('module "database/query"', () => {
         ])
       })
 
+      test('properly handles array conditions with single value', () => {
+        const result = subject.not({
+          id: [1],
+          isPublic: true
+        })
+
+        expect(result.snapshots).toEqual([
+          ['whereNot', {
+            'posts.is_public': true,
+            'posts.id': 1
+          }]
+        ])
+      })
+
+      test('properly handles empty array conditions', () => {
+        const result = subject.not({
+          id: [],
+          isPublic: true
+        })
+
+        expect(result.snapshots).toEqual([
+          ['whereNotIn', ['posts.id', []]],
+          ['whereNot', { 'posts.is_public': true }]
+        ])
+      })
+
       test('resolves with the correct array of `Model` instances', async () => {
         const result = await subject.not({
           isPublic: true
@@ -392,6 +418,32 @@ describe('module "database/query"', () => {
 
         expect(result.snapshots).toEqual([
           ['whereIn', ['posts.id', [1, 2, 3]]],
+          ['where', { 'posts.is_public': true }]
+        ])
+      })
+
+      test('properly handles array conditions with single value', () => {
+        const result = subject.where({
+          id: [1],
+          isPublic: true
+        })
+
+        expect(result.snapshots).toEqual([
+          ['where', {
+            'posts.is_public': true,
+            'posts.id': 1
+          }]
+        ])
+      })
+
+      test('properly handles empty array conditions', () => {
+        const result = subject.where({
+          id: [],
+          isPublic: true
+        })
+
+        expect(result.snapshots).toEqual([
+          ['whereIn', ['posts.id', []]],
           ['where', { 'posts.is_public': true }]
         ])
       })
