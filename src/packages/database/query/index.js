@@ -203,7 +203,7 @@ class Query<+T: any> extends Promise {
               not ? 'whereNotIn' : 'whereIn',
               [key, value]
             ])
-          } else if(value.length === 1) {
+          } else if (value.length === 1) {
             return {
               ...obj,
               [key]: value[0]
