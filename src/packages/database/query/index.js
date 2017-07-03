@@ -203,12 +203,12 @@ class Query<+T: any> extends Promise {
               ...obj,
               [key]: value[0]
             }
-          } else {
-            this.snapshots.push([
-              not ? 'whereNotIn' : 'whereIn',
-              [key, value]
-            ])
           }
+
+          this.snapshots.push([
+            not ? 'whereNotIn' : 'whereIn',
+            [key, value]
+          ])
         } else if (value === null) {
           this.snapshots.push([
             not ? 'whereNotNull' : 'whereNull',
