@@ -198,12 +198,7 @@ class Query<+T: any> extends Promise {
         }
 
         if (Array.isArray(value)) {
-          if (value.length > 1) {
-            this.snapshots.push([
-              not ? 'whereNotIn' : 'whereIn',
-              [key, value]
-            ])
-          } else if (value.length === 1) {
+          if (value.length === 1) {
             return {
               ...obj,
               [key]: value[0]
