@@ -13,7 +13,7 @@
     "babel-core": "6.24.1",
     "babel-preset-lux": "2.0.2",
     "knex": "0.13.0",
-    "lux-framework": "1.2.0",
+    "lux-framework": "1.2.1",
     "sqlite3": "3.1.8"
   },
   "devDependencies": {
