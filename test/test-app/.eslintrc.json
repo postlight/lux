@@ -1,20 +1,17 @@
 {
   "parser": "babel-eslint",
-  "plugins": ["flowtype"],
-  "extends": "eslint:recommended",
+  "plugins": [
+    "jest",
+    "flowtype"
+  ],
+  "extends": [
+    "airbnb-base",
+    "plugin:flowtype/recommended",
+    "prettier"
+  ],
   "env": {
+    "jest/globals": true,
     "node": true
-  },
-  "globals": {
-    "T": true,
-    "Map": true,
-    "Set": true,
-    "Proxy": true,
-    "Promise": true,
-    "Reflect": true,
-    "WeakMap": true,
-    "WeakSet": true,
-    "Iterable": true
   },
   "settings": {
     "flowtype": {
@@ -22,35 +19,36 @@
     }
   },
   "rules": {
-    "semi": ["error", "never"],
-    "strict": 0,
-    "max-len": ["error", 80],
-    "arrow-parens": 0,
-    "comma-dangle": [2, "only-multiline"],
-    "global-require": 0,
-    "no-underscore-dangle": 0,
-    "class-methods-use-this": 0,
-    "no-irregular-whitespace": 0,
-    "no-restricted-syntax": [
+    "import/first": "off",
+    "arrow-parens": "off",
+    "comma-dangle": [
       "error",
-      "ForInStatement",
-      "LabeledStatement",
-      "WithStatement"
+      {
+        "arrays": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "always-multiline",
+        "imports": "always-multiline",
+        "objects": "always-multiline"
+      }
     ],
-    "import/order": ["warn", {
-      "groups": [
-        "builtin",
-        "external",
-        "internal",
-        "parent",
-        "sibling",
-        "index"
-      ],
-      "newlines-between": "always"
-    }],
-    "import/extensions": 0,
-    "import/no-named-default": 0,
-    "import/no-dynamic-require": 0,
-    "import/prefer-default-export": 0
+    "max-len": [
+      "error",
+      80
+    ],
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "_",
+        "varsIgnorePattern": "_"
+      }
+    ],
+    "semi": [
+      "error",
+      "never"
+    ],
+    "import/extensions": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/no-unresolved": "off",
+    "import/prefer-default-export": "off"
   }
 }

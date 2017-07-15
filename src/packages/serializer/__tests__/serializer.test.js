@@ -6,9 +6,8 @@ import { getTestApp } from '../../../../test/utils/test-app'
 
 const DOMAIN = 'http://localhost:4000'
 
-const linkFor = (type, id) => (
+const linkFor = (type, id) =>
   id ? `${DOMAIN}/${type}/${id}` : `${DOMAIN}/${type}`
-)
 
 const createSorter = field => {
   const extractValue = (src: ObjectMap<string>) => {
@@ -23,19 +22,20 @@ const createSorter = field => {
     return 0
   }
 
-  return (direction = 'asc', tiebreaker = () => 0) => (
-    (a: ObjectMap<string>, b: ObjectMap<string>) => {
-      let result = 0
+  return (direction = 'asc', tiebreaker = (..._) => 0) => (
+    a: ObjectMap<string>,
+    b: ObjectMap<string>,
+  ) => {
+    let result = 0
 
-      if (direction === 'asc') {
-        result = extractValue(a) - extractValue(b)
-      } else {
-        result = extractValue(b) - extractValue(a)
-      }
-
-      return result || tiebreaker(a, b)
+    if (direction === 'asc') {
+      result = extractValue(a) - extractValue(b)
+    } else {
+      result = extractValue(b) - extractValue(a)
     }
-  )
+
+    return result || tiebreaker(a, b)
+  }
 }
 
 describe('module "serializer"', () => {
@@ -57,34 +57,22 @@ describe('module "serializer"', () => {
     beforeAll(() => {
       const { store, serializers } = app
 
-      const hasOne = [
-        'user',
-        'image',
-      ]
+      const hasOne = ['user', 'image']
 
-      const hasMany = [
-        'tags',
-        'comments',
-        'reactions',
-      ]
+      const hasMany = ['tags', 'comments', 'reactions']
 
-      const attributes = [
-        'body',
-        'title',
-        'createdAt',
-        'updatedAt',
-      ]
+      const attributes = ['body', 'title', 'createdAt', 'updatedAt']
 
       class TestSerializer extends Serializer {
-        hasOne = hasOne;
-        hasMany = hasMany;
-        attributes = attributes;
+        hasOne = hasOne
+        hasMany = hasMany
+        attributes = attributes
       }
 
       class AdminTestSerializer extends Serializer {
-        hasOne = hasOne;
-        hasMany = hasMany;
-        attributes = attributes;
+        hasOne = hasOne
+        hasMany = hasMany
+        attributes = attributes
       }
 
       Post = store.modelFor('post')
@@ -165,8 +153,8 @@ describe('module "serializer"', () => {
           domain: DOMAIN,
           include: [],
           links: {
-            self: linkFor('posts')
-          }
+            self: linkFor('posts'),
+          },
         })
 
         result.data.forEach(sortRelationships)
@@ -178,10 +166,7 @@ describe('module "serializer"', () => {
         const result = await adminSubject.format({
           data: posts,
           domain: DOMAIN,
-          include: [
-            'user',
-            'comments',
-          ],
+          include: ['user', 'comments'],
           links: {
             self: linkFor('admin/posts'),
           },
@@ -198,9 +183,7 @@ describe('module "serializer"', () => {
         const result = await subject.format({
           data: post,
           domain: DOMAIN,
-          include: [
-            'image',
-          ],
+          include: ['image'],
           links: {
             self: linkFor('posts', id),
           },
@@ -217,9 +200,7 @@ describe('module "serializer"', () => {
         const result = await subject.format({
           data: post,
           domain: DOMAIN,
-          include: [
-            'user',
-          ],
+          include: ['user'],
           links: {
             self: linkFor('posts', id),
           },
@@ -236,9 +217,7 @@ describe('module "serializer"', () => {
         const result = await subject.format({
           data: post,
           domain: DOMAIN,
-          include: [
-            'comments',
-          ],
+          include: ['comments'],
           links: {
             self: linkFor('posts', id),
           },
@@ -255,9 +234,7 @@ describe('module "serializer"', () => {
         const result = await subject.format({
           data: post,
           domain: DOMAIN,
-          include: [
-            'tags',
-          ],
+          include: ['tags'],
           links: {
             self: linkFor('posts', id),
           },

@@ -1,6 +1,6 @@
 /* @flow */
 
-import type Controller from '../../../../controller'
+import type Controller from '@lux/packages/controller'
 
 import getDefaultMemberParams from './get-default-member-params'
 
@@ -14,8 +14,8 @@ function getDefaultCollectionParams(controller: Controller): Object {
     sort: 'createdAt',
     page: {
       size: controller.defaultPerPage,
-      number: 1
-    }
+      number: 1,
+    },
   }
 }
 

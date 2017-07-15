@@ -1,35 +1,20 @@
 /* @flow */
 
-import { VERSION } from '../../../../jsonapi'
-import Logger from '../../../../logger'
+import { VERSION } from '@lux/packages/jsonapi'
+import Logger from '@lux/packages/logger'
 import { request, response } from '../../../../adapter/mock'
-import noop from '../../../../../utils/noop'
+import noop from '@lux/utils/noop'
 import { getTestApp } from '../../../../../../test/utils/test-app'
 import resource from '../enhancers/resource'
 
 const DOMAIN = 'localhost:4000'
 const DEFAULT_FIELDS = {
-  posts: [
-    'body',
-    'title',
-    'createdAt',
-    'updatedAt',
-  ],
-  users: [
-    'id',
-  ],
-  images: [
-    'id',
-  ],
-  comments: [
-    'id',
-  ],
-  reactions: [
-    'id',
-  ],
-  tags: [
-    'id',
-  ],
+  posts: ['body', 'title', 'createdAt', 'updatedAt'],
+  users: ['id'],
+  images: ['id'],
+  comments: ['id'],
+  reactions: ['id'],
+  tags: ['id'],
 }
 
 const logger = new Logger({
@@ -89,7 +74,7 @@ describe('module "router/route/action"', () => {
 
       beforeAll(() => {
         const controller = app.controllers.get('posts')
-        // $FlowIgnore
+        // $FlowFixMe
         subject = resource(controller.index.bind(controller), controller)
       })
 
@@ -103,16 +88,14 @@ describe('module "router/route/action"', () => {
 
         expect(await subject(req, res)).toEqual(
           expect.objectContaining({
-            data: expect.arrayContaining([
-              expect.anything(),
-            ]),
+            data: expect.arrayContaining([expect.anything()]),
             links: expect.objectContaining({
               self: expect.any(String),
             }),
             jsonapi: {
               version: VERSION,
             },
-          })
+          }),
         )
       })
     })
@@ -149,7 +132,7 @@ describe('module "router/route/action"', () => {
         return [req, res]
       }
 
-      const getExpectedResult = () => (
+      const getExpectedResult = () =>
         expect.objectContaining({
           data: expect.objectContaining({
             id: '1',
@@ -164,7 +147,6 @@ describe('module "router/route/action"', () => {
             version: VERSION,
           },
         })
-      )
 
       describe('- with "root" namespace', () => {
         let subject
@@ -172,7 +154,7 @@ describe('module "router/route/action"', () => {
         beforeAll(() => {
           const controller = app.controllers.get('posts')
 
-          // $FlowIgnore
+          // $FlowFixMe
           subject = resource(controller.show.bind(controller), controller)
         })
 
@@ -194,7 +176,7 @@ describe('module "router/route/action"', () => {
         beforeAll(async () => {
           const controller = app.controllers.get('admin/posts')
 
-          // $FlowIgnore
+          // $FlowFixMe
           subject = resource(controller.show.bind(controller), controller)
         })
 
@@ -216,7 +198,7 @@ describe('module "router/route/action"', () => {
         beforeAll(() => {
           const controller = app.controllers.get('posts')
 
-          // $FlowIgnore
+          // $FlowFixMe
           subject = resource(() => Promise.resolve(null), controller)
         })
 
@@ -241,7 +223,7 @@ describe('module "router/route/action"', () => {
             response.create({
               logger,
               resolve: noop,
-            })
+            }),
           )
 
           expect(result).toBeNull()

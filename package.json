@@ -12,20 +12,23 @@
     "rest",
     "framework"
   ],
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "bin": {
     "lux": "bin/lux"
   },
   "scripts": {
-    "build": "rollup -c",
-    "build:debugger": "rollup -c test/utils/debugger/rollup.config.js",
+    "build": "rollup -c -i src/index.js -o dist/index.js && rollup -c -i src/packages/cli/commands/index.js -o dist/cli.js",
+    "build:debugger": "rollup -c -i test/utils/debugger/src/debug.js -o test/utils/debugger/dist/debug.js",
     "clean": "shx rm -rf coverage dist test/test-app/dist",
     "codecov": "codecov",
     "debugger": "node test/utils/debugger/dist/debug.js",
     "flow": "flow check",
-    "types": "shx rm -rf flow-typed && flow-typed install",
     "lint": "remark . && eslint --cache .",
-    "test": "jest"
+    "lint:fix": "remark . && eslint --cache --fix .",
+    "precommit": "lint-staged",
+    "prettier": "prettier --write --single-quote --trailing-comma all --no-semi --parser flow src/**/*.js",
+    "test": "jest",
+    "types": "shx rm -rf flow-typed && flow-typed install"
   },
   "author": "Zachary Golba",
   "license": "MIT",
@@ -37,54 +40,76 @@
     "node": ">= 6.0"
   },
   "dependencies": {
-    "ansi-regex": "2.1.1",
+    "ansi-regex": "3.0.0",
     "babel-eslint": "7.2.3",
-    "chalk": "1.1.3",
-    "commander": "2.9.0",
-    "eslint": "3.19.0",
+    "chalk": "2.0.1",
+    "commander": "2.11.0",
+    "eslint": "4.2.0",
     "fb-watchman": "2.0.0",
     "inflection": "1.12.0",
     "knex": "0.13.0",
-    "ora": "1.2.0",
-    "qs": "6.4.0",
-    "rollup": "0.41.6",
-    "rollup-plugin-alias": "1.3.1",
+    "mz": "2.6.0",
+    "object.entries": "1.0.4",
+    "object.values": "1.0.4",
+    "ora": "1.3.0",
+    "qs": "6.5.0",
+    "rollup": "0.45.2",
+    "rollup-plugin-alias": "zacharygolba/rollup-plugin-alias#resolve-index-prebuilt",
     "rollup-plugin-babel": "2.7.1",
-    "rollup-plugin-eslint": "3.0.0",
-    "rollup-plugin-json": "2.1.1",
+    "rollup-plugin-cleanup": "1.0.1",
+    "rollup-plugin-eslint": "4.0.0",
+    "rollup-plugin-json": "2.3.0",
     "rollup-plugin-lux": "3.0.0",
     "rollup-plugin-node-resolve": "3.0.0",
+    "slash": "1.0.0",
     "source-map-support": "0.4.15"
   },
   "devDependencies": {
-    "babel-core": "6.24.1",
+    "babel-core": "6.25.0",
     "babel-jest": "20.0.3",
     "babel-plugin-transform-es2015-modules-commonjs": "6.24.1",
     "babel-preset-lux": "2.0.2",
     "codecov": "2.2.0",
     "eslint-config-airbnb-base": "11.2.0",
-    "eslint-plugin-flowtype": "2.33.0",
-    "eslint-plugin-import": "2.2.0",
+    "eslint-config-prettier": "2.3.0",
+    "eslint-plugin-flowtype": "2.35.0",
+    "eslint-plugin-import": "2.7.0",
     "eslint-plugin-jest": "20.0.3",
+    "eslint-plugin-prettier": "2.1.2",
     "faker": "4.1.0",
-    "flow-bin": "0.46.0",
+    "flow-bin": "0.50.0",
     "flow-typed": "2.1.2",
-    "jest": "20.0.3",
-    "jest-cli": "20.0.3",
-    "object.entries": "1.0.4",
+    "husky": "0.14.3",
+    "jest": "20.0.4",
+    "jest-cli": "20.0.4",
+    "lint-staged": "4.0.1",
+    "memory-fs": "0.4.1",
+    "prettier": "1.5.3",
     "remark-cli": "3.0.1",
     "remark-lint": "6.0.0",
     "remark-preset-lint-recommended": "2.0.0",
     "shx": "0.2.2"
   },
   "jest": {
-    "testRegex": "\\.test\\.js$",
-    "testEnvironment": "node",
     "cacheDirectory": "./.jest-cache",
     "coveragePathIgnorePatterns": [
       "/test/",
       "/__tests__/",
       "/node_modules/"
+    ],
+    "moduleNameMapper": {
+      "@lux(.*)": "<rootDir>/src$1"
+    },
+    "setupFiles": [
+      "./test/setup.js"
+    ],
+    "testRegex": "\\.test\\.js$"
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "yarn prettier",
+      "yarn lint:fix",
+      "git add"
     ]
   }
 }

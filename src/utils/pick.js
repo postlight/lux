@@ -1,16 +1,18 @@
 /* @flow */
 
-import setType from './set-type'
+const pick = <T: Object>(source: T, ...keys: Array<string>): T => {
+  // $FlowFixMe
+  const dest: T = {}
 
-/**
- * @private
- */
-export default function pick<T: Object>(src: T, ...keys: Array<string>): T {
-  return setType(() => keys
-    .map((key): [string, mixed] => [key, Reflect.get(src, key)])
-    .filter(([, value]) => typeof value !== 'undefined')
-    .reduce((result, [key, value]) => ({
-      ...result,
-      [key]: value
-    }), {}))
+  return keys
+    .map(key => [key, source[key]])
+    .filter(([, value]) => value !== undefined)
+    .reduce((prev, [key, value]) => {
+      const next = prev
+
+      next[key] = value
+      return next
+    }, dest)
 }
+
+export default pick

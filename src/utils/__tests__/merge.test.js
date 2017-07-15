@@ -11,8 +11,8 @@ describe('util merge()', () => {
         i: 'a',
         ii: 'b',
         iii: 'c',
-        iv: [1, 2, 3]
-      }
+        iv: [1, 2, 3],
+      },
     }
 
     const y = {
@@ -21,8 +21,8 @@ describe('util merge()', () => {
       c: {
         i: 1,
         ii: 'b',
-        iii: 3
-      }
+        iii: 3,
+      },
     }
 
     expect(merge(x, y)).toEqual({
@@ -32,8 +32,8 @@ describe('util merge()', () => {
         i: 1,
         ii: 'b',
         iii: 3,
-        iv: [1, 2, 3]
-      }
+        iv: [1, 2, 3],
+      },
     })
   })
 
@@ -45,8 +45,8 @@ describe('util merge()', () => {
         i: 'a',
         ii: 'b',
         iii: 'c',
-        iv: [1, 2, 3]
-      }
+        iv: [1, 2, 3],
+      },
     }
 
     const y = {
@@ -55,8 +55,8 @@ describe('util merge()', () => {
       c: {
         i: 1,
         ii: 'b',
-        iii: 3
-      }
+        iii: 3,
+      },
     }
 
     merge(x, y)
@@ -68,8 +68,8 @@ describe('util merge()', () => {
         i: 'a',
         ii: 'b',
         iii: 'c',
-        iv: [1, 2, 3]
-      }
+        iv: [1, 2, 3],
+      },
     })
 
     expect(y).toEqual({
@@ -78,8 +78,8 @@ describe('util merge()', () => {
       c: {
         i: 1,
         ii: 'b',
-        iii: 3
-      }
+        iii: 3,
+      },
     })
   })
 })

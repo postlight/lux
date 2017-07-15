@@ -1,6 +1,6 @@
 /* @flow */
 
-import { insertValues } from '../../template'
+import { insertValues } from '@lux/packages/template'
 
 /**
  * @private

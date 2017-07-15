@@ -4,8 +4,8 @@ import { posix, dirname, basename } from 'path'
 
 import { camelize } from 'inflection'
 
-import underscore from '../../../utils/underscore'
-import { compose } from '../../../utils/compose'
+import underscore from '@lux/utils/underscore'
+import { compose } from '@lux/utils/compose'
 
 const DOUBLE_COLON = /::/g
 
@@ -16,10 +16,7 @@ const formatName: (source: string) => string = compose(
   (name: string) => name.replace(DOUBLE_COLON, '$'),
   camelize,
   underscore,
-  (name: string) => posix.join(
-    dirname(name),
-    basename(name, '.js')
-  )
+  (name: string) => posix.join(dirname(name), basename(name, '.js')),
 )
 
 export default formatName

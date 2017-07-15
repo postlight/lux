@@ -1,22 +1,17 @@
 /* @flow */
 
-import type { Migration$Fn } from './interfaces'
+export type Migratator<T> = (schema: T) => Promise<T>
 
-/**
- * @private
- */
-class Migration<T: Object> {
-  fn: Migration$Fn<T>;
+export { generate as generateTimestamp } from './timestamp'
 
-  constructor(fn: Migration$Fn<T>) {
+export default class Migration<T> {
+  fn: Migratator<T>
+
+  constructor(fn: Migratator<T>) {
     this.fn = fn
   }
 
-  run(schema: T): T {
+  run(schema: T): Promise<T> {
     return this.fn(schema)
   }
 }
-
-export default Migration
-export { default as generateTimestamp } from './utils/generate-timestamp'
-export type { Migration$Fn } from './interfaces'

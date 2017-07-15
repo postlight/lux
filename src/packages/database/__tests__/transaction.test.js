@@ -4,7 +4,7 @@ import Model from '../model'
 import {
   createTransactionResultProxy,
   createStaticTransactionProxy,
-  createInstanceTransactionProxy
+  createInstanceTransactionProxy,
 } from '../transaction'
 import { getTestApp } from '../../../../test/utils/test-app'
 
@@ -12,9 +12,9 @@ describe('module "database/transaction"', () => {
   const tableName = 'posts'
   let app
 
-  // $FlowIgnore
+  // $FlowFixMe
   class Subject extends Model {
-    static tableName = tableName;
+    static tableName = tableName
   }
 
   beforeAll(async () => {
@@ -22,10 +22,7 @@ describe('module "database/transaction"', () => {
 
     const { store } = app
 
-    await Subject.initialize(
-      store,
-      () => store.connection(tableName)
-    )
+    await Subject.initialize(store, () => store.connection(tableName))
   })
 
   afterAll(async () => {
@@ -47,9 +44,9 @@ describe('module "database/transaction"', () => {
       let instance
 
       beforeAll(async () => {
-        mockCreate = jest.fn().mockImplementation((...args) => (
-          create.apply(Subject, args)
-        ))
+        mockCreate = jest
+          .fn()
+          .mockImplementation((...args) => create.apply(Subject, args))
 
         Subject.create = mockCreate
       })
@@ -80,7 +77,7 @@ describe('module "database/transaction"', () => {
   })
 
   describe('.createInstanceTransactionProxy()', () => {
-    ['save', 'update', 'destroy'].forEach(method => {
+    ;['save', 'update', 'destroy'].forEach(method => {
       describe(`#${method}()`, () => {
         let instance
         let ogMethod
@@ -88,13 +85,13 @@ describe('module "database/transaction"', () => {
 
         beforeAll(async () => {
           await Subject.create().then(proxy => {
-            // $FlowIgnore
+            // $FlowFixMe
             instance = proxy.unwrap()
             ogMethod = instance[method]
 
-            mockMethod = jest.fn().mockImplementation((...args) => (
-              ogMethod.apply(instance, args)
-            ))
+            mockMethod = jest
+              .fn()
+              .mockImplementation((...args) => ogMethod.apply(instance, args))
 
             instance[method] = mockMethod
           })

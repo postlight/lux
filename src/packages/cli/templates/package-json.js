@@ -1,7 +1,7 @@
 /* @flow */
 
 import { version, devDependencies } from '../../../../package.json'
-import template from '../../template'
+import template from '@lux/packages/template'
 
 const LUX_VERSION: string = version
 const BABEL_PRESET_VERSION: string = devDependencies['babel-preset-lux']

@@ -1,7 +1,7 @@
 /* @flow */
 
-import type Request from '../../request'
-import type Response from '../../response'
+import type Request from '@lux/packages/request'
+import type Response from '@lux/packages/response'
 import type Logger from '../index'
 
 import logText from './utils/log-text'
@@ -11,8 +11,8 @@ export type RequestLogger = (
   req: Request,
   res: Response,
   options: {
-    startTime: number;
-  }
+    startTime: number,
+  },
 ) => void
 
 /**
@@ -24,13 +24,13 @@ export function createRequestLogger(logger: Logger): RequestLogger {
       logJSON(logger, {
         startTime,
         request: req,
-        response: res
+        response: res,
       })
     } else {
       logText(logger, {
         startTime,
         request: req,
-        response: res
+        response: res,
       })
     }
   }

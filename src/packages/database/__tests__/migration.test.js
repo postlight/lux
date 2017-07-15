@@ -2,10 +2,7 @@
 
 import Migration from '../migration'
 import { getTestApp } from '../../../../test/utils/test-app'
-import {
-  default as generateTimestamp,
-  padding
-} from '../migration/utils/generate-timestamp'
+import * as timestamp from '@lux/packages/database/migration/timestamp'
 
 describe('module "database/migration"', () => {
   describe('class Migration', () => {
@@ -13,8 +10,8 @@ describe('module "database/migration"', () => {
     let store
 
     beforeAll(async () => {
-      app = await getTestApp();
-      ({ store } = app)
+      app = await getTestApp()
+      store = app.store
     })
 
     afterAll(async () => {
@@ -26,31 +23,24 @@ describe('module "database/migration"', () => {
       let subject
 
       beforeEach(() => {
-        subject = new Migration(schema => (
+        subject = new Migration(schema =>
           schema.createTable(tableName, table => {
             table.increments()
 
-            table
-              .boolean('success')
-              .index()
-              .notNullable()
-              .defaultTo(false)
+            table.boolean('success').index().notNullable().defaultTo(false)
 
             table.timestamps()
             table.index(['created_at', 'updated_at'])
-          })
-        ))
+          }),
+        )
       })
 
-      afterEach(() => (
-        store.schema().dropTable(tableName)
-      ))
+      afterEach(() => store.schema().dropTable(tableName))
 
-      test('runs a migration function', () => subject
-          .run(store.schema())
-          .then(result => {
-            expect(result).toEqual(expect.anything())
-          }))
+      test('runs a migration function', () =>
+        subject.run(store.schema()).then(result => {
+          expect(result).toEqual(expect.anything())
+        }))
     })
   })
 })
@@ -58,13 +48,13 @@ describe('module "database/migration"', () => {
 describe('module "database/migration/utils/generate-timestamp"', () => {
   describe('.generateTimestamp()', () => {
     test('generates a timestamp string', () => {
-      expect(generateTimestamp()).toMatch(/^\d{16}$/g)
+      expect(timestamp.generate()).toMatch(/^\d{16}$/g)
     })
   })
 
   describe('.padding()', () => {
     test('yields the specified char for the specified amount', () => {
-      const iter = padding('w', 3)
+      const iter = timestamp.padding('w', 3)
       let next = iter.next()
 
       expect(next.value).toBe('w')

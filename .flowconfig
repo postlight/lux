@@ -1,13 +1,16 @@
 [ignore]
-.*/bin/*
-.*/dist/*
-.*/examples/*
-.*/guide/*
-.*/lib/*
-.*/node_modules/*
-.*/scripts/*
-.*/test/test-app/*
-.*/__snapshots__/*
+<PROJECT_ROOT>/__snapshots__/*
+<PROJECT_ROOT>/bin/*
+<PROJECT_ROOT>/dist/*
+<PROJECT_ROOT>/examples/*
+<PROJECT_ROOT>/guide/*
+<PROJECT_ROOT>/lib/*
+<PROJECT_ROOT>/node_modules/*
+<PROJECT_ROOT>/scripts/*
+<PROJECT_ROOT>/src/packages/cli/*
+<PROJECT_ROOT>/test/test-app/*
+
+[include]
 
 [libs]
 flow-typed/
@@ -15,12 +18,13 @@ decl/
 
 [options]
 emoji=true
-suppress_comment=\\(.\\|\n\\)*\\$FlowIgnore
-
-module.name_mapper='LUX_LOCAL' -> '<PROJECT_ROOT>'
-module.name_mapper='rollup-plugin-lux' -> '<PROJECT_ROOT>/node_modules/rollup-plugin-lux/src/index.js'
-
-unsafe.enable_getters_and_setters=true
 
 esproposal.class_static_fields=enable
 esproposal.class_instance_fields=enable
+
+experimental.const_params=true
+
+module.name_mapper='^@lux\(.*\)' -> '<PROJECT_ROOT>/src\1'
+module.name_mapper='rollup-plugin-lux' -> '<PROJECT_ROOT>/node_modules/rollup-plugin-lux/src/index.js'
+
+unsafe.enable_getters_and_setters=true

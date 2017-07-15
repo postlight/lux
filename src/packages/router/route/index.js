@@ -1,61 +1,54 @@
 /* @flow */
 
-import { FreezeableSet, freezeProps, deepFreezeProps } from '../../freezeable'
-import type Controller from '../../controller'
-import type Request, { Method } from '../../request'
-import type Response from '../../response'
+import {
+  FreezeableSet,
+  freezeProps,
+  deepFreezeProps,
+} from '@lux/packages/freezeable'
+import type Controller from '@lux/packages/controller'
+import type Request, { Method } from '@lux/packages/request'
+import type Response from '@lux/packages/response'
 
 import { createAction } from './action'
 import { paramsFor, defaultParamsFor, validateResourceId } from './params'
 import getStaticPath from './utils/get-static-path'
 import getDynamicSegments from './utils/get-dynamic-segments'
-// eslint-disable-next-line no-duplicate-imports
 import type { Action } from './action'
-// eslint-disable-next-line no-duplicate-imports
 import type { ParameterGroup } from './params'
 
-export type Type =
-  | 'custom'
-  | 'member'
-  | 'collection'
+export type Type = 'custom' | 'member' | 'collection'
 
 export type Options = {
-  type: Type;
-  path: string;
-  action: string;
-  method: Method;
-  controller: Controller;
+  type: Type,
+  path: string,
+  action: string,
+  method: Method,
+  controller: Controller,
 }
 
 /**
  * @private
  */
 class Route extends FreezeableSet<Action<any>> {
-  type: string;
+  type: string
 
-  path: string;
+  path: string
 
-  action: string;
+  action: string
 
-  params: ParameterGroup;
+  params: ParameterGroup
 
-  method: Method;
+  method: Method
 
-  controller: Controller;
+  controller: Controller
 
-  staticPath: string;
+  staticPath: string
 
-  defaultParams: Object;
+  defaultParams: Object
 
-  dynamicSegments: Array<string>;
+  dynamicSegments: Array<string>
 
-  constructor({
-    type,
-    path,
-    action,
-    method,
-    controller
-  }: Options) {
+  constructor({ type, path, action, method, controller }: Options) {
     const dynamicSegments = getDynamicSegments(path)
 
     if (action && controller) {
@@ -66,14 +59,14 @@ class Route extends FreezeableSet<Action<any>> {
           type,
           method,
           controller,
-          dynamicSegments
+          dynamicSegments,
         })
 
         const staticPath = getStaticPath(path, dynamicSegments)
 
         const defaultParams = defaultParamsFor({
           type,
-          controller
+          controller,
         })
 
         super(createAction(type, handler, controller))
@@ -87,40 +80,32 @@ class Route extends FreezeableSet<Action<any>> {
           controller,
           staticPath,
           defaultParams,
-          dynamicSegments
+          dynamicSegments,
         })
 
-        freezeProps(this, true,
-          'type',
-          'path'
-        )
+        freezeProps(this, true, 'type', 'path')
 
-        freezeProps(this, false,
+        freezeProps(
+          this,
+          false,
           'action',
           'params',
           'method',
           'controller',
-          'staticPath'
+          'staticPath',
         )
 
-        deepFreezeProps(this, false,
-          'defaultParams',
-          'dynamicSegments'
-        )
+        deepFreezeProps(this, false, 'defaultParams', 'dynamicSegments')
       } else {
-        const {
-          constructor: {
-            name: controllerName
-          }
-        } = controller
+        const { constructor: { name: controllerName } } = controller
 
         throw new TypeError(
-          `Handler for ${controllerName}#${action} is not a function.`
+          `Handler for ${controllerName}#${action} is not a function.`,
         )
       }
     } else {
       throw new TypeError(
-        'Arguments `controller` and `action` must not be undefined'
+        'Arguments `controller` and `action` must not be undefined',
       )
     }
 
@@ -134,7 +119,7 @@ class Route extends FreezeableSet<Action<any>> {
       if (key) {
         return {
           ...result,
-          [key]: Number.parseInt(value, 10)
+          [key]: Number.parseInt(value, 10),
         }
       }
 
@@ -146,6 +131,7 @@ class Route extends FreezeableSet<Action<any>> {
     let calledFinal = false
     let data
 
+    // eslint-disable-next-line no-restricted-syntax
     for (const handler of this) {
       // eslint-disable-next-line no-await-in-loop
       data = await handler(req, res, data)
@@ -166,7 +152,7 @@ class Route extends FreezeableSet<Action<any>> {
     const { defaultParams } = this
     let params = {
       ...request.params,
-      ...this.parseParams(request.url.params)
+      ...this.parseParams(request.url.params),
     }
 
     if (request.method !== 'OPTIONS') {

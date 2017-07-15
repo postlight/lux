@@ -1,21 +1,19 @@
 /* @flow */
 
 import type { Model } from '../../index'
-import type { Relationship$opts } from '../index'
+import type { Relationship } from '../index'
 
 import unassociate from './unassociate'
 import validateType from './validate-type'
 import { setHasOneInverse, setHasManyInverse } from './inverse-setters'
 
-/**
- * @private
- */
-export function setHasMany(owner: Model, key: string, value: Array<Model>, {
-  type,
-  model,
-  inverse,
-  foreignKey
-}: Relationship$opts) {
+export const setHasMany = (
+  owner: Model,
+  key: string,
+  value: Array<Model>,
+  relationship: Relationship,
+): void => {
+  const { type, model, inverse, foreignKey } = relationship
   let { currentChangeSet: changeSet } = owner
 
   if (validateType(model, value)) {
@@ -26,9 +24,12 @@ export function setHasMany(owner: Model, key: string, value: Array<Model>, {
 
       if (Array.isArray(prevValue)) {
         prevValue
-          .filter(prev => (
-            !value.find(next => prev.getPrimaryKey() === next.getPrimaryKey())
-          ))
+          .filter(
+            prev =>
+              !value.find(
+                next => prev.getPrimaryKey() === next.getPrimaryKey(),
+              ),
+          )
           .forEach(record => owner.prevAssociations.add(record))
       }
     }
@@ -44,20 +45,18 @@ export function setHasMany(owner: Model, key: string, value: Array<Model>, {
       model,
       inverse,
       foreignKey,
-      inverseModel: model
+      inverseModel: model,
     })
   }
 }
 
-/**
- * @private
- */
-export function setHasOne(owner: Model, key: string, value?: ?Model, {
-  type,
-  model,
-  inverse,
-  foreignKey
-}: Relationship$opts) {
+export const setHasOne = (
+  owner: Model,
+  key: string,
+  value?: ?Model,
+  relationship: Relationship,
+): void => {
+  const { type, model, inverse, foreignKey } = relationship
   let valueToSet = value
 
   if (value && typeof value === 'object' && !model.isInstance(value)) {
@@ -87,24 +86,22 @@ export function setHasOne(owner: Model, key: string, value?: ?Model, {
     model,
     inverse,
     foreignKey,
-    inverseModel: model
+    inverseModel: model,
   })
 }
 
-/**
- * @private
- */
-export function setBelongsTo(owner: Model, key: string, value?: ?Model, {
-  type,
-  model,
-  inverse,
-  foreignKey
-}: Relationship$opts) {
+export const setBelongsTo = (
+  owner: Model,
+  key: string,
+  value?: ?Model,
+  relationship: Relationship,
+): void => {
+  const { type, model, inverse, foreignKey } = relationship
   setHasOne(owner, key, value, {
     type,
     model,
     inverse,
-    foreignKey
+    foreignKey,
   })
 
   if (value) {

@@ -20,3 +20,10 @@ test('isProduction()', () => {
 test('isTest()', () => {
   expect(env.isTest()).toBe(true)
 })
+
+test('name()', () => {
+  ;['development', 'production', 'test'].forEach(name => {
+    setEnv(name)
+    expect(env.name()).toBe(name)
+  })
+})

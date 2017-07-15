@@ -2,22 +2,22 @@
 
 import { posix } from 'path'
 
-import { deepFreezeProps } from '../../freezeable'
-import { closestAncestor } from '../../loader'
-import { tryCatchSync } from '../../../utils/try-catch'
-import type Database from '../../database'
-import type Controller from '../../controller'
-import type Serializer from '../../serializer'
-import type { Bundle$Namespace } from '../../loader' // eslint-disable-line max-len, no-duplicate-imports
+import { deepFreezeProps } from '@lux/packages/freezeable'
+import { closestAncestor } from '@lux/packages/loader'
+import { tryCatchSync } from '@lux/utils/try-catch'
+import type Database from '@lux/packages/database'
+import type Controller from '@lux/packages/controller'
+import type Serializer from '@lux/packages/serializer'
+import type { Bundle$Namespace } from '@lux/packages/loader' // eslint-disable-line max-len, no-duplicate-imports
 
 export default function createController<T: Controller>(
   constructor: Class<T>,
   opts: {
-    key: string;
-    store: Database;
-    parent: ?Controller;
-    serializers: Bundle$Namespace<Serializer<*>>;
-  }
+    key: string,
+    store: Database,
+    parent: ?Controller,
+    serializers: Bundle$Namespace<Serializer<*>>,
+  },
 ): T {
   const { key, store, serializers } = opts
   const namespace = posix.dirname(key).replace('.', '')
@@ -37,11 +37,13 @@ export default function createController<T: Controller>(
     serializer = closestAncestor(serializers, key)
   }
 
-  const instance: T = Reflect.construct(constructor, [{
-    model,
-    namespace,
-    serializer
-  }])
+  const instance: T = Reflect.construct(constructor, [
+    {
+      model,
+      namespace,
+      serializer,
+    },
+  ])
 
   if (serializer) {
     if (!instance.filter.length) {
@@ -56,12 +58,12 @@ export default function createController<T: Controller>(
   if (parent) {
     instance.beforeAction = [
       ...parent.beforeAction.map(fn => fn.bind(parent)),
-      ...instance.beforeAction.map(fn => fn.bind(instance))
+      ...instance.beforeAction.map(fn => fn.bind(instance)),
     ]
 
     instance.afterAction = [
       ...instance.afterAction.map(fn => fn.bind(instance)),
-      ...parent.afterAction.map(fn => fn.bind(parent))
+      ...parent.afterAction.map(fn => fn.bind(parent)),
     ]
   }
 
@@ -69,15 +71,17 @@ export default function createController<T: Controller>(
     value: parent,
     writable: false,
     enumerable: true,
-    configurable: false
+    configurable: false,
   })
 
-  return deepFreezeProps(instance, true,
+  return deepFreezeProps(
+    instance,
+    true,
     'query',
     'sort',
     'filter',
     'params',
     'beforeAction',
-    'afterAction'
+    'afterAction',
   )
 }

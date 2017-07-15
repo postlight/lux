@@ -2,17 +2,21 @@
 
 import * as path from 'path'
 
-import template from '../../template'
-import { writeFile } from '../../fs'
+import * as fs from 'mz/fs'
+
+import template from '@lux/packages/template'
 
 /**
  * @private
  */
-export default async function createBootScript(dir: string, {
-  useStrict
-}: {
-  useStrict: boolean;
-}): Promise<void> {
+export default (async function createBootScript(
+  dir: string,
+  {
+    useStrict,
+  }: {
+    useStrict: boolean,
+  },
+): Promise<void> {
   let data = template`
     const http = require('http');
 
@@ -75,5 +79,5 @@ export default async function createBootScript(dir: string, {
     data = `'use strict';\n\n${data}`
   }
 
-  await writeFile(path.join(dir, 'dist', 'boot.js'), Buffer.from(data))
-}
+  await fs.writeFile(path.join(dir, 'dist', 'boot.js'), Buffer.from(data))
+})

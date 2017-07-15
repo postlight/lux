@@ -4,82 +4,76 @@ import type { ObjectMap } from '../../interfaces'
 
 /* eslint-disable no-use-before-define */
 
-type Value =
-  | string
-  | number
-  | boolean
-  | BaseObject
-  | Array<BaseObject>
+type Value = string | number | boolean | BaseObject | Array<BaseObject>
 
 type BaseObject = ObjectMap<?Value> & {
-  meta?: BaseObject;
+  meta?: BaseObject,
 }
 
 /* eslint-enable no-use-before-define */
 
 export type Link = {
-  href: string;
-  meta?: BaseObject;
+  href: string,
+  meta?: BaseObject,
 }
 
 export type Links = {
-  self?: ?(string | Link);
-  related?: ?(string | Link);
+  self?: ?(string | Link),
+  related?: ?(string | Link),
 }
 
-export type Version =
-  | '1.0'
+export type Version = '1.0'
 
 export type Identifier = {
-  id: string;
-  type: string;
-  meta?: BaseObject;
+  id: string,
+  type: string,
+  meta?: BaseObject,
 }
 
 export type Relationship = {
-  data: Identifier;
-  meta?: BaseObject;
-  links?: Links;
+  data: Identifier,
+  meta?: BaseObject,
+  links?: Links,
 }
 
 export type Resource = {
-  id: string;
-  type: string;
-  links?: Links;
-  attributes?: BaseObject;
-  relationships?: ObjectMap<?Relationship>;
+  id: string,
+  type: string,
+  links?: Links,
+  attributes?: BaseObject,
+  relationships?: ObjectMap<?Relationship>,
 }
 
 export type ErrorData = {
-  id?: string;
-  code?: string;
-  meta?: BaseObject;
-  title?: string;
-  status?: string;
-  detail?: string;
+  id?: string,
+  code?: string,
+  meta?: BaseObject,
+  title?: string,
+  status?: string,
+  detail?: string,
   links?: {
-    about: Link;
-  };
+    about: Link,
+  },
   source?: {
-    pointer?: string;
-    parameter?: string;
-  };
+    pointer?: string,
+    parameter?: string,
+  },
 }
 
 export type Document = {
-  data?: Resource | Array<Resource>;
+  data?: Resource | Array<Resource>,
   links?: Links & {
-    first?: ?(string | Link);
-    last?: ?(string | Link);
-    prev?: ?(string | Link);
-    next?: ?(string | Link);
-  };
-  errors?: Array<ErrorData>;
-  included?: Array<Resource>;
+    first?: ?(string | Link),
+    last?: ?(string | Link),
+    prev?: ?(string | Link),
+    next?: ?(string | Link),
+  },
+  errors?: Array<ErrorData>,
+  included?: Array<Resource>,
   jsonapi?: {
-    version: Version;
-    meta?: BaseObject;
-  };
+    version: Version,
+    meta?: BaseObject,
+  },
 }
 
 export * from './constants'

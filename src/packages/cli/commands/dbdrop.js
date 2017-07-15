@@ -2,12 +2,13 @@
 
 import { EOL } from 'os'
 
-import { CWD, NODE_ENV, DATABASE_URL } from '../../../constants'
+import { unlink } from 'mz/fs'
+
+import { CWD, NODE_ENV, DATABASE_URL } from '@lux/constants'
 import { CONNECTION_STRING_MESSAGE } from '../constants'
 import DatabaseConfigMissingError from '../errors/database-config-missing'
-import { rmrf } from '../../fs'
-import { connect } from '../../database'
-import { createLoader } from '../../loader'
+import { connect } from '@lux/packages/database'
+import { createLoader } from '@lux/packages/loader'
 
 /**
  * @private
@@ -21,7 +22,7 @@ export function dbdrop() {
   }
 
   if (config.driver === 'sqlite3') {
-    return rmrf(`${CWD}/db/${config.database}_${NODE_ENV}.sqlite`)
+    return unlink(`${CWD}/db/${config.database}_${NODE_ENV}.sqlite`).catch()
   }
 
   if (DATABASE_URL || config.url) {

@@ -8,7 +8,7 @@ describe('util proxy', () => {
     let proxied
 
     class Circle {
-      radius: number;
+      radius: number
 
       constructor(radius) {
         this.radius = radius
@@ -19,7 +19,7 @@ describe('util proxy', () => {
       }
 
       area() {
-        return Math.PI * (this.radius ** 2)
+        return Math.PI * this.radius ** 2
       }
     }
 
@@ -29,18 +29,18 @@ describe('util proxy', () => {
 
         shortArea(target) {
           return Math.round(target.area() * 100) / 100
-        }
+        },
       }
 
       base = new Circle(10)
       proxied = new Proxy(base, {
-        get: proxy.trapGet(traps)
+        get: proxy.trapGet(traps),
       })
     })
 
     describe('- properties', () => {
       test('captures and returns values defined in as traps', () => {
-        // $FlowIgnore
+        // $FlowFixMe
         expect(proxied.isProxied).toBe(true)
       })
 
@@ -51,7 +51,7 @@ describe('util proxy', () => {
 
     describe('- methods', () => {
       test('captures and returns values defined in as traps', () => {
-        // $FlowIgnore
+        // $FlowFixMe
         expect(proxied.shortArea()).toBe(314.16)
       })
 
@@ -62,7 +62,7 @@ describe('util proxy', () => {
 
     describe('#unwrap', () => {
       test('returns the proxy target', () => {
-        // $FlowIgnore
+        // $FlowFixMe
         expect(proxied.unwrap()).toBe(base)
       })
     })

@@ -1,23 +1,17 @@
 /* @flow */
 
-// eslint-disable-next-line no-duplicate-imports
 import { tableFor } from '../../index'
 import type { Model } from '../../index'
-import type { Relationship$opts } from '../interfaces'
+import type { Relationship } from '../interfaces'
 
 type Params = {
-  record: Model;
-  value: ?Model | Array<Model>;
-  opts: Relationship$opts;
-  trx: Object;
+  record: Model,
+  value: ?Model | Array<Model>,
+  opts: Relationship,
+  trx: Object,
 }
 
-function updateHasOne({
-  record,
-  value,
-  opts,
-  trx
-}: Params): Array<Object> {
+function updateHasOne({ record, value, opts, trx }: Params): Array<Object> {
   const recordPrimaryKey = record.getPrimaryKey()
 
   if (value) {
@@ -25,81 +19,59 @@ function updateHasOne({
       return [
         tableFor(opts.model, trx)
           .update(opts.foreignKey, null)
-          .where(
-            `${opts.model.tableName}.${opts.foreignKey}`,
-            recordPrimaryKey
-          )
+          .where(`${opts.model.tableName}.${opts.foreignKey}`, recordPrimaryKey)
           .whereNot(
             `${opts.model.tableName}.${opts.model.primaryKey}`,
-            value.getPrimaryKey()
+            value.getPrimaryKey(),
           ),
         tableFor(opts.model, trx)
           .update(opts.foreignKey, recordPrimaryKey)
           .where(
             `${opts.model.tableName}.${opts.model.primaryKey}`,
-            value.getPrimaryKey()
-          )
+            value.getPrimaryKey(),
+          ),
       ]
     }
   } else {
     return [
       tableFor(opts.model, trx)
         .update(opts.foreignKey, null)
-        .where(
-          `${opts.model.tableName}.${opts.foreignKey}`,
-          recordPrimaryKey
-        )
+        .where(`${opts.model.tableName}.${opts.foreignKey}`, recordPrimaryKey),
     ]
   }
 
   return []
 }
 
-function updateHasMany({
-  record,
-  value,
-  opts,
-  trx
-}: Params): Array<Object> {
+function updateHasMany({ record, value, opts, trx }: Params): Array<Object> {
   const recordPrimaryKey = record.getPrimaryKey()
 
   if (Array.isArray(value) && value.length) {
     return [
       tableFor(opts.model, trx)
         .update(opts.foreignKey, null)
-        .where(
-          `${opts.model.tableName}.${opts.foreignKey}`,
-          recordPrimaryKey
-        )
+        .where(`${opts.model.tableName}.${opts.foreignKey}`, recordPrimaryKey)
         .whereNotIn(
           `${opts.model.tableName}.${opts.model.primaryKey}`,
-          value.map(item => item.getPrimaryKey())
+          value.map(item => item.getPrimaryKey()),
         ),
       tableFor(opts.model, trx)
         .update(opts.foreignKey, recordPrimaryKey)
         .whereIn(
           `${opts.model.tableName}.${opts.model.primaryKey}`,
-          value.map(item => item.getPrimaryKey())
-        )
+          value.map(item => item.getPrimaryKey()),
+        ),
     ]
   }
 
   return [
     tableFor(opts.model, trx)
       .update(opts.foreignKey, null)
-      .where(
-        `${opts.model.tableName}.${opts.foreignKey}`,
-        recordPrimaryKey
-      )
+      .where(`${opts.model.tableName}.${opts.foreignKey}`, recordPrimaryKey),
   ]
 }
 
-function updateBelongsTo({
-  record,
-  value,
-  opts,
-  trx
-}: Params): Array<Object> {
+function updateBelongsTo({ record, value, opts, trx }: Params): Array<Object> {
   if (value instanceof opts.model) {
     const inverseOpts = opts.model.relationshipFor(opts.inverse)
     const foreignKeyValue = value.getPrimaryKey()
@@ -113,8 +85,8 @@ function updateBelongsTo({
           .where(opts.foreignKey, foreignKeyValue)
           .whereNot(
             `${record.constructor.tableName}.${record.constructor.primaryKey}`,
-            record.getPrimaryKey()
-          )
+            record.getPrimaryKey(),
+          ),
       ]
     }
   }
@@ -128,16 +100,12 @@ function updateBelongsTo({
 export default function updateRelationship(
   record: Model,
   name: string,
-  trx: Object
+  trx: Object,
 ): Array<Object> {
   const opts = record.constructor.relationshipFor(name)
 
   if (!opts) {
-    const {
-      constructor: {
-        name: className
-      }
-    } = record
+    const { constructor: { name: className } } = record
 
     throw new Error(`Could not find relationship '${name} on '${className}`)
   }
@@ -156,7 +124,7 @@ export default function updateRelationship(
         record,
         value,
         opts,
-        trx
+        trx,
       })
 
     case 'hasMany':
@@ -164,7 +132,7 @@ export default function updateRelationship(
         record,
         value,
         opts,
-        trx
+        trx,
       })
 
     default:
@@ -172,7 +140,7 @@ export default function updateRelationship(
         record,
         value,
         opts,
-        trx
+        trx,
       })
   }
 }

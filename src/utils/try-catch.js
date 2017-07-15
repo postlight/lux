@@ -18,24 +18,24 @@ import K from './k'
  *
  * @example
  * tryCatch(() => {
- *   const n = Math.floor(Math.random() * 6);
+ *   const n = Math.floor(Math.random() * 6)
  *
  *   if (n >= 4) {
- *     throw new Error('You lose!');
+ *     throw new Error('You lose!')
  *   } else {
- *     return Promise.resolve(n);
+ *     return Promise.resolve(n)
  *   }
  * }, err => {
- *   console.error(err);
+ *   console.error(err)
  * }).then(luckyNumber => {
- *   console.log(`Your lucky number is ${luckyNumber}.`);
- * });
+ *   console.log(`Your lucky number is ${luckyNumber}.`)
+ * })
  *
  * @private
  */
-export default async function tryCatch<T, F:() => Promise<T>>(
+export default (async function tryCatch<T, F: () => Promise<T>>(
   fn: F,
-  rescue: Function = K
+  rescue: Function = K,
 ): Promise<void | T> {
   let result
 
@@ -46,33 +46,32 @@ export default async function tryCatch<T, F:() => Promise<T>>(
   }
 
   return result
-}
-
+})
 /**
  * A syncronous implementation of the `tryCatch` utility.
  *
  * @example
  * const luckyNumber = tryCatchSync(() => {
- *   const n = Math.floor(Math.random() * 6);
+ *   const n = Math.floor(Math.random() * 6)
  *
  *   if (n >= 4) {
- *     throw new Error('You lose!');
+ *     throw new Error('You lose!')
  *   } else {
- *     return n;
+ *     return n
  *   }
  * }, err => {
- *   console.error(err);
- * });
+ *   console.error(err)
+ * })
  *
  * if (luckyNumber) {
- *   console.log(`Your lucky number is ${luckyNumber}.`);
+ *   console.log(`Your lucky number is ${luckyNumber}.`)
  * }
  *
  * @private
  */
-export function tryCatchSync<T, F:() => T>(
+export function tryCatchSync<T, F: () => T>(
   fn: F,
-  rescue: Function = K
+  rescue: Function = K,
 ): void | T {
   let result
 

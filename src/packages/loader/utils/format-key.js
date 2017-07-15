@@ -2,8 +2,8 @@
 
 import { dasherize } from 'inflection'
 
-import chain from '../../../utils/chain'
-import underscore from '../../../utils/underscore'
+import chain from '@lux/utils/chain'
+import underscore from '@lux/utils/underscore'
 
 const NAMESPACE_DELIMITER = /\$-/g
 
@@ -12,7 +12,7 @@ const NAMESPACE_DELIMITER = /\$-/g
  */
 export default function formatKey(
   key: string,
-  formatter?: (source: string) => string
+  formatter?: (source: string) => string,
 ) {
   return chain(key)
     .pipe(str => {

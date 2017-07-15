@@ -1,7 +1,7 @@
 /* @flow */
 
 import { DYNAMIC_PATTERN } from '../constants'
-import insert from '../../../../utils/insert'
+import insert from '@lux/utils/insert'
 
 /**
  * @private

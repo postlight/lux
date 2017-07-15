@@ -1,7 +1,6 @@
 /* @flow */
 
-import entries from '../../../utils/entries'
-import isObject from '../../../utils/is-object'
+import { isNil, isObject, isString } from '@lux/utils/is-type'
 import type { ObjectMap } from '../../../interfaces'
 
 const INT = /^\d+$/
@@ -12,25 +11,22 @@ const DATE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}(Z|\+\d{4})$/
 const TRUE = /^true$/
 const DELIMITER = /[_-\s]+/
 
-export function camelize(source: string): string {
-  return source
-    .split(DELIMITER)
-    .reduce((result, part, idx) => {
-      if (part[0]) {
-        const [first] = part
+export const camelize = (source: string): string =>
+  source.split(DELIMITER).reduce((result, part, idx) => {
+    if (part[0]) {
+      const [first] = part
 
-        return (
-          result
-          + (idx === 0 ? first.toLowerCase() : first.toUpperCase())
-          + part.slice(1).toLowerCase()
-        )
-      }
+      return (
+        result +
+        (idx === 0 ? first.toLowerCase() : first.toUpperCase()) +
+        part.slice(1).toLowerCase()
+      )
+    }
 
-      return result
-    }, '')
-}
+    return result
+  }, '')
 
-export function fromString(source: string): any {
+const fromString = (source: string): any => {
   if (INT.test(source)) {
     return Number.parseInt(source, 10)
   } else if (BOOL.test(source)) {
@@ -45,46 +41,36 @@ export function fromString(source: string): any {
   return source
 }
 
-export function fromObject(source: ObjectMap<any>): ObjectMap<any> {
-  return entries(source).reduce((target, [k, v]) => {
-    const key = camelize(k)
-    let value = v
+const wrapValue = source => {
+  if (Array.isArray(source)) {
+    return source.map(item => (isString(item) ? camelize(item) : item))
+  }
 
-    if (typeof value === 'string') {
+  if (isNil(source)) {
+    return []
+  }
+
+  return [isString(source) ? camelize(source) : source]
+}
+
+export const fromObject = <T, U>(source: ObjectMap<T>): ObjectMap<U> =>
+  Object.entries(source).reduce((prev, entry) => {
+    const next = prev
+    let [key, value] = entry
+
+    key = camelize(key)
+
+    if (isString(value)) {
       value = fromString(value)
     } else if (isObject(value)) {
       value = fromObject(value)
     }
 
     if (key === 'include') {
-      if (value && !Array.isArray(value)) {
-        value = [value]
-      }
-
-      value = value.map(item => {
-        if (typeof item === 'string') {
-          return camelize(item)
-        }
-        return item
-      })
-    } else if (key === 'fields' && isObject(value)) {
-      value = entries(value).reduce((fields, [resource, names]) => {
-        // eslint-disable-next-line no-param-reassign
-        fields[resource] = (
-          Array.isArray(names) ? names : [names]
-        ).map(item => {
-          if (typeof item === 'string') {
-            return camelize(item)
-          }
-          return item
-        })
-        return fields
-      }, {})
+      value = wrapValue(value)
     }
 
-    // eslint-disable-next-line no-param-reassign
-    target[key] = value
+    next[key] = value
 
-    return target
+    return next
   }, {})
-}

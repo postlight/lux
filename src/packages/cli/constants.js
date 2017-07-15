@@ -1,18 +1,18 @@
 /* @flow */
 
-import template from '../template'
-import { fileLink } from '../../utils/github'
+import template from '@lux/packages/template'
+import { fileLink } from '@lux/utils/github'
 
 export const VALID_DATABASES = [
   'postgres',
   'sqlite',
   'mysql',
   'mariadb',
-  'oracle'
+  'oracle',
 ]
 
 const DB_INTERFACE_URL = fileLink('src/packages/database/interfaces.js', {
-  line: 17
+  line: 17,
 })
 
 export const CONNECTION_STRING_MESSAGE = template`

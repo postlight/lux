@@ -1,16 +1,13 @@
 /* @flow */
 
-import { camelize, dasherize, pluralize, singularize } from 'inflection'
+import { pluralize, singularize } from 'inflection'
 
-import { line } from '../../logger'
+import { line } from '@lux/packages/logger'
+import { camelize, dasherize, underscore } from '@lux/packages/inflector'
+import { isFunction, isObject, isString } from '@lux/utils/is-type'
 import { createAttribute } from '../attribute'
-import {
-  get as getRelationship,
-  set as setRelationship
-} from '../relationship'
-import entries from '../../../utils/entries'
-import underscore from '../../../utils/underscore'
-import type Database, { Model } from '../index' // eslint-disable-line no-unused-vars, max-len
+import { get as getRelationship, set as setRelationship } from '../relationship'
+import type Database, { Model } from '../index'
 
 const VALID_HOOKS = new Set([
   'afterCreate',
@@ -22,7 +19,7 @@ const VALID_HOOKS = new Set([
   'beforeDestroy',
   'beforeSave',
   'beforeUpdate',
-  'beforeValidation'
+  'beforeValidation',
 ])
 
 /**
@@ -30,52 +27,63 @@ const VALID_HOOKS = new Set([
  */
 function initializeProps(prototype, attributes, relationships) {
   Object.defineProperties(prototype, {
-    ...entries(attributes).reduce((obj, [key, value]) => ({
-      ...obj,
-      [key]: createAttribute({
-        key,
-        ...value
-      })
-    }), {}),
-
-    ...Object.keys(relationships).reduce((obj, key) => ({
-      ...obj,
-      [key]: {
-        get() {
-          return getRelationship(this, key)
+    ...Object.entries(attributes).reduce(
+      (obj, [key, value]) => ({
+        ...obj,
+        [key]: createAttribute({
+          key,
+          ...value,
+        }),
+      }),
+      {},
+    ),
+    ...Object.keys(relationships).reduce(
+      (obj, key) => ({
+        ...obj,
+        [key]: {
+          get() {
+            return getRelationship(this, key)
+          },
+          set(val) {
+            setRelationship(this, key, val)
+          },
         },
-        set(val) {
-          setRelationship(this, key, val)
-        }
-      }
-    }), {})
+      }),
+      {},
+    ),
   })
 }
 
 /**
  * @private
  */
-function initializeHooks({ model, hooks, logger }) {
-  return Object.freeze(
-    entries(hooks).reduce((obj, [key, value]) => {
+const initHooks = ({ model, hooks, logger }) =>
+  Object.freeze(
+    Object.entries(hooks).reduce((prev, [key, value]) => {
+      const next = prev
+
       if (!VALID_HOOKS.has(key)) {
         logger.warn(line`
           Invalid hook '${key}' will not be added to Model '${model.name}'.
           Valid hooks are ${[...VALID_HOOKS].map(h => `'${h}'`).join(', ')}.
         `)
 
-        return obj
+        return next
       }
 
-      return {
-        ...obj,
-        [key]: async (instance, transaction) => {
-          await Reflect.apply(value, model, [instance, transaction])
-        }
+      if (isFunction(value)) {
+        next[key] = (...args) =>
+          Promise.resolve(Reflect.apply(value, model, args))
+      } else {
+        logger.warn(line`
+          Invalid hook '${key}' will not be added to Model '${model.name}'.
+          '${key}' must be a function.
+        `)
       }
-    }, {})
+
+      return next
+    }, {}),
   )
-}
 
 /**
  * @private
@@ -85,7 +93,7 @@ function initializeValidations(opts) {
   const attributeNames = Object.keys(attributes)
   let { validates } = opts
 
-  validates = entries(validates)
+  validates = Object.entries(validates)
     .filter(([key, value]) => {
       let isValid = attributeNames.indexOf(key) >= 0
 
@@ -108,10 +116,13 @@ function initializeValidations(opts) {
 
       return isValid
     })
-    .reduce((obj, [key, value]) => ({
-      ...obj,
-      [key]: value
-    }), {})
+    .reduce(
+      (obj, [key, value]) => ({
+        ...obj,
+        [key]: value,
+      }),
+      {},
+    )
 
   return Object.freeze(validates)
 }
@@ -119,124 +130,111 @@ function initializeValidations(opts) {
 /**
  * @private
  */
-export default async function initializeClass<T: Class<Model>>({
+export default (async function initializeClass<T: Class<Model>>({
   store,
   table,
-  model
+  model,
 }: {
   store: Database,
   table: $PropertyType<T, 'table'>,
-  model: T
+  model: T,
 }): Promise<T> {
   let { hooks, scopes, validates } = model
   const { logger } = store
-  const modelName = dasherize(underscore(model.name))
+  const modelName = dasherize(model.name)
   const resourceName = pluralize(modelName)
 
-  const attributes = entries(await table().columnInfo())
-    .reduce((obj, [columnName, value]) => ({
-      ...obj,
-      [camelize(columnName, true)]: {
+  const attributes = Object.entries(
+    await table().columnInfo(),
+  ).reduce((prev, [columnName, value]) => {
+    const next = prev
+
+    if (isObject(value)) {
+      next[camelize(columnName)] = {
         ...value,
         columnName,
-        docName: dasherize(columnName)
+        docName: dasherize(columnName),
       }
-    }), {})
+    }
 
-  const belongsTo = entries(model.belongsTo || {})
-    .reduce((obj, [relatedName, { inverse, model: relatedModel }]) => {
-      const relationship = {}
+    return next
+  }, {})
 
+  const belongsTo = Object.entries(
+    model.belongsTo || {},
+  ).reduce((prev, [key, value]) => {
+    const next = prev
+    const relationship = {}
+
+    if (isObject(value)) {
       Object.defineProperties(relationship, {
         model: {
-          value: store.modelFor(relatedModel || relatedName),
-          writable: false,
+          value: store.modelFor(isString(value.model) ? value.model : key),
           enumerable: true,
-          configurable: false
         },
-
         inverse: {
-          value: inverse,
-          writable: false,
+          value: value.inverse,
           enumerable: true,
-          configurable: false
         },
-
         type: {
           value: 'belongsTo',
-          writable: false,
           enumerable: false,
-          configurable: false
         },
-
         foreignKey: {
-          value: `${underscore(relatedName)}_id`,
-          writable: false,
-          enumerable: false,
-          configurable: false
-        }
+          value: `${underscore(key)}_id`,
+        },
       })
 
-      return {
-        ...obj,
-        [relatedName]: relationship
-      }
-    }, {})
+      next[key] = relationship
+    }
 
-  const hasOne = entries(model.hasOne || {})
-    .reduce((obj, [relatedName, { inverse, model: relatedModel }]) => {
-      const relationship = {}
+    return next
+  }, {})
+
+  const hasOne = Object.entries(
+    model.hasOne || {},
+  ).reduce((prev, [key, value]) => {
+    const next = prev
+    const relationship = {}
+
+    if (isObject(value) && isString(value.inverse)) {
+      const inverse = value.inverse
 
       Object.defineProperties(relationship, {
         model: {
-          value: store.modelFor(relatedModel || relatedName),
-          writable: false,
+          value: store.modelFor(isString(value.model) ? value.model : key),
           enumerable: true,
-          configurable: false
         },
-
         inverse: {
           value: inverse,
-          writable: false,
           enumerable: true,
-          configurable: false
         },
-
         type: {
           value: 'hasOne',
-          writable: false,
-          enumerable: false,
-          configurable: false
         },
-
         foreignKey: {
           value: `${underscore(inverse)}_id`,
-          writable: false,
-          enumerable: false,
-          configurable: false
-        }
+        },
       })
 
-      return {
-        ...obj,
-        [relatedName]: relationship
-      }
-    }, {})
+      next[key] = relationship
+    }
 
-  const hasMany = entries(model.hasMany || {})
-    .reduce((hash, [relatedName, opts]) => {
-      const { inverse } = opts
-      const relationship = {}
-      let { through, model: relatedModel } = opts
+    return next
+  }, {})
+
+  const hasMany = Object.entries(
+    model.hasMany || {},
+  ).reduce((prev, [key, value]) => {
+    const next = prev
+    const relationship = {}
+
+    if (isObject(value) && isString(value.inverse)) {
+      const { inverse } = value
+      let { through } = value
       let foreignKey
 
-      if (typeof relatedModel === 'string') {
-        relatedModel = store.modelFor(relatedModel)
-      } else {
-        relatedModel = store.modelFor(relatedName)
-      }
-
-      if (typeof through === 'string') {
+      if (isString(through)) {
         through = store.modelFor(through)
         foreignKey = `${singularize(underscore(inverse))}_id`
       } else {
@@ -245,46 +243,30 @@ export default async function initializeClass<T: Class<Model>>({
 
       Object.defineProperties(relationship, {
         model: {
-          value: relatedModel,
-          writable: false,
+          value: store.modelFor(isString(value.model) ? value.model : key),
           enumerable: true,
-          configurable: false
         },
-
         inverse: {
           value: inverse,
-          writable: false,
           enumerable: true,
-          configurable: false
         },
-
         through: {
           value: through,
-          writable: false,
           enumerable: Boolean(through),
-          configurable: false
         },
-
         type: {
           value: 'hasMany',
-          writable: false,
-          enumerable: false,
-          configurable: false
         },
-
         foreignKey: {
           value: foreignKey,
-          writable: false,
-          enumerable: false,
-          configurable: false
-        }
+        },
       })
 
-      return {
-        ...hash,
-        [relatedName]: relationship
-      }
-    }, {})
+      next[key] = relationship
+    }
+
+    return next
+  }, {})
 
   Object.freeze(hasOne)
   Object.freeze(hasMany)
@@ -293,7 +275,7 @@ export default async function initializeClass<T: Class<Model>>({
   const relationships = Object.freeze({
     ...hasOne,
     ...hasMany,
-    ...belongsTo
+    ...belongsTo,
   })
 
   if (!hooks) {
@@ -311,164 +293,98 @@ export default async function initializeClass<T: Class<Model>>({
   Object.defineProperties(model, {
     store: {
       value: store,
-      writable: false,
-      enumerable: false,
-      configurable: false
     },
-
     table: {
       value: table,
-      writable: false,
-      enumerable: false,
-      configurable: false
     },
-
     logger: {
       value: logger,
-      writable: false,
-      enumerable: false,
-      configurable: false
     },
-
     attributes: {
       value: Object.freeze(attributes),
-      writable: false,
-      enumerable: false,
-      configurable: false
     },
-
     attributeNames: {
       value: Object.freeze(Object.keys(attributes)),
-      writable: false,
-      enumerable: false,
-      configurable: false
     },
-
     hasOne: {
       value: hasOne,
-      writable: false,
       enumerable: Boolean(Object.keys(hasOne).length),
-      configurable: false
     },
-
     hasMany: {
       value: hasMany,
-      writable: false,
       enumerable: Boolean(Object.keys(hasMany).length),
-      configurable: false
     },
-
     belongsTo: {
       value: belongsTo,
-      writable: false,
       enumerable: Boolean(Object.keys(belongsTo).length),
-      configurable: false
     },
-
     relationships: {
       value: relationships,
-      writable: false,
-      enumerable: false,
-      configurable: false
     },
-
     relationshipNames: {
       value: Object.freeze(Object.keys(relationships)),
-      writable: false,
-      enumerable: false,
-      configurable: false
     },
-
     hooks: {
-      value: initializeHooks({
+      value: initHooks({
         model,
         hooks,
-        logger
+        logger,
       }),
-      writable: false,
       enumerable: Boolean(Object.keys(hooks).length),
-      configurable: false
     },
-
     scopes: {
       value: scopes,
-      writable: false,
       enumerable: Boolean(Object.keys(scopes).length),
-      configurable: false
     },
-
     validates: {
       value: initializeValidations({
         model,
         logger,
         validates,
-        attributes
+        attributes,
       }),
-      writable: false,
       enumerable: Boolean(Object.keys(validates).length),
-      configurable: false
     },
-
     modelName: {
       value: modelName,
-      writable: false,
       enumerable: true,
-      configurable: false
     },
-
     resourceName: {
       value: resourceName,
-      writable: false,
       enumerable: true,
-      configurable: false
     },
-
     initialized: {
       value: true,
-      writable: false,
-      enumerable: false,
-      configurable: false
     },
-
     ...Object.freeze(
-      entries(scopes).reduce((obj, [name, scope]) => ({
-        ...obj,
-        [name]: {
-          value: scope,
-          writable: false,
-          enumerable: false,
-          configurable: false
-        }
-      }), {})
-    )
+      Object.entries(scopes).reduce((prev, [key, value]) => {
+        const next = prev
+
+        next[key] = { value }
+        return next
+      }, {}),
+    ),
   })
 
   initializeProps(model.prototype, attributes, {
     ...hasOne,
     ...hasMany,
-    ...belongsTo
+    ...belongsTo,
   })
 
   Object.defineProperties(model.prototype, {
     modelName: {
       value: modelName,
-      writable: false,
       enumerable: true,
-      configurable: false
     },
     resourceName: {
       value: resourceName,
-      writable: false,
       enumerable: true,
-      configurable: false
     },
     isModelInstance: {
       value: true,
-      writable: false,
-      enumerable: false,
-      configurable: false
-    }
+    },
   })
 
   return model
-}
+})

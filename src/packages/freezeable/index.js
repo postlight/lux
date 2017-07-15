@@ -6,5 +6,5 @@ export {
   freezeArray,
   freezeValue,
   freezeProps,
-  deepFreezeProps
+  deepFreezeProps,
 } from './utils/freeze'

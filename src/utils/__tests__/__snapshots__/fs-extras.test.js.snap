@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`readdirRec() 1`] = `
+Array [
+  "y/z/z.txt",
+  "y/y.txt",
+  "x.txt",
+]
+`;

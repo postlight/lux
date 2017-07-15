@@ -2,14 +2,14 @@
 
 import { posix } from 'path'
 
-import { deepFreezeProps } from '../../freezeable'
-import { tryCatchSync } from '../../../utils/try-catch'
-import type Serializer from '../../serializer' // eslint-disable-line max-len, no-unused-vars
+import { deepFreezeProps } from '@lux/packages/freezeable'
+import { tryCatchSync } from '@lux/utils/try-catch'
+import type Serializer from '@lux/packages/serializer' // eslint-disable-line max-len, no-unused-vars
 import type { Application$factoryOpts } from '../index'
 
 export default function createSerializer<T: Serializer<*>>(
   constructor: Class<T>,
-  opts: Application$factoryOpts<T>
+  opts: Application$factoryOpts<T>,
 ): T {
   const { key, store } = opts
   const namespace = posix.dirname(key).replace('.', '')
@@ -24,22 +24,20 @@ export default function createSerializer<T: Serializer<*>>(
     parent = null
   }
 
-  const instance: T = Reflect.construct(constructor, [{
-    model,
-    parent,
-    namespace
-  }])
+  const instance: T = Reflect.construct(constructor, [
+    {
+      model,
+      parent,
+      namespace,
+    },
+  ])
 
   Reflect.defineProperty(instance, 'parent', {
     value: parent,
     writable: false,
     enumerable: true,
-    configurable: false
+    configurable: false,
   })
 
-  return deepFreezeProps(instance, true,
-    'hasOne',
-    'hasMany',
-    'attributes'
-  )
+  return deepFreezeProps(instance, true, 'hasOne', 'hasMany', 'attributes')
 }

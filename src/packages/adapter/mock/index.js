@@ -1,18 +1,18 @@
 /* @flow */
 
 import type { Adapter } from '../index'
-import type Application from '../../application'
+import type Application from '@lux/packages/application'
 import type { ObjectMap } from '../../../interfaces'
 
 import * as request from './request'
 import * as response from './response'
 
 type Options = {
-  url: string;
-  body?: Object;
-  method: string;
-  headers: ObjectMap<string>;
-  resolve?: (data: any) => void;
+  url: string,
+  body?: Object,
+  method: string,
+  headers: ObjectMap<string>,
+  resolve?: (data: any) => void,
 }
 
 function createAdapter({ logger }: Application): Adapter {

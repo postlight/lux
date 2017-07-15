@@ -13,12 +13,12 @@ export function createAttribute(opts: Attribute$meta): Object {
   const meta = {
     ...opts,
     normalize,
-    defaultValue: normalize(opts.defaultValue)
+    defaultValue: normalize(opts.defaultValue),
   }
 
   return {
     get: createGetter(meta),
-    set: createSetter(meta)
+    set: createSetter(meta),
   }
 }
 

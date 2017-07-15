@@ -5,8 +5,8 @@ import type Database from '../index'
 /**
  * @private
  */
-export default async function createMigrations(
-  schema: $PropertyType<Database, 'schema'>
+export default (async function createMigrations(
+  schema: $PropertyType<Database, 'schema'>,
 ): Promise<boolean> {
   const hasTable: boolean = await schema().hasTable('migrations')
 
@@ -17,4 +17,4 @@ export default async function createMigrations(
   }
 
   return true
-}
+})

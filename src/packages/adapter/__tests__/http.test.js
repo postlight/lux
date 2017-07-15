@@ -2,8 +2,8 @@
 
 import { IncomingMessage, ServerResponse } from 'http'
 
-import { MIME_TYPE } from '../../jsonapi'
-import Logger from '../../logger'
+import { MIME_TYPE } from '@lux/packages/jsonapi'
+import Logger from '@lux/packages/logger'
 import createAdapter, { request, response } from '../http'
 import { getTestApp } from '../../../../test/utils/test-app'
 
@@ -156,7 +156,7 @@ describe('module "adapter/http"', () => {
       })
 
       describe('=> Response', () => {
-        ['end', 'send'].forEach(method => {
+        ;['end', 'send'].forEach(method => {
           beforeAll(() => {
             Reflect.set(res, 'end', jest.fn())
           })

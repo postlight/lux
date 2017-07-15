@@ -1,8 +1,8 @@
 /* @flow */
 
-import Logger from '../../logger'
+import Logger from '@lux/packages/logger'
 import { request, response } from '../../adapter/mock'
-import noop from '../../../utils/noop'
+import noop from '@lux/utils/noop'
 import setEnv from '../../../../test/utils/set-env'
 import * as responder from '../index'
 
@@ -35,7 +35,7 @@ describe('module "responder"', () => {
         response.create({
           logger,
           resolve,
-        })
+        }),
       )
     })
 
@@ -118,7 +118,7 @@ describe('module "responder"', () => {
 
         test('works with errors containing a `statusCode` property', () => {
           class ForbiddenError extends Error {
-            statusCode = 403;
+            statusCode = 403
 
             constructor() {
               super('Forbidden')

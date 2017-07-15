@@ -1,34 +1,27 @@
 /* @flow */
 
-import entries from '../../../utils/entries'
-// eslint-disable-next-line no-unused-vars
-import type { Model } from '../../database'
+import { isObject } from '@lux/utils/is-type'
+import type { Model } from '@lux/packages/database'
 
-/**
- * @private
- */
-export default function resolveRelationships<T: Model>(
-  model: Class<T>,
-  relationships: Object = {}
-): Object {
-  return entries(relationships).reduce((obj, [key, value]) => {
-    let { data = null } = value || {}
+const resolve = <T: Model>(model: Class<T>, objMap?: Object = {}): Object =>
+  Object.entries(objMap).reduce((prev, [key, value]) => {
+    const next = prev
 
-    if (data) {
+    if (isObject(value) && isObject(value.data)) {
       const opts = model.relationshipFor(key)
 
       if (opts) {
-        if (Array.isArray(data)) {
-          data = data.map(item => Reflect.construct(opts.model, [item]))
+        if (Array.isArray(value.data)) {
+          next[key] = value.data.map(item =>
+            Reflect.construct(opts.model, [item]),
+          )
         } else {
-          data = Reflect.construct(opts.model, [data])
+          next[key] = Reflect.construct(opts.model, [value.data])
         }
       }
     }
 
-    return {
-      ...obj,
-      [key]: data
-    }
+    return next
   }, {})
-}
+
+export default resolve

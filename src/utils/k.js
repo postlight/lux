@@ -9,6 +9,6 @@
  *
  * @private
  */
-export default function K(): any {
+export default function K(..._: Array<*>): any {
   return this
 }

@@ -1,4 +1,4 @@
-import { Application } from 'LUX_LOCAL'
+import { Application } from 'lux-framework'
 
 class TestApp extends Application {
 

@@ -1,8 +1,8 @@
 /* @flow */
 
-import { FreezeableMap } from '../../freezeable'
+import { FreezeableMap } from '@lux/packages/freezeable'
 import { resolve } from '../resolver'
-import chain from '../../../utils/chain'
+import chain from '@lux/utils/chain'
 import type { Bundle$Namespace, Bundle$NamespaceGroup } from '../index' // eslint-disable-line max-len, no-unused-vars
 
 import createParentBuilder from './utils/create-parent-builder'
@@ -14,7 +14,7 @@ import type { Builder$Construct } from './interfaces'
  */
 export function build<T>(
   group: Bundle$Namespace<Class<T>>,
-  construct: Builder$Construct<T>
+  construct: Builder$Construct<T>,
 ): Bundle$Namespace<T> {
   return chain(group)
     .pipe(resolve)

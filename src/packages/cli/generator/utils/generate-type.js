@@ -2,12 +2,12 @@
 
 import { posix, join as joinPath } from 'path'
 
+import * as fs from 'mz/fs'
 import { green } from 'chalk'
 import { pluralize, singularize } from 'inflection'
 
 import { NAMESPACED_RESOURCE_MESSAGE } from '../constants'
-import { generateTimestamp } from '../../../database'
-import { exists, readFile, writeFile } from '../../../fs'
+import { generateTimestamp } from '@lux/packages/database'
 import modelTemplate from '../../templates/model'
 import serializerTemplate from '../../templates/serializer'
 import controllerTemplate from '../../templates/controller'
@@ -15,7 +15,7 @@ import emptyMigrationTemplate from '../../templates/empty-migration'
 import modelMigrationTemplate from '../../templates/model-migration'
 import middlewareTemplate from '../../templates/middleware'
 import utilTemplate from '../../templates/util'
-import chain from '../../../../utils/chain'
+import chain from '@lux/utils/chain'
 import type { Generator$opts } from '../index'
 
 import log from './log'
@@ -32,7 +32,7 @@ export async function controller(opts: Generator$opts): Promise<void> {
   const dir = joinPath('app', 'controllers')
   const generate = createGenerator({
     dir,
-    template: controllerTemplate
+    template: controllerTemplate,
   })
 
   if (!name.endsWith('application')) {
@@ -42,14 +42,14 @@ export async function controller(opts: Generator$opts): Promise<void> {
   await generate({
     ...opts,
     cwd,
-    name
+    name,
   })
 
   const namespace = posix.dirname(name)
 
   if (namespace !== '.') {
-    const hasParent = await exists(
-      joinPath(cwd, dir, ...[...namespace.split('/'), 'application.js'])
+    const hasParent = await fs.exists(
+      joinPath(cwd, dir, ...[...namespace.split('/'), 'application.js']),
     )
 
     if (!hasParent) {
@@ -57,7 +57,7 @@ export async function controller(opts: Generator$opts): Promise<void> {
         ...opts,
         cwd,
         name: `${namespace}/application`,
-        attrs: []
+        attrs: [],
       })
     }
   }
@@ -73,7 +73,7 @@ export async function serializer(opts: Generator$opts): Promise<void> {
   const dir = joinPath('app', 'serializers')
   const generate = createGenerator({
     dir,
-    template: serializerTemplate
+    template: serializerTemplate,
   })
 
   if (!name.endsWith('application')) {
@@ -83,14 +83,14 @@ export async function serializer(opts: Generator$opts): Promise<void> {
   await generate({
     ...opts,
     cwd,
-    name
+    name,
   })
 
   const namespace = posix.dirname(name)
 
   if (namespace !== '.') {
-    const hasParent = await exists(
-      joinPath(cwd, dir, ...[...namespace.split('/'), 'application.js'])
+    const hasParent = await fs.exists(
+      joinPath(cwd, dir, ...[...namespace.split('/'), 'application.js']),
     )
 
     if (!hasParent) {
@@ -98,7 +98,7 @@ export async function serializer(opts: Generator$opts): Promise<void> {
         ...opts,
         cwd,
         name: `${namespace}/application`,
-        attrs: []
+        attrs: [],
       })
     }
   }
@@ -115,7 +115,7 @@ export function migration(opts: Generator$opts) {
   const generate = createGenerator({
     dir,
     template: emptyMigrationTemplate,
-    hasConflict: detectConflict
+    hasConflict: detectConflict,
   })
 
   name = chain(name)
@@ -129,8 +129,8 @@ export function migration(opts: Generator$opts) {
     name,
     onConflict: createConflictResolver({
       cwd,
-      onConflict
-    })
+      onConflict,
+    }),
   })
 }
 
@@ -145,7 +145,7 @@ export function modelMigration(opts: Generator$opts) {
   const generate = createGenerator({
     dir,
     template: modelMigrationTemplate,
-    hasConflict: detectConflict
+    hasConflict: detectConflict,
   })
 
   name = chain(name)
@@ -160,8 +160,8 @@ export function modelMigration(opts: Generator$opts) {
     name,
     onConflict: createConflictResolver({
       cwd,
-      onConflict
-    })
+      onConflict,
+    }),
   })
 }
 
@@ -172,19 +172,16 @@ export async function model(opts: Generator$opts): Promise<void> {
   let { name } = opts
   const generate = createGenerator({
     dir: joinPath('app', 'models'),
-    template: modelTemplate
+    template: modelTemplate,
   })
 
   await modelMigration({ name, ...opts })
 
-  name = chain(name)
-    .pipe(posix.basename)
-    .pipe(singularize)
-    .value()
+  name = chain(name).pipe(posix.basename).pipe(singularize).value()
 
   return generate({
     ...opts,
-    name
+    name,
   })
 }
 
@@ -199,12 +196,12 @@ export function middleware(opts: Generator$opts) {
 
   const generate = createGenerator({
     dir: joinPath('app', 'middleware', ...parts),
-    template: middlewareTemplate
+    template: middlewareTemplate,
   })
 
   return generate({
     ...opts,
-    name
+    name,
   })
 }
 
@@ -219,12 +216,12 @@ export function util(opts: Generator$opts) {
 
   const generate = createGenerator({
     dir: joinPath('app', 'utils', ...parts),
-    template: utilTemplate
+    template: utilTemplate,
   })
 
   return generate({
     ...opts,
-    name
+    name,
   })
 }
 
@@ -242,25 +239,27 @@ export async function resource(opts: Generator$opts) {
   }
 
   const path = joinPath(opts.cwd, 'app', 'routes.js')
-  const routes = chain(await readFile(path))
+  const routes = chain(await fs.readFile(path))
     .pipe(buf => buf.toString('utf8'))
     .pipe(str => str.split('\n'))
-    .pipe(lines => lines.reduce((result, line, index, arr) => {
-      const closeIndex = arr.lastIndexOf('}')
-      let str = result
+    .pipe(lines =>
+      lines.reduce((result, line, index, arr) => {
+        const closeIndex = arr.lastIndexOf('}')
+        let str = result
 
-      if (line && index <= closeIndex) {
-        str += `${line}\n`
-      }
+        if (line && index <= closeIndex) {
+          str += `${line}\n`
+        }
 
-      if (index + 1 === closeIndex) {
-        str += `  this.resource('${pluralize(opts.name)}');\n`
-      }
+        if (index + 1 === closeIndex) {
+          str += `  this.resource('${pluralize(opts.name)}');\n`
+        }
 
-      return str
-    }, ''))
+        return str
+      }, ''),
+    )
     .value()
 
-  await writeFile(path, Buffer.from(routes))
+  await fs.writeFile(path, Buffer.from(routes))
   log(`${green('update')} app/routes.js`)
 }

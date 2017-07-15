@@ -4,14 +4,7 @@ import { FORMATS } from '../constants'
 import { createRequestLogger } from '../request-logger'
 import Logger from '../index'
 
-const {
-  stdout: {
-    write: writeOut,
-  },
-  stderr: {
-    write: writeErr,
-  },
-} = process
+const { stdout: { write: writeOut }, stderr: { write: writeErr } } = process
 
 describe('module "logger/request-logger"', () => {
   describe('#createRequestLogger()', () => {
@@ -35,8 +28,8 @@ describe('module "logger/request-logger"', () => {
             level: 'INFO',
             enabled: true,
             filter: {
-              params: []
-            }
+              params: [],
+            },
           })
 
           subject = createRequestLogger(logger)
@@ -52,7 +45,7 @@ describe('module "logger/request-logger"', () => {
             expect(() => {
               // subject(req, res, {
               //   startTime: Date.now()
-              // });
+              // })
             }).not.toThrow()
           })
         })

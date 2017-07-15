@@ -1,8 +1,8 @@
 /* @flow */
 
 import { FREEZER } from '../constants'
-import insert from '../../../utils/insert'
-import isObject from '../../../utils/is-object'
+import insert from '@lux/utils/insert'
+import { isObject } from '@lux/utils/is-type'
 
 /**
  * @private
@@ -42,15 +42,21 @@ export function freezeProps<T>(
   makePublic: boolean,
   ...props: Array<string>
 ): T {
-  Object.defineProperties(target, props.reduce((obj, key) => ({
-    ...obj,
-    [key]: {
-      value: Reflect.get(target, key),
-      writable: false,
-      enumerable: makePublic,
-      configurable: false,
-    }
-  }), {}))
+  Object.defineProperties(
+    target,
+    props.reduce(
+      (obj, key) => ({
+        ...obj,
+        [key]: {
+          value: Reflect.get(target, key),
+          writable: false,
+          enumerable: makePublic,
+          configurable: false,
+        },
+      }),
+      {},
+    ),
+  )
 
   return target
 }
@@ -63,25 +69,28 @@ export function deepFreezeProps<T>(
   makePublic: boolean,
   ...props: Array<string>
 ): T {
-  Object.defineProperties(target, props.reduce((obj, key) => {
-    let value = Reflect.get(target, key)
+  Object.defineProperties(
+    target,
+    props.reduce((obj, key) => {
+      let value = Reflect.get(target, key)
 
-    if (Array.isArray(value)) {
-      value = freezeArray(value)
-    } else {
-      value = freezeValue(value)
-    }
-
-    return {
-      ...obj,
-      [key]: {
-        value,
-        writable: false,
-        enumerable: makePublic,
-        configurable: false,
+      if (Array.isArray(value)) {
+        value = freezeArray(value)
+      } else {
+        value = freezeValue(value)
       }
-    }
-  }, {}))
+
+      return {
+        ...obj,
+        [key]: {
+          value,
+          writable: false,
+          enumerable: makePublic,
+          configurable: false,
+        },
+      }
+    }, {}),
+  )
 
   return target
 }

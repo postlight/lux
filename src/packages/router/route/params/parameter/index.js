@@ -1,6 +1,6 @@
 /* @flow */
 
-import { FreezeableSet } from '../../../../freezeable'
+import { FreezeableSet } from '@lux/packages/freezeable'
 import validateType from '../utils/validate-type'
 
 import validateValue from './utils/validate-value'
@@ -10,28 +10,22 @@ import type { Parameter$opts } from './interfaces'
  * @private
  */
 class Parameter extends FreezeableSet<mixed> {
-  path: string;
+  path: string
 
-  type: string;
+  type: string
 
-  required: boolean;
+  required: boolean
 
-  sanitize: boolean;
+  sanitize: boolean
 
-  constructor({
-    path,
-    type,
-    values,
-    required,
-    sanitize
-  }: Parameter$opts) {
+  constructor({ path, type, values, required, sanitize }: Parameter$opts) {
     super(values)
 
     Object.assign(this, {
       path,
       type,
       required: Boolean(required),
-      sanitize: Boolean(sanitize)
+      sanitize: Boolean(sanitize),
     })
 
     this.freeze()

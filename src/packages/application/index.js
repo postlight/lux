@@ -2,25 +2,20 @@
 
 import EventEmitter from 'events'
 
-import { createDefaultConfig } from '../config'
-import * as responder from '../responder'
-import merge from '../../utils/merge'
-import tryCatch from '../../utils/try-catch'
-import type Logger from '../logger'
-import type Router from '../router'
-import type Controller from '../controller'
-import type Serializer from '../serializer'
-import type { Config } from '../config'
-import type { Adapter } from '../adapter'
-import type { FreezeableMap } from '../freezeable'
-import type Database, { Model, Config as DatabaseConfig } from '../database'
+import { createDefaultConfig } from '@lux/packages/config'
+import * as responder from '@lux/packages/responder'
+import merge from '@lux/utils/merge'
+import tryCatch from '@lux/utils/try-catch'
+import type Logger from '@lux/packages/logger'
+import type Router from '@lux/packages/router'
+import type Controller from '@lux/packages/controller'
+import type Serializer from '@lux/packages/serializer'
+import type { Config } from '@lux/packages/config'
+import type { Adapter } from '@lux/packages/adapter'
+import type { FreezeableMap } from '@lux/packages/freezeable'
+import type Database, { Model } from '@lux/packages/database'
 
 import initialize from './initialize'
-
-export type Options = Config & {
-  path: string;
-  database: DatabaseConfig;
-}
 
 /**
  * @class Application
@@ -34,14 +29,14 @@ class Application extends EventEmitter {
    * @type {String}
    * @public
    */
-  path: string;
+  path: string
 
   /**
    * @property adapter
    * @type {Adapter}
    * @private
    */
-  adapter: Adapter;
+  adapter: Adapter
 
   /**
    * A reference to the `Database` instance.
@@ -50,7 +45,7 @@ class Application extends EventEmitter {
    * @type {Database}
    * @private
    */
-  store: Database;
+  store: Database
 
   /**
    * A reference to the `Logger` instance.
@@ -59,7 +54,7 @@ class Application extends EventEmitter {
    * @type {Logger}
    * @private
    */
-  logger: Logger;
+  logger: Logger
 
   /**
    * A reference to the `Router` instance.
@@ -68,7 +63,7 @@ class Application extends EventEmitter {
    * @type {Router}
    * @private
    */
-  router: Router;
+  router: Router
 
   /**
    * A map containing each `Model` class.
@@ -77,7 +72,7 @@ class Application extends EventEmitter {
    * @type {Map}
    * @private
    */
-  models: FreezeableMap<string, Class<Model>>;
+  models: FreezeableMap<string, Class<Model>>
 
   /**
    * A map containing each `Controller` instance.
@@ -86,7 +81,7 @@ class Application extends EventEmitter {
    * @type {Map}
    * @private
    */
-  controllers: FreezeableMap<string, Controller>;
+  controllers: FreezeableMap<string, Controller>
 
   /**
    * A map containing each `Serializer` instance.
@@ -95,7 +90,7 @@ class Application extends EventEmitter {
    * @type {Map}
    * @private
    */
-  serializers: FreezeableMap<string, Serializer<*>>;
+  serializers: FreezeableMap<string, Serializer<*>>
 
   /**
    * @method constructor
@@ -103,9 +98,9 @@ class Application extends EventEmitter {
    * @return {Promise}
    * @public
    */
-  constructor(options: Options): Promise<Application> {
+  constructor(config: Config): Promise<Application> {
     super()
-    return initialize(this, merge(createDefaultConfig(), options))
+    return initialize(this, merge(createDefaultConfig(), config))
   }
 
   /**
@@ -113,32 +108,33 @@ class Application extends EventEmitter {
    * @private
    */
   exec(...args: Array<any>): Promise<void> {
-    return tryCatch(async () => {
-      const [request, response] = await this.adapter(...args)
+    return tryCatch(
+      async () => {
+        const [request, response] = await this.adapter(...args)
 
-      this.emit('request:start', request, response)
+        this.emit('request:start', request, response)
 
-      const respond = responder.create(request, response)
-      const route = this.router.match(request)
+        const respond = responder.create(request, response)
+        const route = this.router.match(request)
 
-      if (route) {
-        this.emit('request:match', request, response, route)
+        if (route) {
+          this.emit('request:match', request, response, route)
 
-        const data = await route
-          .visit(request, response)
-          .catch(err => {
+          const data = await route.visit(request, response).catch(err => {
             this.emit('request:error', request, response, err)
           })
 
-        respond(data)
-        this.emit('request:complete', request, response)
-      } else {
-        respond(404)
-        this.emit('request:complete', request, response)
-      }
-    }, err => {
-      this.emit('error', err)
-    })
+          respond(data)
+          this.emit('request:complete', request, response)
+        } else {
+          respond(404)
+          this.emit('request:complete', request, response)
+        }
+      },
+      err => {
+        this.emit('error', err)
+      },
+    )
   }
 
   /**

@@ -1,7 +1,7 @@
 /* @flow */
 
 import createServerError from '../../../../../errors/utils/create-server-error'
-import { line } from '../../../../logger'
+import { line } from '@lux/packages/logger'
 
 /**
  * @private

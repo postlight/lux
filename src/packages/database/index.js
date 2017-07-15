@@ -2,7 +2,7 @@
 
 import type Knex from 'knex'
 
-import type Logger from '../logger'
+import type Logger from '@lux/packages/logger'
 
 import { ModelMissingError } from './errors'
 import Model from './model'
@@ -14,33 +14,33 @@ import type { Database$opts } from './interfaces'
  * @private
  */
 class Database {
-  path: string;
+  path: string
 
-  debug: boolean;
+  debug: boolean
 
-  logger: Logger;
+  logger: Logger
 
-  config: Object;
+  config: Object
 
-  schema: () => $PropertyType<Knex, 'schema'>;
+  schema: () => $PropertyType<Knex, 'schema'>
 
-  connection: Knex;
+  connection: Knex
 
-  models: Map<string, Class<Model>>;
+  models: Map<string, Class<Model>>
 
   constructor({
     path,
     models,
     config,
     logger,
-    checkMigrations
+    checkMigrations,
   }: Database$opts): Promise<Database> {
     return initialize(this, {
       path,
       models,
       config,
       logger,
-      checkMigrations
+      checkMigrations,
     })
   }
 
@@ -77,3 +77,4 @@ export { default as createMigrations } from './utils/create-migrations'
 export { default as pendingMigrations } from './utils/pending-migrations'
 
 export type { Database$opts, Config } from './interfaces'
+export type { Relationship } from './relationship'

@@ -1,19 +1,18 @@
 /* @flow */
 
 import luxify from '../index'
-import K from '../../../utils/k'
-import setType from '../../../utils/set-type'
+import noop from '@lux/utils/noop'
 
 describe('module "luxify"', () => {
   describe('#luxify()', () => {
-    const [request, response] = setType(() => [
+    const [request, response]: any = [
       {},
       {
-        getHeader: K,
-        setHeader: K,
-        removeHeader: K
-      }
-    ])
+        getHeader: noop,
+        setHeader: noop,
+        removeHeader: noop,
+      },
+    ]
 
     test('promisifies a callback based middleware function', () => {
       const subject = luxify((req, res, next) => {
@@ -45,14 +44,16 @@ describe('module "luxify"', () => {
 
     test('resolves when Response#json is called', () => {
       const subject = luxify((req, res) => {
-        Reflect.apply(Reflect.get(res, 'json'), res, [{
-          data: 'Hello world!'
-        }])
+        Reflect.apply(Reflect.get(res, 'json'), res, [
+          {
+            data: 'Hello world!',
+          },
+        ])
       })
 
       return subject(request, response).then(data => {
         expect(data).toEqual({
-          data: 'Hello world!'
+          data: 'Hello world!',
         })
       })
     })

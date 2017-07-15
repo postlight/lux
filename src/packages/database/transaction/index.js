@@ -1,6 +1,6 @@
 /* @flow */
 
-import { trapGet } from '../../../utils/proxy'
+import { trapGet } from '@lux/utils/proxy'
 import type { Model } from '../index' // eslint-disable-line no-unused-vars
 
 import type { Transaction$ResultProxy } from './interfaces'
@@ -10,14 +10,14 @@ import type { Transaction$ResultProxy } from './interfaces'
  */
 export function createStaticTransactionProxy<T: Class<Model>>(
   target: T,
-  trx: Object
+  trx: Object,
 ): T {
   return new Proxy(target, {
     get: trapGet({
       create(model: T, props: Object = {}) {
         return model.create(props, trx)
-      }
-    })
+      },
+    }),
   })
 }
 
@@ -26,7 +26,7 @@ export function createStaticTransactionProxy<T: Class<Model>>(
  */
 export function createInstanceTransactionProxy<T: Model>(
   target: T,
-  trx: Object
+  trx: Object,
 ): T {
   return new Proxy(target, {
     get: trapGet({
@@ -40,8 +40,8 @@ export function createInstanceTransactionProxy<T: Model>(
 
       destroy(model: T) {
         return model.destroy(trx)
-      }
-    })
+      },
+    }),
   })
 }
 
@@ -50,12 +50,12 @@ export function createInstanceTransactionProxy<T: Model>(
  */
 export function createTransactionResultProxy<T: Model, U: boolean>(
   record: T,
-  didPersist: U
+  didPersist: U,
 ): Transaction$ResultProxy<T, U> {
   return new Proxy(record, {
     get: trapGet({
-      didPersist
-    })
+      didPersist,
+    }),
   })
 }
 

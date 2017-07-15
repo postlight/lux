@@ -7,12 +7,11 @@ import type { Model } from '../../index'
  * @private
  */
 export default function validate(instance: Model): true {
-  return Array
-    .from(instance.dirtyAttributes)
+  return Array.from(instance.dirtyAttributes)
     .map(([key, value]) => ({
       key,
       value,
-      validator: Reflect.get(instance.constructor.validates, key)
+      validator: Reflect.get(instance.constructor.validates, key),
     }))
     .filter(({ validator }) => validator)
     .map(props => new Validation(props))

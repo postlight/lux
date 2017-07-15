@@ -2,7 +2,7 @@
 
 import { green, yellow } from 'chalk'
 
-import { line } from '../../logger'
+import { line } from '@lux/packages/logger'
 
 /**
  * @private

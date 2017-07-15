@@ -3,8 +3,8 @@
 const GITHUB_URL = 'https://github.com/postlight/lux'
 
 type Options = {
-  line?: number;
-  branch?: string;
+  line?: number,
+  branch?: string,
 }
 
 /**

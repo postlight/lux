@@ -1,9 +1,8 @@
 /* @flow */
 
-import { sql } from '../../../logger'
-import omit from '../../../../utils/omit'
-// eslint-disable-next-line no-duplicate-imports
-import type Logger from '../../../logger'
+import { sql } from '@lux/packages/logger'
+import omit from '@lux/utils/omit'
+import type Logger from '@lux/packages/logger'
 import type Model from '../index'
 
 import tableFor from './table-for'
@@ -17,12 +16,12 @@ export function create(record: Model, trx: Object): Array<Object> {
 
   Object.assign(record, {
     createdAt: timestamp,
-    updatedAt: timestamp
+    updatedAt: timestamp,
   })
 
   Object.assign(record.rawColumnData, {
     createdAt: timestamp,
-    updatedAt: timestamp
+    updatedAt: timestamp,
   })
 
   const { constructor: { primaryKey } } = record
@@ -35,7 +34,7 @@ export function create(record: Model, trx: Object): Array<Object> {
   return [
     tableFor(record, trx)
       .returning(record.constructor.primaryKey)
-      .insert(columns)
+      .insert(columns),
   ]
 }
 
@@ -48,9 +47,7 @@ export function update(record: Model, trx: Object): Array<Object> {
   return [
     tableFor(record, trx)
       .where(record.constructor.primaryKey, record.getPrimaryKey())
-      .update(getColumns(record, [
-        ...record.dirtyAttributes.keys()
-      ]))
+      .update(getColumns(record, [...record.dirtyAttributes.keys()])),
   ]
 }
 
@@ -61,7 +58,7 @@ export function destroy(record: Model, trx: Object): Array<Object> {
   return [
     tableFor(record, trx)
       .where(record.constructor.primaryKey, record.getPrimaryKey())
-      .del()
+      .del(),
   ]
 }
 
@@ -70,7 +67,7 @@ export function destroy(record: Model, trx: Object): Array<Object> {
  */
 export function createRunner(
   logger: Logger,
-  statements: Array<Object>
+  statements: Array<Object>,
 ): (query: Array<Object>) => Promise<Array<Object>> {
   return query => {
     const promises = query.concat(statements)

@@ -1,8 +1,10 @@
+/* @flow */
+
 import { join as joinPath } from 'path'
 
 import type Knex from 'knex'
 
-import { NODE_ENV, DATABASE_URL } from '../../../constants'
+import { NODE_ENV, DATABASE_URL } from '@lux/constants'
 import { VALID_DRIVERS } from '../constants'
 import { InvalidDriverError } from '../errors'
 
@@ -22,7 +24,7 @@ export default function connect(path: string, config: Object = {}): Knex {
     password,
     port,
     ssl,
-    url
+    url,
   } = config
 
   if (VALID_DRIVERS.indexOf(driver) < 0) {
@@ -32,10 +34,12 @@ export default function connect(path: string, config: Object = {}): Knex {
   if (pool && typeof pool === 'number') {
     pool = {
       min: pool > 1 ? 2 : 1,
-      max: pool
+      max: pool,
     }
   }
 
+  /* eslint-disable global-require, import/no-dynamic-require */
+  // $FlowFixMe
   const knex: Class<Knex> = require(joinPath(path, 'node_modules', 'knex'))
   const usingSQLite = driver === 'sqlite3'
   let filename
@@ -48,14 +52,15 @@ export default function connect(path: string, config: Object = {}): Knex {
       filename = joinPath(
         path,
         'db',
-        `${database || 'default'}_${NODE_ENV}.sqlite`
+        `${database || 'default'}_${NODE_ENV}.sqlite`,
       )
     }
   }
 
   return knex({
     pool,
-    connection: DATABASE_URL || url || {
+    connection: DATABASE_URL ||
+    url || {
       ssl,
       host,
       port,

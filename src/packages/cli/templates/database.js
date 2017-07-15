@@ -1,7 +1,7 @@
 /* @flow */
 
 import indent from '../utils/indent'
-import underscore from '../../../utils/underscore'
+import underscore from '@lux/utils/underscore'
 
 /**
  * @private
@@ -22,38 +22,38 @@ export default (name: string, driver: string): string => {
     username = 'root'
   }
 
-  ['development', 'test', 'production'].forEach(environment => {
-    template += (`${indent(2)}${environment}: {\n`)
+  ;['development', 'test', 'production'].forEach(environment => {
+    template += `${indent(2)}${environment}: {\n`
 
     if (driverName !== 'sqlite3') {
-      template += (`${indent(4)}pool: 5,\n`)
+      template += `${indent(4)}pool: 5,\n`
     }
 
-    template += (`${indent(4)}driver: '${driverName}',\n`)
+    template += `${indent(4)}driver: '${driverName}',\n`
 
     if (username) {
-      template += (`${indent(4)}username: '${username}',\n`)
+      template += `${indent(4)}username: '${username}',\n`
     }
 
     switch (environment) {
       case 'development':
-        template += (`${indent(4)}database: '${schemaName}_dev'\n`)
+        template += `${indent(4)}database: '${schemaName}_dev'\n`
         break
 
       case 'test':
-        template += (`${indent(4)}database: '${schemaName}_test'\n`)
+        template += `${indent(4)}database: '${schemaName}_test'\n`
         break
 
       case 'production':
-        template += (`${indent(4)}database: '${schemaName}_prod'\n`)
+        template += `${indent(4)}database: '${schemaName}_prod'\n`
         break
 
       default:
-        template += (`${indent(4)}database: '${schemaName}_${environment}'\n`)
+        template += `${indent(4)}database: '${schemaName}_${environment}'\n`
         break
     }
 
-    template += (`${indent(2)}}`)
+    template += `${indent(2)}}`
 
     if (environment !== 'production') {
       template += ',\n\n'

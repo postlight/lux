@@ -1,15 +1,21 @@
 /* @flow */
 
-import { join as joinPath } from 'path'
+import * as path from 'path'
 
+import * as fs from 'mz/fs'
 import { red, green, yellow } from 'chalk'
 
-import { rmrf, exists, mkdirRec, writeFile, parsePath } from '../../../fs'
+import * as fse from '@lux/utils/fs-extras'
 import type { Generator, Generator$template } from '../index'
 
 import log from './log'
 
 const FORWARD_SLASH = /\//g
+
+const pathsFor = absolute => [
+  absolute,
+  path.relative(path.dirname(path.dirname(absolute)), absolute),
+]
 
 /**
  * @private
@@ -17,35 +23,37 @@ const FORWARD_SLASH = /\//g
 export default function createGenerator({
   dir,
   template,
-  hasConflict = exists
+  hasConflict = fs.exists,
 }: {
-  dir: string;
-  template: Generator$template;
-  hasConflict?: (path: string) => Promise<boolean>;
+  dir: string,
+  template: Generator$template,
+  hasConflict?: (path: string) => Promise<boolean>,
 }): Generator {
   return async ({ cwd, attrs, onConflict, ...opts }) => {
-    const path = parsePath(cwd, dir, `${opts.name}.js`)
-    const name = opts.name.replace(FORWARD_SLASH, '-')
+    let { name } = opts
     let action = green('create')
+    const [absolute, relative] = pathsFor(path.join(cwd, dir, `${name}.js`))
 
-    await mkdirRec(path.dir)
+    name = opts.name.replace(FORWARD_SLASH, '-')
 
-    if (await hasConflict(path.absolute)) {
-      const shouldContinue = await onConflict(path.relative)
+    await fse.mkdirRec(path.dirname(absolute))
+
+    if (await hasConflict(absolute)) {
+      const shouldContinue = await onConflict(relative)
 
       if (shouldContinue && typeof shouldContinue === 'string') {
-        await rmrf(joinPath(path.dir, shouldContinue))
-        log(`${red('remove')} ${joinPath(dir, shouldContinue)}`)
+        await fse.rmrf(path.join(path.dirname(absolute), shouldContinue))
+        log(`${red('remove')} ${path.join(dir, shouldContinue)}`)
       } else if (shouldContinue && typeof shouldContinue === 'boolean') {
         action = yellow('overwrite')
-        await rmrf(path.absolute)
+        await fse.rmrf(absolute)
       } else {
-        log(`${yellow('skip')} ${path.relative}`)
+        log(`${yellow('skip')} ${relative}`)
         return
       }
     }
 
-    await writeFile(path.absolute, Buffer.from(template(name, attrs)))
-    log(`${action} ${path.relative}`)
+    await fs.writeFile(absolute, Buffer.from(template(name, attrs)))
+    log(`${action} ${relative}`)
   }
 }

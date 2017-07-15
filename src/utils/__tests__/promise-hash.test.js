@@ -7,7 +7,7 @@ describe('util promiseHash()', () => {
     const subject = {
       a: 1,
       b: Promise.resolve(2),
-      c: Promise.all([Promise.resolve(3), Promise.resolve(4)])
+      c: Promise.all([Promise.resolve(3), Promise.resolve(4)]),
     }
 
     return promiseHash(subject).then(({ a, b, c }) => {
@@ -21,7 +21,7 @@ describe('util promiseHash()', () => {
     const subject = {
       a: 1,
       b: Promise.reject(new Error('Test')),
-      c: Promise.all([Promise.resolve(3), Promise.resolve(4)])
+      c: Promise.all([Promise.resolve(3), Promise.resolve(4)]),
     }
 
     return promiseHash(subject).catch(err => {

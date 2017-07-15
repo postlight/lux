@@ -21,7 +21,8 @@ export default function template(
     indentLevel = /^\s{0,2}(.+)$/g
   }
 
-  return body.split('\n')
+  return body
+    .split('\n')
     .slice(1)
     .map(line => {
       let str = line.replace(indentLevel, '$1')

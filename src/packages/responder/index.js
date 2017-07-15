@@ -1,7 +1,7 @@
 /* @flow */
 
-import type Request from '../request'
-import type Response from '../response'
+import type Request from '@lux/packages/request'
+import type Response from '@lux/packages/response'
 
 import normalize from './utils/normalize'
 

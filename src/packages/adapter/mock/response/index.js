@@ -1,13 +1,13 @@
 /* @flow */
 
-import Response from '../../../response'
+import Response from '@lux/packages/response'
 import { ResponseHeaders } from '../../utils/headers'
-import noop from '../../../../utils/noop'
-import type Logger from '../../../logger'
+import noop from '@lux/utils/noop'
+import type Logger from '@lux/packages/logger'
 
 type Options = {
-  logger: Logger;
-  resolve?: (data: any) => void;
+  logger: Logger,
+  resolve?: (data: any) => void,
 }
 
 export function create(options: Options): Response {
@@ -24,11 +24,7 @@ export function create(options: Options): Response {
 
     send(body: string): void {
       if (options.resolve) {
-        const {
-          headers,
-          statusCode,
-          statusMessage,
-        } = this
+        const { headers, statusCode, statusMessage } = this
 
         options.resolve({
           body,

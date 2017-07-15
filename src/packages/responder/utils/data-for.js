@@ -1,10 +1,9 @@
 /* @flow */
 
-import { VERSION } from '../../jsonapi'
-import { STATUS_CODES } from '../../../constants'
-import * as env from '../../../utils/env'
-// eslint-disable-next-line no-duplicate-imports
-import type { Document, ErrorData } from '../../jsonapi'
+import { VERSION } from '@lux/packages/jsonapi'
+import { STATUS_CODES } from '@lux/constants'
+import * as env from '@lux/utils/env'
+import type { Document, ErrorData } from '@lux/packages/jsonapi'
 
 /**
  * @private
@@ -16,7 +15,7 @@ function dataFor(status: number, err?: Error): string | Document {
 
   const title = STATUS_CODES.get(status)
   const errData: ErrorData = {
-    status: String(status)
+    status: String(status),
   }
 
   if (title) {
@@ -28,9 +27,7 @@ function dataFor(status: number, err?: Error): string | Document {
   }
 
   return {
-    errors: [
-      errData,
-    ],
+    errors: [errData],
     jsonapi: {
       version: VERSION,
     },

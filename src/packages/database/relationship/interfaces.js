@@ -1,15 +1,16 @@
 /* @flow */
 
-import type { Model } from '../index';
+import type { Model } from '../index'
 
-type Relationship$ref = Model | Array<Model>;
+type Type = 'belongsTo' | 'hasMany' | 'hasOne'
+type Reference = Model | Array<Model>
 
-export type Relationship$refs = WeakMap<Model, Map<string, Relationship$ref>>;
+export type References = WeakMap<Model, Map<string, Reference>>
 
-export type Relationship$opts = {
-  type: 'hasOne' | 'hasMany' | 'belongsTo';
-  model: Class<Model>;
-  inverse: string;
-  through?: Class<Model>;
-  foreignKey: string;
-};
+export type Relationship = {
+  type: Type,
+  model: Class<Model>,
+  inverse: string,
+  through?: Class<Model>,
+  foreignKey: string,
+}

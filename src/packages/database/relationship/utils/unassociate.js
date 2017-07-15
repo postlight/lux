@@ -18,7 +18,7 @@ function unassociateOne<T: void | ?Model>(value: T, foreignKey: string): T {
  */
 export default function unassociate<T: Model, U: Array<T>>(
   value: U,
-  foreignKey: string
+  foreignKey: string,
 ): U | Array<T> {
   return value.map(record => unassociateOne(record, foreignKey))
 }

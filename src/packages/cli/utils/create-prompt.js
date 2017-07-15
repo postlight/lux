@@ -7,7 +7,7 @@ const YES = /^y(es)?$/i
 export default function createPrompt() {
   const prompt = createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   })
 
   prompt.setPrompt('')
@@ -23,6 +23,6 @@ export default function createPrompt() {
 
     close(): void {
       prompt.close()
-    }
+    },
   }
 }

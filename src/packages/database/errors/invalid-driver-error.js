@@ -3,7 +3,7 @@
 import { green, yellow } from 'chalk'
 
 import { VALID_DRIVERS } from '../constants'
-import { line } from '../../logger'
+import { line } from '@lux/packages/logger'
 
 /**
  * @private

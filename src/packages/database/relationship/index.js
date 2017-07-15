@@ -23,18 +23,18 @@ function set(owner: Model, key: string, value?: Array<Model> | ?Model): void {
       if (type === 'hasMany') {
         setHasMany(owner, key, value, {
           ...opts,
-          foreignKey
+          foreignKey,
         })
       }
     } else if (type === 'hasOne') {
       setHasOne(owner, key, value, {
         ...opts,
-        foreignKey
+        foreignKey,
       })
     } else if (type === 'belongsTo') {
       setBelongsTo(owner, key, value, {
         ...opts,
-        foreignKey
+        foreignKey,
       })
     }
   }
@@ -59,21 +59,21 @@ async function get(owner: Model, key: string): Promise<Array<Model> | ?Model> {
         case 'hasOne':
           value = await getHasOne(owner, {
             ...opts,
-            foreignKey
+            foreignKey,
           })
           break
 
         case 'hasMany':
           value = await getHasMany(owner, {
             ...opts,
-            foreignKey
+            foreignKey,
           })
           break
 
         default:
           value = await getBelongsTo(owner, {
             ...opts,
-            foreignKey
+            foreignKey,
           })
           break
       }
@@ -87,4 +87,4 @@ async function get(owner: Model, key: string): Promise<Array<Model> | ?Model> {
 
 export { get, set }
 export { default as updateRelationship } from './utils/update-relationship'
-export type { Relationship$opts } from './interfaces'
+export type { Relationship } from './interfaces'

@@ -1,7 +1,20 @@
 /* @flow */
 
-const isEnv = value => () => process.env.NODE_ENV === value
+import type { Environment } from '@lux/types'
 
-export const isDevelopment: () => boolean = isEnv('development')
-export const isProduction: () => boolean = isEnv('production')
-export const isTest: () => boolean = isEnv('test')
+export const name = (): Environment => {
+  const { env: { NODE_ENV } } = process
+
+  switch (NODE_ENV) {
+    case 'production':
+    case 'test':
+      return NODE_ENV
+
+    default:
+      return 'development'
+  }
+}
+
+export const isDevelopment = (): boolean => name() === 'development'
+export const isProduction = (): boolean => name() === 'production'
+export const isTest = (): boolean => name() === 'test'

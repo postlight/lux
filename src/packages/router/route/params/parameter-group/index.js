@@ -1,9 +1,8 @@
 /* @flow */
 
-import { FreezeableMap } from '../../../../freezeable'
+import { FreezeableMap } from '@lux/packages/freezeable'
 import { InvalidParameterError } from '../errors'
-import isNull from '../../../../../utils/is-null'
-import entries from '../../../../../utils/entries'
+import { isNull } from '@lux/utils/is-type'
 import validateType from '../utils/validate-type'
 import type { ParameterLike, ParameterLike$opts } from '../index'
 
@@ -13,26 +12,25 @@ import hasRequiredParams from './utils/has-required-params'
  * @private
  */
 class ParameterGroup extends FreezeableMap<string, ParameterLike> {
-  type: string;
+  type: string
 
-  path: string;
+  path: string
 
-  required: boolean;
+  required: boolean
 
-  sanitize: boolean;
+  sanitize: boolean
 
-  constructor(contents: Array<any>, {
-    path,
-    required,
-    sanitize
-  }: ParameterLike$opts) {
+  constructor(
+    contents: Array<any>,
+    { path, required, sanitize }: ParameterLike$opts,
+  ) {
     super(contents)
 
     Object.assign(this, {
       path,
       type: 'object',
       required: Boolean(required),
-      sanitize: Boolean(sanitize)
+      sanitize: Boolean(sanitize),
     })
 
     this.freeze()
@@ -53,7 +51,7 @@ class ParameterGroup extends FreezeableMap<string, ParameterLike> {
         path = `${path}.`
       }
 
-      for (const [key, value] of entries(params)) {
+      Object.entries(params).forEach(([key, value]) => {
         const match = this.get(key)
 
         if (match) {
@@ -61,10 +59,10 @@ class ParameterGroup extends FreezeableMap<string, ParameterLike> {
         } else if (!match && !sanitize) {
           throw new InvalidParameterError(`${path}${key}`)
         }
-      }
+      })
     }
 
-    // $FlowIgnore
+    // $FlowFixMe
     return validated
   }
 }

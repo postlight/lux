@@ -4,85 +4,52 @@
     "jest",
     "flowtype"
   ],
-  "extends": "airbnb-base",
+  "extends": [
+    "airbnb-base",
+    "plugin:flowtype/recommended",
+    "prettier",
+    "prettier/flowtype"
+  ],
   "env": {
+    "jest/globals": true,
     "node": true
-  },
-  "globals": {
-    "$PropertyType": true,
-    "afterAll": true,
-    "afterEach": true,
-    "beforeAll": true,
-    "beforeEach": true,
-    "Class": true,
-    "describe": true,
-    "expect": true,
-    "Generator": true,
-    "it": true,
-    "jasmine": true,
-    "jest": true,
-    "Knex$QueryBuilder": true,
-    "Knex$SchemaBuilder": true,
-    "Knex$Transaction": true,
-    "Process": true,
-    "test": true
   },
   "settings": {
     "flowtype": {
       "onlyFilesWithFlowAnnotation": true
     }
   },
-  "parserOptions": {
-    "ecmaVersion": 2017,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "impliedStrict": true,
-      "experimentalObjectRestSpread": true
-    }
-  },
   "rules": {
-    "semi": ["error", "never"],
-    "strict": 0,
-    "max-len": ["error", 80],
-    "arrow-parens": 0,
-    "comma-dangle": [2, "only-multiline"],
-    "global-require": 0,
-    "no-underscore-dangle": 0,
-    "class-methods-use-this": 0,
-    "no-irregular-whitespace": 0,
-    "no-restricted-syntax": [
+    "comma-dangle": [
       "error",
-      "ForInStatement",
-      "LabeledStatement",
-      "WithStatement"
+      {
+        "arrays": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "always-multiline",
+        "imports": "always-multiline",
+        "objects": "always-multiline"
+      }
     ],
-    "import/order": ["warn", {
-      "groups": [
-        "builtin",
-        "external",
-        "internal",
-        "parent",
-        "sibling",
-        "index"
-      ],
-      "newlines-between": "always"
-    }],
-    "import/extensions": 0,
-    "import/no-named-default": 0,
-    "import/no-dynamic-require": 0,
-    "import/prefer-default-export": 0,
-    "jest/no-focused-tests": "error",
-    "jest/no-disabled-tests": "warn",
-    "jest/no-identical-title": "error",
-    "flowtype/semi": ["error", "never"],
-    "flowtype/no-dupe-keys": 2,
-    "flowtype/boolean-style": [2, "boolean"],
-    "flowtype/generic-spacing": 2,
-    "flowtype/define-flow-type": 0,
-    "flowtype/space-after-type-colon": [2, "always"],
-    "flowtype/space-before-type-colon": [2, "never"],
-    "flowtype/union-intersection-spacing": [2, "always"],
-    "flowtype/space-before-generic-bracket": [2, "never"],
-    "flowtype/require-valid-file-annotation": [2, "always"]
+    "max-len": [
+      "error",
+      80
+    ],
+    "no-use-before-define": "off",
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "_",
+        "varsIgnorePattern": "_"
+      }
+    ],
+    "semi": [
+      "error",
+      "never"
+    ],
+    "import/extensions": "off",
+    "import/first": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/no-unresolved": "off",
+    "import/prefer-default-export": "off"
   }
 }

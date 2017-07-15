@@ -1,4 +1,4 @@
-import { Model } from 'LUX_LOCAL'
+import { Model } from 'lux-framework'
 
 import track from '../utils/track'
 

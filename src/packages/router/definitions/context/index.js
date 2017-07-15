@@ -2,11 +2,10 @@
 
 import Resource from '../../resource'
 import Namespace from '../../namespace'
-import K from '../../../../utils/k'
-import type { Router$Namespace } from '../../index' // eslint-disable-line max-len, no-unused-vars
+import K from '@lux/utils/k'
+import ControllerMissingError from '@lux/errors/controller-missing-error'
+import type { Router$Namespace } from '../../index'
 import type { Router$DefinitionBuilder } from '../interfaces'
-import ControllerMissingError
-  from '../../../../errors/controller-missing-error'
 
 import createDefinitionGroup from './utils/create-definition-group'
 import normalizeResourceArgs from './utils/normalize-resource-args'
@@ -22,7 +21,7 @@ export function contextFor(build: Router$DefinitionBuilder<*>) {
         resource: K,
         namespace: K,
         collection: K,
-        ...createDefinitionGroup('custom', namespace)
+        ...createDefinitionGroup('custom', namespace),
       }
 
       if (namespace instanceof Resource) {
@@ -39,7 +38,7 @@ export function contextFor(build: Router$DefinitionBuilder<*>) {
             const childCtx = createDefinitionGroup('collection', namespace)
 
             Reflect.apply(builder, childCtx, [])
-          }
+          },
         }
       } else {
         context = {
@@ -63,7 +62,7 @@ export function contextFor(build: Router$DefinitionBuilder<*>) {
               path,
               namespace,
               controller,
-              controllers
+              controllers,
             })
 
             build(builder, child)
@@ -84,10 +83,13 @@ export function contextFor(build: Router$DefinitionBuilder<*>) {
             const controllerKey = path
               .split('/')
               .filter(Boolean)
-              .reduce((arr, str, index, parts) => [
-                ...arr,
-                index === parts.length - 1 ? opts.name : str
-              ], [])
+              .reduce(
+                (arr, str, index, parts) => [
+                  ...arr,
+                  index === parts.length - 1 ? opts.name : str,
+                ],
+                [],
+              )
               .join('/')
 
             const controller = controllers.get(controllerKey)
@@ -101,16 +103,16 @@ export function contextFor(build: Router$DefinitionBuilder<*>) {
               path,
               namespace,
               controller,
-              controllers
+              controllers,
             })
 
             build(builder, child)
             namespace.add(child)
-          }
+          },
         }
       }
 
       return context
-    }
+    },
   }
 }

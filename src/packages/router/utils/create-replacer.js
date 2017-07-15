@@ -1,15 +1,14 @@
 /* @flow */
 
-import type Controller from '../../controller'
+import type Controller from '@lux/packages/controller'
 
 /**
  * @private
  */
 export default function createReplacer(
-  controllers: Map<string, Controller>
+  controllers: Map<string, Controller>,
 ): RegExp {
-  const names = Array
-    .from(controllers)
+  const names = Array.from(controllers)
     .map(([, controller]) => {
       const { model, namespace } = controller
 
@@ -19,15 +18,11 @@ export default function createReplacer(
 
       let { constructor: { name } } = controller
 
-      name = name
-        .replace(/controller/ig, '')
-        .toLowerCase()
+      name = name.replace(/controller/gi, '').toLowerCase()
 
       return namespace
         .split('/')
-        .reduce((str, part) => (
-          str.replace(new RegExp(part, 'ig'), '')
-        ), name)
+        .reduce((str, part) => str.replace(new RegExp(part, 'ig'), ''), name)
     })
     .filter((str, idx, arr) => idx === arr.lastIndexOf(str))
     .join('|')

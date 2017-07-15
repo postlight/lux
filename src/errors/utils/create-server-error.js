@@ -1,7 +1,7 @@
 /* @flow */
 
 type ServerError<T: Error> = T & {
-  statusCode: number;
+  statusCode: number,
 }
 
 /**
@@ -9,10 +9,10 @@ type ServerError<T: Error> = T & {
  */
 export default function createServerError<T: Error>(
   Source: Class<T>,
-  statusCode: number
+  statusCode: number,
 ): Class<ServerError<T>> {
   const Target = class extends Source {
-    statusCode: number;
+    statusCode: number
   }
 
   Object.defineProperty(Target, 'name', {
@@ -23,6 +23,6 @@ export default function createServerError<T: Error>(
     value: statusCode,
   })
 
-  // $FlowIgnore
+  // $FlowFixMe
   return Target
 }

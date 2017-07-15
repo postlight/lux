@@ -5,9 +5,9 @@ import type { IncomingMessage } from 'http'
 
 import qs from 'qs'
 
-import { HAS_BODY } from '../../../../constants'
-import Request from '../../../request'
-import type Logger from '../../../logger'
+import { HAS_BODY } from '@lux/constants'
+import Request from '@lux/packages/request'
+import type Logger from '@lux/packages/logger'
 import * as query from '../../utils/query'
 import * as method from '../../utils/method'
 import { Headers } from '../../utils/headers'
@@ -22,7 +22,7 @@ export function create(req: IncomingMessage, logger: Logger): Promise<Request> {
       url: { ...url, params: [] },
       params: query.fromObject(qs.parse(url.query)),
       method: method.resolve(req.method, headers),
-      // $FlowIgnore
+      // $FlowFixMe
       encrypted: Boolean(req.connection.encrypted),
       defaultParams: {},
     })
@@ -32,7 +32,7 @@ export function create(req: IncomingMessage, logger: Logger): Promise<Request> {
     if (HAS_BODY.test(request.method)) {
       let offset = 0
       const body = Buffer.allocUnsafe(
-        Number.parseInt(request.headers.get('content-length') || '0', 10) || 0
+        Number.parseInt(request.headers.get('content-length') || '0', 10) || 0,
       )
 
       req

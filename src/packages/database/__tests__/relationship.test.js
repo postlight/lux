@@ -5,11 +5,19 @@ import * as faker from 'faker'
 import { get, set } from '../relationship'
 import { getTestApp } from '../../../../test/utils/test-app'
 
+const del = (store, table) => store.connection(table).del(store)
+
+const insert = (store, table, data) =>
+  store.connection(table).insert(data).returning('id').then(([id]) => id)
+
+const timestamps = () => ({
+  created_at: new Date(),
+  updated_at: new Date(),
+})
+
 describe('module "database/relationship"', () => {
   let app
-  let del
   let store
-  let insert
   let record
   let postId
   let userId
@@ -18,69 +26,59 @@ describe('module "database/relationship"', () => {
   let commentIds
   let categorizationIds
 
-  const timestamps = () => ({
-    created_at: new Date(),
-    updated_at: new Date(),
-  })
-
   beforeAll(async () => {
-    app = await getTestApp();
-    ({ store } = app)
+    app = await getTestApp()
+    store = app.store
 
-    del = table => store.connection(table).del()
-    insert = (table, data) => (
-      store.connection(table).insert(data).returning('id')
-    );
-
-    [userId] = await insert('users', {
+    userId = await insert(store, 'users', {
       name: 'Test User',
       email: 'hello@postlight.com',
       password: 'password',
       ...timestamps(),
-    });
+    })
 
-    [postId] = await insert('posts', {
+    postId = await insert(store, 'posts', {
       title: '#get() test',
       user_id: userId,
       ...timestamps(),
     })
 
     let tagsResult
-    let commentsResult;
+    let commentsResult
 
     // eslint-disable-next-line prefer-const
-    [imageId, tagsResult, commentsResult] = await Promise.all([
-      insert('images', {
+    ;[imageId, tagsResult, commentsResult] = await Promise.all([
+      insert(store, 'images', {
         url: 'https://postlight.com',
         post_id: postId,
         ...timestamps(),
       }),
       Promise.all([
-        insert('tags', {
+        insert(store, 'tags', {
           name: '#get() test 1',
           ...timestamps(),
         }),
-        insert('tags', {
+        insert(store, 'tags', {
           name: '#get() test 2',
           ...timestamps(),
         }),
-        insert('tags', {
+        insert(store, 'tags', {
           name: '#get() test 3',
           ...timestamps(),
         }),
       ]),
       Promise.all([
-        insert('comments', {
+        insert(store, 'comments', {
           message: '#get() test 1',
           post_id: postId,
           ...timestamps(),
         }),
-        insert('comments', {
+        insert(store, 'comments', {
           message: '#get() test 2',
           post_id: postId,
           ...timestamps(),
         }),
-        insert('comments', {
+        insert(store, 'comments', {
           message: '#get() test 3',
           post_id: postId,
           ...timestamps(),
@@ -92,17 +90,17 @@ describe('module "database/relationship"', () => {
     commentIds = [].concat(...commentsResult)
 
     const categorizationsResult = await Promise.all([
-      insert('categorizations', {
+      insert(store, 'categorizations', {
         tag_id: tagIds[0],
         post_id: postId,
         ...timestamps(),
       }),
-      insert('categorizations', {
+      insert(store, 'categorizations', {
         tag_id: tagIds[1],
         post_id: postId,
         ...timestamps(),
       }),
-      insert('categorizations', {
+      insert(store, 'categorizations', {
         tag_id: tagIds[2],
         post_id: postId,
         ...timestamps(),
@@ -114,20 +112,17 @@ describe('module "database/relationship"', () => {
 
   afterAll(async () => {
     await Promise.all([
-      del('posts').where('id', postId),
-      del('users').where('id', userId),
-      del('images').where('id', imageId),
-      del('tags').whereIn('id', tagIds),
-      del('comments').whereIn('id', commentIds),
-      del('categorizations').whereIn('id', categorizationIds),
+      del(store, 'posts').where('id', postId),
+      del(store, 'users').where('id', userId),
+      del(store, 'images').where('id', imageId),
+      del(store, 'tags').whereIn('id', tagIds),
+      del(store, 'comments').whereIn('id', commentIds),
+      del(store, 'categorizations').whereIn('id', categorizationIds),
     ])
-    await app.destroy()
   })
 
   beforeEach(async () => {
-    record = await store
-      .modelFor('post')
-      .find(postId)
+    record = await store.modelFor('post').find(postId)
   })
 
   describe('#get()', () => {
@@ -141,7 +136,7 @@ describe('module "database/relationship"', () => {
           expect(result.toObject()).toEqual(
             expect.objectContaining({
               post: expect.objectContaining(record.getAttributes()),
-            })
+            }),
           )
         }
       })
@@ -158,8 +153,8 @@ describe('module "database/relationship"', () => {
             expect.objectContaining({
               posts: expect.arrayContaining([
                 expect.objectContaining(record.getAttributes()),
-              ])
-            })
+              ]),
+            }),
           )
         }
       })
@@ -175,10 +170,8 @@ describe('module "database/relationship"', () => {
           result.forEach(comment => {
             expect(comment.toObject()).toEqual(
               expect.objectContaining({
-                post: expect.objectContaining(
-                  record.getAttributes()
-                ),
-              })
+                post: expect.objectContaining(record.getAttributes()),
+              }),
             )
           })
         }
@@ -195,10 +188,8 @@ describe('module "database/relationship"', () => {
           result.forEach(tag => {
             expect(tag.toObject()).toEqual(
               expect.objectContaining({
-                post: expect.objectContaining(
-                  record.getAttributes()
-                ),
-              })
+                post: expect.objectContaining(record.getAttributes()),
+              }),
             )
           })
         }
@@ -211,18 +202,16 @@ describe('module "database/relationship"', () => {
       let image
 
       beforeAll(async () => {
-        const [newImageId] = await insert('images', {
+        const newImageId = await insert(store, 'images', {
           url: faker.image.imageUrl(),
           ...timestamps(),
         })
 
-        image = await store
-          .modelFor('image')
-          .find(newImageId)
+        image = await store.modelFor('image').find(newImageId)
       })
 
       afterAll(async () => {
-        await del('images').where('id', image.getPrimaryKey())
+        await del(store, 'images').where('id', image.getPrimaryKey())
       })
 
       test('can add a record to the relationship', () => {
@@ -230,9 +219,7 @@ describe('module "database/relationship"', () => {
 
         expect(image.toObject()).toEqual(
           expect.objectContaining({
-            post: expect.objectContaining(
-              record.getAttributes()
-            ),
+            post: expect.objectContaining(record.getAttributes()),
           }),
         )
 
@@ -245,20 +232,18 @@ describe('module "database/relationship"', () => {
       let user
 
       beforeAll(async () => {
-        const [newUserId] = await insert('users', {
+        const newUserId = await insert(store, 'users', {
           name: `${faker.name.firstName()} ${faker.name.lastName()}`,
           email: faker.internet.email(),
           password: faker.internet.password(8),
           ...timestamps(),
         })
 
-        user = await store
-          .modelFor('user')
-          .find(newUserId)
+        user = await store.modelFor('user').find(newUserId)
       })
 
       afterAll(async () => {
-        await del('users').where('id', user.getPrimaryKey())
+        await del(store, 'users').where('id', user.getPrimaryKey())
       })
 
       test('can add a record to the relationship', () => {
@@ -269,10 +254,8 @@ describe('module "database/relationship"', () => {
             posts: expect.arrayContaining([
               expect.objectContaining({
                 ...record.getAttributes(),
-                user: expect.objectContaining(
-                  user.getAttributes()
-                ),
-              })
+                user: expect.objectContaining(user.getAttributes()),
+              }),
             ]),
           }),
         )
@@ -285,18 +268,16 @@ describe('module "database/relationship"', () => {
       let comment
 
       beforeEach(async () => {
-        const [newCommentId] = await insert('comments', {
+        const newCommentId = await insert(store, 'comments', {
           message: faker.lorem.sentence(),
           ...timestamps(),
         })
 
-        comment = await store
-          .modelFor('comment')
-          .find(newCommentId)
+        comment = await store.modelFor('comment').find(newCommentId)
       })
 
       afterEach(async () => {
-        await del('comments').where('id', comment.getPrimaryKey())
+        await del(store, 'comments').where('id', comment.getPrimaryKey())
       })
 
       test('can add records to the relationship', () => {
@@ -312,12 +293,10 @@ describe('module "database/relationship"', () => {
             post: expect.objectContaining({
               ...record.getAttributes(),
               comments: expect.arrayContaining([
-                expect.objectContaining(
-                  comment.getAttributes()
-                ),
+                expect.objectContaining(comment.getAttributes()),
               ]),
             }),
-          })
+          }),
         )
       })
 
@@ -328,7 +307,7 @@ describe('module "database/relationship"', () => {
         expect(record.toObject()).toEqual(
           expect.objectContaining({
             comments: [],
-          })
+          }),
         )
       })
     })

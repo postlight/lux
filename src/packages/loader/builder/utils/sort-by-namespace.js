@@ -7,7 +7,7 @@ import type { Bundle$Namespace } from '../../index'
  */
 export default function sortByNamespace<T>(
   [a]: [string, Bundle$Namespace<T>],
-  [b]: [string, Bundle$Namespace<T>]
+  [b]: [string, Bundle$Namespace<T>],
 ): number {
   if (a === 'root') {
     return -1

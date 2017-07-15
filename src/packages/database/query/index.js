@@ -2,8 +2,7 @@
 
 import { camelize } from 'inflection'
 
-import entries from '../../../utils/entries'
-import uniq from '../../../utils/uniq'
+import uniq from '@lux/utils/uniq'
 import type Model from '../model'
 
 import scopesFor from './utils/scopes-for'
@@ -19,32 +18,32 @@ class Query<+T: any> extends Promise {
   /**
    * @private
    */
-  model: Class<Model>;
+  model: Class<Model>
 
   /**
    * @private
    */
-  isFind: boolean;
+  isFind: boolean
 
   /**
    * @private
    */
-  snapshots: Array<Array<any>>;
+  snapshots: Array<Array<any>>
 
   /**
    * @private
    */
-  collection: boolean;
+  collection: boolean
 
   /**
    * @private
    */
-  shouldCount: boolean;
+  shouldCount: boolean
 
   /**
    * @private
    */
-  relationships: Object;
+  relationships: Object
 
   constructor(model: Class<Model>) {
     let resolve
@@ -57,7 +56,7 @@ class Query<+T: any> extends Promise {
 
     createRunner(this, {
       resolve,
-      reject
+      reject,
     })
 
     Object.defineProperties(this, {
@@ -65,42 +64,42 @@ class Query<+T: any> extends Promise {
         value: model,
         writable: false,
         enumerable: false,
-        configurable: false
+        configurable: false,
       },
 
       collection: {
         value: true,
         writable: true,
         enumerable: false,
-        configurable: false
+        configurable: false,
       },
 
       snapshots: {
         value: [],
         writable: true,
         enumerable: false,
-        configurable: false
+        configurable: false,
       },
 
       shouldCount: {
         value: false,
         writable: true,
         enumerable: false,
-        configurable: false
+        configurable: false,
       },
 
       relationships: {
         value: {},
         writable: true,
         enumerable: false,
-        configurable: false
-      }
+        configurable: false,
+      },
     })
 
     Object.defineProperties(this, scopesFor(this))
   }
 
-  // $FlowIgnore
+  // $FlowFixMe
   static get [Symbol.species]() {
     return Promise
   }
@@ -116,11 +115,11 @@ class Query<+T: any> extends Promise {
   find(primaryKey: any): this {
     Object.assign(this, {
       isFind: true,
-      collection: false
+      collection: false,
     })
 
     this.where({
-      [this.model.primaryKey]: primaryKey
+      [this.model.primaryKey]: primaryKey,
     })
 
     if (!this.shouldCount) {
@@ -138,7 +137,7 @@ class Query<+T: any> extends Promise {
     let limit = this.snapshots.find(([name]) => name === 'limit')
 
     if (limit) {
-      [, limit] = limit
+      ;[, limit] = limit
     }
 
     if (typeof limit !== 'number') {
@@ -168,10 +167,12 @@ class Query<+T: any> extends Promise {
         this.snapshots = this.snapshots
           .filter(([method]) => method !== 'orderByRaw')
           .concat([
-            ['orderByRaw', uniq([columnName, this.model.primaryKey])
-              .map(key => `${this.model.tableName}.${key} ${dirUpcase}`)
-              .join(', ')
-            ]
+            [
+              'orderByRaw',
+              uniq([columnName, this.model.primaryKey])
+                .map(key => `${this.model.tableName}.${key} ${dirUpcase}`)
+                .join(', '),
+            ],
           ])
       }
     }
@@ -180,13 +181,9 @@ class Query<+T: any> extends Promise {
   }
 
   where(conditions: Object = {}, not: boolean = false): this {
-    const {
-      model: {
-        tableName
-      }
-    } = this
+    const { model: { tableName } } = this
 
-    const where = entries(conditions).reduce((obj, condition) => {
+    const where = Object.entries(conditions).reduce((obj, condition) => {
       let [key, value] = condition
       const columnName = this.model.columnNameFor(key)
 
@@ -201,23 +198,17 @@ class Query<+T: any> extends Promise {
           if (value.length === 1) {
             return {
               ...obj,
-              [key]: value[0]
+              [key]: value[0],
             }
           }
 
-          this.snapshots.push([
-            not ? 'whereNotIn' : 'whereIn',
-            [key, value]
-          ])
+          this.snapshots.push([not ? 'whereNotIn' : 'whereIn', [key, value]])
         } else if (value === null) {
-          this.snapshots.push([
-            not ? 'whereNotNull' : 'whereNull',
-            [key]
-          ])
+          this.snapshots.push([not ? 'whereNotNull' : 'whereNull', [key]])
         } else {
           return {
             ...obj,
-            [key]: value
+            [key]: value,
           }
         }
       }
@@ -233,13 +224,9 @@ class Query<+T: any> extends Promise {
   }
 
   whereBetween(conditions: Object, not: boolean = false): this {
-    const {
-      model: {
-        tableName
-      }
-    } = this
+    const { model: { tableName } } = this
 
-    entries(conditions).forEach((condition) => {
+    Object.entries(conditions).forEach(condition => {
       let [key] = condition
       const [, value] = condition
       const columnName = this.model.columnNameFor(key)
@@ -250,7 +237,7 @@ class Query<+T: any> extends Promise {
         if (Array.isArray(value)) {
           this.snapshots.push([
             `where${not ? 'NotBetween' : 'Between'}`,
-            [key, value]
+            [key, value],
           ])
         }
       }
@@ -267,7 +254,7 @@ class Query<+T: any> extends Promise {
   first(): this {
     if (!this.shouldCount) {
       const willSort = this.snapshots.some(
-        ([method]) => method === 'orderByRaw'
+        ([method]) => method === 'orderByRaw',
       )
 
       this.collection = false
@@ -285,7 +272,7 @@ class Query<+T: any> extends Promise {
   last(): this {
     if (!this.shouldCount) {
       const willSort = this.snapshots.some(
-        ([method]) => method === 'orderByRaw'
+        ([method]) => method === 'orderByRaw',
       )
 
       this.collection = false
@@ -308,8 +295,8 @@ class Query<+T: any> extends Promise {
 
       snapshots: [
         ['count', '* as countAll'],
-        ...this.snapshots.filter(([name]) => validName.test(name))
-      ]
+        ...this.snapshots.filter(([name]) => validName.test(name)),
+      ],
     })
 
     return this
@@ -344,21 +331,26 @@ class Query<+T: any> extends Promise {
 
     if (!this.shouldCount) {
       if (relationships.length === 1 && typeof relationships[0] === 'object') {
-        included = entries(relationships[0]).reduce((arr, relationship) => {
+        included = Object.entries(
+          relationships[0],
+        ).reduce((arr, relationship) => {
           const [name] = relationship
           const opts = this.model.relationshipFor(name)
           let [, attrs] = relationship
 
-          if (opts) {
+          if (opts && Array.isArray(attrs)) {
             if (!attrs.length) {
               attrs = opts.model.attributeNames
             }
 
-            return [...arr, {
-              name,
-              attrs,
-              relationship: opts
-            }]
+            return [
+              ...arr,
+              {
+                name,
+                attrs,
+                relationship: opts,
+              },
+            ]
           }
 
           return arr
@@ -376,11 +368,14 @@ class Query<+T: any> extends Promise {
           if (opts) {
             const attrs = opts.model.attributeNames
 
-            return [...arr, {
-              attrs,
-              name: str,
-              relationship: opts
-            }]
+            return [
+              ...arr,
+              {
+                attrs,
+                name: str,
+                relationship: opts,
+              },
+            ]
           }
 
           return arr
@@ -393,17 +388,16 @@ class Query<+T: any> extends Promise {
           let { attrs } = opts
 
           if (relationship.type === 'hasMany') {
-            attrs = relationship.through ? attrs : [
-              ...attrs,
-              camelize(relationship.foreignKey, true)
-            ]
+            attrs = relationship.through
+              ? attrs
+              : [...attrs, camelize(relationship.foreignKey, true)]
 
             this.relationships[name] = {
               attrs,
               type: 'hasMany',
               model: relationship.model,
               through: relationship.through,
-              foreignKey: relationship.foreignKey
+              foreignKey: relationship.foreignKey,
             }
 
             return false
@@ -411,27 +405,37 @@ class Query<+T: any> extends Promise {
 
           return true
         })
-        .reduce((arr, { name, attrs, relationship }) => {
+        .reduce((arr, { attrs, name, relationship }) => {
           arr.push([
             'includeSelect',
-            formatSelect(relationship.model, attrs, `${name}.`)
+            formatSelect(
+              relationship.model,
+              Array.isArray(attrs) ? attrs.map(String) : [],
+              `${name}.`,
+            ),
           ])
 
           if (relationship.type === 'belongsTo') {
-            arr.push(['leftOuterJoin', [
-              relationship.model.tableName,
-              `${this.model.tableName}.${relationship.foreignKey}`,
-              '=',
-              `${relationship.model.tableName}.` +
-                `${relationship.model.primaryKey}`
-            ]])
+            arr.push([
+              'leftOuterJoin',
+              [
+                relationship.model.tableName,
+                `${this.model.tableName}.${relationship.foreignKey}`,
+                '=',
+                `${relationship.model.tableName}.` +
+                  `${relationship.model.primaryKey}`,
+              ],
+            ])
           } else if (relationship.type === 'hasOne') {
-            arr.push(['leftOuterJoin', [
-              relationship.model.tableName,
-              `${this.model.tableName}.${this.model.primaryKey}`,
-              '=',
-              `${relationship.model.tableName}.${relationship.foreignKey}`
-            ]])
+            arr.push([
+              'leftOuterJoin',
+              [
+                relationship.model.tableName,
+                `${this.model.tableName}.${this.model.primaryKey}`,
+                '=',
+                `${relationship.model.tableName}.${relationship.foreignKey}`,
+              ],
+            ])
           }
 
           return arr
@@ -469,26 +473,20 @@ class Query<+T: any> extends Promise {
 
   then<U>(
     onFulfilled?: (value: T) => Promise<U> | U,
-    onRejected?: (error: Error) => Promise<U> | U
+    onRejected?: (error: Error) => Promise<U> | U,
   ): Promise<U> {
     runQuery(this)
     return super.then(onFulfilled, onRejected)
   } // eslint-disable-line brace-style
 
-  // $FlowIgnore
+  // $FlowFixMe
   catch<U>(onRejected?: (error: Error) => ?Promise<U> | U): Promise<U> {
     runQuery(this)
     return super.catch(onRejected)
   }
 
   static from(src: any): Query<T> {
-    const {
-      model,
-      snapshots,
-      collection,
-      shouldCount,
-      relationships
-    } = src
+    const { model, snapshots, collection, shouldCount, relationships } = src
 
     const dest = Reflect.construct(this, [model])
 
@@ -496,7 +494,7 @@ class Query<+T: any> extends Promise {
       snapshots,
       collection,
       shouldCount,
-      relationships
+      relationships,
     })
 
     return dest

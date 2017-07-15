@@ -8,42 +8,54 @@ describe('module "router/route/params"', () => {
     let subject: ParameterGroup
 
     beforeAll(() => {
-      subject = new ParameterGroup([
-        ['id', new Parameter({
-          type: 'number',
-          path: 'id',
-          required: true
-        })],
-        ['meta', new ParameterGroup([
-          ['date', new Parameter({
-            type: 'string',
-            path: 'meta.date',
-            required: true
-          })],
-          ['vowel', new Parameter({
-            type: 'string',
-            path: 'meta.vowel',
-            values: [
-              'a',
-              'e',
-              'i',
-              'o',
-              'u'
-            ]
-          })],
-        ], {
-          path: 'meta',
-          sanitize: true
-        })]
-      ], {
-        path: '',
-        required: true
-      })
+      subject = new ParameterGroup(
+        [
+          [
+            'id',
+            new Parameter({
+              type: 'number',
+              path: 'id',
+              required: true,
+            }),
+          ],
+          [
+            'meta',
+            new ParameterGroup(
+              [
+                [
+                  'date',
+                  new Parameter({
+                    type: 'string',
+                    path: 'meta.date',
+                    required: true,
+                  }),
+                ],
+                [
+                  'vowel',
+                  new Parameter({
+                    type: 'string',
+                    path: 'meta.vowel',
+                    values: ['a', 'e', 'i', 'o', 'u'],
+                  }),
+                ],
+              ],
+              {
+                path: 'meta',
+                sanitize: true,
+              },
+            ),
+          ],
+        ],
+        {
+          path: '',
+          required: true,
+        },
+      )
     })
 
     describe('#validate()', () => {
       test('returns null when then value is null', () => {
-        // $FlowIgnore
+        // $FlowFixMe
         expect(subject.validate(null)).toBeNull()
       })
 
@@ -58,8 +70,8 @@ describe('module "router/route/params"', () => {
           subject.validate({
             id: '1',
             meta: {
-              date: Date.now()
-            }
+              date: Date.now(),
+            },
           })
         }).toThrow()
       })
@@ -70,8 +82,8 @@ describe('module "router/route/params"', () => {
             id: 1,
             meta: {
               date: new Date().toISOString(),
-              vowel: 'p'
-            }
+              vowel: 'p',
+            },
           })
         }).toThrow()
       })
@@ -81,8 +93,8 @@ describe('module "router/route/params"', () => {
           id: 1,
           meta: {
             date: Date(),
-            vowel: 'a'
-          }
+            vowel: 'a',
+          },
         }
 
         expect(subject.validate(params)).toEqual(params)
@@ -98,14 +110,14 @@ describe('module "router/route/params"', () => {
           meta: {
             date: Date(),
             colors: ['red', 'green', 'blue'],
-          }
+          },
         }
 
         expect(subject.validate(params)).toEqual({
           id: 1,
           meta: {
-            date: params.meta.date
-          }
+            date: params.meta.date,
+          },
         })
       })
     })

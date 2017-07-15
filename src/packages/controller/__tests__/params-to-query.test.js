@@ -1,8 +1,8 @@
 /* @flow */
 
-import type { Model } from '../../database'
-import type Request from '../../request'
-import merge from '../../../utils/merge'
+import type { Model } from '@lux/packages/database'
+import type Request from '@lux/packages/request'
+import merge from '@lux/utils/merge'
 import paramsToQuery from '../utils/params-to-query'
 import { getTestApp } from '../../../../test/utils/test-app'
 
@@ -10,20 +10,17 @@ describe('module "controller"', () => {
   describe('util paramsToQuery()', () => {
     let app
     let Post: Class<Model>
-    const createParams = (obj: Object): $PropertyType<Request, 'params'> => (
-      merge({
-        sort: 'createdAt',
-        filter: {},
-        fields: {
-          posts: [
-            'body',
-            'title',
-            'createdAt',
-            'updatedAt'
-          ]
-        }
-      }, obj)
-    )
+    const createParams = (obj: Object): $PropertyType<Request, 'params'> =>
+      merge(
+        {
+          sort: 'createdAt',
+          filter: {},
+          fields: {
+            posts: ['body', 'title', 'createdAt', 'updatedAt'],
+          },
+        },
+        obj,
+      )
 
     beforeAll(async () => {
       app = await getTestApp()
@@ -40,17 +37,14 @@ describe('module "controller"', () => {
         sort: 'title',
         page: {
           size: 10,
-          number: 5
+          number: 5,
         },
         filter: {
-          title: 'New Post'
+          title: 'New Post',
         },
         fields: {
-          posts: [
-            'body',
-            'title'
-          ]
-        }
+          posts: ['body', 'title'],
+        },
       })
 
       expect(paramsToQuery(Post, subject)).toMatchSnapshot()
@@ -63,8 +57,8 @@ describe('module "controller"', () => {
         subject = createParams({
           page: {
             size: 10,
-            number: 2
-          }
+            number: 2,
+          },
         })
       })
 
@@ -76,7 +70,7 @@ describe('module "controller"', () => {
     describe('- sort', () => {
       test('converts asc parameters', () => {
         const subject = createParams({
-          sort: 'title'
+          sort: 'title',
         })
 
         expect(paramsToQuery(Post, subject)).toMatchSnapshot()
@@ -84,7 +78,7 @@ describe('module "controller"', () => {
 
       test('converts desc parameters', () => {
         const subject = createParams({
-          sort: '-title'
+          sort: '-title',
         })
 
         expect(paramsToQuery(Post, subject)).toMatchSnapshot()
@@ -95,13 +89,9 @@ describe('module "controller"', () => {
       test('can properly build included fields', () => {
         const subject = createParams({
           fields: {
-            users: [
-              'name',
-            ],
+            users: ['name'],
           },
-          include: [
-            'user',
-          ],
+          include: ['user'],
         })
 
         expect(paramsToQuery(Post, subject)).toMatchSnapshot()
@@ -110,13 +100,9 @@ describe('module "controller"', () => {
       test('ignores invalid field sets', () => {
         const subject = createParams({
           fields: {
-            authors: [
-              'name'
-            ]
+            authors: ['name'],
           },
-          include: [
-            'author'
-          ]
+          include: ['author'],
         })
 
         expect(paramsToQuery(Post, subject)).toMatchSnapshot()
@@ -125,11 +111,8 @@ describe('module "controller"', () => {
       test('only adds `id` when the include array is `undefined`', () => {
         const subject = createParams({
           fields: {
-            images: [
-              'id',
-              'url'
-            ]
-          }
+            images: ['id', 'url'],
+          },
         })
 
         expect(paramsToQuery(Post, subject)).toMatchSnapshot()

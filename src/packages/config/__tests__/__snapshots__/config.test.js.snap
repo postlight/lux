@@ -3,6 +3,17 @@
 exports[`module "config" #createDefaultConfig() creates a default config object in the context of NODE_ENV 1`] = `
 Object {
   "adapter": [Function],
+  "database": Object {
+    "development": Object {
+      "driver": "sqlite3",
+    },
+    "production": Object {
+      "driver": "sqlite3",
+    },
+    "test": Object {
+      "driver": "sqlite3",
+    },
+  },
   "logging": Object {
     "enabled": false,
     "filter": Object {
@@ -11,6 +22,7 @@ Object {
     "format": "text",
     "level": "DEBUG",
   },
+  "path": "/Users/zacharygolba/src/lux",
   "server": Object {
     "cors": Object {
       "enabled": false,

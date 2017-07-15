@@ -1,10 +1,10 @@
 /* @flow */
 
-import { Query } from '../../../../database'
-import getDomain from '../../../../../utils/get-domain'
+import { Query } from '@lux/packages/database'
+import getDomain from '@lux/utils/get-domain'
 import createPageLinks from '../utils/create-page-links'
-import type Controller from '../../../../controller'
-import type { Document } from '../../../../jsonapi'
+import type Controller from '@lux/packages/controller'
+import type { Document } from '@lux/packages/jsonapi'
 import type { Action } from '../interfaces'
 
 /**
@@ -12,10 +12,9 @@ import type { Action } from '../interfaces'
 */
 export default function resource(
   action: Action<any>,
-  controller: Controller
+  controller: Controller,
 ): Action<any> {
-  // eslint-disable-next-line func-names
-  const resourceAction = async function (req, res) {
+  const resourceAction = async (req, res) => {
     const { name: actionName } = action
     const result = action(req, res)
     let links: $PropertyType<Document, 'links'> = {}
@@ -23,10 +22,7 @@ export default function resource(
     let total
 
     if (actionName === 'index' && result instanceof Query) {
-      [data, total] = await Promise.all([
-        result,
-        Query.from(result).count()
-      ])
+      [data, total] = await Promise.all([result, Query.from(result).count()])
     } else {
       data = await result
     }
@@ -55,7 +51,7 @@ export default function resource(
         links = { self }
       } else if (actionName !== 'index' && !namespace) {
         links = {
-          self: domain + (path || '')
+          self: domain + (path || ''),
         }
       }
 
@@ -63,7 +59,7 @@ export default function resource(
         data,
         links,
         domain,
-        include
+        include,
       })
     }
 
@@ -76,9 +72,6 @@ export default function resource(
     },
     isFinal: {
       value: action.isFinal,
-      writable: false,
-      enumerable: false,
-      configurable: false,
     },
   })
 

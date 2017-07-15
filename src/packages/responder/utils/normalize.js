@@ -1,15 +1,15 @@
 /* @flow */
 
-import { MIME_TYPE } from '../../jsonapi'
-import { STATUS_CODES } from '../../response'
-import stringify from '../../../utils/stringify'
+import { MIME_TYPE } from '@lux/packages/jsonapi'
+import { STATUS_CODES } from '@lux/packages/response'
+import stringify from '@lux/utils/stringify'
 
 import dataFor from './data-for'
 
 type ResponseData = {
-  data: string;
-  mimeType: string;
-  statusCode: number;
+  data: string,
+  mimeType: string,
+  statusCode: number,
 }
 
 /**

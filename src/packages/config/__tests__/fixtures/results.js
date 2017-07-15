@@ -1,6 +1,6 @@
 /* @flow */
 
-import { NODE_ENV } from '../../../../constants'
+import { NODE_ENV } from '@lux/constants'
 
 const isTestENV = NODE_ENV === 'test'
 const isProdENV = NODE_ENV === 'production'
@@ -8,8 +8,8 @@ const isProdENV = NODE_ENV === 'production'
 export const CREATE_DEFAULT_CONFIG_RESULT = {
   server: {
     cors: {
-      enabled: false
-    }
+      enabled: false,
+    },
   },
   logging: {
     level: isProdENV ? 'INFO' : 'DEBUG',
@@ -17,7 +17,7 @@ export const CREATE_DEFAULT_CONFIG_RESULT = {
     enabled: !isTestENV,
 
     filter: {
-      params: []
-    }
-  }
+      params: [],
+    },
+  },
 }

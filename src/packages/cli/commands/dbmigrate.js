@@ -1,10 +1,10 @@
 import { EOL } from 'os'
 
-import { CWD } from '../../../constants'
-import Database, { pendingMigrations } from '../../database'
-import Logger, { sql } from '../../logger'
-import { createLoader } from '../../loader'
-import { composeAsync } from '../../../utils/compose'
+import { CWD } from '@lux/constants'
+import Database, { pendingMigrations } from '@lux/packages/database'
+import Logger, { sql } from '@lux/packages/logger'
+import { createLoader } from '@lux/packages/loader'
+import { composeAsync } from '@lux/utils/compose'
 
 /**
  * @private
@@ -23,8 +23,8 @@ export async function dbmigrate() {
     checkMigrations: false,
 
     logger: new Logger({
-      enabled: false
-    })
+      enabled: false,
+    }),
   })
 
   const pending = await pendingMigrations(CWD, () => connection('migrations'))
@@ -47,11 +47,11 @@ export async function dbmigrate() {
             process.stdout.write(sql`${query.toString()}`)
             process.stdout.write(EOL)
           })
-          .then(() => (
+          .then(() =>
             connection('migrations').insert({
-              version
-            })
-          ))
+              version,
+            }),
+          )
       })
 
     await composeAsync(...runners)()

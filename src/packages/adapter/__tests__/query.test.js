@@ -71,7 +71,7 @@ describe('module "adapters/query"', () => {
     })
 
     test('always coerces `include` to an array', () => {
-      [
+      ;[
         { include: '1' },
         { include: '1,2,3' },
         { include: 'test-include,include-test' },

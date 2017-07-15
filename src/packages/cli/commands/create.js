@@ -2,11 +2,11 @@ import { EOL } from 'os'
 
 import Ora from 'ora'
 import { green } from 'chalk'
+import { mkdir, writeFile } from 'mz/fs'
 
-import { CWD } from '../../../constants'
-import { mkdir, writeFile } from '../../fs'
-import template from '../../template'
-import exec from '../../../utils/exec'
+import { CWD } from '@lux/constants'
+import template from '@lux/packages/template'
+import exec from '@lux/utils/exec'
 import driverFor from '../utils/driver-for'
 import appTemplate from '../templates/application'
 import configTemplate from '../templates/config'
@@ -34,7 +34,7 @@ export async function create(name, database) {
   await Promise.all([
     mkdir(`${project}/app`),
     mkdir(`${project}/config`),
-    mkdir(`${project}/db`)
+    mkdir(`${project}/db`),
   ])
 
   await Promise.all([
@@ -44,74 +44,44 @@ export async function create(name, database) {
     mkdir(`${project}/app/middleware`),
     mkdir(`${project}/app/utils`),
     mkdir(`${project}/config/environments`),
-    mkdir(`${project}/db/migrate`)
+    mkdir(`${project}/db/migrate`),
   ])
 
   await Promise.all([
-    writeFile(
-      `${project}/app/index.js`,
-      appTemplate(name)
-    ),
+    writeFile(`${project}/app/index.js`, appTemplate(name)),
 
-    writeFile(
-      `${project}/app/routes.js`,
-      routesTemplate()
-    ),
+    writeFile(`${project}/app/routes.js`, routesTemplate()),
 
     writeFile(
       `${project}/config/environments/development.js`,
-      configTemplate(name, 'development')
+      configTemplate(name, 'development'),
     ),
 
     writeFile(
       `${project}/config/environments/test.js`,
-      configTemplate(name, 'test')
+      configTemplate(name, 'test'),
     ),
 
     writeFile(
       `${project}/config/environments/production.js`,
-      configTemplate(name, 'production')
+      configTemplate(name, 'production'),
     ),
 
-    writeFile(
-      `${project}/config/database.js`,
-      dbTemplate(name, driver)
-    ),
+    writeFile(`${project}/config/database.js`, dbTemplate(name, driver)),
 
-    writeFile(
-      `${project}/db/seed.js`,
-      seedTemplate()
-    ),
+    writeFile(`${project}/db/seed.js`, seedTemplate()),
 
-    writeFile(
-      `${project}/README.md`,
-      readmeTemplate(name)
-    ),
+    writeFile(`${project}/README.md`, readmeTemplate(name)),
 
-    writeFile(
-      `${project}/LICENSE`,
-      licenseTemplate()
-    ),
+    writeFile(`${project}/LICENSE`, licenseTemplate()),
 
-    writeFile(
-      `${project}/package.json`,
-      pkgJSONTemplate(name, database)
-    ),
+    writeFile(`${project}/package.json`, pkgJSONTemplate(name, database)),
 
-    writeFile(
-      `${project}/.babelrc`,
-      babelrcTemplate()
-    ),
+    writeFile(`${project}/.babelrc`, babelrcTemplate()),
 
-    writeFile(
-      `${project}/.eslintrc.json`,
-      eslintrcTemplate()
-    ),
+    writeFile(`${project}/.eslintrc.json`, eslintrcTemplate()),
 
-    writeFile(
-      `${project}/.gitignore`,
-      gitignoreTemplate()
-    )
+    writeFile(`${project}/.gitignore`, gitignoreTemplate()),
   ])
 
   const logOutput = template`
@@ -139,18 +109,18 @@ export async function create(name, database) {
     generate({
       cwd: project,
       type: 'serializer',
-      name: 'application'
+      name: 'application',
     }),
 
     generate({
       cwd: project,
       type: 'controller',
-      name: 'application'
-    })
+      name: 'application',
+    }),
   ])
 
   await exec('git init && git add .', {
-    cwd: project
+    cwd: project,
   })
 
   process.stdout.write(`${green('initialize')} git`)
@@ -158,17 +128,17 @@ export async function create(name, database) {
 
   const spinner = new Ora({
     text: 'Installing dependencies from npm...',
-    spinner: 'dots'
+    spinner: 'dots',
   })
 
   spinner.start()
 
   await exec('npm install', {
-    cwd: project
+    cwd: project,
   })
 
   await exec(`npm install --save --save-exact ${driver}`, {
-    cwd: project
+    cwd: project,
   })
 
   spinner.stop()

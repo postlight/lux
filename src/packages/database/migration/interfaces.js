@@ -3,4 +3,4 @@
 /**
  * @private
  */
-export type Migration$Fn<T: Object> = (schema: T) => T;
+export type Migration$Fn<T: Object> = (schema: T) => T

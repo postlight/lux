@@ -8,9 +8,12 @@ describe('util tryCatch()', () => {
 
     expect(value).toBe(false)
 
-    await tryCatch(() => Promise.reject(new Error('Test')), () => {
-      value = true
-    })
+    await tryCatch(
+      () => Promise.reject(new Error('Test')),
+      () => {
+        value = true
+      },
+    )
 
     expect(value).toBe(true)
   })
@@ -22,11 +25,14 @@ describe('util tryCatchSync()', () => {
 
     expect(value).toBe(false)
 
-    tryCatchSync(() => {
-      throw new Error('Test')
-    }, () => {
-      value = true
-    })
+    tryCatchSync(
+      () => {
+        throw new Error('Test')
+      },
+      () => {
+        value = true
+      },
+    )
 
     expect(value).toBe(true)
   })

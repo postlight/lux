@@ -1,8 +1,8 @@
 /* @flow */
 
 import Namespace from '../namespace'
-import { FreezeableSet } from '../../freezeable'
-import type { BuiltInAction } from '../../controller'
+import { FreezeableSet } from '@lux/packages/freezeable'
+import type { BuiltInAction } from '@lux/packages/controller'
 
 import normalizeOnly from './utils/normalize-only'
 import type { Resource$opts } from './interfaces'
@@ -11,7 +11,7 @@ import type { Resource$opts } from './interfaces'
  * @private
  */
 class Resource extends Namespace {
-  only: FreezeableSet<BuiltInAction>;
+  only: FreezeableSet<BuiltInAction>
 
   constructor({ only, ...opts }: Resource$opts) {
     super(opts)
@@ -20,7 +20,7 @@ class Resource extends Namespace {
       value: new FreezeableSet(normalizeOnly(only)),
       writable: false,
       enumerable: false,
-      configurable: false
+      configurable: false,
     })
 
     this.only.freeze()

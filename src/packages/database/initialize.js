@@ -2,24 +2,23 @@
 
 import { worker, isMaster } from 'cluster'
 
-import { NODE_ENV } from '../../constants'
-import { createLoader } from '../loader'
-import { composeAsync } from '../../utils/compose'
+import { NODE_ENV } from '@lux/constants'
+import { createLoader } from '@lux/packages/loader'
+import { composeAsync } from '@lux/utils/compose'
 
 import { ConfigMissingError, MigrationsPendingError } from './errors'
 import connect from './utils/connect'
 import createMigrations from './utils/create-migrations'
 import pendingMigrations from './utils/pending-migrations'
 
-// eslint-disable-next-line no-unused-vars
 import type Database, { Database$opts } from './index'
 
 /**
  * @private
  */
-export default async function initialize<T: Database>(
+export default (async function initialize<T: Database>(
   instance: T,
-  opts: Database$opts
+  opts: Database$opts,
 ): Promise<T> {
   const { path, models, logger, checkMigrations } = opts
   let { config } = opts
@@ -31,9 +30,9 @@ export default async function initialize<T: Database>(
   }
 
   const {
-    debug = (NODE_ENV === 'development')
+    debug = NODE_ENV === 'development',
   }: {
-    debug: boolean
+    debug: boolean,
   } = config
 
   Object.defineProperties(instance, {
@@ -41,44 +40,44 @@ export default async function initialize<T: Database>(
       value: path,
       writable: false,
       enumerable: false,
-      configurable: false
+      configurable: false,
     },
     debug: {
       value: debug,
       writable: false,
       enumerable: false,
-      configurable: false
+      configurable: false,
     },
     models: {
       value: models,
       writable: false,
       enumerable: false,
-      configurable: false
+      configurable: false,
     },
     logger: {
       value: logger,
       writable: false,
       enumerable: false,
-      configurable: false
+      configurable: false,
     },
     config: {
       value: config,
       writable: false,
       enumerable: true,
-      configurable: false
+      configurable: false,
     },
     schema: {
       value: () => instance.connection.schema,
       writable: false,
       enumerable: false,
-      configurable: false
+      configurable: false,
     },
     connection: {
       value: connect(path, config),
       writable: false,
       enumerable: false,
-      configurable: false
-    }
+      configurable: false,
+    },
   })
 
   if (config.memory && config.driver === 'sqlite3') {
@@ -88,9 +87,9 @@ export default async function initialize<T: Database>(
 
     await createMigrations(instance.schema)
 
-    const pending = await pendingMigrations(path, () => (
-      instance.connection('migrations')
-    ))
+    const pending = await pendingMigrations(path, () =>
+      instance.connection('migrations'),
+    )
 
     const runners = pending
       .map(name => {
@@ -104,24 +103,22 @@ export default async function initialize<T: Database>(
       .map(([version, migration]) => () => {
         const query = migration.run(instance.schema())
 
-        return query.then(() => (
+        return query.then(() =>
           instance.connection('migrations').insert({
-            version
-          })
-        ))
+            version,
+          }),
+        )
       })
 
     await composeAsync(...runners)()
-    await instance.connection.transaction(trx => (
-      seed(trx, instance.connection)
-    ))
+    await instance.connection.transaction(trx => seed(trx, instance.connection))
   } else if (isMaster || (worker && worker.id === 1)) {
     await createMigrations(instance.schema)
 
     if (checkMigrations) {
-      const pending = await pendingMigrations(path, () => (
-        instance.connection('migrations')
-      ))
+      const pending = await pendingMigrations(path, () =>
+        instance.connection('migrations'),
+      )
 
       if (pending.length) {
         throw new MigrationsPendingError(pending)
@@ -130,12 +127,10 @@ export default async function initialize<T: Database>(
   }
 
   await Promise.all(
-    Array
-      .from(models.values())
-      .map(model => (
-        model.initialize(instance, () => instance.connection(model.tableName))
-      ))
+    Array.from(models.values()).map(model =>
+      model.initialize(instance, () => instance.connection(model.tableName)),
+    ),
   )
 
   return instance
-}
+})

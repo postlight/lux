@@ -2,7 +2,7 @@
 
 import { paramsFor, defaultParamsFor } from '../index'
 import { getTestApp } from '../../../../../../test/utils/test-app'
-import type Controller from '../../../../controller'
+import type Controller from '@lux/packages/controller'
 
 describe('module "router/route/params"', () => {
   let app
@@ -19,7 +19,7 @@ describe('module "router/route/params"', () => {
     let getController
 
     beforeAll(() => {
-      // $FlowIgnore
+      // $FlowFixMe
       getController = (name: string): Controller => app.controllers.get(name)
     })
 
@@ -31,7 +31,7 @@ describe('module "router/route/params"', () => {
           type: 'custom',
           method: 'GET',
           controller: getController('custom'),
-          dynamicSegments: []
+          dynamicSegments: [],
         })
       })
 
@@ -45,7 +45,7 @@ describe('module "router/route/params"', () => {
     let getController
 
     beforeAll(() => {
-      // $FlowIgnore
+      // $FlowFixMe
       getController = (name: string): Controller => app.controllers.get(name)
     })
 
@@ -57,7 +57,7 @@ describe('module "router/route/params"', () => {
         controller = getController('posts')
         params = defaultParamsFor({
           controller,
-          type: 'collection'
+          type: 'collection',
         })
       })
 
@@ -65,7 +65,7 @@ describe('module "router/route/params"', () => {
         expect(params).toEqual(
           expect.objectContaining({
             sort: expect.anything(),
-          })
+          }),
         )
       })
 
@@ -76,7 +76,7 @@ describe('module "router/route/params"', () => {
               size: expect.anything(),
               number: expect.anything(),
             },
-          })
+          }),
         )
       })
 
@@ -88,7 +88,7 @@ describe('module "router/route/params"', () => {
             fields: expect.objectContaining({
               [model.resourceName]: attributes,
             }),
-          })
+          }),
         )
       })
     })
@@ -101,7 +101,7 @@ describe('module "router/route/params"', () => {
         controller = getController('posts')
         params = defaultParamsFor({
           controller,
-          type: 'member'
+          type: 'member',
         })
       })
 
@@ -113,7 +113,7 @@ describe('module "router/route/params"', () => {
             fields: expect.objectContaining({
               [model.resourceName]: attributes,
             }),
-          })
+          }),
         )
       })
     })
@@ -124,7 +124,7 @@ describe('module "router/route/params"', () => {
       beforeAll(() => {
         params = defaultParamsFor({
           type: 'custom',
-          controller: getController('posts')
+          controller: getController('posts'),
         })
       })
 
@@ -139,7 +139,7 @@ describe('module "router/route/params"', () => {
       beforeAll(() => {
         params = defaultParamsFor({
           type: 'custom',
-          controller: getController('health')
+          controller: getController('health'),
         })
       })
 

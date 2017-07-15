@@ -7,9 +7,11 @@ type Table = $PropertyType<Class<Model>, 'table'>
 function tableFor<T: Model | Class<Model>>(model: T, trx?: Object): Table {
   let table
 
-  if (model instanceof Model) {
+  if (Model.isModel(model)) {
+    // $FlowFixMe
     table = model.constructor.table()
   } else {
+    // $FlowFixMe
     table = model.table()
   }
 

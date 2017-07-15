@@ -5,15 +5,15 @@ import chalk from 'chalk'
 import { DEBUG } from '../../constants'
 import { infoTemplate, debugTemplate } from '../templates'
 import type Logger from '../../index'
-import type Request from '../../../request'
-import type Response from '../../../response'
+import type Request from '@lux/packages/request'
+import type Response from '@lux/packages/response'
 
 import filterParams from './filter-params'
 
 type Options = {
-  request: Request;
-  response: Response;
-  startTime: number;
+  request: Request,
+  response: Response,
+  startTime: number,
 }
 
 /**
@@ -54,7 +54,7 @@ export default function logText(logger: Logger, options: Options): void {
     endTime,
     statusCode,
     statusMessage,
-    remoteAddress: '::1'
+    remoteAddress: '::1',
   }
 
   if (logger.level === DEBUG) {

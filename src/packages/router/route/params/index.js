@@ -1,6 +1,6 @@
 /* @flow */
 
-import type Controller from '../../../controller'
+import type Controller from '@lux/packages/controller'
 
 import ParameterGroup from './parameter-group'
 import getURLParams from './utils/get-url-params'
@@ -11,7 +11,7 @@ import type { Params$opts } from './interfaces'
 import {
   getMemberQueryParams,
   getCollectionQueryParams,
-  getCustomParams
+  getCustomParams,
 } from './utils/get-query-params'
 
 /**
@@ -21,44 +21,29 @@ export function paramsFor({
   type,
   method,
   controller,
-  dynamicSegments
+  dynamicSegments,
 }: Params$opts) {
   let params = getURLParams(dynamicSegments)
 
   if (type === 'member') {
-    params = [
-      ...params,
-      ...getMemberQueryParams(controller)
-    ]
+    params = [...params, ...getMemberQueryParams(controller)]
 
     if (method === 'POST' || method === 'PATCH') {
-      params = [
-        ...params,
-        getDataParams(controller, true)
-      ]
+      params = [...params, getDataParams(controller, true)]
     }
   } else if (type === 'collection') {
-    params = [
-      ...params,
-      ...getCollectionQueryParams(controller)
-    ]
+    params = [...params, ...getCollectionQueryParams(controller)]
 
     if (method === 'POST' || method === 'PATCH') {
-      params = [
-        ...params,
-        getDataParams(controller, false)
-      ]
+      params = [...params, getDataParams(controller, false)]
     }
   } else if (type === 'custom') {
-    params = [
-      ...params,
-      ...getCustomParams(controller)
-    ]
+    params = [...params, ...getCustomParams(controller)]
   }
 
   return new ParameterGroup(params, {
     path: '',
-    required: true
+    required: true,
   })
 }
 
@@ -67,10 +52,10 @@ export function paramsFor({
  */
 export function defaultParamsFor({
   type,
-  controller
+  controller,
 }: {
-  type: string;
-  controller: Controller
+  type: string,
+  controller: Controller,
 }): Object {
   const { hasModel } = controller
 

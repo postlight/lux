@@ -17,7 +17,7 @@ describe('util github', () => {
     describe('- with `branch` option', () => {
       test('builds the correct url', () => {
         const result = github.fileLink('src/index.js', {
-          branch: 'branch-name'
+          branch: 'branch-name',
         })
 
         expect(result).toBe(`${baseURL}/branch-name/src/index.js`)
@@ -27,7 +27,7 @@ describe('util github', () => {
     describe('- with `line` option', () => {
       test('builds the correct url', () => {
         const result = github.fileLink('src/index.js', {
-          line: 2
+          line: 2,
         })
 
         expect(result).toBe(`${baseURL}/master/src/index.js#2`)
@@ -35,7 +35,7 @@ describe('util github', () => {
 
       test('ignores line if it is > 0', () => {
         const result = github.fileLink('src/index.js', {
-          line: -10
+          line: -10,
         })
 
         expect(result).toBe(`${baseURL}/master/src/index.js`)

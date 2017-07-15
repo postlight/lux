@@ -1,8 +1,8 @@
 /* @flow */
 
-import merge from '../../../utils/merge'
-import type { Model, Query } from '../../database'
-import type Request from '../../request'
+import merge from '@lux/utils/merge'
+import type { Model, Query } from '@lux/packages/database'
+import type Request from '@lux/packages/request'
 
 import paramsToQuery from './params-to-query'
 
@@ -11,19 +11,16 @@ import paramsToQuery from './params-to-query'
  */
 export default function findMany<T: Model>(
   model: Class<T>,
-  req: Request
+  req: Request,
 ): Query<Array<Model>> {
   const params = merge(req.defaultParams, req.params)
-  const {
-    sort,
-    page,
-    limit,
-    select,
-    filter,
-    include
-  } = paramsToQuery(model, params)
+  const { sort, page, limit, select, filter, include } = paramsToQuery(
+    model,
+    params,
+  )
 
-  return model.select(...select)
+  return model
+    .select(...select)
     .include(include)
     .limit(limit)
     .page(page)

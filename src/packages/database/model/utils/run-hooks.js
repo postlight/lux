@@ -12,7 +12,8 @@ export default function runHooks(
 ): Promise<void> {
   return hooks
     .filter(Boolean)
-    .reduce((prev, next) => (
-      prev.then(() => next(record, trx))
-    ), Promise.resolve())
+    .reduce(
+      (prev, next) => prev.then(() => next(record, trx)),
+      Promise.resolve(),
+    )
 }

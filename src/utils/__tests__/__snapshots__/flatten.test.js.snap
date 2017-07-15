@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`#deep() 1`] = `
+Array [
+  1,
+  2,
+  3,
+]
+`;
+
+exports[`#shallow() 1`] = `
+Array [
+  1,
+  2,
+  Array [
+    3,
+  ],
+]
+`;

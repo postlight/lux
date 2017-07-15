@@ -6,7 +6,7 @@ const DEFAULT = 'default'
 const CIRCULAR = 'circular'
 
 describe('util fn()', () => {
-  [DEFAULT, CIRCULAR].forEach(method => {
+  ;[DEFAULT, CIRCULAR].forEach(method => {
     describe(`- ${method}`, () => {
       const fn = stringify[method]
 

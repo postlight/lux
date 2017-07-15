@@ -3,7 +3,7 @@
 import type { IncomingMessage, ServerResponse } from 'http'
 
 import type { Adapter } from '../index'
-import type Application from '../../application'
+import type Application from '@lux/packages/application'
 
 import * as request from './request'
 import * as response from './response'

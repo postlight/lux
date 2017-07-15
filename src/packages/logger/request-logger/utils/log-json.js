@@ -1,16 +1,16 @@
 /* @flow */
 
 import type Logger from '../../index'
-import type Request from '../../../request'
-import type Response from '../../../response'
+import type Request from '@lux/packages/request'
+import type Response from '@lux/packages/response'
 
 import filterParams from './filter-params'
 
 const MESSAGE = 'Processed Request'
 
 type Options = {
-  request: Request;
-  response: Response;
+  request: Request,
+  response: Response,
 }
 
 /**
@@ -35,6 +35,6 @@ export default function logJSON(logger: Logger, options: Options): void {
     status,
     protocol,
     userAgent,
-    remoteAddress: '::1'
+    remoteAddress: '::1',
   })
 }

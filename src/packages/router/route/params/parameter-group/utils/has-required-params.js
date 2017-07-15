@@ -1,20 +1,20 @@
 /* @flow */
 
 import { ParameterRequiredError } from '../../errors'
+import hasOwnProperty from '@lux/utils/has-own-property'
 import type ParameterGroup from '../index'
 
-/**
- * @private
- */
-export default function hasRequiredParams(
+const hasRequiredParams = <T: Object>(
   group: ParameterGroup,
-  params: Object
-): boolean {
-  for (const [key, { path, required }] of group) {
-    if (required && !Reflect.has(params, key)) {
+  params: T,
+): boolean => {
+  group.forEach(({ path, required }, key) => {
+    if (required && !hasOwnProperty(params, key)) {
       throw new ParameterRequiredError(path)
     }
-  }
+  })
 
   return true
 }
+
+export default hasRequiredParams

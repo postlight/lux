@@ -1,8 +1,8 @@
 /* @flow */
 
-import type { Action } from '../router'
-import type Request from '../request'
-import type Response from '../response'
+import type { Action } from '@lux/packages/router'
+import type Request from '@lux/packages/request'
+import type Response from '@lux/packages/response'
 
 import createResponseProxy from './utils/create-response-proxy'
 
@@ -18,28 +18,25 @@ export default function luxify(
   middleware: (
     req: Request,
     res: Response,
-    next: (err?: Error) => void
-  ) => void
+    next: (err?: Error) => void,
+  ) => void,
 ): Action<any> {
-  const result = function (req, res) { // eslint-disable-line func-names
-    return new Promise((resolve, reject) => {
-      Reflect.apply(middleware, null, [
+  const result = (req, res) =>
+    new Promise((resolve, reject) => {
+      middleware.apply(null, [
         req,
         createResponseProxy(res, resolve),
-        (err) => {
+        err => {
           if (err && err instanceof Error) {
             reject(err)
           } else {
             resolve()
           }
-        }
+        },
       ])
     })
-  }
 
-  Reflect.defineProperty(result, 'name', {
-    value: middleware.name
+  return Object.defineProperty(result, 'name', {
+    value: middleware.name,
   })
-
-  return result
 }

@@ -1,8 +1,7 @@
 /* @flow */
 
-import { METHODS } from '../../../../request'
-import type { Method } from '../../../../request'
-// eslint-disable-next-line no-unused-vars
+import { METHODS } from '@lux/packages/request'
+import type { Method } from '@lux/packages/request'
 import type { Route$type, Router$Namespace } from '../../../index'
 
 import createDefinition from './create-definition'
@@ -11,7 +10,7 @@ import createDefinition from './create-definition'
  * @private
  */
 type DefinitionGroup = {
-  [key: Method]: (name: string, action?: string) => void;
+  [key: Method]: (name: string, action?: string) => void,
 }
 
 /**
@@ -19,20 +18,19 @@ type DefinitionGroup = {
  */
 function createDefinitionGroup<T: Router$Namespace>(
   type: Route$type,
-  namespace: T
+  namespace: T,
 ): DefinitionGroup {
-  return Array
-    .from(METHODS)
-    .reduce((methods, method) => ({
+  return Array.from(METHODS).reduce(
+    (methods, method) => ({
       ...methods,
-      [method.toLowerCase()]: (
-        createDefinition({
-          type,
-          method,
-          namespace,
-        })
-      ),
-    }), {})
+      [method.toLowerCase()]: createDefinition({
+        type,
+        method,
+        namespace,
+      }),
+    }),
+    {},
+  )
 }
 
 export default createDefinitionGroup

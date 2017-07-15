@@ -1,35 +1,28 @@
 /* @flow */
 
-import omit from '../../../utils/omit'
-import entries from '../../../utils/entries'
-import type { Model } from '../../database'
-import type Request from '../../request'
+import omit from '@lux/utils/omit'
+import { isUndefined } from '@lux/utils/is-type'
+import type { Model, Relationship } from '@lux/packages/database'
 
-/**
- * @private
- */
-export default function paramsToQuery(model: Class<Model>, {
-  id,
-  page,
-  sort,
-  filter,
-  fields,
-  include
-}: $PropertyType<Request, 'params'>): Object {
-  const relationships = entries(model.relationships)
-  let includedFields = omit(fields, model.resourceName)
+const paramsToQuery = (model: Class<Model>, params: Object): Object => {
+  const { id, page, sort, filter, fields, include } = params
+  // $FlowFixMe
+  const relationships: Array<[string, Relationship]> = Object.entries(
+    model.relationships,
+  )
 
   let query = {
     id,
     filter,
-    select: [model.primaryKey, ...Reflect.get(fields, model.resourceName)]
+    include: {},
+    select: [model.primaryKey, ...Reflect.get(fields, model.resourceName)],
   }
 
   if (page) {
     query = {
       ...query,
       page: page.number,
-      limit: page.size
+      limit: page.size,
     }
   }
 
@@ -37,29 +30,34 @@ export default function paramsToQuery(model: Class<Model>, {
     if (sort.startsWith('-')) {
       query = {
         ...query,
-        sort: [sort.substr(1), 'DESC']
+        sort: [sort.substr(1), 'DESC'],
       }
     } else {
       query = {
         ...query,
-        sort: [sort, 'ASC']
+        sort: [sort, 'ASC'],
       }
     }
   }
 
-  includedFields = entries(includedFields).reduce((result, field) => {
+  query.include = Object.entries(
+    omit(fields, model.resourceName),
+  ).reduce((prev, field) => {
+    const next = prev
     const [key] = field
     let [, value] = field
 
-    const [
-      name,
-      relationship
-    ] = relationships.find(([, { model: related }]) => (
-      key === related.resourceName
-    )) || []
+    const [name, relationship] =
+      relationships.find(
+        ([, { model: related }]) => key === related.resourceName,
+      ) || []
 
-    if (!name || !relationship) {
-      return result
+    if (
+      isUndefined(name) ||
+      isUndefined(relationship) ||
+      !Array.isArray(value)
+    ) {
+      return next
     }
 
     if (!value.includes(relationship.model.primaryKey)) {
@@ -72,14 +70,11 @@ export default function paramsToQuery(model: Class<Model>, {
       value = value.slice(0, 1)
     }
 
-    return {
-      ...result,
-      [name]: value
-    }
+    next[name] = value
+    return next
   }, {})
 
-  return {
-    ...query,
-    include: includedFields
-  }
+  return query
 }
+
+export default paramsToQuery

@@ -1,17 +1,15 @@
 /* @flow */
 
 import type { Model } from '../index'
-import entries from '../../../utils/entries'
-import mapToObject from '../../../utils/map-to-object'
+import mapToObject from '@lux/utils/map-to-object'
 
 class ChangeSet extends Map<string, any> {
-  isPersisted: boolean;
+  isPersisted: boolean
 
   constructor(data?: Object = {}): this {
-    super(entries(data))
+    super(Object.entries(data))
 
     this.isPersisted = false
-
     return this
   }
 
@@ -29,7 +27,6 @@ class ChangeSet extends Map<string, any> {
     }
 
     this.isPersisted = true
-
     return this
   }
 
@@ -42,7 +39,6 @@ class ChangeSet extends Map<string, any> {
     const instance = new ChangeSet(mapToObject(this))
 
     target.changeSets.unshift(instance)
-
     return instance
   }
 }

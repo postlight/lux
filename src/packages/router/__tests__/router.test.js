@@ -1,12 +1,12 @@
 /* @flow */
 
-import Logger from '../../logger'
+import Logger from '@lux/packages/logger'
 import Route from '../route'
 import Router from '../index'
-import Controller from '../../controller'
-import Serializer from '../../serializer'
-import { Model } from '../../database'
-import { FreezeableMap } from '../../freezeable'
+import Controller from '@lux/packages/controller'
+import Serializer from '@lux/packages/serializer'
+import { Model } from '@lux/packages/database'
+import { FreezeableMap } from '@lux/packages/freezeable'
 import { request } from '../../adapter/mock'
 
 describe('module "router"', () => {
@@ -20,13 +20,13 @@ describe('module "router"', () => {
       })
 
       class Post extends Model {
-        static resourceName = 'posts';
-        static columnFor = columnFor;
+        static resourceName = 'posts'
+        static columnFor = columnFor
       }
 
       class User extends Model {
-        static resourceName = 'users';
-        static columnFor = columnFor;
+        static resourceName = 'users'
+        static columnFor = columnFor
       }
 
       const appController = new Controller()
@@ -37,22 +37,31 @@ describe('module "router"', () => {
       controller = appController
       controllers = new FreezeableMap([
         ['application', controller],
-        ['posts', new Controller({
-          model: Post,
-          parent: controller,
-          serializer: new Serializer(),
-        })],
-        ['users', new Controller({
-          model: User,
-          parent: controller,
-          serializer: new Serializer(),
-        })],
+        [
+          'posts',
+          new Controller({
+            model: Post,
+            parent: controller,
+            serializer: new Serializer(),
+          }),
+        ],
+        [
+          'users',
+          new Controller({
+            model: User,
+            parent: controller,
+            serializer: new Serializer(),
+          }),
+        ],
         ['admin/application', adminController],
-        ['admin/posts', new Controller({
-          model: Post,
-          parent: adminController,
-          serializer: new Serializer(),
-        })]
+        [
+          'admin/posts',
+          new Controller({
+            model: Post,
+            parent: adminController,
+            serializer: new Serializer(),
+          }),
+        ],
       ])
     })
 
@@ -64,9 +73,9 @@ describe('module "router"', () => {
 
           routes() {
             this.resource('users', {
-              only: ['index']
+              only: ['index'],
             })
-          }
+          },
         })
 
         expect(subject.has('GET:/users')).toBe(true)
@@ -81,7 +90,7 @@ describe('module "router"', () => {
 
           routes() {
             this.resource('posts')
-          }
+          },
         })
 
         expect(subject.has('GET:/posts')).toBe(true)
@@ -96,15 +105,16 @@ describe('module "router"', () => {
       })
 
       test('throws an error when a controller is missing', () => {
-        expect(() => (
-          new Router({
-            controller,
-            controllers,
-            routes() {
-              this.resource('articles')
-            },
-          })
-        )).toThrow()
+        expect(
+          () =>
+            new Router({
+              controller,
+              controllers,
+              routes() {
+                this.resource('articles')
+              },
+            }),
+        ).toThrow()
       })
     })
 
@@ -132,17 +142,18 @@ describe('module "router"', () => {
       })
 
       test('throws an error when a controller is missing', () => {
-        expect(() => (
-          new Router({
-            controller,
-            controllers,
-            routes() {
-              this.namespace('v1', function v1() {
-                this.resource('posts')
-              })
-            }
-          })
-        )).toThrow()
+        expect(
+          () =>
+            new Router({
+              controller,
+              controllers,
+              routes() {
+                this.namespace('v1', function v1() {
+                  this.resource('posts')
+                })
+              },
+            }),
+        ).toThrow()
       })
     })
 
@@ -182,8 +193,8 @@ describe('module "router"', () => {
               headers: new Map(),
               encrypted: false,
               defaultParams: {},
-            })
-          )
+            }),
+          ),
         ).toBeInstanceOf(Route)
       })
 
@@ -198,8 +209,8 @@ describe('module "router"', () => {
               headers: new Map(),
               encrypted: false,
               defaultParams: {},
-            })
-          )
+            }),
+          ),
         ).toBeInstanceOf(Route)
       })
     })

@@ -1,4 +1,4 @@
-import { Serializer } from 'LUX_LOCAL'
+import { Serializer } from 'lux-framework'
 
 class PostsSerializer extends Serializer {
   attributes = [

@@ -1,7 +1,7 @@
 /* @flow */
 
-import { FreezeableMap } from '../freezeable'
-import type Request from '../request'
+import { FreezeableMap } from '@lux/packages/freezeable'
+import type Request from '@lux/packages/request'
 
 import Namespace from './namespace'
 import { build, define } from './definitions'
@@ -13,15 +13,18 @@ import type Route from './route'
  * @private
  */
 class Router extends FreezeableMap<string, Route> {
-  replacer: RegExp;
+  replacer: RegExp
 
   constructor({ routes, controller, controllers }: Router$opts) {
-    const definitions = build(routes, new Namespace({
-      controller,
-      controllers,
-      path: '/',
-      name: 'root'
-    }))
+    const definitions = build(
+      routes,
+      new Namespace({
+        controller,
+        controllers,
+        path: '/',
+        name: 'root',
+      }),
+    )
 
     super()
     define(this, definitions)
@@ -30,13 +33,15 @@ class Router extends FreezeableMap<string, Route> {
       value: createReplacer(controllers),
       writable: false,
       enumerable: false,
-      configurable: false
+      configurable: false,
     })
 
     this.freeze()
   }
 
-  match({ method, url }: Request): void | Route {
+  match(request: Request): void | Route {
+    const { method, url } = request
+
     if (url.pathname) {
       const params = []
       const staticPath = url.pathname.replace(this.replacer, (str, g1, g2) => {
@@ -44,7 +49,6 @@ class Router extends FreezeableMap<string, Route> {
         return `${g1}/:dynamic`
       })
 
-      // eslint-disable-next-line no-param-reassign
       url.params = params
       return this.get(`${method}:${staticPath}`)
     }

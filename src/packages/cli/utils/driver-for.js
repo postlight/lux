@@ -3,7 +3,7 @@ const drivers = new Map([
   ['sqlite', 'sqlite3'],
   ['mysql', 'mysql2'],
   ['mariadb', 'mariasql'],
-  ['oracle', 'oracle']
+  ['oracle', 'oracle'],
 ])
 
 export default function driverFor(database = 'sqlite') {

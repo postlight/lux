@@ -8,22 +8,22 @@ describe('util range()', () => {
 
     expect(subject.next()).toEqual({
       done: false,
-      value: 1
+      value: 1,
     })
 
     expect(subject.next()).toEqual({
       done: false,
-      value: 2
+      value: 2,
     })
 
     expect(subject.next()).toEqual({
       done: false,
-      value: 3
+      value: 3,
     })
 
     expect(subject.next()).toEqual({
       done: true,
-      value: undefined
+      value: undefined,
     })
   })
 })

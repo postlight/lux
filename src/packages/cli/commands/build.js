@@ -1,18 +1,22 @@
+/* @flow */
+
 import Ora from 'ora'
 
-import { CWD, NODE_ENV } from '../../../constants'
-import { compile } from '../../compiler'
+import { compile } from '@lux/packages/compiler'
+import * as env from '@lux/utils/env'
 
 export async function build(useStrict: boolean = false): Promise<void> {
   const spinner = new Ora({
     text: 'Building your application...',
-    spinner: 'dots'
+    spinner: 'dots',
   })
 
   spinner.start()
 
-  await compile(CWD, NODE_ENV, {
-    useStrict
+  await compile({
+    directory: process.cwd(),
+    environment: env.name(),
+    useStrict,
   })
 
   spinner.stop()

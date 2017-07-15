@@ -14,6 +14,8 @@ node_modules/
 # misc
 *.sqlite
 *.DS_Store
+.idea/
+.vscode/
 
 # logs
 log/

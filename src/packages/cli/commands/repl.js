@@ -3,17 +3,17 @@
 import * as path from 'path'
 import { start as startRepl } from 'repl'
 
-import { CWD } from '../../../constants'
-import type Application from '../../application'
+import { CWD } from '@lux/constants'
+import type Application from '@lux/packages/application'
 
 export function repl(): Promise<void> {
-  return new Promise(async (resolve) => {
+  return new Promise(async resolve => {
     const app: Application = await Reflect.apply(require, null, [
-      path.join(CWD, 'dist', 'boot')
+      path.join(CWD, 'dist', 'boot'),
     ])
 
     const instance = startRepl({
-      prompt: '> '
+      prompt: '> ',
     })
 
     instance.once('exit', resolve)
@@ -24,26 +24,29 @@ export function repl(): Promise<void> {
       routes: app.router,
       [app.constructor.name]: app,
 
-      ...Array
-        .from(app.models)
-        .reduce((context, [, model]) => ({
+      ...Array.from(app.models).reduce(
+        (context, [, model]) => ({
           ...context,
-          [model.name]: model
-        }), {}),
+          [model.name]: model,
+        }),
+        {},
+      ),
 
-      ...Array
-        .from(app.controllers)
-        .reduce((context, [, controller]) => ({
+      ...Array.from(app.controllers).reduce(
+        (context, [, controller]) => ({
           ...context,
-          [controller.constructor.name]: controller
-        }), {}),
+          [controller.constructor.name]: controller,
+        }),
+        {},
+      ),
 
-      ...Array
-        .from(app.serializers)
-        .reduce((context, [, serializer]) => ({
+      ...Array.from(app.serializers).reduce(
+        (context, [, serializer]) => ({
           ...context,
-          [serializer.constructor.name]: serializer
-        }), {})
+          [serializer.constructor.name]: serializer,
+        }),
+        {},
+      ),
     })
   })
 }

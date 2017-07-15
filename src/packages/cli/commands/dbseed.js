@@ -1,7 +1,7 @@
-import { CWD } from '../../../constants'
-import Logger from '../../logger'
-import Database from '../../database'
-import { createLoader } from '../../loader'
+import { CWD } from '@lux/constants'
+import Logger from '@lux/packages/logger'
+import Database from '@lux/packages/database'
+import { createLoader } from '@lux/packages/loader'
 
 /**
  * @private
@@ -17,9 +17,9 @@ export function dbseed() {
     models,
     path: CWD,
     logger: new Logger({
-      enabled: false
-    })
-  }).then(store => (
-    store.connection.transaction(trx => seed(trx, store.connection))
-  ))
+      enabled: false,
+    }),
+  }).then(store =>
+    store.connection.transaction(trx => seed(trx, store.connection)),
+  )
 }

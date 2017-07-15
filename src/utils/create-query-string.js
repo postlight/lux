@@ -1,14 +1,12 @@
 /* @flow */
 
-import entries from './entries'
-
 /**
  * A replacement for querystring.stringify that supports nested objects.
  *
  * @private
  */
 export default function createQueryString(src: Object, prop?: string): string {
-  return entries(src).reduce((str, [key, value], index) => {
+  return Object.entries(src).reduce((str, [key, value], index) => {
     let result = str
 
     if (index > 0) {
@@ -16,13 +14,10 @@ export default function createQueryString(src: Object, prop?: string): string {
     }
 
     if (prop) {
-      result += (
-        `${prop
-        + encodeURIComponent('[')
-        + key
-        + encodeURIComponent(']')
-         }=`
-      )
+      result += `${prop +
+        encodeURIComponent('[') +
+        key +
+        encodeURIComponent(']')}=`
     } else {
       result += `${key}=`
     }
@@ -31,15 +26,14 @@ export default function createQueryString(src: Object, prop?: string): string {
       if (Array.isArray(value)) {
         result += value.map(encodeURIComponent).join()
       } else {
-        result = (
-          result.substr(0, result.length - (key.length + 1))
-          + createQueryString(value, key)
-        )
+        result =
+          result.substr(0, result.length - (key.length + 1)) +
+          createQueryString(value, key)
       }
     } else if (!value && typeof value !== 'number') {
       result += 'null'
     } else {
-      result += encodeURIComponent(value)
+      result += encodeURIComponent(String(value))
     }
 
     return result

@@ -1,8 +1,7 @@
 /* @flow */
 
-import { BUILT_IN_ACTIONS } from '../../../controller'
-// eslint-disable-next-line no-duplicate-imports
-import type { BuiltInAction } from '../../../controller'
+import { BUILT_IN_ACTIONS } from '@lux/packages/controller'
+import type { BuiltInAction } from '@lux/packages/controller'
 
 /**
  * @private

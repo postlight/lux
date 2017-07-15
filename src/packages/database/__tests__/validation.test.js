@@ -11,7 +11,7 @@ describe('module "database/validation"', () => {
         const subject = new Validation({
           validator,
           key: 'password',
-          value: 'super-secret-password'
+          value: 'super-secret-password',
         })
 
         expect(subject.isValid()).toBe(true)
@@ -21,7 +21,7 @@ describe('module "database/validation"', () => {
         const subject = new Validation({
           validator,
           key: 'password',
-          value: 'pwd'
+          value: 'pwd',
         })
 
         expect(subject.isValid()).toBe(false)

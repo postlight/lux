@@ -1,15 +1,15 @@
 /* @flow */
 
-import { MIME_TYPE } from '../jsonapi'
-import type Application from '../application'
-import type { Method } from '../request'
+import { MIME_TYPE } from '@lux/packages/jsonapi'
+import type Application from '@lux/packages/application'
+import type { Method } from '@lux/packages/request'
 
 type Options = {
-  body?: Object;
-  mode?: string;
-  cache?: string;
-  method?: Method;
-  headers?: Object;
+  body?: Object,
+  mode?: string,
+  cache?: string,
+  method?: Method,
+  headers?: Object,
 }
 
 export type Fetch = (url: string, options: Options) => Promise<any>
@@ -20,7 +20,7 @@ const getDefaultHeaders = () => ({
 })
 
 export function mockFetch({ exec }: Application): Fetch {
-  return (url, { method = 'GET', headers = {} }) => (
+  return (url, { method = 'GET', headers = {} }) =>
     new Promise(resolve => {
       exec({
         url,
@@ -29,5 +29,4 @@ export function mockFetch({ exec }: Application): Fetch {
         headers: Object.assign(getDefaultHeaders(), headers),
       })
     })
-  )
 }

@@ -1,7 +1,7 @@
 /* @flow */
 
 import { ANSI } from '../constants'
-import stringify from '../../../../utils/stringify'
+import stringify from '@lux/utils/stringify'
 import type { Format } from '../../index'
 
 export default function formatMessage(data?: ?mixed, format: Format): string {

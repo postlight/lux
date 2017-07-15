@@ -1,16 +1,15 @@
 /* @flow */
 
-import { FreezeableMap } from '../../freezeable'
+import { FreezeableMap } from '@lux/packages/freezeable'
 import type { Bundle$Namespace, Bundle$NamespaceGroup } from '../index'
 
 /**
  * @private
  */
 export function resolve<T>(
-  group: Bundle$Namespace<T>
+  group: Bundle$Namespace<T>,
 ): Bundle$NamespaceGroup<T> {
-  return Array
-    .from(group)
+  return Array.from(group)
     .map(([key, value]) => {
       let namespace = key.split('/')
 
@@ -19,18 +18,10 @@ export function resolve<T>(
         .join('/')
 
       if (namespace) {
-        return [
-          key.substr(namespace.length + 1),
-          value,
-          namespace
-        ]
+        return [key.substr(namespace.length + 1), value, namespace]
       }
 
-      return [
-        key,
-        value,
-        'root'
-      ]
+      return [key, value, 'root']
     })
     .reduce((map, [key, value, namespace]) => {
       let nsValue = map.get(namespace)

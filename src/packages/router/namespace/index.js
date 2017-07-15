@@ -1,7 +1,7 @@
 /* @flow */
 
-import { FreezeableSet, freezeProps } from '../../freezeable'
-import type Controller from '../../controller'
+import { FreezeableSet, freezeProps } from '@lux/packages/freezeable'
+import type Controller from '@lux/packages/controller'
 import type { Route, Router$Namespace } from '../index'
 
 import normalizeName from './utils/normalize-name'
@@ -12,24 +12,24 @@ import type { Namespace$opts } from './interfaces'
  * @private
  */
 class Namespace extends FreezeableSet<Route | Router$Namespace> {
-  name: string;
+  name: string
 
-  path: string;
+  path: string
 
-  isRoot: boolean;
+  isRoot: boolean
 
-  namespace: Router$Namespace;
+  namespace: Router$Namespace
 
-  controller: Controller;
+  controller: Controller
 
-  controllers: Map<string, Controller>;
+  controllers: Map<string, Controller>
 
   constructor({
     name,
     path,
     namespace,
     controller,
-    controllers
+    controllers,
   }: Namespace$opts) {
     super()
 
@@ -39,20 +39,12 @@ class Namespace extends FreezeableSet<Route | Router$Namespace> {
       name: normalizeName(name),
       path: normalizePath(path),
       isRoot: path === '/',
-      namespace: namespace || this
+      namespace: namespace || this,
     })
 
-    freezeProps(this, true,
-      'name',
-      'path',
-      'controller',
-      'namespace'
-    )
+    freezeProps(this, true, 'name', 'path', 'controller', 'namespace')
 
-    freezeProps(this, false,
-      'isRoot',
-      'controllers'
-    )
+    freezeProps(this, false, 'isRoot', 'controllers')
   }
 }
 

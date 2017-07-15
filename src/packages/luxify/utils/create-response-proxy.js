@@ -1,6 +1,6 @@
 /* @flow */
 
-import type Response from '../../response'
+import type Response from '@lux/packages/response'
 
 /**
  * Create a Proxy that will trap typical node middleware callback invocations
@@ -10,7 +10,7 @@ import type Response from '../../response'
  */
 export default function createResponseProxy(
   res: Response,
-  resolve: (result: mixed) => void
+  resolve: (result: mixed) => void,
 ): Response {
   return new Proxy(res, {
     get(target, key) {
@@ -23,6 +23,6 @@ export default function createResponseProxy(
         default:
           return Reflect.get(target, key)
       }
-    }
+    },
   })
 }

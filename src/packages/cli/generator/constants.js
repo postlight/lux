@@ -2,7 +2,7 @@
 
 import { dim } from 'chalk'
 
-import template from '../../template'
+import template from '@lux/packages/template'
 
 /**
  * TODO: Update the 'routes.js' file when generating a resource within a

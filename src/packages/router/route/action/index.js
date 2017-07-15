@@ -1,6 +1,6 @@
 /* @flow */
 
-import type Controller from '../../../controller'
+import type Controller from '@lux/packages/controller'
 
 import resource from './enhancers/resource'
 import type { Action } from './interfaces'
@@ -11,7 +11,7 @@ import type { Action } from './interfaces'
 export function createAction(
   type: string,
   action: Action<any>,
-  controller: Controller
+  controller: Controller,
 ): Array<Action<any>> {
   let fn = action.bind(controller)
 
@@ -26,11 +26,7 @@ export function createAction(
     fn = resource(fn, controller)
   }
 
-  return [
-    ...controller.beforeAction,
-    fn,
-    ...controller.afterAction,
-  ]
+  return [...controller.beforeAction, fn, ...controller.afterAction]
 }
 
 export { FINAL_HANDLER } from './constants'

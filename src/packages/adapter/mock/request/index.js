@@ -4,19 +4,19 @@ import * as url from 'url'
 
 import qs from 'qs'
 
-import Request from '../../../request'
-import type Logger from '../../../logger'
+import Request from '@lux/packages/request'
+import type Logger from '@lux/packages/logger'
 import * as query from '../../utils/query'
 import * as method from '../../utils/method'
 import { Headers } from '../../utils/headers'
 import type { ObjectMap } from '../../../../interfaces'
 
 type Options = {
-  url: string;
-  body?: Object;
-  method: string;
-  logger: Logger;
-  headers: ObjectMap<string>;
+  url: string,
+  body?: Object,
+  method: string,
+  logger: Logger,
+  headers: ObjectMap<string>,
 }
 
 export function create(options: Options): Request {

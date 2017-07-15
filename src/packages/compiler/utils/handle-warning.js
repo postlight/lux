@@ -4,8 +4,8 @@
  * @private
  */
 type CompilerWarning = {
-  code: string;
-  message: string;
+  code: string,
+  message: string,
 }
 
 /**

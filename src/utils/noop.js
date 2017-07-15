@@ -1,5 +1,6 @@
 /* @flow */
 
-export default function noop(): void {
-  return undefined
-}
+type Noop = (...arguments: Array<*>) => void
+
+const noop: Noop = () => undefined
+export default noop

@@ -1,6 +1,6 @@
 /* @flow */
 
-import template from '../../template'
+import template from '@lux/packages/template'
 
 /**
  * @private
@@ -12,8 +12,8 @@ export default (name: string, env: string): string => {
   return template`
     export default {
       logging: {
-        level: ${isProdENV ? '\'INFO\'' : '\'DEBUG\''},
-        format: ${isProdENV ? '\'json\'' : '\'text\''},
+        level: ${isProdENV ? "'INFO'" : "'DEBUG'"},
+        format: ${isProdENV ? "'json'" : "'text'"},
         enabled: ${(!isTestENV).toString()},
 
         filter: {

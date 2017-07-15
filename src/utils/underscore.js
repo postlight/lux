@@ -7,7 +7,7 @@ import { underscore as _ } from 'inflection'
  */
 export default function underscore(
   source: string = '',
-  upper: boolean = false
+  upper: boolean = false,
 ): string {
   return _(source, upper).replace(/-/g, '_')
 }

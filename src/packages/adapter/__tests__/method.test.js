@@ -1,6 +1,6 @@
 /* @flow */
 
-import { METHODS } from '../../request'
+import { METHODS } from '@lux/packages/request'
 import { Headers } from '../utils/headers'
 import { resolve } from '../utils/method'
 
@@ -14,9 +14,12 @@ describe('module "adapters/method"', () => {
 
     test('supports using an x-http-method-override header', () => {
       METHODS.forEach(method => {
-        const result = resolve('POST', new Headers({
-          'X-HTTP-Method-Override': method,
-        }))
+        const result = resolve(
+          'POST',
+          new Headers({
+            'X-HTTP-Method-Override': method,
+          }),
+        )
 
         expect(result).toBe(method)
       })

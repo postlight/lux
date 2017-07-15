@@ -2,10 +2,10 @@
 
 import { pluralize } from 'inflection'
 
-import template from '../../template'
-import chain from '../../../utils/chain'
+import template from '@lux/packages/template'
+import chain from '@lux/utils/chain'
 import indent from '../utils/indent'
-import underscore from '../../../utils/underscore'
+import underscore from '@lux/utils/underscore'
 
 /**
  * @private

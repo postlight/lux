@@ -1,6 +1,6 @@
 /* @flow */
 
-export const UNIQUE_CONSTRAINT = /UNIQUE\sCONSTRAINT/ig
+export const UNIQUE_CONSTRAINT = /UNIQUE\sCONSTRAINT/gi
 
 export const VALID_DRIVERS = [
   'pg',
@@ -10,7 +10,7 @@ export const VALID_DRIVERS = [
   'mysql2',
   'mariasql',
   'strong-oracle',
-  'oracle'
+  'oracle',
 ]
 
 export const TYPE_ALIASES = new Map([
@@ -39,5 +39,5 @@ export const TYPE_ALIASES = new Map([
   ['integer', 'number'],
   ['decimal', 'number'],
   ['floating', 'number'],
-  ['bigInteger', 'number']
+  ['bigInteger', 'number'],
 ])

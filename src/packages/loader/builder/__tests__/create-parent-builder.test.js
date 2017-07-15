@@ -2,10 +2,10 @@
 
 import { posix } from 'path'
 
-import { Model } from '../../../database'
-import Controller from '../../../controller'
-import Serializer from '../../../serializer'
-import { FreezeableMap } from '../../../freezeable'
+import { Model } from '@lux/packages/database'
+import Controller from '@lux/packages/controller'
+import Serializer from '@lux/packages/serializer'
+import { FreezeableMap } from '@lux/packages/freezeable'
 import createParentBuilder from '../utils/create-parent-builder'
 
 describe('module "loader/builder"', () => {
@@ -25,27 +25,31 @@ describe('module "loader/builder"', () => {
           parent: null,
         })
 
-        return Reflect.construct(target, [{
-          parent,
-          namespace,
-          serializer,
-          model: Model,
-        }])
+        return Reflect.construct(target, [
+          {
+            parent,
+            namespace,
+            serializer,
+            model: Model,
+          },
+        ])
       })
     })
 
     test('correctly builds parent objects', () => {
-      subject(new FreezeableMap([
-        ['root', new FreezeableMap([
-          ['application', ApplicationController]
-        ])],
-        ['api', new FreezeableMap([
-          ['application', ApiApplicationController]
-        ])],
-        ['api/v1', new FreezeableMap([
-          ['application', ApiV1ApplicationController]
-        ])]
-      ])).forEach(({ key, parent }) => {
+      subject(
+        new FreezeableMap([
+          ['root', new FreezeableMap([['application', ApplicationController]])],
+          [
+            'api',
+            new FreezeableMap([['application', ApiApplicationController]]),
+          ],
+          [
+            'api/v1',
+            new FreezeableMap([['application', ApiV1ApplicationController]]),
+          ],
+        ]),
+      ).forEach(({ key, parent }) => {
         switch (key) {
           case 'root':
             expect(parent).toBeInstanceOf(ApplicationController)

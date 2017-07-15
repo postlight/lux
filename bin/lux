@@ -1,27 +1,26 @@
 #!/usr/bin/env node
 
-'use strict';
+const { EOL } = require('os')
+const path = require('path')
 
-const { EOL } = require('os');
-const path = require('path');
+const cli = require('commander')
+const { red, green } = require('chalk')
 
-const cli = require('commander');
-const { red, green } = require('chalk');
-
-const { version: VERSION } = require('../package.json');
+const { version: VERSION } = require('../package.json')
 
 function inLuxProject() {
-  const cwd = process.cwd();
+  const cwd = process.cwd()
 
   if (cwd.indexOf(path.join('lux', 'test', 'test-app')) >= 0) {
-    return true;
+    return true
   }
 
   try {
-    const { dependencies } = require(path.join(cwd, 'package.json'));
-    return Boolean(dependencies['lux-framework']);
+    // eslint-disable-next-line global-require, import/no-dynamic-require
+    const { dependencies } = require(path.join(cwd, 'package.json'))
+    return Boolean(dependencies['lux-framework'])
   } catch (err) {
-    return false;
+    return false
   }
 }
 
@@ -30,43 +29,44 @@ function commandNotFound(cmd) {
   console.log(
     `${EOL}  ${red(cmd)} is not a valid command.${EOL.repeat(2)}`,
     ` Use ${green('lux --help')} for a full list of commands.${EOL}`
-  );
+  )
 }
 
 function setEnvVar(key, val, def) {
   if (val) {
-    Reflect.set(process.env, key, val);
+    Reflect.set(process.env, key, val)
   } else if (!Reflect.has(process.env, key)) {
-    Reflect.set(process.env, key, def);
+    Reflect.set(process.env, key, def)
   }
 }
 
 function exec(cmd, ...args) {
-  const handler = require('../dist')[cmd];
+  // eslint-disable-next-line global-require
+  const handler = require('../dist/cli')[cmd]
   const needsProject = new RegExp(
     '^(?:db:.+|test|build|serve|console|generate|destroy)$'
-  );
+  )
 
   if (needsProject.test(cmd) && !inLuxProject()) {
     return Promise.reject(new Error(
       'Directory does not contain a valid Lux application.'
-    ));
+    ))
   }
 
-  return handler(...args);
+  return handler(...args)
 }
 
 function exit(code) {
-  process.exit(typeof code === 'number' ? code : 0);
+  process.exit(typeof code === 'number' ? code : 0)
 }
 
 function rescue(err) {
   // eslint-disable-next-line
-  console.error(err.stack);
-  exit(1);
+  console.error(err.stack)
+  exit(1)
 }
 
-cli.version(VERSION);
+cli.version(VERSION)
 
 cli
   .command('n <name>')
@@ -81,8 +81,8 @@ cli
   .action((name, { database }) => {
     exec('create', name, database)
       .then(exit)
-      .catch(rescue);
-  });
+      .catch(rescue)
+  })
 
 cli
   .command('t')
@@ -91,8 +91,8 @@ cli
   .action(() => {
     exec('test')
       .then(exit)
-      .catch(rescue);
-  });
+      .catch(rescue)
+  })
 
 cli
   .command('b')
@@ -101,11 +101,11 @@ cli
   .option('-e, --environment [env]', '(Default: development)')
   .option('-w, --use-weak', 'Use weak mode')
   .action(({ environment, useWeak }) => {
-    setEnvVar('NODE_ENV', environment, 'development');
+    setEnvVar('NODE_ENV', environment, 'development')
     exec('build', !useWeak)
       .then(exit)
-      .catch(rescue);
-  });
+      .catch(rescue)
+  })
 
 cli
   .command('c')
@@ -115,14 +115,18 @@ cli
   .option('-w, --use-weak', 'Use weak mode')
   .option('--skip-build', 'Skip the application build process')
   .action(({ environment, useWeak, skipBuild }) => {
-    setEnvVar('NODE_ENV', environment, 'development');
-    process.env.LUX_CONSOLE = true;
+    setEnvVar('NODE_ENV', environment, 'development')
+    process.env.LUX_CONSOLE = true
 
-    (skipBuild ? Promise.resolve() : exec('build', !useWeak))
+    if (skipBuild) {
+      return Promise.resolve()
+    }
+
+    return exec('build', !useWeak)
       .then(() => exec('repl'))
       .then(exit)
-      .catch(rescue);
-  });
+      .catch(rescue)
+  })
 
 cli
   .command('s')
@@ -139,25 +143,31 @@ cli
   .option('-w, --use-weak', 'Use weak mode')
   .option('--skip-build', 'Skip the application build process')
   .action(({ hot, port, cluster, environment, useWeak, skipBuild }) => {
-    const useStrict = !useWeak;
+    const useStrict = !useWeak
 
-    setEnvVar('PORT', port, 4000);
-    setEnvVar('NODE_ENV', environment, 'development');
+    setEnvVar('PORT', port, 4000)
+    setEnvVar('NODE_ENV', environment, 'development')
 
-    (skipBuild ? Promise.resolve() : exec('build', useStrict))
+    if (skipBuild) {
+      return Promise.resolve()
+    }
+
+    return exec('build', useStrict)
       .then(() => exec('serve', { hot, cluster, useStrict }))
-      .catch(rescue);
-  });
+      .catch(rescue)
+  })
 
 cli
   .command('g <type> <name> [attrs...]')
   .alias('generate')
-  .description('Example: lux generate model user name:string email:string admin:boolean')
+  .description(
+    'Example: lux generate model user name:string email:string admin:boolean'
+  )
   .action((type, name, attrs) => {
     exec('generate', { type, name, attrs })
       .then(exit)
-      .catch(rescue);
-  });
+      .catch(rescue)
+  })
 
 cli
   .command('d')
@@ -166,8 +176,8 @@ cli
   .action((type, name) => {
     exec('destroy', { type, name })
       .then(exit)
-      .catch(rescue);
-  });
+      .catch(rescue)
+  })
 
 cli
   .command('db:create')
@@ -176,15 +186,19 @@ cli
   .option('-w, --use-weak', 'Use weak mode')
   .option('--skip-build', 'Skip the application build process')
   .action(({ environment, useWeak, skipBuild }) => {
-    const useStrict = !useWeak;
+    const useStrict = !useWeak
 
-    setEnvVar('NODE_ENV', environment, 'development');
+    setEnvVar('NODE_ENV', environment, 'development')
 
-    (skipBuild ? Promise.resolve() : exec('build', useStrict))
+    if (skipBuild) {
+      return Promise.resolve()
+    }
+
+    return exec('build', useStrict)
       .then(() => exec('dbcreate'))
       .then(exit)
-      .catch(rescue);
-  });
+      .catch(rescue)
+  })
 
 cli
   .command('db:drop')
@@ -193,15 +207,19 @@ cli
   .option('-w, --use-weak', 'Use weak mode')
   .option('--skip-build', 'Skip the application build process')
   .action(({ environment, useWeak, skipBuild }) => {
-    const useStrict = !useWeak;
+    const useStrict = !useWeak
 
-    setEnvVar('NODE_ENV', environment, 'development');
+    setEnvVar('NODE_ENV', environment, 'development')
 
-    (skipBuild ? Promise.resolve() : exec('build', useStrict))
+    if (skipBuild) {
+      return Promise.resolve()
+    }
+
+    return exec('build', useStrict)
       .then(() => exec('dbdrop'))
       .then(exit)
-      .catch(rescue);
-  });
+      .catch(rescue)
+  })
 
 cli
   .command('db:reset')
@@ -210,16 +228,20 @@ cli
   .option('-w, --use-weak', 'Use weak mode')
   .option('--skip-build', 'Skip the application build process')
   .action(({ environment, useWeak, skipBuild }) => {
-    const useStrict = !useWeak;
+    const useStrict = !useWeak
 
-    setEnvVar('NODE_ENV', environment, 'development');
+    setEnvVar('NODE_ENV', environment, 'development')
 
-    (skipBuild ? Promise.resolve() : exec('build', useStrict))
+    if (skipBuild) {
+      return Promise.resolve()
+    }
+
+    return exec('build', useStrict)
       .then(() => exec('dbdrop'))
       .then(() => exec('dbcreate'))
       .then(exit)
-      .catch(rescue);
-  });
+      .catch(rescue)
+  })
 
 cli
   .command('db:migrate')
@@ -228,15 +250,19 @@ cli
   .option('-w, --use-weak', 'Use weak mode')
   .option('--skip-build', 'Skip the application build process')
   .action(({ environment, useWeak, skipBuild }) => {
-    const useStrict = !useWeak;
+    const useStrict = !useWeak
 
-    setEnvVar('NODE_ENV', environment, 'development');
+    setEnvVar('NODE_ENV', environment, 'development')
 
-    (skipBuild ? Promise.resolve() : exec('build', useStrict))
+    if (skipBuild) {
+      return Promise.resolve()
+    }
+
+    return exec('build', useStrict)
       .then(() => exec('dbmigrate'))
       .then(exit)
-      .catch(rescue);
-  });
+      .catch(rescue)
+  })
 
 cli
   .command('db:rollback')
@@ -245,15 +271,19 @@ cli
   .option('-w, --use-weak', 'Use weak mode')
   .option('--skip-build', 'Skip the application build process')
   .action(({ environment, useWeak, skipBuild }) => {
-    const useStrict = !useWeak;
+    const useStrict = !useWeak
 
-    setEnvVar('NODE_ENV', environment, 'development');
+    setEnvVar('NODE_ENV', environment, 'development')
 
-    (skipBuild ? Promise.resolve() : exec('build', useStrict))
+    if (skipBuild) {
+      return Promise.resolve()
+    }
+
+    return exec('build', useStrict)
       .then(() => exec('dbrollback'))
       .then(exit)
-      .catch(rescue);
-  });
+      .catch(rescue)
+  })
 
 cli
   .command('db:seed')
@@ -262,20 +292,24 @@ cli
   .option('-w, --use-weak', 'Use weak mode')
   .option('--skip-build', 'Skip the application build process')
   .action(({ environment, useWeak, skipBuild }) => {
-    const useStrict = !useWeak;
+    const useStrict = !useWeak
 
-    setEnvVar('NODE_ENV', environment, 'development');
+    setEnvVar('NODE_ENV', environment, 'development')
 
-    (skipBuild ? Promise.resolve() : exec('build', useStrict))
+    if (skipBuild) {
+      return Promise.resolve()
+    }
+
+    return exec('build', useStrict)
       .then(() => exec('dbseed'))
       .then(exit)
-      .catch(rescue);
-  });
+      .catch(rescue)
+  })
 
 cli
   .on('*', commandNotFound)
-  .parse(process.argv);
+  .parse(process.argv)
 
 if (!cli.args.length) {
-  cli.help();
+  cli.help()
 }

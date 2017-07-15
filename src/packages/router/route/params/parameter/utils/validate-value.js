@@ -1,6 +1,6 @@
 /* @flow */
 
-import isNull from '../../../../../../utils/is-null'
+import { isNull } from '@lux/utils/is-type'
 import { ParameterValueError, ResourceMismatchError } from '../../errors'
 import type Parameter from '../index'
 
@@ -17,7 +17,7 @@ function validateOne<V>(param: Parameter, value: V): V {
 
     switch (param.path) {
       case 'data.type':
-        [expected] = [...param.values()]
+        ;[expected] = [...param.values()]
         throw new ResourceMismatchError(param.path, expected, value)
 
       default:
@@ -37,9 +37,7 @@ export default function validateValue<V>(param: Parameter, value: V): V {
       return value.filter(item => param.has(item))
     }
 
-    for (const item of value) {
-      validateOne(param, item)
-    }
+    value.forEach(item => validateOne(param, item))
   } else {
     validateOne(param, value)
   }

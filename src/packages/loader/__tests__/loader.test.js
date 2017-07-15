@@ -2,7 +2,7 @@
 
 import * as path from 'path'
 
-import { FreezeableMap } from '../../freezeable'
+import { FreezeableMap } from '@lux/packages/freezeable'
 import { createLoader } from '../index'
 
 const APP_PATH = path.join(
@@ -42,9 +42,9 @@ describe('module "loader"', () => {
       expect(result instanceof FreezeableMap).toBe(true)
 
       result.forEach(value => {
-        expect(
-          Reflect.getPrototypeOf(value).name.endsWith('Controller')
-        ).toBe(true)
+        expect(Reflect.getPrototypeOf(value).name.endsWith('Controller')).toBe(
+          true,
+        )
       })
     })
 
@@ -82,9 +82,9 @@ describe('module "loader"', () => {
       expect(result instanceof FreezeableMap).toBe(true)
 
       result.forEach(value => {
-        expect(
-          Reflect.getPrototypeOf(value).name.endsWith('Serializer')
-        ).toBe(true)
+        expect(Reflect.getPrototypeOf(value).name.endsWith('Serializer')).toBe(
+          true,
+        )
       })
     })
   })

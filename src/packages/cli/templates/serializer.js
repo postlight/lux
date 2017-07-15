@@ -2,65 +2,60 @@
 
 import { classify, camelize, pluralize } from 'inflection'
 
-import chain from '../../../utils/chain'
-import entries from '../../../utils/entries'
-import underscore from '../../../utils/underscore'
-import template from '../../template'
+import chain from '@lux/utils/chain'
+import underscore from '@lux/utils/underscore'
+import template from '@lux/packages/template'
 import indent from '../utils/indent'
 
 /**
  * @private
  */
 export default (name: string, attrs: Array<string>): string => {
-  let normalized = chain(name)
-    .pipe(underscore)
-    .pipe(classify)
-    .value()
+  let normalized = chain(name).pipe(underscore).pipe(classify).value()
 
   if (!normalized.endsWith('Application')) {
     normalized = pluralize(normalized)
   }
 
-  const body = entries(
+  const body = Object.entries(
     attrs
       .filter(attr => /^(\w|-)+:(\w|-)+$/g.test(attr))
       .map(attr => attr.split(':'))
-      .reduce((obj, parts) => {
-        const [, type] = parts
-        let [attr] = parts
-        let {
-          hasOne,
-          hasMany,
-          attributes
-        } = obj
+      .reduce(
+        (obj, parts) => {
+          const [, type] = parts
+          let [attr] = parts
+          let { hasOne, hasMany, attributes } = obj
 
-        attr = `${indent(8)}'${camelize(underscore(attr), true)}'`
+          attr = `${indent(8)}'${camelize(underscore(attr), true)}'`
 
-        switch (type) {
-          case 'belongs-to':
-          case 'has-one':
-            hasOne = [...hasOne, attr]
-            break
+          switch (type) {
+            case 'belongs-to':
+            case 'has-one':
+              hasOne = [...hasOne, attr]
+              break
 
-          case 'has-many':
-            hasMany = [...hasMany, attr]
-            break
+            case 'has-many':
+              hasMany = [...hasMany, attr]
+              break
 
-          default:
-            attributes = [...attributes, attr]
-        }
+            default:
+              attributes = [...attributes, attr]
+          }
 
-        return {
-          attributes,
-          hasOne,
-          hasMany
-        }
-      }, {
-        attributes: [],
-        belongsTo: [],
-        hasOne: [],
-        hasMany: []
-      })
+          return {
+            attributes,
+            hasOne,
+            hasMany,
+          }
+        },
+        {
+          attributes: [],
+          belongsTo: [],
+          hasOne: [],
+          hasMany: [],
+        },
+      ),
   ).reduce((result, group, index) => {
     const [key] = group
     let [, value] = group
@@ -73,7 +68,8 @@ export default (name: string, attrs: Array<string>): string => {
         str += '\n\n'
       }
 
-      str += `${indent(index === 0 ? 2 : 6)}${key} = ` +
+      str +=
+        `${indent(index === 0 ? 2 : 6)}${key} = ` +
         `[\n${value}\n${indent(6)}];`
     }
 

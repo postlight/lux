@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`module "controller" class Controller #update() returns a record if relationships(s) change 1`] = `
+Object {
+  "body": null,
+  "comments": Array [],
+  "createdAt": 2017-06-25T16:44:06.744Z,
+  "id": 105,
+  "isPublic": false,
+  "title": "#update() Test",
+  "updatedAt": 2017-06-25T16:44:07.470Z,
+  "user": Object {
+    "createdAt": 2017-06-25T16:44:07.454Z,
+    "email": "Carmelo76@yahoo.com",
+    "id": 101,
+    "name": "Jessy Stroman",
+    "password": "$2a$10$lI3eGqw7UvuwZYiFqPasteItwKTLYJK2RhnrjyKeiPgnstBR8OZ9a",
+    "posts": Array [
+      [Circular],
+    ],
+    "updatedAt": 2017-06-25T16:44:07.454Z,
+  },
+  "userId": 101,
+}
+`;

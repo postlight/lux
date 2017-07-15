@@ -2,52 +2,60 @@
 
 import Parameter from '../parameter'
 import ParameterGroup from '../parameter-group'
-import type Controller from '../../../../controller'
+import type Controller from '@lux/packages/controller'
 import type { ParameterLike } from '../interfaces'
 
 /**
  * @private
  */
 function getPageParam(): [string, ParameterLike] {
-  return ['page', new ParameterGroup([
-    ['size', new Parameter({ path: 'page.size', type: 'number' })],
-    ['number', new Parameter({ path: 'page.number', type: 'number' })]
-  ], {
-    path: 'page'
-  })]
+  return [
+    'page',
+    new ParameterGroup(
+      [
+        ['size', new Parameter({ path: 'page.size', type: 'number' })],
+        ['number', new Parameter({ path: 'page.number', type: 'number' })],
+      ],
+      {
+        path: 'page',
+      },
+    ),
+  ]
 }
 
 /**
  * @private
  */
-function getSortParam({
-  sort
-}: Controller): [string, ParameterLike] {
-  return ['sort', new Parameter({
-    path: 'sort',
-    type: 'string',
-
-    values: [
-      ...sort,
-      ...sort.map(value => `-${value}`)
-    ]
-  })]
-}
-
-/**
- * @private
- */
-function getFilterParam({
-  filter
-}: Controller): [string, ParameterLike] {
-  return ['filter', new ParameterGroup(filter.map(param => [
-    param,
+function getSortParam({ sort }: Controller): [string, ParameterLike] {
+  return [
+    'sort',
     new Parameter({
-      path: `filter.${param}`
-    })
-  ]), {
-    path: 'filter'
-  })]
+      path: 'sort',
+      type: 'string',
+
+      values: [...sort, ...sort.map(value => `-${value}`)],
+    }),
+  ]
+}
+
+/**
+ * @private
+ */
+function getFilterParam({ filter }: Controller): [string, ParameterLike] {
+  return [
+    'filter',
+    new ParameterGroup(
+      filter.map(param => [
+        param,
+        new Parameter({
+          path: `filter.${param}`,
+        }),
+      ]),
+      {
+        path: 'filter',
+      },
+    ),
+  ]
 }
 
 /**
@@ -55,89 +63,100 @@ function getFilterParam({
  */
 function getFieldsParam({
   model,
-  serializer: {
-    hasOne,
-    hasMany,
-    attributes
-  }
+  serializer: { hasOne, hasMany, attributes },
 }: Controller): [string, ParameterLike] {
   const relationships = [...hasOne, ...hasMany]
 
-  return ['fields', new ParameterGroup([
-    [model.resourceName, new Parameter({
-      path: `fields.${model.resourceName}`,
-      type: 'array',
-      values: attributes,
-      sanitize: true
-    })],
-    ...relationships.reduce((result, relationship) => {
-      const opts = model.relationshipFor(relationship)
-
-      if (opts) {
-        return [
-          ...result,
-
-          [opts.model.resourceName, new Parameter({
-            path: `fields.${opts.model.resourceName}`,
+  return [
+    'fields',
+    new ParameterGroup(
+      [
+        [
+          model.resourceName,
+          new Parameter({
+            path: `fields.${model.resourceName}`,
             type: 'array',
+            values: attributes,
             sanitize: true,
+          }),
+        ],
+        ...relationships.reduce((result, relationship) => {
+          const opts = model.relationshipFor(relationship)
 
-            values: [
-              opts.model.primaryKey,
-              ...opts.model.serializer.attributes
+          if (opts) {
+            return [
+              ...result,
+
+              [
+                opts.model.resourceName,
+                new Parameter({
+                  path: `fields.${opts.model.resourceName}`,
+                  type: 'array',
+                  sanitize: true,
+
+                  values: [
+                    opts.model.primaryKey,
+                    ...opts.model.serializer.attributes,
+                  ],
+                }),
+              ],
             ]
-          })]
-        ]
-      }
+          }
 
-      return result
-    }, [])
-  ], {
-    path: 'fields',
-    sanitize: true
-  })]
+          return result
+        }, []),
+      ],
+      {
+        path: 'fields',
+        sanitize: true,
+      },
+    ),
+  ]
 }
 
 /**
  * @private
  */
 function getIncludeParam({
-  serializer: {
-    hasOne,
-    hasMany
-  }
+  serializer: { hasOne, hasMany },
 }: Controller): [string, ParameterLike] {
   const relationships = [...hasOne, ...hasMany]
 
-  return ['include', new Parameter({
-    path: 'include',
-    type: 'array',
-    values: relationships
-  })]
+  return [
+    'include',
+    new Parameter({
+      path: 'include',
+      type: 'array',
+      values: relationships,
+    }),
+  ]
 }
 
 /**
  * @private
  */
 export function getCustomParams({
-  query
+  query,
 }: Controller): Array<[string, ParameterLike]> {
-  return query.map(param => [param, new Parameter({
-    path: param
-  })])
+  return query.map(param => [
+    param,
+    new Parameter({
+      path: param,
+    }),
+  ])
 }
 
 /**
  * @private
  */
 export function getMemberQueryParams(
-  controller: Controller
+  controller: Controller,
 ): Array<[string, ParameterLike]> {
   if (controller.hasModel) {
     return [
       getFieldsParam(controller),
       getIncludeParam(controller),
-      ...getCustomParams(controller)
+      ...getCustomParams(controller),
     ]
   }
 
@@ -148,7 +167,7 @@ export function getMemberQueryParams(
  * @private
  */
 export function getCollectionQueryParams(
-  controller: Controller
+  controller: Controller,
 ): Array<[string, ParameterLike]> {
   if (controller.hasModel) {
     return [
@@ -157,7 +176,7 @@ export function getCollectionQueryParams(
       getFilterParam(controller),
       getFieldsParam(controller),
       getIncludeParam(controller),
-      ...getCustomParams(controller)
+      ...getCustomParams(controller),
     ]
   }
 

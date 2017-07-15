@@ -61,7 +61,7 @@ Request {
   "encrypted": false,
   "headers": Map {
     "content-type" => "application/vnd.api+json",
-    "content-length" => 87,
+    "content-length" => "87",
   },
   "logger": Logger {
     "enabled": false,

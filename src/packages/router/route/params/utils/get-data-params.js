@@ -2,9 +2,9 @@
 
 import Parameter from '../parameter'
 import ParameterGroup from '../parameter-group'
-import isNull from '../../../../../utils/is-null'
-import { typeForColumn } from '../../../../database'
-import type Controller from '../../../../controller'
+import { isNull } from '@lux/utils/is-type'
+import { typeForColumn } from '@lux/packages/database'
+import type Controller from '@lux/packages/controller'
 import type { ParameterLike } from '../interfaces'
 
 /**
@@ -18,25 +18,29 @@ function getIDParam({ model }: Controller): [string, ParameterLike] {
     primaryKeyType = typeForColumn(primaryKeyColumn)
   }
 
-  return ['id', new Parameter({
-    type: primaryKeyType,
-    path: 'data.id',
-    required: true
-  })]
+  return [
+    'id',
+    new Parameter({
+      type: primaryKeyType,
+      path: 'data.id',
+      required: true,
+    }),
+  ]
 }
 
 /**
  * @private
  */
-function getTypeParam({
-  model
-}: Controller): [string, ParameterLike] {
-  return ['type', new Parameter({
-    type: 'string',
-    path: 'data.type',
-    values: [model.resourceName],
-    required: true
-  })]
+function getTypeParam({ model }: Controller): [string, ParameterLike] {
+  return [
+    'type',
+    new Parameter({
+      type: 'string',
+      path: 'data.type',
+      values: [model.resourceName],
+      required: true,
+    }),
+  ]
 }
 
 /**
@@ -44,27 +48,30 @@ function getTypeParam({
  */
 function getAttributesParam({
   model,
-  params
+  params,
 }: Controller): [string, ParameterLike] {
-  return ['attributes', new ParameterGroup(params.reduce((group, param) => {
-    const col = model.columnFor(param)
+  return [
+    'attributes',
+    new ParameterGroup(
+      params.reduce((group, param) => {
+        const col = model.columnFor(param)
 
-    if (col) {
-      const type = typeForColumn(col)
-      const path = `data.attributes.${param}`
-      const required = !col.nullable && isNull(col.defaultValue)
+        if (col) {
+          const type = typeForColumn(col)
+          const path = `data.attributes.${param}`
+          const required = !col.nullable && isNull(col.defaultValue)
 
-      return [
-        ...group,
-        [param, new Parameter({ type, path, required })]
-      ]
-    }
+          return [...group, [param, new Parameter({ type, path, required })]]
+        }
 
-    return group
-  }, []), {
-    path: 'data.attributes',
-    sanitize: true
-  })]
+        return group
+      }, []),
+      {
+        path: 'data.attributes',
+        sanitize: true,
+      },
+    ),
+  ]
 }
 
 /**
@@ -72,68 +79,101 @@ function getAttributesParam({
  */
 function getRelationshipsParam({
   model,
-  params
+  params,
 }: Controller): [string, ParameterLike] {
-  return ['relationships', new ParameterGroup(params.reduce((group, param) => {
-    const path = `data.relationships.${param}`
-    const opts = model.relationshipFor(param)
+  return [
+    'relationships',
+    new ParameterGroup(
+      params.reduce((group, param) => {
+        const path = `data.relationships.${param}`
+        const opts = model.relationshipFor(param)
 
-    if (!opts) {
-      return group
-    }
+        if (!opts) {
+          return group
+        }
 
-    if (opts.type === 'hasMany') {
-      return [
-        ...group,
+        if (opts.type === 'hasMany') {
+          return [
+            ...group,
 
-        [param, new ParameterGroup([
-          ['data', new Parameter({
-            type: 'array',
-            path: `${path}.data`,
-            required: true
-          })]
-        ], {
-          path
-        })]
-      ]
-    }
+            [
+              param,
+              new ParameterGroup(
+                [
+                  [
+                    'data',
+                    new Parameter({
+                      type: 'array',
+                      path: `${path}.data`,
+                      required: true,
+                    }),
+                  ],
+                ],
+                {
+                  path,
+                },
+              ),
+            ],
+          ]
+        }
 
-    const primaryKeyColumn = opts.model.columnFor(opts.model.primaryKey)
-    let primaryKeyType = 'number'
+        const primaryKeyColumn = opts.model.columnFor(opts.model.primaryKey)
+        let primaryKeyType = 'number'
 
-    if (primaryKeyColumn) {
-      primaryKeyType = typeForColumn(primaryKeyColumn)
-    }
+        if (primaryKeyColumn) {
+          primaryKeyType = typeForColumn(primaryKeyColumn)
+        }
 
-    return [
-      ...group,
+        return [
+          ...group,
 
-      [param, new ParameterGroup([
-        ['data', new ParameterGroup([
-          ['id', new Parameter({
-            type: primaryKeyType,
-            path: `${path}.data.id`,
-            required: true
-          })],
+          [
+            param,
+            new ParameterGroup(
+              [
+                [
+                  'data',
+                  new ParameterGroup(
+                    [
+                      [
+                        'id',
+                        new Parameter({
+                          type: primaryKeyType,
+                          path: `${path}.data.id`,
+                          required: true,
+                        }),
+                      ],
 
-          ['type', new Parameter({
-            type: 'string',
-            path: `${path}.data.type`,
-            values: [opts.model.resourceName],
-            required: true
-          })]
-        ], {
-          type: 'array',
-          path: `${path}.data`,
-          required: true
-        })]
-      ], {
-        path
-      })]
-    ]
-  }, []), {
-    path: 'data.relationships'
-  })]
+                      [
+                        'type',
+                        new Parameter({
+                          type: 'string',
+                          path: `${path}.data.type`,
+                          values: [opts.model.resourceName],
+                          required: true,
+                        }),
+                      ],
+                    ],
+                    {
+                      type: 'array',
+                      path: `${path}.data`,
+                      required: true,
+                    },
+                  ),
+                ],
+              ],
+              {
+                path,
+              },
+            ),
+          ],
+        ]
+      }, []),
+      {
+        path: 'data.relationships',
+      },
+    ),
+  ]
 }
 
 /**
@@ -141,7 +181,7 @@ function getRelationshipsParam({
  */
 export default function getDataParams(
   controller: Controller,
-  includeID: boolean
+  includeID: boolean,
 ): [string, ParameterLike] {
   let params = [getTypeParam(controller)]
 
@@ -149,19 +189,19 @@ export default function getDataParams(
     params = [
       getAttributesParam(controller),
       getRelationshipsParam(controller),
-      ...params
+      ...params,
     ]
 
     if (includeID) {
-      params = [
-        getIDParam(controller),
-        ...params
-      ]
+      params = [getIDParam(controller), ...params]
     }
   }
 
-  return ['data', new ParameterGroup(params, {
-    path: 'data',
-    required: true
-  })]
+  return [
+    'data',
+    new ParameterGroup(params, {
+      path: 'data',
+      required: true,
+    }),
+  ]
 }

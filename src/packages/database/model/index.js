@@ -8,21 +8,21 @@ import { updateRelationship } from '../relationship'
 import {
   createTransactionResultProxy,
   createStaticTransactionProxy,
-  createInstanceTransactionProxy
+  createInstanceTransactionProxy,
 } from '../transaction'
-import pick from '../../../utils/pick'
-import entries from '../../../utils/entries'
-import underscore from '../../../utils/underscore'
-import { compose } from '../../../utils/compose'
-import { map as diffMap } from '../../../utils/diff'
-import mapToObject from '../../../utils/map-to-object'
-import type Logger from '../../logger'
-import type Database from '../../database'
-import type Serializer from '../../serializer'
-/* eslint-disable no-duplicate-imports */
-import type { Relationship$opts } from '../relationship'
+import pick from '@lux/utils/pick'
+import underscore from '@lux/utils/underscore'
+import { compose } from '@lux/utils/compose'
+import { map as diffMap } from '@lux/utils/diff'
+import mapToObject from '@lux/utils/map-to-object'
+import { isObject } from '@lux/utils/is-type'
+import type Logger from '@lux/packages/logger'
+import type Database from '@lux/packages/database'
+import type Serializer from '@lux/packages/serializer'
+import type { ObjectMap } from '@lux/types'
+
+import type { Relationship } from '../relationship'
 import type { Transaction$ResultProxy } from '../transaction'
-/* eslint-enable no-duplicate-imports */
 
 import { create, update, destroy, createRunner } from './utils/persistence'
 import initializeClass from './initialize-class'
@@ -34,7 +34,7 @@ import type { Model$Hooks } from './interfaces'
  * @class Model
  * @public
  */
-class Model {
+export default class Model {
   /**
    * The name of the corresponding database table for a `Model` instance's
    * constructor.
@@ -43,7 +43,7 @@ class Model {
    * @type {String}
    * @public
    */
-  tableName: string;
+  tableName: string
 
   /**
    * The canonical name of a `Model`'s constructor.
@@ -52,7 +52,7 @@ class Model {
    * @type {String}
    * @public
    */
-  modelName: string;
+  modelName: string
 
   /**
    * The name of the API resource a `Model` instance's constructor represents.
@@ -61,7 +61,7 @@ class Model {
    * @type {String}
    * @public
    */
-  resourceName: string;
+  resourceName: string
 
   /**
    * A timestamp representing when the Model instance was created.
@@ -70,7 +70,7 @@ class Model {
    * @type {Date}
    * @public
    */
-  createdAt: Date;
+  createdAt: Date
 
   /**
    * A timestamp representing the last time the Model instance was updated.
@@ -79,42 +79,42 @@ class Model {
    * @type {Date}
    * @public
    */
-  updatedAt: Date;
+  updatedAt: Date
 
   /**
    * @property initialized
    * @type {Boolean}
    * @private
    */
-  initialized: boolean;
+  initialized: boolean
 
   /**
    * @property rawColumnData
    * @type {Object}
    * @private
    */
-  rawColumnData: Object;
+  rawColumnData: Object
 
   /**
    * @property isModelInstance
    * @type {Boolean}
    * @private
    */
-  isModelInstance: boolean;
+  isModelInstance: boolean
 
   /**
    * @property prevAssociations
    * @type {Set}
    * @private
    */
-  prevAssociations: Set<Model>;
+  prevAssociations: Set<Model>
 
   /**
    * @property changeSets
    * @type {Array}
    * @private
    */
-  changeSets: Array<ChangeSet>;
+  changeSets: Array<ChangeSet>
 
   /**
    * An object where you declare `hasOne` relationships.
@@ -130,7 +130,7 @@ class Model {
    *       // The line above lets Lux know that this relationship is accessible
    *       // on profile instances via `profile.user`.
    *     }
-   *   };
+   *   }
    * }
    *
    * class Profile extends Model {
@@ -140,7 +140,7 @@ class Model {
    *       // The line above lets Lux know that this relationship is accessible
    *       // on user instances via `user.profile`.
    *     }
-   *   };
+   *   }
    * }
    * ```
    *
@@ -156,7 +156,7 @@ class Model {
    *       // The line above lets Lux know that this is a relationship with the
    *       // `User` model and not a non-existent `Owner` model.
    *     }
-   *   };
+   *   }
    * }
    * ```
    *
@@ -166,7 +166,7 @@ class Model {
    * @static
    * @public
    */
-  static hasOne: Object;
+  static hasOne: Object
 
   /**
    * An object where you declare `hasMany` relationships.
@@ -182,7 +182,7 @@ class Model {
    *       // The line above lets Lux know that this relationship is accessible
    *       // on book instances via `book.author`.
    *     }
-   *   };
+   *   }
    * }
    *
    * class Book extends Model {
@@ -192,7 +192,7 @@ class Model {
    *       // The line above lets Lux know that this relationship is accessible
    *       // on author instances via `author.books`.
    *     }
-   *   };
+   *   }
    * }
    * ```
    *
@@ -208,7 +208,7 @@ class Model {
    *       // The line above lets Lux know that this is a relationship with the
    *       // `Book` model and not a non-existent `Publication` model.
    *     }
-   *   };
+   *   }
    * }
    * ```
    *
@@ -237,7 +237,7 @@ class Model {
    *       inverse: 'tags',
    *       through: 'categorizations'
    *     }
-   *   };
+   *   }
    * }
    *
    * class Post extends Model {
@@ -246,7 +246,7 @@ class Model {
    *       inverse: 'posts',
    *       through: 'categorizations'
    *     }
-   *   };
+   *   }
    * }
    * ```
    *
@@ -256,7 +256,7 @@ class Model {
    * @static
    * @public
    */
-  static hasMany: Object;
+  static hasMany: Object
 
   /**
    * An object where you declare `belongsTo` relationships.
@@ -272,7 +272,7 @@ class Model {
    *       // The line above lets Lux know that this relationship is accessible
    *       // on author instances via `author.books`.
    *     }
-   *   };
+   *   }
    * }
    *
    * class Author extends Model {
@@ -282,7 +282,7 @@ class Model {
    *       // The line above lets Lux know that this relationship is accessible
    *       // on book instances via `book.author`.
    *     }
-   *   };
+   *   }
    * }
    * ```
    *
@@ -298,7 +298,7 @@ class Model {
    *       // The line above lets Lux know that this is a relationship with the
    *       // `Author` model and not a non-existent `Writer` model.
    *     }
-   *   };
+   *   }
    * }
    * ```
    *
@@ -313,7 +313,7 @@ class Model {
    *       inverse: 'books',
    *       foreignKey: 'SoMe_UnCoNvEnTiOnAl_FoReIgN_KeY'
    *     }
-   *   };
+   *   }
    * }
    * ```
    *
@@ -323,7 +323,7 @@ class Model {
    * @static
    * @public
    */
-  static belongsTo: Object;
+  static belongsTo: Object
 
   /**
    * An object where you declare validations for an instance's attributes.
@@ -340,7 +340,7 @@ class Model {
    *   static validates {
    *     username: value => /^\w{2,30}$/.test(value),
    *     password: value => String(value).length >= 8
-   *   };
+   *   }
    * }
    * ```
    *
@@ -349,12 +349,12 @@ class Model {
    * excellent validation libraries like [validator](https://goo.gl/LWaHBB).
    *
    * ```javascript
-   * import { isEmail } from 'validator';
+   * import { isEmail } from 'validator'
    *
    * class User extends Model {
    *   static validates {
    *     email: isEmail
-   *   };
+   *   }
    * }
    * ```
    *
@@ -364,7 +364,7 @@ class Model {
    * @static
    * @public
    */
-  static validates: Object;
+  static validates: Object
 
   /**
    * An object where you declare custom query scopes for the model.
@@ -382,31 +382,31 @@ class Model {
    *     comments: {
    *       inverse: 'post'
    *     }
-   *   };
+   *   }
    *
    *   static belongsTo = {
    *     user: {
    *       inverse: 'posts'
    *     }
-   *   };
+   *   }
    *
    *   static scopes = {
    *     isPublic() {
    *       return this.where({
    *         isPublic: true
-   *       });
+   *       })
    *     },
    *
    *     byUser(user) {
    *       return this.where({
    *         userId: user.id
-   *       });
+   *       })
    *     },
    *
    *     withEverything() {
-   *       return this.includes('tags', 'user', 'comments');
+   *       return this.includes('tags', 'user', 'comments')
    *     }
-   *   };
+   *   }
    * }
    * ```
    *
@@ -415,25 +415,25 @@ class Model {
    * id of 1.
    *
    * ```javascript
-   * const user = await User.find(1);
+   * const user = await User.find(1)
    *
    * return Post
    *   .byUser(user)
    *   .isPublic()
-   *   .withEverything();
+   *   .withEverything()
    * ```
    *
    * Since scopes can be chained with built-in query methods, we can easily
    * paginate this collection.
    *
    * ```javascript
-   * const user = await User.find(1);
+   * const user = await User.find(1)
    *
    * return Post
    *   .byUser(user)
    *   .isPublic()
    *   .withEverything()
-   *   .page(1);
+   *   .page(1)
    * ```
    *
    * @property scopes
@@ -442,7 +442,7 @@ class Model {
    * @static
    * @public
    */
-  static scopes: Object;
+  static scopes: Object
 
   /**
    * An object where you declare hooks to execute at certain times in a model
@@ -492,7 +492,7 @@ class Model {
    * that initiated the transaction fails.
    *
    * ```javascript
-   * import Notification from 'app/models/notification';
+   * import Notification from 'app/models/notification'
    *
    * class Comment extends Model {
    *   static belongsTo = {
@@ -502,19 +502,19 @@ class Model {
    *     user: {
    *       inverse: 'comments'
    *     }
-   *   };
+   *   }
    *
    *   static hooks = {
    *     async afterCreate(comment, trx) {
    *       let [post, commenter] = await Promise.all([
    *         comment.post,
    *         comment.user
-   *       ]);
+   *       ])
    *
-   *       const commentee = await post.user;
+   *       const commentee = await post.user
    *
-   *       post = post.title;
-   *       commenter = commenter.name;
+   *       post = post.title
+   *       commenter = commenter.name
    *
    *       // Calling .transacting(trx) prevents the commentee from getting a
    *       // notification if the comment fails to be persisted in the database.
@@ -523,14 +523,14 @@ class Model {
    *         .create({
    *           user: commentee,
    *           message: `${commenter} commented on your post "${post}"`
-   *         });
+   *         })
    *     },
    *
    *     async afterSave() {
    *       // Good thing you called transacting in afterCreate.
-   *       throw new Error('Fatal Error');
+   *       throw new Error('Fatal Error')
    *     }
-   *   };
+   *   }
    * }
    * ```
    *
@@ -540,7 +540,7 @@ class Model {
    * @static
    * @public
    */
-  static hooks: Model$Hooks;
+  static hooks: Model$Hooks
 
   /**
    * A reference to the application's logger.
@@ -550,7 +550,7 @@ class Model {
    * @static
    * @public
    */
-  static logger: Logger;
+  static logger: Logger
 
   /**
    * The name of the corresponding database table for the model.
@@ -560,7 +560,7 @@ class Model {
    * @static
    * @public
    */
-  static tableName: string;
+  static tableName: string
 
   /**
    * The canonical name of the model.
@@ -570,7 +570,7 @@ class Model {
    * @static
    * @public
    */
-  static modelName: string;
+  static modelName: string
 
   /**
    * The name of the resource the model represents.
@@ -580,7 +580,7 @@ class Model {
    * @static
    * @public
    */
-  static resourceName: string;
+  static resourceName: string
 
   /**
    * The column name to use for a model's primary key.
@@ -591,7 +591,7 @@ class Model {
    * @static
    * @public
    */
-  static primaryKey: string = 'id';
+  static primaryKey: string = 'id'
 
   /**
    * @property table
@@ -599,7 +599,7 @@ class Model {
    * @static
    * @private
    */
-  static table: () => Object;
+  static table: () => Object
 
   /**
    * @property store
@@ -607,7 +607,7 @@ class Model {
    * @static
    * @private
    */
-  static store: Database;
+  static store: Database
 
   /**
    * @property initialized
@@ -615,7 +615,7 @@ class Model {
    * @static
    * @private
    */
-  static initialized: boolean;
+  static initialized: boolean
 
   /**
    * @property serializer
@@ -623,7 +623,7 @@ class Model {
    * @static
    * @private
    */
-  static serializer: Serializer<this>;
+  static serializer: Serializer<this>
 
   /**
    * @property attributes
@@ -631,15 +631,17 @@ class Model {
    * @static
    * @private
    */
-  static attributes: Object;
+  static attributes: Object
 
   /**
+   * $FlowFixMe
+   *
    * @property attributeNames
    * @type {Array}
    * @static
    * @private
    */
-  static attributeNames: Array<string>;
+  static attributeNames: Array<string>
 
   /**
    * @property relationships
@@ -647,7 +649,7 @@ class Model {
    * @static
    * @private
    */
-  static relationships: Object;
+  static relationships: ObjectMap<Relationship>
 
   /**
    * @property relationshipNames
@@ -655,28 +657,28 @@ class Model {
    * @static
    * @private
    */
-  static relationshipNames: Array<string>;
+  static relationshipNames: Array<string>
 
-  constructor(attrs: Object = {}, initialize: boolean = true): this {
+  constructor(attrs: Object = {}, initialize: boolean = true) {
     Object.defineProperties(this, {
       changeSets: {
         value: [new ChangeSet()],
         writable: false,
         enumerable: false,
-        configurable: false
+        configurable: false,
       },
       rawColumnData: {
         value: attrs,
         writable: false,
         enumerable: false,
-        configurable: false
+        configurable: false,
       },
       prevAssociations: {
         value: new Set(),
         writable: false,
         enumerable: false,
-        configurable: false
-      }
+        configurable: false,
+      },
     })
 
     const { constructor: { attributeNames, relationshipNames } } = this
@@ -685,30 +687,28 @@ class Model {
     Object.assign(this, props)
 
     if (initialize) {
-      Reflect.defineProperty(this, 'initialized', {
+      Object.defineProperty(this, 'initialized', {
         value: true,
         writable: false,
         enumerable: false,
-        configurable: false
+        configurable: false,
       })
     }
-
-    return this
   }
 
   /**
    * Indicates if the model is new.
    *
    * ```javascript
-   * import Post from 'app/models/post';
+   * import Post from 'app/models/post'
    *
    * let post = new Post({
    *   body: '',
    *   title: 'New Post',
    *   isPublic: false
-   * });
+   * })
    *
-   * post.isNew;
+   * post.isNew
    * // => true
    *
    * Post.create({
@@ -716,9 +716,9 @@ class Model {
    *   title: 'New Post',
    *   isPublic: false
    * }).then(post => {
-   *   post.isNew;
-   *   // => false;
-   * });
+   *   post.isNew
+   *   // => false
+   * })
    * ```
    *
    * @property isNew
@@ -733,25 +733,25 @@ class Model {
    * Indicates if the model is dirty.
    *
    * ```javascript
-   * import Post from 'app/models/post';
+   * import Post from 'app/models/post'
    *
    * Post
    *  .find(1)
    *  .then(post => {
-   *     post.isDirty;
+   *     post.isDirty
    *     // => false
    *
-   *     post.isPublic = true;
+   *     post.isPublic = true
    *
-   *     post.isDirty;
+   *     post.isDirty
    *     // => true
    *
-   *     return post.save();
+   *     return post.save()
    *   })
    *   .then(post => {
-   *     post.isDirty;
+   *     post.isDirty
    *     // => false
-   *   });
+   *   })
    * ```
    *
    * @property isDirty
@@ -766,25 +766,25 @@ class Model {
    * Indicates if the model is persisted.
    *
    * ```javascript
-   * import Post from 'app/models/post';
+   * import Post from 'app/models/post'
    *
    * Post
    *  .find(1)
    *  .then(post => {
-   *     post.persisted;
+   *     post.persisted
    *     // => true
    *
-   *     post.isPublic = true;
+   *     post.isPublic = true
    *
-   *     post.persisted;
+   *     post.persisted
    *     // => false
    *
-   *     return post.save();
+   *     return post.save()
    *   })
    *   .then(post => {
-   *     post.persisted;
+   *     post.persisted
    *     // => true
-   *   });
+   *   })
    * ```
    *
    * @property persisted
@@ -801,12 +801,7 @@ class Model {
    * @public
    */
   get dirtyAttributes(): Map<string, any> {
-    const {
-      dirtyProperties,
-      constructor: {
-        relationshipNames
-      }
-    } = this
+    const { dirtyProperties, constructor: { relationshipNames } } = this
 
     dirtyProperties.forEach((prop, key) => {
       if (relationshipNames.indexOf(key) >= 0) {
@@ -823,20 +818,13 @@ class Model {
    * @public
    */
   get dirtyRelationships(): Map<string, any> {
-    const {
-      dirtyProperties,
-      constructor: {
-        attributeNames
-      }
-    } = this
+    const { dirtyProperties, constructor: { attributeNames } } = this
 
-    Array
-      .from(dirtyProperties.keys())
-      .forEach(key => {
-        if (attributeNames.indexOf(key) >= 0) {
-          dirtyProperties.delete(key)
-        }
-      })
+    Array.from(dirtyProperties.keys()).forEach(key => {
+      if (attributeNames.indexOf(key) >= 0) {
+        dirtyProperties.delete(key)
+      }
+    })
 
     return dirtyProperties
   }
@@ -889,12 +877,12 @@ class Model {
    * method is called.
    *
    * ```javascript
-   * const post = await Post.first();
+   * const post = await Post.first()
    *
    * // This call to update uses the transaction that lux will initiate.
    * await post.update({
    *   // updates to post...
-   * });
+   * })
    *
    * await post.transaction(trx => {
    *   // This call to update uses the transaction that we created with the
@@ -903,8 +891,8 @@ class Model {
    *     .transacting(trx)
    *     .update({
    *       // updates to post...
-   *     });
-   * });
+   *     })
+   * })
    * ```
    *
    * @method transacting
@@ -926,8 +914,8 @@ class Model {
    * the transaction method can be useful.
    *
    * ```javascript
-   * const post = await Post.first().include('user');
-   * const user = await post.user;
+   * const post = await Post.first().include('user')
+   * const user = await post.user
    *
    * await post.transaction(trx => {
    *   return Promise.all([
@@ -937,8 +925,8 @@ class Model {
    *     user.transacting(trx).update({
    *       // updates to user...
    *     })
-   *   ]);
-   * });
+   *   ])
+   * })
    * ```
    *
    * @method transaction
@@ -956,19 +944,19 @@ class Model {
    * Persist any unsaved changes to the database.
    *
    * ```javascript
-   * const post = await Post.first();
+   * const post = await Post.first()
    *
-   * console.log(post.title, post.isDirty);
+   * console.log(post.title, post.isDirty)
    * // => 'New Post' false
    *
-   * post.title = 'How to Save a Lux Model';
+   * post.title = 'How to Save a Lux Model'
    *
-   * console.log(post.title, post.isDirty);
+   * console.log(post.title, post.isDirty)
    * // => 'How to Update a Lux Model' true
    *
-   * await post.save();
+   * await post.save()
    *
-   * console.log(post.title, post.isDirty);
+   * console.log(post.title, post.isDirty)
    * // => 'How to Save a Lux Model' false
    * ```
    *
@@ -984,17 +972,17 @@ class Model {
    * Assign values to the instance and persist any changes to the database.
    *
    * ```javascript
-   * const post = await Post.first();
+   * const post = await Post.first()
    *
-   * console.log(post.title, post.isPublic, post.isDirty);
+   * console.log(post.title, post.isPublic, post.isDirty)
    * // => 'New Post' false false
    *
    * await post.update({
    *   title: 'How to Update a Lux Model',
    *   isPublic: true
-   * });
+   * })
    *
-   * console.log(post.title, post.isPublic, post.isDirty);
+   * console.log(post.title, post.isPublic, post.isDirty)
    * // => 'How to Update a Lux Model' true false
    * ```
    *
@@ -1006,7 +994,7 @@ class Model {
    */
   update(
     props: Object = {},
-    transaction?: Object
+    transaction?: Object,
   ): Promise<Transaction$ResultProxy<this, *>> {
     const run = async (trx: Object) => {
       const { constructor: { hooks, logger } } = this
@@ -1015,20 +1003,18 @@ class Model {
       let hadDirtyAttrs = false
       let hadDirtyAssoc = false
 
-      const associations = Object
-        .keys(props)
-        .filter(key => (
-          Boolean(this.constructor.relationshipFor(key))
-        ))
+      const associations = Object.keys(props).filter(key =>
+        Boolean(this.constructor.relationshipFor(key)),
+      )
 
       Object.assign(this, props)
 
       if (associations.length) {
         hadDirtyAssoc = true
-        statements = associations.reduce((arr, key) => [
-          ...arr,
-          ...updateRelationship(this, key, trx)
-        ], [])
+        statements = associations.reduce(
+          (arr, key) => [...arr, ...updateRelationship(this, key, trx)],
+          [],
+        )
       }
 
       if (this.isDirty) {
@@ -1038,10 +1024,12 @@ class Model {
 
         validate(this)
 
-        await runHooks(this, trx,
+        await runHooks(
+          this,
+          trx,
           hooks.afterValidation,
           hooks.beforeUpdate,
-          hooks.beforeSave
+          hooks.beforeSave,
         )
 
         promise = update(this, trx)
@@ -1053,10 +1041,7 @@ class Model {
       this.currentChangeSet.persist(this.changeSets)
 
       if (hadDirtyAttrs) {
-        await runHooks(this, trx,
-          hooks.afterUpdate,
-          hooks.afterSave
-        )
+        await runHooks(this, trx, hooks.afterUpdate, hooks.afterSave)
       }
 
       return createTransactionResultProxy(this, hadDirtyAttrs || hadDirtyAssoc)
@@ -1103,16 +1088,13 @@ class Model {
    */
   reload(): Query<this> {
     if (this.isNew) {
-      // $FlowIgnore
+      // $FlowFixMe
       return Promise.resolve(this)
     }
 
     const {
       persistedChangeSet,
-      constructor: {
-        attributeNames,
-        relationshipNames,
-      },
+      constructor: { attributeNames, relationshipNames },
     } = this
 
     let filterKey = key => attributeNames.includes(key)
@@ -1139,9 +1121,7 @@ class Model {
     const { persistedChangeSet } = this
 
     if (persistedChangeSet && !this.currentChangeSet.isPersisted) {
-      persistedChangeSet
-        .applyTo(this)
-        .persist(this.changeSets)
+      persistedChangeSet.applyTo(this).persist(this.changeSets)
     }
 
     return this
@@ -1173,29 +1153,33 @@ class Model {
     return Reflect.get(this, this.constructor.primaryKey)
   }
 
-  toObject(callee?: Model, prev?: Object): Object {
+  toObject(callee?: Model, accumulator?: Object): Object {
     const { currentChangeSet, constructor: { relationships } } = this
+    const attributes = this.getAttributes()
 
-    return entries(relationships).reduce((obj, [key, { type }]) => {
-      const value = currentChangeSet.get(key)
+    return Object.entries(relationships).reduce((prev, [key, data]) => {
+      const next = prev
 
-      /* eslint-disable no-param-reassign */
+      if (isObject(data)) {
+        const { type } = data
+        const value = currentChangeSet.get(key)
 
-      if (type === 'hasMany' && Array.isArray(value)) {
-        obj[key] = value.map(item => {
-          if (item === callee) {
-            return prev
-          }
-          return item.toObject(this, obj)
-        })
-      } else if (value && typeof value.toObject === 'function') {
-        obj[key] = value === callee ? prev : value.toObject(this, obj)
+        if (type === 'hasMany' && Array.isArray(value)) {
+          next[key] = value.map(item => {
+            if (item === callee) {
+              return accumulator
+            }
+            return item.toObject(this, next, accumulator)
+          })
+        } else if (value && typeof value.toObject === 'function') {
+          next[key] = value === callee
+            ? accumulator
+            : value.toObject(this, next, accumulator)
+        }
       }
 
-      /* eslint-enable no-param-reassign */
-
-      return obj
-    }, this.getAttributes())
+      return next
+    }, attributes)
   }
 
   /**
@@ -1210,34 +1194,34 @@ class Model {
    */
   static create(
     props: Object = {},
-    transaction?: Object
+    transaction?: Object,
   ): Promise<Transaction$ResultProxy<this, true>> {
     const run = async (trx: Object) => {
       const { hooks, logger, primaryKey } = this
       const instance = Reflect.construct(this, [props, false])
       let statements = []
 
-      const associations = Object
-        .keys(props)
-        .filter(key => (
-          Boolean(this.relationshipFor(key))
-        ))
+      const associations = Object.keys(props).filter(key =>
+        Boolean(this.relationshipFor(key)),
+      )
 
       if (associations.length) {
-        statements = associations.reduce((arr, key) => [
-          ...arr,
-          ...updateRelationship(instance, key, trx)
-        ], [])
+        statements = associations.reduce(
+          (arr, key) => [...arr, ...updateRelationship(instance, key, trx)],
+          [],
+        )
       }
 
       await runHooks(instance, trx, hooks.beforeValidation)
 
       validate(instance)
 
-      await runHooks(instance, trx,
+      await runHooks(
+        instance,
+        trx,
         hooks.afterValidation,
         hooks.beforeCreate,
-        hooks.beforeSave
+        hooks.beforeSave,
       )
 
       const runner = createRunner(logger, statements)
@@ -1250,15 +1234,12 @@ class Model {
         value: true,
         writable: false,
         enumerable: false,
-        configurable: false
+        configurable: false,
       })
 
       instance.currentChangeSet.persist(instance.changeSets)
 
-      await runHooks(instance, trx,
-        hooks.afterCreate,
-        hooks.afterSave
-      )
+      await runHooks(instance, trx, hooks.afterCreate, hooks.afterSave)
 
       return createTransactionResultProxy(instance, true)
     }
@@ -1285,15 +1266,15 @@ class Model {
    *
    * ```javascript
    * // This call to create uses the transaction that lux will initiate.
-   * await Post.create();
+   * await Post.create()
    *
    * await Post.transaction(trx => {
    *   // This call to create uses the transaction that we created with the
    *   // call to the transaction method.
    *   return Post
    *     .transacting(trx)
-   *     .create();
-   * });
+   *     .create()
+   * })
    * ```
    *
    * @method transacting
@@ -1324,8 +1305,8 @@ class Model {
    *     Post.transacting(trx).create({
    *       // ...props
    *     })
-   *   ]);
-   * });
+   *   ])
+   * })
    * ```
    *
    * @method transaction
@@ -1401,7 +1382,8 @@ class Model {
 
   static whereRaw(
     query: string,
-    bindings: Array<any> = []): Query<Array<this>> {
+    bindings: Array<any> = [],
+  ): Query<Array<this>> {
     return new Query(this).whereRaw(query, bindings)
   }
 
@@ -1455,7 +1437,20 @@ class Model {
    * @static
    * @public
    */
-  static isInstance(value: any): boolean {
+  static isInstance(value: mixed): boolean /* %checks */ {
+    return this.isModel(value)
+  }
+
+  /**
+   * Check if a value is an instance of a model.
+   *
+   * @method isModel
+   * @param {any} value - The value in question.
+   * @return {Boolean}
+   * @static
+   * @public
+   */
+  static isModel(value: mixed): boolean {
     return value instanceof this
   }
 
@@ -1481,25 +1476,20 @@ class Model {
       const getTableName = compose(pluralize, underscore)
       const tableName = getTableName(this.name)
 
-      Reflect.defineProperty(this, 'tableName', {
+      Object.defineProperty(this, 'tableName', {
         value: tableName,
-        writable: false,
         enumerable: true,
-        configurable: false
       })
 
-      Reflect.defineProperty(this.prototype, 'tableName', {
+      Object.defineProperty(this.prototype, 'tableName', {
         value: tableName,
-        writable: false,
-        enumerable: false,
-        configurable: false
       })
     }
 
     return initializeClass({
       store,
       table,
-      model: this
+      model: this,
     })
   }
 
@@ -1537,11 +1527,10 @@ class Model {
    * @static
    * @private
    */
-  static relationshipFor(key: string): void | Relationship$opts {
+  static relationshipFor(key: string): void | Relationship {
     return Reflect.get(this.relationships, key)
   }
 }
 
-export default Model
 export { default as tableFor } from './utils/table-for'
 export type { Model$Hook, Model$Hooks } from './interfaces'

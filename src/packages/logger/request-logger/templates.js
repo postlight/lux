@@ -36,16 +36,14 @@ export const debugTemplate = ({
   endTime,
   statusCode,
   statusMessage,
-  remoteAddress
+  remoteAddress,
 }: any) => `\
 ${line`
   Processed ${cyan(`${method}`)} "${path}" from ${remoteAddress}
   with ${Reflect.apply(colorStr, null, [`${statusCode}`])}
-  ${Reflect.apply(colorStr, null, [`${statusMessage}`])} by ${
-    route
-    ? `${yellow(route.controller.constructor.name)}#${blue(route.action)}`
-    : null
-  }
+  ${Reflect.apply(colorStr, null, [`${statusMessage}`])} by ${route
+  ? `${yellow(route.controller.constructor.name)}#${blue(route.action)}`
+  : null}
 `}
 
 ${magenta('Params')}
@@ -54,23 +52,27 @@ ${JSON.stringify(params, null, 2)}
 
 ${magenta('Stats')}
 
-${stats.map(stat => {
-  const { type, duration, controller } = stat
-  let { name } = stat
+${stats
+  .map(stat => {
+    const { type, duration, controller } = stat
+    let { name } = stat
 
-  name = blue(name)
+    name = blue(name)
 
-  if (type === 'action') {
-    name = `${yellow(controller)}#${name}`
-  }
+    if (type === 'action') {
+      name = `${yellow(controller)}#${name}`
+    }
 
-  return `${pad(startTime, endTime, duration)} ms ${name}`
-}).join('\n')}
-${pad(startTime,
-      endTime,
-      stats.reduce((total, { duration }) => total + duration, 0))} ms Total
+    return `${pad(startTime, endTime, duration)} ms ${name}`
+  })
+  .join('\n')}
+${pad(
+  startTime,
+  endTime,
+  stats.reduce((total, { duration }) => total + duration, 0),
+)} ms Total
 ${(endTime - startTime).toString()} ms Actual\
-`
+  `
 
 /**
  * @private
@@ -84,13 +86,12 @@ export const infoTemplate = ({
   endTime,
   statusCode,
   statusMessage,
-  remoteAddress
+  remoteAddress,
 }: any) => line`
-Processed ${cyan(`${method}`)} "${path}" ${magenta('Params')} ${
-  JSON.stringify(params)} from ${remoteAddress
-} in ${(endTime - startTime).toString()} ms with ${
-  Reflect.apply(colorStr, null, [`${statusCode}`])
-} ${
-  Reflect.apply(colorStr, null, [`${statusMessage}`])
-}
-`
+Processed ${cyan(`${method}`)} "${path}" ${magenta('Params')} ${JSON.stringify(
+  params,
+)} from ${remoteAddress} in ${(endTime -
+  startTime).toString()} ms with ${Reflect.apply(colorStr, null, [
+  `${statusCode}`,
+])} ${Reflect.apply(colorStr, null, [`${statusMessage}`])}
+  `

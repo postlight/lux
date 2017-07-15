@@ -11,27 +11,27 @@ describe('util uniq()', () => {
     const subject = [
       {
         id: 1,
-        name: 'Test 1'
+        name: 'Test 1',
       },
       {
         id: 1,
-        name: 'Test One'
+        name: 'Test One',
       },
       {
         id: 2,
-        name: 'Test 2'
-      }
+        name: 'Test 2',
+      },
     ]
 
     expect(uniq(subject, 'id')).toEqual([
       {
         id: 1,
-        name: 'Test 1'
+        name: 'Test 1',
       },
       {
         id: 2,
-        name: 'Test 2'
-      }
+        name: 'Test 2',
+      },
     ])
   })
 

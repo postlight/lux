@@ -2,9 +2,9 @@
 
 import type { ServerResponse } from 'http'
 
-import Response from '../../../response'
+import Response from '@lux/packages/response'
 import { ResponseHeaders } from '../../utils/headers'
-import type Logger from '../../../logger'
+import type Logger from '@lux/packages/logger'
 
 export function create(res: ServerResponse, logger: Logger): Response {
   return new Response({

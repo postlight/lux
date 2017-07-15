@@ -8,12 +8,12 @@ const log = console.log
 describe('util compose', () => {
   describe('.tap()', () => {
     beforeEach(() => {
-      // $FlowIgnore
+      // $FlowFixMe
       console.log = jest.fn()
     })
 
     afterEach(() => {
-      // $FlowIgnore
+      // $FlowFixMe
       console.log = log
       jest.resetAllMocks()
     })
@@ -28,10 +28,7 @@ describe('util compose', () => {
 
   describe('.compose()', () => {
     test('returns a composed function', () => {
-      const shout = compose(
-        str => `${str}!`,
-        str => str.toUpperCase()
-      )
+      const shout = compose(str => `${str}!`, str => str.toUpperCase())
 
       expect(shout).toHaveLength(1)
       expect(typeof shout).toBe('function')
@@ -43,7 +40,7 @@ describe('util compose', () => {
     test('returns a composed asyncfunction', () => {
       const shout = composeAsync(
         str => Promise.resolve(`${str}!`),
-        str => Promise.resolve(str.toUpperCase())
+        str => Promise.resolve(str.toUpperCase()),
       )
 
       expect(shout).toEqual(expect.any(Function))

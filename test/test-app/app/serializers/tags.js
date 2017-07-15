@@ -1,4 +1,4 @@
-import { Serializer } from 'LUX_LOCAL'
+import { Serializer } from 'lux-framework'
 
 class TagsSerializer extends Serializer {
   attributes = [

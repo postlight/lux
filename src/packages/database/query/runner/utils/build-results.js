@@ -1,24 +1,20 @@
 /* @flow */
 
-import { camelize, singularize } from 'inflection'
+import { singularize } from 'inflection'
 
-import Model from '../../../model'
-import entries from '../../../../../utils/entries'
-import underscore from '../../../../../utils/underscore'
-import promiseHash from '../../../../../utils/promise-hash'
+import { Model } from '@lux/packages/database'
+import { camelize, underscore } from '@lux/packages/inflector'
+import { isObject, isString } from '@lux/utils/is-type'
+import promiseHash from '@lux/utils/promise-hash'
 
-/**
- * @private
- */
-export default async function buildResults<T: Model>({
-  model,
-  records,
-  relationships
-}: {
+type Options<T: Model> = {
   model: Class<T>,
   records: Promise<Array<Object>>,
-  relationships: Object
-}): Promise<Array<T>> {
+  relationships: Object,
+}
+
+async function buildResults<T: Model>(options: Options<T>): Promise<Array<T>> {
+  const { model, records, relationships } = options
   const results = await records
   const pkPattern = new RegExp(`^.+\\.${model.primaryKey}$`)
   let related
@@ -28,109 +24,111 @@ export default async function buildResults<T: Model>({
   }
 
   if (Object.keys(relationships).length) {
-    related = entries(relationships)
-      .reduce((obj, entry) => {
-        const [name, relationship] = entry
-        let foreignKey = camelize(relationship.foreignKey, true)
+    related = Object.entries(relationships).reduce((prev, [key, value]) => {
+      const next = prev
 
-        if (relationship.through) {
-          const query = relationship.model.select(...relationship.attrs)
+      if (isObject(value) && isString(value.foreignKey)) {
+        // $FlowFixMe
+        const relatedModel: Class<Model> = value.model
+        const foreignKeyString = value.foreignKey
+        let foreignKey = camelize(foreignKeyString)
 
-          const baseKey = `${relationship.through.tableName}.` +
-            `${singularize(underscore(name))}_id`
+        if (value.through) {
+          // $FlowFixMe
+          const throughModel: Class<Model> = value.through
+          const query = relatedModel.select(...value.attrs)
 
-          foreignKey = `${relationship.through.tableName}.` +
-            `${relationship.foreignKey}`
+          const baseKey = `${throughModel.tableName}.${singularize(
+            underscore(key),
+          )}_id`
+
+          foreignKey = `${throughModel.tableName}.${foreignKeyString}`
 
           query.snapshots.push(
-            ['select', [
-              `${baseKey} as ${camelize(baseKey.split('.').pop(), true)}`,
-              `${foreignKey} as ${camelize(foreignKey.split('.').pop(), true)}`
-            ]],
-
-            ['innerJoin', [
-              relationship.through.tableName,
-              `${relationship.model.tableName}.` +
-                `${relationship.model.primaryKey}`,
-              '=',
-              baseKey
-            ]],
-
-            ['whereIn', [
-              foreignKey,
-              results.map(({ id }) => id)
-            ]]
+            [
+              'select',
+              [
+                `${baseKey} as ${camelize(baseKey.split('.').pop())}`,
+                `${foreignKey} as ${camelize(foreignKey.split('.').pop())}`,
+              ],
+            ],
+            [
+              'innerJoin',
+              [
+                throughModel.tableName,
+                `${relatedModel.tableName}.${relatedModel.primaryKey}`,
+                '=',
+                baseKey,
+              ],
+            ],
+            ['whereIn', [foreignKey, results.map(({ id }) => id)]],
           )
 
-          return {
-            ...obj,
-            [name]: query
-          }
+          next[key] = query
+          return next
         }
 
-        return {
-          ...obj,
-          [name]: relationship.model
-            .select(...relationship.attrs)
-            .where({
-              [foreignKey]: results.map(({ id }) => id)
-            })
-        }
-      }, {})
+        // $FlowFixMe
+        next[key] = relatedModel.select(...value.attrs).where({
+          [foreignKey]: results.map(({ id }) => id),
+        })
+      }
+
+      return next
+    }, {})
 
     related = await promiseHash(related)
   }
 
   return results.map(record => {
     if (related) {
-      entries(related)
-        .forEach(([name, relatedResults]: [string, Array<Model>]) => {
-          const relationship = model.relationshipFor(name)
+      Object.entries(related).forEach(([key, value]) => {
+        const relationship = model.relationshipFor(key)
 
-          if (relationship) {
-            let { foreignKey } = relationship
+        if (relationship && Array.isArray(value)) {
+          const foreignKey = camelize(relationship.foreignKey)
 
-            foreignKey = camelize(foreignKey, true)
-
-            Reflect.set(record, name, relatedResults.filter(({
-              rawColumnData
-            }) => {
-              const fk = Reflect.get(rawColumnData, foreignKey)
-              const pk = Reflect.get(record, model.primaryKey)
-
-              return fk === pk
-            }))
-          }
-        })
+          Reflect.set(
+            record,
+            key,
+            value.filter(
+              item =>
+                isObject(item) &&
+                isObject(item.rawColumnData) &&
+                Reflect.get(item.rawColumnData, foreignKey) ===
+                  Reflect.get(record, model.primaryKey),
+            ),
+          )
+        }
+      })
     }
 
     const instance = Reflect.construct(model, [
-      entries(record)
-        .reduce((r, entry) => {
-          let [key, value] = entry
+      Object.entries(record).reduce((r, entry) => {
+        let [key, value] = entry
 
-          if (!value && pkPattern.test(key)) {
-            return r
-          } else if (key.indexOf('.') >= 0) {
-            const [a, b] = key.split('.')
-            let parent: ?Object = r[a]
+        if (!value && pkPattern.test(key)) {
+          return r
+        } else if (key.indexOf('.') >= 0) {
+          const [a, b] = key.split('.')
+          let parent: ?Object = r[a]
 
-            if (!parent) {
-              parent = {}
-            }
-
-            key = a
-            value = {
-              ...parent,
-              [b]: value
-            }
+          if (!parent) {
+            parent = {}
           }
 
-          return {
-            ...r,
-            [key]: value
+          key = a
+          value = {
+            ...parent,
+            [b]: value,
           }
-        }, {})
+        }
+
+        return {
+          ...r,
+          [key]: value,
+        }
+      }, {}),
     ])
 
     instance.currentChangeSet.persist()
@@ -138,3 +136,5 @@ export default async function buildResults<T: Model>({
     return instance
   })
 }
+
+export default buildResults

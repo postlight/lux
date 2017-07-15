@@ -1,7 +1,7 @@
 /* @flow */
 
 import { RecordNotFoundError } from '../errors'
-import { sql } from '../../../logger'
+import { sql } from '@lux/packages/logger'
 import type Query from '../index'
 
 import { RUNNERS } from './constants'
@@ -11,10 +11,13 @@ import buildResults from './utils/build-results'
 /**
  * @private
  */
-export function createRunner(target: Query<*>, opts: {
-  resolve?: (value: any) => void;
-  reject?: (error: Error) => void;
-}): void {
+export function createRunner(
+  target: Query<*>,
+  opts: {
+    resolve?: (value: any) => void,
+    reject?: (error: Error) => void,
+  },
+): void {
   if (opts.resolve && opts.reject) {
     const { resolve, reject } = opts
     let didRun = false
@@ -27,7 +30,7 @@ export function createRunner(target: Query<*>, opts: {
         snapshots,
         collection,
         shouldCount,
-        relationships
+        relationships,
       } = target
 
       if (didRun) {
@@ -40,10 +43,7 @@ export function createRunner(target: Query<*>, opts: {
         target.select(...target.model.attributeNames)
       }
 
-      const records: any = snapshots.reduce((
-        query,
-        snapshot
-      ) => {
+      const records: any = snapshots.reduce((query, snapshot) => {
         let [name, params] = snapshot
 
         if (!shouldCount && name === 'includeSelect') {
@@ -74,7 +74,7 @@ export function createRunner(target: Query<*>, opts: {
         results = await buildResults({
           model,
           records,
-          relationships
+          relationships,
         })
 
         if (collection) {

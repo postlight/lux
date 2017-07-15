@@ -1,9 +1,8 @@
 /* @flow */
 
 import Namespace from '../namespace'
-import setType from '../../../utils/set-type'
 import { getTestApp } from '../../../../test/utils/test-app'
-import type Controller from '../../controller'
+import type Controller from '@lux/packages/controller'
 
 describe('module "router/namespace"', () => {
   describe('class Namespace', () => {
@@ -23,16 +22,18 @@ describe('module "router/namespace"', () => {
       }
 
       beforeAll(async () => {
-        app = await getTestApp();
-        ({ controllers } = app)
-        // $FlowIgnore
+        app = await getTestApp()
+        ;({ controllers } = app)
+        // $FlowFixMe
         controller = controllers.get('admin/application')
-        createRootNamespace = (): Namespace => new Namespace({
-          controllers,
-          path: '/',
-          name: 'root',
-          controller: setType(() => app.controllers.get('application')),
-        })
+        createRootNamespace = (): Namespace =>
+          new Namespace({
+            controllers,
+            path: '/',
+            name: 'root',
+            // $FlowFixMe
+            controller: app.controllers.get('application'),
+          })
       })
 
       afterAll(async () => {

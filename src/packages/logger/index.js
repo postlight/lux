@@ -1,31 +1,27 @@
 /* @flow */
 
-import { LUX_CONSOLE } from '../../constants'
-import K from '../../utils/k'
+import { LUX_CONSOLE } from '@lux/constants'
+import K from '@lux/utils/k'
 
 import { LEVELS } from './constants'
-import { createWriter } from './writer'
+import * as writer from './writer'
 import { createRequestLogger } from './request-logger'
 import type { RequestLogger } from './request-logger'
 
 export type Format = 'text' | 'json'
 export type LogFunction = (data: string | Object) => void
 
-export type Level =
-  | 'DEBUG'
-  | 'INFO'
-  | 'WARN'
-  | 'ERROR'
+export type Level = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR'
 
 export type Filter = {
-  params: Array<string>;
+  params: Array<string>,
 }
 
 export type Config = {
-  level: Level;
-  format: Format;
-  filter: Filter;
-  enabled: boolean;
+  level: Level,
+  format: Format,
+  filter: Filter,
+  enabled: boolean,
 }
 
 /**
@@ -40,7 +36,7 @@ class Logger {
    * @type {String}
    * @public
    */
-  level: Level;
+  level: Level
 
   /**
    * The output format of log data (text or json).
@@ -49,7 +45,7 @@ class Logger {
    * @type {String}
    * @public
    */
-  format: Format;
+  format: Format
 
   /**
    * Hackers love logs. It's easy to get sensitive user information from log
@@ -68,7 +64,7 @@ class Logger {
    *       params: ['password']
    *     }
    *   }
-   * };
+   * }
    * ```
    *
    * Now that we've added password to the array of parameters we want to filter
@@ -120,7 +116,7 @@ class Logger {
    * @type {Object}
    * @public
    */
-  filter: Filter;
+  filter: Filter
 
   /**
    * A boolean flag that determines whether or not the logger is enabled.
@@ -129,13 +125,13 @@ class Logger {
    * @type {Boolean}
    * @public
    */
-  enabled: boolean;
+  enabled: boolean
 
   /**
    * Log a message at the DEBUG level.
    *
    * ```javascript
-   * logger.debug('Hello World!');
+   * logger.debug('Hello World!')
    * // => [6/4/16 5:46:53 PM] Hello World!
    * ```
    *
@@ -144,13 +140,13 @@ class Logger {
    * @return {void}
    * @public
    */
-  debug: LogFunction;
+  debug: LogFunction
 
   /**
    * Log a message at the INFO level.
    *
    * ```javascript
-   * logger.info('Hello World!');
+   * logger.info('Hello World!')
    * // => [6/4/16 5:46:53 PM] Hello World!
    * ```
    *
@@ -159,13 +155,13 @@ class Logger {
    * @return {void}
    * @public
    */
-  info: LogFunction;
+  info: LogFunction
 
   /**
    * Log a message at the WARN level.
    *
    * ```javascript
-   * logger.warn('Good Bye World!');
+   * logger.warn('Good Bye World!')
    * // => [6/4/16 5:46:53 PM] Good Bye World!
    * ```
    *
@@ -174,13 +170,13 @@ class Logger {
    * @return {void}
    * @public
    */
-  warn: LogFunction;
+  warn: LogFunction
 
   /**
    * Log a message at the ERROR level.
    *
    * ```javascript
-   * logger.warn('HELP!');
+   * logger.warn('HELP!')
    * // => [6/4/16 5:46:53 PM] HELP!
    * ```
    *
@@ -189,7 +185,7 @@ class Logger {
    * @return {void}
    * @public
    */
-  error: LogFunction;
+  error: LogFunction
 
   /**
    * Internal method used for logging requests.
@@ -203,14 +199,15 @@ class Logger {
    * @return {void}
    * @private
    */
-  request: RequestLogger;
+  request: RequestLogger
 
   constructor({ level, format, filter, enabled }: Config) {
-    let write = K
+    const mockWrite = writer.mock()
+    let write = mockWrite
     let request = K
 
     if (!LUX_CONSOLE && enabled) {
-      write = createWriter(format)
+      write = writer.create(format)
       request = createRequestLogger(this)
     }
 
@@ -219,59 +216,52 @@ class Logger {
         value: level,
         writable: false,
         enumerable: true,
-        configurable: false
+        configurable: false,
       },
       format: {
         value: format,
         writable: false,
         enumerable: true,
-        configurable: false
+        configurable: false,
       },
       filter: {
         value: filter,
         writable: false,
         enumerable: true,
-        configurable: false
+        configurable: false,
       },
       enabled: {
         value: Boolean(enabled),
         writable: false,
         enumerable: true,
-        configurable: false
+        configurable: false,
       },
       request: {
         value: request,
         writable: false,
         enumerable: false,
-        configurable: false
-      }
+        configurable: false,
+      },
     })
 
     const levelNum = LEVELS.get(level) || 0
 
     LEVELS.forEach((val, key) => {
       Object.defineProperty(this, key.toLowerCase(), {
-        value: val >= levelNum ? (message: void | ?mixed) => {
-          write({
-            message,
-            level: key,
-            timestamp: this.getTimestamp()
-          })
-        } : K,
+        value: val >= levelNum
+          ? (message: void | ?mixed) => {
+              write({
+                message,
+                level: key,
+                timestamp: new Date().toISOString(),
+              })
+            }
+          : mockWrite,
         writable: false,
         enumerable: false,
         configurable: false,
       })
     })
-  }
-
-  /**
-   * @method getTimestamp
-   * @return {String} The current time as an ISO8601 string.
-   * @private
-   */
-  getTimestamp() {
-    return new Date().toISOString()
   }
 }
 

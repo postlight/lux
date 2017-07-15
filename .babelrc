@@ -1,4 +1,5 @@
 {
+  "comments": false,
   "env": {
     "development": {
       "presets": [
@@ -21,8 +22,7 @@
       "presets": [
         "lux"
       ],
-      "minified": true,
-      "comments": false
+      "minified": true
     }
   }
 }

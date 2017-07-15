@@ -1,13 +1,11 @@
 /* @flow */
 
-export {
-  default as NotAcceptableError
-} from './not-acceptable-error'
+export { default as NotAcceptableError } from './not-acceptable-error'
 
 export {
-  default as UnsupportedMediaTypeError
+  default as UnsupportedMediaTypeError,
 } from './unsupported-media-type-error'
 
 export {
-  default as InvalidContentTypeError
+  default as InvalidContentTypeError,
 } from './invalid-content-type-error'

@@ -6,11 +6,11 @@ import type { Validation$opts } from './interfaces'
  * @private
  */
 class Validation<T> {
-  key: string;
+  key: string
 
-  value: T;
+  value: T
 
-  validator: (value?: T) => boolean;
+  validator: (value?: T) => boolean
 
   constructor(opts: Validation$opts<T>) {
     Object.defineProperties(this, {
@@ -18,22 +18,22 @@ class Validation<T> {
         value: opts.key,
         writable: false,
         enumerable: true,
-        configurable: false
+        configurable: false,
       },
 
       value: {
         value: opts.value,
         writable: false,
         enumerable: true,
-        configurable: false
+        configurable: false,
       },
 
       validator: {
         value: opts.validator,
         writable: false,
         enumerable: false,
-        configurable: false
-      }
+        configurable: false,
+      },
     })
   }
 

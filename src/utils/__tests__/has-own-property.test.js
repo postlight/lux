@@ -6,11 +6,14 @@ describe('util hasOwnProperty()', () => {
   let subject
 
   beforeEach(() => {
-    subject = Object.create({ y: 'y' }, {
-      x: {
-        value: 'x'
-      }
-    })
+    subject = Object.create(
+      { y: 'y' },
+      {
+        x: {
+          value: 'x',
+        },
+      },
+    )
   })
 
   test('returns true when an object has a property', () => {
@@ -19,7 +22,7 @@ describe('util hasOwnProperty()', () => {
     expect(result).toBe(true)
   })
 
-  test('returns false when an object\'s prototype has a property', () => {
+  test("returns false when an object's prototype has a property", () => {
     const result = hasOwnProperty(subject, 'y')
 
     expect(result).toBe(false)

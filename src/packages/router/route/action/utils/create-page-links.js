@@ -1,18 +1,18 @@
 /* @flow */
 
-import omit from '../../../../../utils/omit'
-import merge from '../../../../../utils/merge'
-import createQueryString from '../../../../../utils/create-query-string'
-import type { Params } from '../../../../request'
-import type { Document } from '../../../../jsonapi'
+import omit from '@lux/utils/omit'
+import merge from '@lux/utils/merge'
+import createQueryString from '@lux/utils/create-query-string'
+import type { Params } from '@lux/packages/request'
+import type { Document } from '@lux/packages/jsonapi'
 
 type Links = $PropertyType<Document, 'links'>
 type Options = {
-  total: number;
-  params: Params;
-  domain: string;
-  pathname: void | string;
-  defaultPerPage: number;
+  total: number,
+  params: Params,
+  domain: string,
+  pathname: void | string,
+  defaultPerPage: number,
 }
 
 function createLinkTemplate(options: Options) {
@@ -51,8 +51,8 @@ function createLinkTemplate(options: Options) {
       } else if (normalized > 1) {
         const paramsForPage = merge(baseParams, {
           page: {
-            number: normalized
-          }
+            number: normalized,
+          },
         })
 
         return queryURL + createQueryString(paramsForPage)
@@ -62,7 +62,7 @@ function createLinkTemplate(options: Options) {
     }
   }
 
-  return () => null
+  return (..._) => null
 }
 
 /**

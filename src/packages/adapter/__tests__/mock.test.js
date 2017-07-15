@@ -1,7 +1,7 @@
 /* @flow */
 
-import { MIME_TYPE } from '../../jsonapi'
-import Logger from '../../logger'
+import { MIME_TYPE } from '@lux/packages/jsonapi'
+import Logger from '@lux/packages/logger'
 import createAdapter, { request, response } from '../mock'
 import { getTestApp } from '../../../../test/utils/test-app'
 
@@ -116,7 +116,7 @@ describe('module "adapter/mock"', () => {
         })
 
         describe('=> Response', () => {
-          ['end', 'send'].forEach(method => {
+          ;['end', 'send'].forEach(method => {
             describe(`#${method}()`, () => {
               test('calls the resolver function', () => {
                 const body = 'Test'
@@ -137,7 +137,7 @@ describe('module "adapter/mock"', () => {
       describe('- without a resolver function', () => {
         beforeEach(() => {
           subject = response.create({
-            logger
+            logger,
           })
         })
 

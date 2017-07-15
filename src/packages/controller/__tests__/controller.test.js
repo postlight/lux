@@ -2,36 +2,21 @@
 
 import faker from 'faker'
 
-import { MIME_TYPE } from '../../jsonapi'
+import { MIME_TYPE } from '@lux/packages/jsonapi'
 import Controller from '../index'
-import Serializer from '../../serializer'
-import * as Adapters from '../../adapter'
-import noop from '../../../utils/noop'
+import Serializer from '@lux/packages/serializer'
+import * as Adapters from '@lux/packages/adapter'
+import noop from '@lux/utils/noop'
 import { getTestApp } from '../../../../test/utils/test-app'
 
 const HOST = 'localhost:4000'
 const DEFAULT_FIELDS = {
-  posts: [
-    'body',
-    'title',
-    'createdAt',
-    'updatedAt',
-  ],
-  users: [
-    'id',
-  ],
-  images: [
-    'id',
-  ],
-  comments: [
-    'id',
-  ],
-  reactions: [
-    'id',
-  ],
-  tags: [
-    'id',
-  ],
+  posts: ['body', 'title', 'createdAt', 'updatedAt'],
+  users: ['id'],
+  images: ['id'],
+  comments: ['id'],
+  reactions: ['id'],
+  tags: ['id'],
 }
 
 describe('module "controller"', () => {
@@ -53,9 +38,7 @@ describe('module "controller"', () => {
       expect(item).toBeInstanceOf(Post)
 
       if (item instanceof Post) {
-        expect(item.toObject()).toEqual(
-          expect.objectContaining(props)
-        )
+        expect(item.toObject()).toEqual(expect.objectContaining(props))
       }
     }
 
@@ -69,8 +52,8 @@ describe('module "controller"', () => {
         serializer: new Serializer({
           model: Post,
           parent: null,
-          namespace: ''
-        })
+          namespace: '',
+        }),
       })
 
       subject.controllers = app.controllers
@@ -198,19 +181,14 @@ describe('module "controller"', () => {
       test('throws an error if the record is not found', async () => {
         const [request, response] = await mockArgs(10000)
 
-        await subject
-          .show(request, response)
-          .catch(err => {
-            expect(err).toEqual(expect.any(Error))
-          })
+        await subject.show(request, response).catch(err => {
+          expect(err).toEqual(expect.any(Error))
+        })
       })
 
       test('supports sparse field sets', async () => {
         const { id, title } = getDefaultProps()
-        const [request, response] = await mockArgs(
-          1,
-          '?fields[posts]=id,title'
-        )
+        const [request, response] = await mockArgs(1, '?fields[posts]=id,title')
 
         assertRecord(await subject.show(request, response), {
           id,
@@ -270,9 +248,7 @@ describe('module "controller"', () => {
               isPublic,
             },
           },
-          include: [
-            'user',
-          ],
+          include: ['user'],
         })
 
         result = await subject.create(request, response)
@@ -311,9 +287,9 @@ describe('module "controller"', () => {
 
         result = await subject.create(request, response)
 
-        expect(
-          response.headers.get('location')
-        ).toBe(`http://${HOST}/posts/${result.getPrimaryKey()}`)
+        expect(response.headers.get('location')).toBe(
+          `http://${HOST}/posts/${result.getPrimaryKey()}`,
+        )
       })
     })
 
@@ -356,9 +332,9 @@ describe('module "controller"', () => {
       beforeEach(async () => {
         User = app.store.modelFor('user')
         Comment = app.store.modelFor('comment')
-        record = await Post
-          .create({ title: '#update() Test' })
-          .then(post => post.unwrap())
+        record = await Post.create({ title: '#update() Test' }).then(post =>
+          post.unwrap(),
+        )
       })
 
       afterEach(async () => {
@@ -377,7 +353,7 @@ describe('module "controller"', () => {
           },
         })
 
-        // $FlowIgnore
+        // $FlowFixMe
         expect(record.isPublic).toBe(!isPublic)
         assertRecord(await subject.update(request, response), {
           ...getDefaultProps(),
@@ -430,9 +406,9 @@ describe('module "controller"', () => {
         })
 
         const [user, comments] = await Promise.all([
-          // $FlowIgnore
+          // $FlowFixMe
           record.user,
-          // $FlowIgnore
+          // $FlowFixMe
           record.comments,
         ])
 
@@ -441,33 +417,25 @@ describe('module "controller"', () => {
 
         await subject.update(request, response)
 
-        record = await Post
-          .find(id)
-          .include('user', 'comments')
+        record = await Post.find(id).include('user', 'comments')
 
         assertRecord(record, {
           ...getDefaultProps(),
           id,
           user: expect.objectContaining(
-            newUser.getAttributes('id', 'name', 'email')
+            newUser.getAttributes('id', 'name', 'email'),
           ),
           comments: expect.arrayContaining([
-            expect.objectContaining(
-              newComment.getAttributes('id', 'message')
-            ),
+            expect.objectContaining(newComment.getAttributes('id', 'message')),
           ]),
         })
 
-        await Post.transaction(trx => (
+        await Post.transaction(trx =>
           Promise.all([
-            newUser
-              .transacting(trx)
-              .destroy(),
-            newComment
-              .transacting(trx)
-              .destroy(),
-          ])
-        ))
+            newUser.transacting(trx).destroy(),
+            newComment.transacting(trx).destroy(),
+          ]),
+        )
       })
 
       test('returns the number `204` if no changes occur', async () => {
@@ -479,11 +447,9 @@ describe('module "controller"', () => {
       test('throws an error if the record is not found', async () => {
         const [request, response] = await mockArgs(10000)
 
-        await subject
-          .update(request, response)
-          .catch(err => {
-            expect(err).toEqual(expect.any(Error))
-          })
+        await subject.update(request, response).catch(err => {
+          expect(err).toEqual(expect.any(Error))
+        })
       })
 
       test('supports sparse field sets', async () => {
@@ -512,21 +478,15 @@ describe('module "controller"', () => {
             },
           },
           fields: {
-            users: [
-              'id',
-              'name',
-              'email',
-            ],
+            users: ['id', 'name', 'email'],
           },
-          include: [
-            'user',
-          ],
+          include: ['user'],
         })
 
         const [user, comments] = await Promise.all([
-          // $FlowIgnore
+          // $FlowFixMe
           record.user,
-          // $FlowIgnore
+          // $FlowFixMe
           record.comments,
         ])
 
@@ -537,11 +497,7 @@ describe('module "controller"', () => {
           ...getDefaultProps(),
           id,
           user: expect.objectContaining(
-            newUser.getAttributes(
-              'id',
-              'name',
-              'email'
-            )
+            newUser.getAttributes('id', 'name', 'email'),
           ),
         })
 
@@ -575,7 +531,7 @@ describe('module "controller"', () => {
 
       beforeAll(async () => {
         record = await Post.create({
-          title: '#destroy() Test'
+          title: '#destroy() Test',
         })
       })
 
@@ -588,11 +544,9 @@ describe('module "controller"', () => {
       test('throws an error if the record is not found', async () => {
         const [request, response] = await mockArgs(10000)
 
-        await subject
-          .destroy(request, response)
-          .catch(err => {
-            expect(err).toEqual(expect.any(Error))
-          })
+        await subject.destroy(request, response).catch(err => {
+          expect(err).toEqual(expect.any(Error))
+        })
       })
     })
 

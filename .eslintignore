@@ -10,4 +10,3 @@ decl/
 examples/
 flow-typed/
 test/test-app/
-*interfaces.js

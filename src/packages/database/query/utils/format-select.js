@@ -1,20 +1,17 @@
 /* @flow */
 
-import { camelize } from 'inflection'
+import { camelize } from '@lux/packages/inflector'
 
 import Model from '../../model'
 
-/**
- * @private
- */
 export default function formatSelect(
   model: Class<Model>,
-  attrs: Array<string> = [],
-  prefix: string = ''
+  attrs?: Array<string> = [],
+  prefix?: string = '',
 ) {
   return attrs.map(attr => {
     const name = model.columnNameFor(attr) || 'undefined'
 
-    return `${model.tableName}.${name} AS ${prefix}${camelize(name, true)}`
+    return `${model.tableName}.${name} AS ${prefix}${camelize(name)}`
   })
 }

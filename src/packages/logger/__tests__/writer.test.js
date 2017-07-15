@@ -1,16 +1,9 @@
 /* @flow */
 
 import { WARN, ERROR, LEVELS, FORMATS } from '../constants'
-import { createWriter } from '../writer'
+import * as writer from '../writer'
 
-const {
-  stdout: {
-    write: writeOut,
-  },
-  stderr: {
-    write: writeErr,
-  },
-} = process
+const { stdout: { write: writeOut }, stderr: { write: writeErr } } = process
 
 describe('module "logger/writer"', () => {
   describe('#createWriter()', () => {
@@ -29,7 +22,7 @@ describe('module "logger/writer"', () => {
         let subject
 
         beforeAll(() => {
-          subject = createWriter(format)
+          subject = writer.create(format)
         })
 
         LEVELS.forEach((num, level) => {

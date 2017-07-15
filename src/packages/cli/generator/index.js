@@ -10,11 +10,16 @@ import type { Generator$opts } from './interfaces'
 /**
  * @private
  */
-export async function runGenerator({ cwd, type, name, attrs }: {
-  cwd: $PropertyType<Generator$opts, 'cwd'>;
-  type: $PropertyType<Generator$opts, 'type'>;
-  name: $PropertyType<Generator$opts, 'name'>;
-  attrs: $PropertyType<Generator$opts, 'attrs'>;
+export async function runGenerator({
+  cwd,
+  type,
+  name,
+  attrs,
+}: {
+  cwd: $PropertyType<Generator$opts, 'cwd'>,
+  type: $PropertyType<Generator$opts, 'type'>,
+  name: $PropertyType<Generator$opts, 'name'>,
+  attrs: $PropertyType<Generator$opts, 'attrs'>,
 }): Promise<void> {
   const generator = generatorFor(type)
   const prompt = createPrompt()
@@ -24,9 +29,8 @@ export async function runGenerator({ cwd, type, name, attrs }: {
     type,
     name,
     attrs,
-    onConflict: path => prompt.question(
-      `${green('?')} ${red('Overwrite')} ${path}? (Y/n)\r`
-    )
+    onConflict: path =>
+      prompt.question(`${green('?')} ${red('Overwrite')} ${path}? (Y/n)\r`),
   })
 
   prompt.close()
@@ -35,5 +39,5 @@ export async function runGenerator({ cwd, type, name, attrs }: {
 export type {
   Generator,
   Generator$opts,
-  Generator$template
+  Generator$template,
 } from './interfaces'
