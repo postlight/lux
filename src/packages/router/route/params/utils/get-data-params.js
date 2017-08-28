@@ -50,10 +50,10 @@ function getAttributesParam(
     const col = model.columnFor(param)
 
     if (col) {
-      const type = typeForColumn(col);
-      const path = `data.attributes.${param}`;
+      const type = typeForColumn(col)
+      const path = `data.attributes.${param}`
       const required =
-        method !== 'PATCH' && !col.nullable && isNull(col.defaultValue);
+        method !== 'PATCH' && !col.nullable && isNull(col.defaultValue)
 
       return [
         ...group,

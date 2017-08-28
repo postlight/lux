@@ -35,7 +35,7 @@ export function paramsFor({
       params = [
         ...params,
         getDataParams(controller, method, true)
-      ];
+      ]
     }
   } else if (type === 'collection') {
     params = [
@@ -47,7 +47,7 @@ export function paramsFor({
       params = [
         ...params,
         getDataParams(controller, method, false)
-      ];
+      ]
     }
   } else if (type === 'custom') {
     params = [
