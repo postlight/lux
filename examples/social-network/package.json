@@ -14,7 +14,7 @@
     "babel-preset-lux": "2.0.2",
     "bcryptjs": "2.4.3",
     "knex": "0.13.0",
-    "lux-framework": "1.2.1",
+    "lux-framework": "1.2.2",
     "sqlite3": "3.1.8"
   },
   "devDependencies": {

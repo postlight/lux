@@ -1,5 +1,10 @@
 # Lux Changelog
 
+### v1.2.2 (Aug 28, 2017)
+
+*   [[`6c22bdf071`](https://github.com/postlight/lux/commit/6c22bdf071)] - **fix**: do not validate param existence for patch requests (#721) (Zachary Golba)
+*   [[`ea2b8f9926`](https://github.com/postlight/lux/commit/ea2b8f9926)] - **release**: v1.2.1 🔧 (#716) (Zachary Golba)
+
 ### v1.2.1 (July 11, 2017)
 
 *   [[`6b3547f436`](https://github.com/postlight/lux/commit/6b3547f436)] - **fix**: filtering with an empty array as a value causes an error (#715) (Nick Schot)
