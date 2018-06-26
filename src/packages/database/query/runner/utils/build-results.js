@@ -108,7 +108,7 @@ export default async function buildResults<T: Model>({
         .reduce((r, entry) => {
           let [key, value] = entry;
 
-          if (!value && pkPattern.test(key)) {
+          if (value == null && pkPattern.test(key)) {
             return r;
           } else if (key.indexOf('.') >= 0) {
             const [a, b] = key.split('.');
