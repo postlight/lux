@@ -106,7 +106,7 @@ jobs:
     # This is based on your 1.0 configuration file or project settings
     - run: case $CIRCLE_NODE_INDEX in 0) export DATABASE_DRIVER="pg" ;; 1) export DATABASE_DRIVER="mysql2" ;; 2) export DATABASE_DRIVER="sqlite3" ;; esac
     # This is based on your 1.0 configuration file or project settings
-    - run: npm run flow
+    # - run: npm run flow
     - run: npm run lint
     - run:
         command: npm test -- -R mocha-junit-reporter
