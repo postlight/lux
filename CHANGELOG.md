@@ -1,5 +1,10 @@
 # Lux Changelog
 
+### v1.2.3 (July 20, 2018)
+
+* [[`56225dac71`](https://github.com/postlight/lux/commit/56225dac71)] - **fix**: falsy IDs breaking relationships (#730) (Nick Schot)
+* [[`667febd98f`](https://github.com/postlight/lux/commit/667febd98f)] - **release**: v1.2.2 🔧 (#722) (Zachary Golba)
+
 ### v1.2.2 (Aug 28, 2017)
 
 *   [[`6c22bdf071`](https://github.com/postlight/lux/commit/6c22bdf071)] - **fix**: do not validate param existence for patch requests (#721) (Zachary Golba)
