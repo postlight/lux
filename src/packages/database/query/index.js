@@ -298,7 +298,7 @@ class Query<+T: any> extends Promise {
   }
 
   count(): Query<number> {
-    const validName = /^(where(Not)?(In)?)$/g;
+    const validName = /^(where(((Not)?(In)?)|(Raw)|(Between)))$/g;
 
     Object.assign(this, {
       shouldCount: true,
