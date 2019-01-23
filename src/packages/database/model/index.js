@@ -1166,8 +1166,24 @@ class Model {
     const run = async (trx: Object) => {
       const { hooks, logger, primaryKey } = this;
       const instance = Reflect.construct(this, [props, false]);
-      let statements = [];
 
+      await runHooks(instance, trx, hooks.beforeValidation);
+
+      validate(instance);
+
+      await runHooks(instance, trx,
+        hooks.afterValidation,
+        hooks.beforeCreate,
+        hooks.beforeSave
+      );
+
+      const runner = createRunner(logger, []);
+      const [[primaryKeyValue]] = await runner(await create(instance, trx));
+
+      Reflect.set(instance, primaryKey, primaryKeyValue);
+      Reflect.set(instance.rawColumnData, primaryKey, primaryKeyValue);
+
+      let statements = [];
       const associations = Object
         .keys(props)
         .filter(key => (
@@ -1181,21 +1197,7 @@ class Model {
         ], []);
       }
 
-      await runHooks(instance, trx, hooks.beforeValidation);
-
-      validate(instance);
-
-      await runHooks(instance, trx,
-        hooks.afterValidation,
-        hooks.beforeCreate,
-        hooks.beforeSave
-      );
-
-      const runner = createRunner(logger, statements);
-      const [[primaryKeyValue]] = await runner(await create(instance, trx));
-
-      Reflect.set(instance, primaryKey, primaryKeyValue);
-      Reflect.set(instance.rawColumnData, primaryKey, primaryKeyValue);
+      await Promise.all(statements);
 
       Reflect.defineProperty(instance, 'initialized', {
         value: true,
