@@ -556,7 +556,8 @@ describe('module "serializer"', () => {
             'id',
             'type',
             'links',
-            'attributes'
+            'attributes',
+            'relationships'
           ]);
 
           expect(item).to.have.property('id').and.be.a('string');
@@ -595,7 +596,8 @@ describe('module "serializer"', () => {
             'id',
             'type',
             'links',
-            'attributes'
+            'attributes',
+            'relationships'
           ]);
 
           expect(item).to.have.property('id').and.be.a('string');

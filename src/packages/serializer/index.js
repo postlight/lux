@@ -715,7 +715,7 @@ class Serializer<T: Model> {
           domain,
           include: [],
           included: [],
-          formatRelationships: false
+          formatRelationships: true
         })
       );
     }
