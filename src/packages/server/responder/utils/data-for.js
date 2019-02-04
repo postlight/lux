@@ -24,8 +24,8 @@ export default function dataFor(
     errData.title = title;
   }
 
-  if (err && env.isDevelopment()) {
-    errData.detail = err.message;
+  if (err && (env.isDevelopment() || /^\[public\]/gi.test(err.message))) {
+    errData.detail = err.message.replace(/^\[public\]/gi, '');
   }
 
   return {
