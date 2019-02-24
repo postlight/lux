@@ -11,7 +11,7 @@ import eslint from 'rollup-plugin-eslint'
 import resolve from 'rollup-plugin-node-resolve'
 import { rollup } from 'rollup'
 
-import { rmrf, readdir, readdirRec, isJSFile } from '../fs'
+import { rmrf, readdir, readdirRec, isProjectFile } from '../fs'
 import template from '../template'
 import { NODE_ENV } from '../../constants'
 
@@ -58,10 +58,10 @@ export async function compile(
       serializers
     ] = types
 
-    models = models.filter(isJSFile)
-    migrations = migrations.filter(isJSFile)
-    controllers = controllers.filter(isJSFile)
-    serializers = serializers.filter(isJSFile)
+    models = models.filter(isProjectFile)
+    migrations = migrations.filter(isProjectFile)
+    controllers = controllers.filter(isProjectFile)
+    serializers = serializers.filter(isProjectFile)
 
     return new Map([
       ['Application', path.join('app', 'index.js')],

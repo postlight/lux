@@ -87,23 +87,28 @@ describe('module "fs"', () => {
     })
   })
 
-  describe('#isJSFile()', () => {
-    const [a, b, c] = [
+  describe('#isProjectFile()', () => {
+    const [a, b, c, d] = [
       'author.js',
       'author.rb',
+      'author.spec.js',
       '.gitkeep'
     ]
 
     test('is true if a file has a `.js` extension', () => {
-      expect(fs.isJSFile(a)).toBe(true)
+      expect(fs.isProjectFile(a)).toBe(true)
     })
 
     test('is false if a file does not have a `.js` extension', () => {
-      expect(fs.isJSFile(b)).toBe(false)
+      expect(fs.isProjectFile(b)).toBe(false)
+    })
+
+    test('is false if a file has extra periods in the root filename', () => {
+      expect(fs.isProjectFile(c)).toBe(false)
     })
 
     test('is false if the file is prefixed with `.`', () => {
-      expect(fs.isJSFile(c)).toBe(false)
+      expect(fs.isProjectFile(d)).toBe(false)
     })
   })
 

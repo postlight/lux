@@ -8,7 +8,7 @@ import { Client as Watchman } from 'fb-watchman'
 
 import exec from '../../../utils/exec'
 import tryCatch from '../../../utils/try-catch'
-import isJSFile from '../utils/is-js-file'
+import isProjectFile from '../utils/is-project-file'
 import { freezeProps } from '../../freezeable'
 
 // eslint-disable-next-line no-unused-vars
@@ -23,7 +23,7 @@ function fallback(instance: Watcher, path: string): FSWatcher {
   return nativeWatch(path, {
     recursive: true
   }, (type, name) => {
-    if (isJSFile(name)) {
+    if (isProjectFile(name)) {
       instance.emit('change', [{ name, type }])
     }
   })
