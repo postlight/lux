@@ -14,10 +14,10 @@
     "babel-preset-lux": "2.0.2",
     "bcryptjs": "2.4.3",
     "faker": "4.1.0",
-    "knex": "0.13.0",
+    "knex": "0.16.3",
     "mssql": "4.0.4",
     "mysql2": "1.2.0",
-    "pg": "6.2.2",
+    "pg": "7.8.1",
     "source-map-support": "0.4.15",
     "sqlite3": "3.1.8"
   }
