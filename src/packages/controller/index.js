@@ -248,7 +248,7 @@ export type Options<T: Model> = {
  * export default ApplicationController;
  * ```
  *
- * **Execuation Order**
+ * **Execution Order**
  *
  * Understanding the execution order of middleware functions and a `Controller`
  * action is essential to productivity with Lux. Depending on what you use case
